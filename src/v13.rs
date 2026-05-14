@@ -771,6 +771,9 @@ impl MarketGroupV13 {
         if self.loss_stale_active && account.active_bitmap != 0 {
             return Err(V13Error::LockActive);
         }
+        if self.account_has_target_effective_lag(account)? && account.active_bitmap != 0 {
+            return Err(V13Error::LockActive);
+        }
         self.settle_negative_pnl_from_principal(account)?;
         if account.pnl < 0 || amount > account.capital {
             return Err(V13Error::LockActive);
@@ -1060,6 +1063,24 @@ impl MarketGroupV13 {
         }
     }
 
+    fn asset_has_target_effective_lag(&self, asset_index: usize) -> V13Result<bool> {
+        if asset_index >= self.config.max_portfolio_assets as usize {
+            return Err(V13Error::InvalidLeg);
+        }
+        let asset = self.assets[asset_index];
+        Ok(asset.raw_oracle_target_price != asset.effective_price)
+    }
+
+    fn account_has_target_effective_lag(&self, account: &PortfolioAccountV13) -> V13Result<bool> {
+        self.validate_account_shape(account)?;
+        for i in 0..self.config.max_portfolio_assets as usize {
+            if account.legs[i].active && self.asset_has_target_effective_lag(i)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
     pub fn full_account_refresh(
         &mut self,
         account: &mut PortfolioAccountV13,
@@ -1152,6 +1173,9 @@ impl MarketGroupV13 {
             || account.health_cert.active_bitmap_at_cert != account.active_bitmap
         {
             return Err(V13Error::Stale);
+        }
+        if self.account_has_target_effective_lag(account)? {
+            return Err(V13Error::LockActive);
         }
         Ok(())
     }
@@ -1422,7 +1446,8 @@ impl MarketGroupV13 {
         let risk_increasing =
             position_delta_increases_risk(long_account, request.asset_index, long_delta)?
                 || position_delta_increases_risk(short_account, request.asset_index, short_delta)?;
-        if locked && risk_increasing {
+        let target_effective_lag = self.asset_has_target_effective_lag(request.asset_index)?;
+        if risk_increasing && (locked || target_effective_lag) {
             return Err(V13Error::LockActive);
         }
 

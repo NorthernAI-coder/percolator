@@ -365,6 +365,89 @@ fn v13_loss_stale_blocks_nonflat_withdrawal_even_if_no_positive_credit_suffices(
 }
 
 #[test]
+fn v13_target_effective_lag_blocks_risk_increasing_trade_before_mutation() {
+    let mut g = group();
+    let mut long = account();
+    let mut short = account();
+    short.provenance_header.portfolio_account_id = [4; 32];
+    g.deposit_not_atomic(&mut long, 10_000).unwrap();
+    g.deposit_not_atomic(&mut short, 10_000).unwrap();
+    g.assets[0].effective_price = 100;
+    g.assets[0].raw_oracle_target_price = 120;
+
+    let res = g.execute_trade_with_fee_not_atomic(
+        &mut long,
+        &mut short,
+        TradeRequestV13 {
+            asset_index: 0,
+            size_q: POS_SCALE,
+            exec_price: 100,
+            fee_bps: 0,
+        },
+        &[100; V13_MAX_PORTFOLIO_ASSETS_N],
+    );
+
+    assert_eq!(res, Err(V13Error::LockActive));
+    assert_eq!(long.active_bitmap, 0);
+    assert_eq!(short.active_bitmap, 0);
+}
+
+#[test]
+fn v13_target_effective_lag_allows_pure_risk_reducing_trade() {
+    let mut g = group();
+    let mut reducing_short = account();
+    let mut reducing_long = account();
+    reducing_long.provenance_header.portfolio_account_id = [4; 32];
+    g.deposit_not_atomic(&mut reducing_short, 10_000).unwrap();
+    g.deposit_not_atomic(&mut reducing_long, 10_000).unwrap();
+    g.attach_leg(&mut reducing_short, 0, SideV13::Short, -(POS_SCALE as i128))
+        .unwrap();
+    g.attach_leg(&mut reducing_long, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    g.assets[0].effective_price = 100;
+    g.assets[0].raw_oracle_target_price = 120;
+
+    assert!(g
+        .execute_trade_with_fee_not_atomic(
+            &mut reducing_short,
+            &mut reducing_long,
+            TradeRequestV13 {
+                asset_index: 0,
+                size_q: POS_SCALE / 2,
+                exec_price: 100,
+                fee_bps: 0,
+            },
+            &[100; V13_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .is_ok());
+}
+
+#[test]
+fn v13_target_effective_lag_blocks_nonflat_withdrawal_and_pnl_conversion() {
+    let mut g = group();
+    let mut a = account();
+    g.deposit_not_atomic(&mut a, 100).unwrap();
+    g.attach_leg(&mut a, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    a.pnl = 10;
+    g.pnl_pos_tot = 10;
+    g.vault = g.vault.checked_add(10).unwrap();
+    g.assets[0].effective_price = 100;
+    g.assets[0].raw_oracle_target_price = 120;
+    g.full_account_refresh(&mut a, &[100; V13_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+
+    assert_eq!(
+        g.withdraw_not_atomic(&mut a, 1, &[100; V13_MAX_PORTFOLIO_ASSETS_N]),
+        Err(V13Error::LockActive)
+    );
+    assert_eq!(
+        g.convert_released_pnl_to_capital_not_atomic(&mut a),
+        Err(V13Error::LockActive)
+    );
+}
+
+#[test]
 fn v13_account_free_equity_active_accrual_requires_protective_progress() {
     let mut g = group();
     let mut a = account();

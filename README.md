@@ -2,215 +2,123 @@
 
 **EDUCATIONAL RESEARCH PROJECT — NOT PRODUCTION READY. NOT AUDITED. Do NOT use with real funds.**
 
-A predictable perpetual-futures risk engine built around backed exits, lazy
-overhang clearing, and bounded cranks.
+Current normative spec: [`spec.md`](spec.md), **v13.0.0**.
 
-Current normative spec: [`spec.md`](spec.md), **v12.20.6**.
+Percolator is a perpetual-futures risk-engine library for account-local,
+permissionless risk progress. v13 removes the finite global account slab: every
+portfolio account is a distinct authenticated account bound to a market group,
+and safety depends on bounded full-account refresh plus fail-closed stale
+states, not on scanning every account in the market.
 
-If you want the `xy = k` of perpetual futures risk engines -- something you can reason about, audit, and run without human intervention -- the cleanest move is simple: stop treating profit like money. Treat it like what it really is in a stressed exchange: a junior claim on a shared balance sheet.
-
-> No user can ever withdraw more value than actually exists on the exchange balance sheet.
+The core promise is narrower and more realistic than global auto-discovery:
+if an honest crank supplies a valid account hint, the engine can make bounded
+progress on that account, while omitted or stale accounts cannot extract value
+or increase risk using optimistic health.
 
 ## Three Invariants
 
-A stressed perp exchange has three jobs:
+1. **Backed exits:** protected principal is senior, positive PnL is junior, and no withdrawal can claim more value than the balance sheet can pay.
+2. **Account-local safety:** every favorable action refreshes the account's full active portfolio first; hidden, stale, or B-stale legs fail closed.
+3. **Bounded progress:** cranks and recovery paths are account-local and incremental; no public instruction needs to evaluate the whole market.
 
-1. **Backed exits:** when the vault is stressed, nobody can extract more value than the balance sheet can pay.
-2. **Fair overhang clearing:** when positions go bankrupt, the residual is absorbed pro rata instead of by a discretionary ADL queue.
-3. **Bounded cranks:** when the oracle moves, the live book is repriced only inside the configured one-step risk budget.
+## Account-Local v13
 
-Percolator composes three mechanisms:
+Each `PortfolioAccountV13` carries provenance:
 
-- **H** (the haircut ratio) makes positive PnL a junior claim on residual value.
-- **A/K/F/B** (lazy side indices) settles mark moves, funding, quantity ADL, and bankruptcy residuals without selecting individual losers.
-- **The price/funding envelope** bounds every exposed accrual step before K/F/price/slot state can mutate.
-
----
-
-## H: Backed Exits
-
-Capital is senior. Profit is junior. A single global ratio determines how much
-released positive PnL is actually backed.
-
-```
-Residual  = max(0, V - C_tot - I)
-
-              min(Residual, PNL_matured_pos_tot)
-    h     =  ----------------------------------
-                    PNL_matured_pos_tot
+```text
+market_group_id
+portfolio_account_id
+owner
+version/layout discriminator
 ```
 
-If fully backed, `h = 1`. If stressed, `h < 1`. Every profitable account sees
-the same fraction of its *released* positive PnL:
+The engine rejects any account whose provenance does not match the
+`MarketGroupV13`. Active positions are defined only by the canonical active
+bitmap and bounded leg array. There is no hidden slab slot and no global account
+table to scan.
 
-```
-ReleasedPos_i   = max(PNL_i, 0) - R_i
-effective_pnl_i = floor(ReleasedPos_i * h)
-```
+The account-local bounded work unit is a full portfolio refresh over at most
+`MAX_PORTFOLIO_ASSETS_N` configured legs. A fresh health certificate is required
+for user-favorable actions. If an account is stale, B-stale, under h-max/stress,
+or loss-stale, favorable paths must reject or use conservative no-positive-credit
+lanes.
 
-Fresh profit sits in a per-account reserve `R_i` and converts to released
-(matured) profit through admission and warmup. Only admitted matured profit
-enters the haircut denominator (`PNL_matured_pos_tot`) and per-account effective
-PnL.
+## H-Lock
 
-This is the core anti-oracle-manipulation defense. An attacker who spikes a
-price sees live gain locked in reserve, excluded from both the ratio and their
-withdrawable amount, until the instruction policy admits it. Public wrappers
-using untrusted live oracle or execution-price PnL must use nonzero admission
-warmup; stress-threshold gating is not a substitute.
+Capital is senior. Profit is junior. `h_min` may be zero while the market is
+healthy, but h-lock selection is state-derived and permissionless:
 
-No rankings, no queue priority, no first-come advantage. The floor rounding is conservative — the sum of all effective PnL never exceeds what exists in the vault.
+- `h_min` is used only when no h-max condition is active.
+- `h_max` is used under threshold stress, bankruptcy h-lock, instruction-local
+  bankruptcy candidates, loss-stale catchup, stale/B-stale account state, or
+  active bankrupt close state.
 
-When the system is stressed, `h` falls and less profit converts. When losses
-settle or buffers recover, `h` rises. Self-healing.
+Wrappers do not choose h-lock from an oracle. They supply authenticated market
+inputs; the engine selects the lane from committed market/account state.
 
-Flat accounts are always protected — `h` only gates profit extraction, never touches deposited capital.
+## A/K/F/B
 
----
+v13 keeps the lazy index model but makes bankruptcy residuals explicit:
 
-## A/K/F/B: Fair Overhang Clearing
+- **A** scales effective quantity for side-level quantity ADL.
+- **K/F** represent mark and funding settlement.
+- **B** books bankruptcy residual loss through account-local chunks.
 
-When a leveraged account goes bankrupt, two things need to happen: remove the position quantity from open interest, and distribute any uncovered deficit across the opposing side.
+Account-local B settlement is bounded. A public endpoint must either apply the
+engine-determined positive chunk, leave the account B-stale, or route to
+permissionless recovery if no positive chunk is representable. B-stale accounts
+cannot withdraw, close favorably, convert/release PnL, use hedge credit, increase
+risk, or receive resolved payout.
 
-Traditional ADL queues pick specific counterparties and force-close them.
-Percolator replaces the queue with lazy side indices:
+## Crank And Recovery
 
-- **A** scales everyone's effective position equally.
-- **K** accumulates mark effects.
-- **F** accumulates funding effects.
-- **B** books bankruptcy residual loss through an exact scaled-loss index.
+Public user-fund markets are `CrankForward`. An account-free equity-active crank
+is forbidden unless it also commits bounded protective progress. Candidate lists
+are hints, not proofs of completeness: missing accounts do not make a crank
+unsafe, and hinted unhealthy accounts must either make bounded progress or route
+to recovery.
 
-```
-effective_pos(i) = floor(basis_i * A / a_basis_i)
-pnl_delta(i)     =
-    floor(|basis_i| * ((K - k_snap_i) * FUNDING_DEN + (F - f_snap_i))
-          / (a_basis_i * POS_SCALE * FUNDING_DEN))
-```
+If ordinary bounded progress cannot continue, the public recovery API records a
+deterministic recovery reason. The caller does not choose a recovery price.
 
-When a liquidation reduces OI, `A` decreases -- every account on that side
-shrinks by the same ratio. Mark moves through `K`, funding moves through `F`,
-and bankruptcy residuals move through `B`. Accounts settle against their
-snapshots when touched.
+## Proofs
 
-No account is singled out. Settlement is O(1) per account and order-independent.
-
-v12.20.6 makes the dust and ADL accounting explicit: residual OI that is
-*certified* as unrepresented may be cleared, while merely *potential* dust is
-only diagnostic until an exact proof or scan certifies it. Bankruptcy residuals
-are not written through `K`; they are booked through `B` with an exact scaled
-identity, or routed to explicit non-claim audit loss if the represented set is
-not certified.
-
-### Markets Return to Healthy
-
-A/K/F/B guarantees forward progress through a deterministic cycle:
-
-**DrainOnly** — when `A` drops below a precision threshold, no new OI can be added. Positions can only close.
-
-**ResetPending** — when OI reaches zero, the engine snapshots `K`, increments the epoch, and resets `A` back to 1. Remaining accounts settle their residual PnL exactly once when next touched.
-
-**Normal** — once all stale accounts have settled and OI is confirmed zero, the side reopens for trading with full precision.
-
-No admin intervention. No governance vote. The state machine always makes progress.
-
----
-
-## Price/Funding Envelope
-
-The third invariant is a system bound: an exposed market cannot be cranked
-through an arbitrary oracle or funding jump in one step.
-
-For any crank that advances the engine price while open interest exists, the
-allowed price move is capped by elapsed slots:
-
-```
-abs(P_new - P_last) * 10_000
-    <= max_price_move_bps_per_slot * dt * P_last
-```
-
-Equivalently, the normalized move is bounded by
-`max_price_move_bps_per_slot * dt / 10_000`.
-
-At a high level, the maximum price movement between exposed cranks is bounded by
-the system's risk budget. If the market is configured around `L` times leverage,
-the safe one-step move is roughly on the order of `1 / L`, with room reserved
-for funding, liquidation fees, integer rounding, and fee floors/caps.
-
-This turns "crank often enough" into a hard solvency boundary rather than an
-operator preference. A stale or fast-moving oracle target must be fed into the
-engine as a capped staircase of effective prices. Same-slot exposed cranks use
-the previous price; they cannot mark live OI through a zero-time jump.
-
-Active price or funding accrual also has a maximum elapsed-slot window; beyond
-that, ordinary live catch-up fails closed and the wrapper must use recovery or
-resolution.
-
-For public CrankForward markets, v12.20.6 requires permissionless bounded
-catchup or canonical permissionless recovery: stale exposed markets must be able
-to advance in safe segments, and price-scale dead zones must route to recovery
-instead of silently advancing `slot_last` with no effective price progress.
-
-Initialization proves a per-risk-notional envelope for the worst allowed
-price/funding step plus liquidation fees. At runtime, before any K/F/price/slot
-mutation, the engine checks that the next effective step stays inside that
-envelope. If it does not fit, the crank fails closed instead of moving the
-market into an unbudgeted state.
-
----
-
-## How They Compose
-
-| | H | A/K/F/B | Price/funding envelope |
-|---|---|---|---|
-| **Solves** | Backed exits | Bankrupt overhang clearing | Bounded live repricing |
-| **Math** | Pro-rata profit scaling | Pro-rata position, mark, funding, and bankruptcy-loss scaling | Exact per-risk-notional loss budget |
-| **Triggered by** | Withdrawal, conversion, settlement | Mark, funding, liquidation, reset | Live accrual/crank |
-| **Failure mode** | Less profit is released | Side drains and resets | Crank fails closed or wrapper stair-steps |
-
-Together:
-- No user can withdraw more than exists.
-- No user is singled out for forced closure.
-- Flat accounts keep their deposits.
-- Risk-increasing trades cannot count their own favorable execution slippage as margin.
-- Markets recover through deterministic side resets.
-- Exposed cranks are bounded to the configured price/funding budget.
-- Raw oracle targets are wrapper-owned; the engine only sees capped effective prices.
-- H-max locks and loss-stale catchup restrict positive-PnL usability, not all
-  loss-current trading. Once `slot_last == current_slot`, valid conservative
-  trades can continue while the h-max sweep finishes.
-
-A/K/F/B fairness is exact for open-position economics. H fairness is exact for the
-currently stored realized claim set, not for the economically "true" claim set
-you would get after globally touching every account.
-
-The engine is not the whole public protocol by itself. A compliant wrapper must
-enforce authorization, source and clamp oracle/funding inputs, use nonzero live
-PnL admission for untrusted public flows, sync recurring fees when enabled, and
-reject extraction-sensitive actions while raw oracle target and effective engine
-price diverge.
-
-## State Layout
-
-This repository is a pure risk-engine library. It does not define an on-chain
-program id, account decoder, persisted market registry, or deployment manifest.
-There is therefore no in-repo deployed market state to migrate.
-
-Wrappers that persist raw engine state own layout versioning and migration. A
-wrapper must migrate its stored account data before linking any engine version
-whose state fields or layout have changed.
-
----
-
-## Open Source
-
-Fork it, test it, send bug reports. Percolator is open research under Apache-2.0.
+The current v13 proof suite is intentionally account-local and runs over the
+production v13 methods:
 
 ```bash
 cargo install --locked kani-verifier
 cargo kani setup
-cargo kani
+scripts/run_kani_full_audit.sh
 ```
 
-## References
+The latest checked timing sweep is in:
 
-- Tarun Chitra, *Autodeleveraging: Impossibilities and Optimization*, arXiv:2512.01112, 2025. https://arxiv.org/abs/2512.01112
+```text
+kani_audit_full.tsv
+kani_audit_final.tsv
+scripts/proof-strength-audit-results.md
+```
+
+The v12 slab proof inventory was retired with the v13 cutover because it no
+longer applies to the architecture.
+
+## Tests
+
+```bash
+cargo test
+cargo test --features test
+cargo test --features small
+cargo test --features medium
+```
+
+## Scope
+
+This repository is a pure risk-engine library. It does not define an on-chain
+program id, account decoder, persisted market registry, or deployment manifest.
+Wrappers own authorization, account loading, oracle/funding authentication,
+fee-schedule policy, and raw-state layout migration.
+
+## License
+
+Apache-2.0.

@@ -45,15 +45,14 @@ A true inductive invariant proof has the form:
 ```
 
 This requires the initial state `s` to be **fully symbolic** — any state satisfying INV,
-not a state constructed from `RiskEngine::new()` with selected fields overwritten.
+not a concrete constructor result with selected fields overwritten.
 
 For each proof that asserts `canonical_inv` (or a component) pre- and post-operation,
 evaluate whether it achieves inductive strength:
 
-6a. **State construction method**: Does the proof start from a fully symbolic engine with
-    `assume(INV)`, or does it call `RiskEngine::new(concrete_params)` and overwrite
-    selected fields? The latter fixes hundreds of fields to concrete values (freelist
-    topology, cursor positions, funding index, net_lp_pos, etc.), limiting the proof
+6a. **State construction method**: Does the proof start from a fully symbolic engine/account
+    state with `assume(INV)`, or does it call a concrete constructor and overwrite
+    selected fields? The latter fixes many fields to concrete values, limiting the proof
     to states reachable from that specific construction. Fields outside the function's
     cone of influence are pruned by the solver automatically — a fully symbolic state
     does NOT create an intractably large problem.
@@ -73,14 +72,14 @@ evaluate whether it achieves inductive strength:
     (vault >= c_tot + insurance) depends only on vault, c_tot, and insurance — not on
     individual account fields.
 
-6d. **Loop elimination in invariant specs**: Do the invariant functions (inv_aggregates,
-    inv_per_account, inv_structural) use `for idx in 0..MAX_ACCOUNTS` loops? These loops
-    make `assume(canonical_inv(engine))` expensive for the solver. Can the invariant be
+6d. **Loop elimination in invariant specs**: Do the invariant functions scan
+    more than the bounded account-local leg set? These loops make
+    `assume(canonical_inv(engine))` expensive for the solver. Can the invariant be
     reformulated as a loop-free property relative to one target account? For example,
-    instead of checking `c_tot == Σ capital[i]`, check that `set_capital` maintains
-    `c_tot' = c_tot - old_capital + new_capital` — a loop-free delta property.
+    instead of checking `c_tot == Σ capital[i]`, check that a transition maintains
+    the exact aggregate delta.
 
-6e. **Cone of influence**: List every field of RiskEngine that the function-under-test
+6e. **Cone of influence**: List every field of engine/account state that the function-under-test
     actually reads or writes (directly or via callees). Any field NOT in this set is
     outside the cone of influence — if the proof fixes it to a concrete value, that
     limits generality for no benefit. Flag proofs that construct concrete values for

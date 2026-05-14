@@ -1,10 +1,11 @@
 use percolator::v13::{
-    account_equity, risk_notional_ceil, HLockLaneV13, MarketGroupV13,
-    PermissionlessProgressOutcomeV13, PermissionlessRecoveryReasonV13, PortfolioAccountV13,
-    PortfolioLegV13, ProvenanceHeaderV13, SideV13, V13Config, V13Error,
+    account_equity, risk_notional_ceil, HLockLaneV13, LiquidationRequestV13, MarketGroupV13,
+    PermissionlessCrankActionV13, PermissionlessCrankRequestV13, PermissionlessProgressOutcomeV13,
+    PermissionlessRecoveryReasonV13, PortfolioAccountV13, PortfolioLegV13, ProvenanceHeaderV13,
+    ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
     V13_MAX_PORTFOLIO_ASSETS_N,
 };
-use percolator::{ADL_ONE, SOCIAL_LOSS_DEN};
+use percolator::{ADL_ONE, POS_SCALE, SOCIAL_LOSS_DEN};
 
 fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
     ([1; 32], [2; 32], [3; 32])
@@ -116,8 +117,7 @@ fn v13_favorable_action_requires_current_full_account_refresh() {
     let mut g = group();
     let mut a = account();
     a.capital = 100;
-    g.attach_leg(&mut a, 0, SideV13::Long, 1_000_000)
-        .unwrap();
+    g.attach_leg(&mut a, 0, SideV13::Long, 1_000_000).unwrap();
     let mut prices = [1u64; V13_MAX_PORTFOLIO_ASSETS_N];
     prices[0] = 100;
 
@@ -137,12 +137,14 @@ fn v13_b_stale_blocks_refresh_and_favorable_actions_without_scanning_market() {
     let mut g = group();
     let mut a = account();
     a.capital = 100;
-    g.attach_leg(&mut a, 0, SideV13::Long, 1_000_000)
-        .unwrap();
+    g.attach_leg(&mut a, 0, SideV13::Long, 1_000_000).unwrap();
     let prices = [100u64; V13_MAX_PORTFOLIO_ASSETS_N];
 
     g.mark_account_b_stale(&mut a).unwrap();
-    assert_eq!(g.full_account_refresh(&mut a, &prices), Err(V13Error::BStale));
+    assert_eq!(
+        g.full_account_refresh(&mut a, &prices),
+        Err(V13Error::BStale)
+    );
     assert_eq!(
         g.ensure_favorable_action_allowed(&a),
         Err(V13Error::LockActive)
@@ -153,7 +155,10 @@ fn v13_b_stale_blocks_refresh_and_favorable_actions_without_scanning_market() {
 fn v13_public_init_rejects_unbounded_portfolio_width() {
     let (market, _, _) = ids();
     let cfg = V13Config::public_user_fund((V13_MAX_PORTFOLIO_ASSETS_N + 1) as u8, 0, 10);
-    assert_eq!(MarketGroupV13::new(market, cfg), Err(V13Error::InvalidConfig));
+    assert_eq!(
+        MarketGroupV13::new(market, cfg),
+        Err(V13Error::InvalidConfig)
+    );
 }
 
 #[test]
@@ -194,7 +199,9 @@ fn v13_account_b_chunk_makes_strict_account_local_progress_or_requires_recovery(
     g.assets[0].b_long_num = SOCIAL_LOSS_DEN * 2;
     g.mark_leg_b_stale(&mut a, 0).unwrap();
 
-    let chunk = g.settle_account_b_chunk(&mut a, 0, SOCIAL_LOSS_DEN).unwrap();
+    let chunk = g
+        .settle_account_b_chunk(&mut a, 0, SOCIAL_LOSS_DEN)
+        .unwrap();
     assert!(chunk.delta_b > 0);
     assert!(a.legs[0].b_snap > 0);
     assert_eq!(a.health_cert.valid, false);
@@ -239,4 +246,195 @@ fn v13_permissionless_recovery_is_declared_by_reason_not_caller_price() {
         Ok(PermissionlessProgressOutcomeV13::RecoveryDeclared(reason))
     );
     assert_eq!(g.recovery_reason, Some(reason));
+}
+
+#[test]
+fn v13_fees_are_charged_only_after_realized_losses() {
+    let mut g = group();
+    let mut a = account();
+    g.deposit_not_atomic(&mut a, 100).unwrap();
+    a.pnl = -100;
+    g.negative_pnl_account_count = 1;
+
+    let charged = g.charge_account_fee_not_atomic(&mut a, 100).unwrap();
+    assert_eq!(charged, 0);
+    assert_eq!(a.capital, 0);
+    assert_eq!(a.pnl, 0);
+    assert_eq!(g.insurance, 0);
+    assert_eq!(g.c_tot, 0);
+}
+
+#[test]
+fn v13_fee_sync_settles_hidden_kf_losses_before_collecting_fee() {
+    let mut g = group();
+    g.assets[0].effective_price = 100;
+    g.assets[0].fund_px_last = 100;
+    let mut long = account();
+    g.deposit_not_atomic(&mut long, 50).unwrap();
+    g.attach_leg(&mut long, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+
+    g.accrue_asset_to_not_atomic(0, 1, 50, 0, true).unwrap();
+    let charged = g
+        .sync_account_fee_to_slot_not_atomic(&mut long, 1, 100)
+        .unwrap();
+
+    assert_eq!(charged, 0);
+    assert_eq!(long.capital, 0);
+    assert_eq!(long.pnl, 0);
+    assert_eq!(g.insurance, 0);
+}
+
+#[test]
+fn v13_account_free_equity_active_accrual_requires_protective_progress() {
+    let mut g = group();
+    let mut a = account();
+    g.deposit_not_atomic(&mut a, 1000).unwrap();
+    g.attach_leg(&mut a, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    let mut b = account();
+    b.provenance_header.portfolio_account_id = [4; 32];
+    g.deposit_not_atomic(&mut b, 1000).unwrap();
+    g.attach_leg(&mut b, 0, SideV13::Short, -(POS_SCALE as i128))
+        .unwrap();
+
+    assert_eq!(
+        g.accrue_asset_to_not_atomic(0, 1, 2, 0, false),
+        Err(V13Error::NonProgress)
+    );
+    assert!(g.accrue_asset_to_not_atomic(0, 1, 2, 0, true).is_ok());
+}
+
+#[test]
+fn v13_equity_active_accrual_commits_one_bounded_loss_stale_segment() {
+    let mut g = group();
+    g.config.max_accrual_dt_slots = 2;
+    let mut a = account();
+    g.attach_leg(&mut a, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+
+    let out = g.accrue_asset_to_not_atomic(0, 10, 3, 0, true).unwrap();
+    assert_eq!(out.dt, 2);
+    assert!(out.loss_stale_after);
+    assert_eq!(g.slot_last, 2);
+    assert_eq!(g.current_slot, 10);
+    assert!(g.loss_stale_active);
+}
+
+#[test]
+fn v13_trade_fee_is_dynamic_bounded_and_charged_inside_engine() {
+    let mut g = group();
+    g.config.max_trading_fee_bps = 100;
+    let mut long = account();
+    let mut short = account();
+    short.provenance_header.portfolio_account_id = [4; 32];
+    g.deposit_not_atomic(&mut long, 10_000).unwrap();
+    g.deposit_not_atomic(&mut short, 10_000).unwrap();
+
+    let req = TradeRequestV13 {
+        asset_index: 0,
+        size_q: POS_SCALE,
+        exec_price: 1_000,
+        fee_bps: 50,
+        allow_risk_increase_under_locks: false,
+    };
+    let out = g
+        .execute_trade_with_fee_not_atomic(
+            &mut long,
+            &mut short,
+            req,
+            &[1_000; V13_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .unwrap();
+    assert_eq!(out.notional, 1_000);
+    assert_eq!(out.fee_a, 5);
+    assert_eq!(long.active_bitmap, 1);
+    assert_eq!(short.active_bitmap, 1);
+    assert_eq!(g.insurance, 10);
+
+    let mut bad_req = req;
+    bad_req.fee_bps = 101;
+    assert_eq!(
+        g.execute_trade_with_fee_not_atomic(
+            &mut long,
+            &mut short,
+            bad_req,
+            &[1_000; V13_MAX_PORTFOLIO_ASSETS_N],
+        ),
+        Err(V13Error::InvalidConfig)
+    );
+}
+
+#[test]
+fn v13_b_residual_booking_is_bounded_and_remainder_conserving() {
+    let mut g = group();
+    let mut short = account();
+    g.deposit_not_atomic(&mut short, 100).unwrap();
+    g.attach_leg(&mut short, 0, SideV13::Short, -(POS_SCALE as i128))
+        .unwrap();
+
+    let out = g
+        .book_bankruptcy_residual_chunk(0, SideV13::Long, 7)
+        .unwrap();
+    assert_eq!(out.booked_loss, 7);
+    assert!(out.delta_b > 0);
+
+    g.mark_leg_b_stale(&mut short, 0).unwrap();
+    let chunk = g
+        .settle_account_b_chunk(&mut short, 0, g.assets[0].b_short_num)
+        .unwrap();
+    assert_eq!(chunk.remaining_after, 0);
+    assert!(short.pnl <= -7);
+}
+
+#[test]
+fn v13_permissionless_crank_commits_refresh_before_equity_active_accrual() {
+    let mut g = group();
+    let mut long = account();
+    g.deposit_not_atomic(&mut long, 1000).unwrap();
+    g.attach_leg(&mut long, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    let req = PermissionlessCrankRequestV13 {
+        now_slot: 1,
+        asset_index: 0,
+        effective_price: 2,
+        funding_rate_e9: 0,
+        action: PermissionlessCrankActionV13::Refresh,
+    };
+    let out = g
+        .permissionless_crank_not_atomic(&mut long, req, &[2; V13_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+    assert_eq!(out, PermissionlessProgressOutcomeV13::AccountCurrent);
+    assert_eq!(g.slot_last, 1);
+}
+
+#[test]
+fn v13_resolved_close_is_bounded_and_fee_current() {
+    let mut g = group();
+    let mut a = account();
+    g.deposit_not_atomic(&mut a, 100).unwrap();
+    g.resolve_market_not_atomic(10).unwrap();
+    let out = g.close_resolved_account_not_atomic(&mut a, 1).unwrap();
+    assert_eq!(out, ResolvedCloseOutcomeV13::Closed { payout: 90 });
+    assert_eq!(a.last_fee_slot, 10);
+    assert_eq!(a.capital, 0);
+}
+
+#[test]
+fn v13_liquidation_requires_strict_account_risk_progress() {
+    let mut g = group();
+    let mut a = account();
+    g.attach_leg(&mut a, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    g.accrue_asset_to_not_atomic(0, 1, 1, 0, true).unwrap();
+    let req = LiquidationRequestV13 {
+        asset_index: 0,
+        close_q: POS_SCALE,
+        fee_bps: 0,
+    };
+    let out = g
+        .liquidate_account_not_atomic(&mut a, req, &[1; V13_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+    assert_eq!(out.closed_q, POS_SCALE);
+    assert_eq!(a.active_bitmap, 0);
 }

@@ -1,14 +1,18 @@
-//! v13 account-local risk engine foundation.
+//! v13 account-local risk engine.
 //!
-//! This module implements the v13 architectural primitives that are independent
-//! of the legacy v12 global slab: authenticated portfolio accounts, bounded
-//! per-account refresh, stale/B-stale fail-closed checks, and deterministic
-//! h-min/h-max selection from committed market/account state.
+//! This module implements the v13 slab-free engine surface: authenticated
+//! portfolio accounts, bounded per-account refresh, lazy A/K/F/B settlement,
+//! loss-senior fee handling, account-local cranks, residual B booking, dynamic
+//! trade fees, liquidation progress checks, and resolved account close.
 
-use crate::wide_math::{checked_mul_div_ceil_u256, U256};
+use crate::wide_math::{
+    checked_mul_div_ceil_u256, floor_div_signed_conservative_i128, mul_div_floor_u256_with_rem,
+    wide_mul_div_floor_u128, wide_signed_mul_div_floor_from_k_pair, U256,
+};
 use crate::{
-    ADL_ONE, MAX_ORACLE_PRICE, MAX_POSITION_ABS_Q, MAX_VAULT_TVL, MIN_A_SIDE, POS_SCALE,
-    SOCIAL_LOSS_DEN, SOCIAL_WEIGHT_SCALE,
+    ADL_ONE, FUNDING_DEN, MAX_MARGIN_BPS, MAX_ORACLE_PRICE, MAX_POSITION_ABS_Q,
+    MAX_PROTOCOL_FEE_ABS, MAX_TRADE_SIZE_Q, MAX_VAULT_TVL, MIN_A_SIDE, POS_SCALE, SOCIAL_LOSS_DEN,
+    SOCIAL_WEIGHT_SCALE,
 };
 
 pub const V13_MAX_PORTFOLIO_ASSETS_N: usize = 16;
@@ -53,6 +57,13 @@ pub enum SideModeV13 {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum MarketModeV13 {
+    Live,
+    Resolved,
+    Recovery,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PermissionlessRecoveryReasonV13 {
     BelowProgressFloor,
     BlockedSegmentHeadroomOrRepresentability,
@@ -92,11 +103,20 @@ impl ProvenanceHeaderV13 {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct V13Config {
     pub max_portfolio_assets: u8,
+    pub min_nonzero_mm_req: u128,
+    pub min_nonzero_im_req: u128,
     pub h_min: u64,
     pub h_max: u64,
     pub maintenance_margin_bps: u64,
     pub initial_margin_bps: u64,
     pub max_trading_fee_bps: u64,
+    pub liquidation_fee_bps: u64,
+    pub liquidation_fee_cap: u128,
+    pub min_liquidation_abs: u128,
+    pub max_accrual_dt_slots: u64,
+    pub max_abs_funding_e9_per_slot: u64,
+    pub min_funding_lifetime_slots: u64,
+    pub max_price_move_bps_per_slot: u64,
     pub max_account_b_settlement_chunks: u64,
     pub max_bankrupt_close_chunks: u64,
     pub public_b_chunk_atoms: u128,
@@ -110,11 +130,20 @@ impl V13Config {
     pub const fn public_user_fund(max_portfolio_assets: u8, h_min: u64, h_max: u64) -> Self {
         Self {
             max_portfolio_assets,
+            min_nonzero_mm_req: 1,
+            min_nonzero_im_req: 2,
             h_min,
             h_max,
             maintenance_margin_bps: 10_000,
             initial_margin_bps: 10_000,
             max_trading_fee_bps: 0,
+            liquidation_fee_bps: 0,
+            liquidation_fee_cap: 0,
+            min_liquidation_abs: 0,
+            max_accrual_dt_slots: 1,
+            max_abs_funding_e9_per_slot: 0,
+            min_funding_lifetime_slots: 1,
+            max_price_move_bps_per_slot: 10_000,
             max_account_b_settlement_chunks: 1,
             max_bankrupt_close_chunks: 1,
             public_b_chunk_atoms: MAX_VAULT_TVL,
@@ -134,9 +163,19 @@ impl V13Config {
         if self.h_max == 0 || self.h_min > self.h_max {
             return Err(V13Error::InvalidConfig);
         }
+        if self.min_nonzero_mm_req == 0 || self.min_nonzero_mm_req >= self.min_nonzero_im_req {
+            return Err(V13Error::InvalidConfig);
+        }
         if self.maintenance_margin_bps > self.initial_margin_bps
-            || self.initial_margin_bps > 10_000
-            || self.max_trading_fee_bps > 10_000
+            || self.initial_margin_bps > MAX_MARGIN_BPS
+            || self.max_trading_fee_bps > MAX_MARGIN_BPS
+            || self.liquidation_fee_bps > MAX_MARGIN_BPS
+            || self.min_liquidation_abs > self.liquidation_fee_cap
+            || self.liquidation_fee_cap > MAX_PROTOCOL_FEE_ABS
+            || self.max_accrual_dt_slots == 0
+            || self.min_funding_lifetime_slots < self.max_accrual_dt_slots
+            || self.max_abs_funding_e9_per_slot > 10_000
+            || self.max_price_move_bps_per_slot == 0
             || self.max_account_b_settlement_chunks == 0
             || self.max_bankrupt_close_chunks == 0
             || self.public_b_chunk_atoms == 0
@@ -290,6 +329,7 @@ pub struct PortfolioAccountV13 {
     pub pnl: i128,
     pub reserved_pnl: u128,
     pub fee_credits: i128,
+    pub last_fee_slot: u64,
     pub active_bitmap: u32,
     pub legs: [PortfolioLegV13; V13_MAX_PORTFOLIO_ASSETS_N],
     pub health_cert: HealthCertV13,
@@ -308,6 +348,7 @@ impl PortfolioAccountV13 {
             pnl: 0,
             reserved_pnl: 0,
             fee_credits: 0,
+            last_fee_slot: 0,
             active_bitmap: 0,
             legs: [PortfolioLegV13::EMPTY; V13_MAX_PORTFOLIO_ASSETS_N],
             health_cert: HealthCertV13 {
@@ -354,6 +395,81 @@ pub struct MarketGroupV13 {
     pub active_bankrupt_close_present: bool,
     pub loss_stale_active: bool,
     pub recovery_reason: Option<PermissionlessRecoveryReasonV13>,
+    pub mode: MarketModeV13,
+    pub resolved_slot: u64,
+    pub payout_snapshot: u128,
+    pub payout_snapshot_captured: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct AccrueAssetOutcomeV13 {
+    pub dt: u64,
+    pub price_move_active: bool,
+    pub funding_active: bool,
+    pub equity_active: bool,
+    pub loss_stale_after: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TradeRequestV13 {
+    pub asset_index: usize,
+    pub size_q: u128,
+    pub exec_price: u64,
+    pub fee_bps: u64,
+    pub allow_risk_increase_under_locks: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TradeOutcomeV13 {
+    pub fee_a: u128,
+    pub fee_b: u128,
+    pub notional: u128,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct LiquidationRequestV13 {
+    pub asset_index: usize,
+    pub close_q: u128,
+    pub fee_bps: u64,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct LiquidationOutcomeV13 {
+    pub closed_q: u128,
+    pub residual_booked: u128,
+    pub explicit_loss: u128,
+    pub fee_charged: u128,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct BResidualBookingOutcomeV13 {
+    pub booked_loss: u128,
+    pub explicit_loss: u128,
+    pub delta_b: u128,
+    pub remaining_after: u128,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PermissionlessCrankActionV13 {
+    Refresh,
+    SettleB { asset_index: usize },
+    Liquidate(LiquidationRequestV13),
+    Recover(PermissionlessRecoveryReasonV13),
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct PermissionlessCrankRequestV13 {
+    pub now_slot: u64,
+    pub asset_index: usize,
+    pub effective_price: u64,
+    pub funding_rate_e9: i128,
+    pub action: PermissionlessCrankActionV13,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ResolvedCloseOutcomeV13 {
+    ProgressOnly,
+    Closed { payout: u128 },
 }
 
 impl MarketGroupV13 {
@@ -382,6 +498,10 @@ impl MarketGroupV13 {
             active_bankrupt_close_present: false,
             loss_stale_active: false,
             recovery_reason: None,
+            mode: MarketModeV13::Live,
+            resolved_slot: 0,
+            payout_snapshot: 0,
+            payout_snapshot_captured: false,
         })
     }
 
@@ -459,6 +579,200 @@ impl MarketGroupV13 {
             .checked_sub(1)
             .ok_or(V13Error::CounterUnderflow)?;
         Ok(())
+    }
+
+    pub fn deposit_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        amount: u128,
+    ) -> V13Result<()> {
+        self.validate_account_shape(account)?;
+        if amount == 0 {
+            return Ok(());
+        }
+        account.capital = account
+            .capital
+            .checked_add(amount)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.c_tot = self
+            .c_tot
+            .checked_add(amount)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.vault = self
+            .vault
+            .checked_add(amount)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        account.health_cert.valid = false;
+        self.assert_public_invariants()
+    }
+
+    pub fn settle_negative_pnl_from_principal(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+    ) -> V13Result<u128> {
+        self.validate_account_shape(account)?;
+        if account.pnl >= 0 {
+            return Ok(0);
+        }
+        let loss = account.pnl.unsigned_abs();
+        let paid = account.capital.min(loss);
+        if paid == 0 {
+            self.bankruptcy_hlock_active = true;
+            return Ok(0);
+        }
+        account.capital -= paid;
+        self.c_tot = self
+            .c_tot
+            .checked_sub(paid)
+            .ok_or(V13Error::CounterUnderflow)?;
+        let paid_i128 = i128::try_from(paid).map_err(|_| V13Error::ArithmeticOverflow)?;
+        let new_pnl = account
+            .pnl
+            .checked_add(paid_i128)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.set_account_pnl(account, new_pnl)?;
+        if account.pnl < 0 {
+            self.bankruptcy_hlock_active = true;
+        }
+        account.health_cert.valid = false;
+        self.assert_public_invariants()?;
+        Ok(paid)
+    }
+
+    pub fn charge_account_fee_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        requested_fee: u128,
+    ) -> V13Result<u128> {
+        self.settle_account_side_effects_not_atomic(account, self.config.public_b_chunk_atoms)?;
+        if account.b_stale_state || has_b_stale_leg(account) {
+            return Err(V13Error::BStale);
+        }
+        self.settle_negative_pnl_from_principal(account)?;
+        if requested_fee == 0 || account.pnl < 0 {
+            return Ok(0);
+        }
+        let charged = requested_fee.min(account.capital);
+        if charged == 0 {
+            return Ok(0);
+        }
+        account.capital -= charged;
+        self.c_tot = self
+            .c_tot
+            .checked_sub(charged)
+            .ok_or(V13Error::CounterUnderflow)?;
+        self.insurance = self
+            .insurance
+            .checked_add(charged)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        account.health_cert.valid = false;
+        self.assert_public_invariants()?;
+        Ok(charged)
+    }
+
+    pub fn sync_account_fee_to_slot_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        now_slot: u64,
+        fee_rate_per_slot: u128,
+    ) -> V13Result<u128> {
+        self.validate_account_shape(account)?;
+        if now_slot < account.last_fee_slot {
+            return Err(V13Error::Stale);
+        }
+        let nonflat = account.active_bitmap != 0;
+        let fee_anchor = if self.mode == MarketModeV13::Live && nonflat && now_slot > self.slot_last
+        {
+            self.slot_last
+        } else if self.mode == MarketModeV13::Resolved {
+            self.resolved_slot
+        } else {
+            now_slot
+        };
+        if fee_anchor <= account.last_fee_slot {
+            return Ok(0);
+        }
+        let dt = fee_anchor - account.last_fee_slot;
+        let requested_fee = fee_rate_per_slot
+            .checked_mul(dt as u128)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        let charged = self.charge_account_fee_not_atomic(account, requested_fee)?;
+        account.last_fee_slot = fee_anchor;
+        Ok(charged)
+    }
+
+    pub fn convert_released_pnl_to_capital_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+    ) -> V13Result<u128> {
+        self.ensure_favorable_action_allowed(account)?;
+        let pos = account.pnl.max(0) as u128;
+        let released = if self.mode == MarketModeV13::Resolved {
+            pos
+        } else {
+            pos.saturating_sub(account.reserved_pnl)
+        };
+        if released == 0 {
+            return Ok(0);
+        }
+        let residual = self.residual();
+        let converted = released.min(residual);
+        if converted == 0 {
+            return Err(V13Error::LockActive);
+        }
+        let converted_i128 = i128::try_from(converted).map_err(|_| V13Error::ArithmeticOverflow)?;
+        let new_pnl = account
+            .pnl
+            .checked_sub(converted_i128)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.set_account_pnl(account, new_pnl)?;
+        account.capital = account
+            .capital
+            .checked_add(converted)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.c_tot = self
+            .c_tot
+            .checked_add(converted)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.pnl_matured_pos_tot = self.pnl_matured_pos_tot.saturating_sub(converted);
+        account.health_cert.valid = false;
+        self.assert_public_invariants()?;
+        Ok(converted)
+    }
+
+    pub fn withdraw_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        amount: u128,
+    ) -> V13Result<()> {
+        self.ensure_favorable_action_allowed(account)?;
+        if amount == 0 {
+            return Ok(());
+        }
+        self.settle_negative_pnl_from_principal(account)?;
+        if account.pnl < 0 || amount > account.capital {
+            return Err(V13Error::LockActive);
+        }
+        let post_capital = account.capital - amount;
+        let equity_after = account_equity_with_capital(account, post_capital)?;
+        if equity_after < 0 {
+            return Err(V13Error::InvalidConfig);
+        }
+        let equity_after_u = equity_after as u128;
+        if equity_after_u < account.health_cert.certified_initial_req {
+            return Err(V13Error::InvalidConfig);
+        }
+        account.capital = post_capital;
+        self.c_tot = self
+            .c_tot
+            .checked_sub(amount)
+            .ok_or(V13Error::CounterUnderflow)?;
+        self.vault = self
+            .vault
+            .checked_sub(amount)
+            .ok_or(V13Error::CounterUnderflow)?;
+        account.health_cert.valid = false;
+        self.assert_public_invariants()
     }
 
     pub fn mark_account_stale(&mut self, account: &mut PortfolioAccountV13) -> V13Result<()> {
@@ -712,6 +1026,16 @@ impl MarketGroupV13 {
         effective_prices: &[u64; V13_MAX_PORTFOLIO_ASSETS_N],
     ) -> V13Result<HealthCertV13> {
         self.validate_account_shape(account)?;
+        let n = self.config.max_portfolio_assets as usize;
+        for i in 0..n {
+            if !account.legs[i].active {
+                continue;
+            }
+            self.settle_leg_kf_effects(account, i)?;
+            if self.b_target_for_leg(i, account.legs[i])? > account.legs[i].b_snap {
+                self.mark_leg_b_stale(account, i)?;
+            }
+        }
         if account.stale_state || account.b_stale_state {
             return Err(if account.b_stale_state {
                 V13Error::BStale
@@ -720,7 +1044,6 @@ impl MarketGroupV13 {
             });
         }
 
-        let n = self.config.max_portfolio_assets as usize;
         let mut initial_req = 0u128;
         let mut maintenance_req = 0u128;
         let mut worst_case_loss = 0u128;
@@ -734,11 +1057,21 @@ impl MarketGroupV13 {
             }
             let risk_notional =
                 risk_notional_ceil(account.legs[i].basis_pos_q.unsigned_abs(), price)?;
+            let leg_initial = margin_requirement(
+                risk_notional,
+                self.config.initial_margin_bps,
+                self.config.min_nonzero_im_req,
+            )?;
+            let leg_maintenance = margin_requirement(
+                risk_notional,
+                self.config.maintenance_margin_bps,
+                self.config.min_nonzero_mm_req,
+            )?;
             initial_req = initial_req
-                .checked_add(risk_notional)
+                .checked_add(leg_initial)
                 .ok_or(V13Error::ArithmeticOverflow)?;
             maintenance_req = maintenance_req
-                .checked_add(risk_notional)
+                .checked_add(leg_maintenance)
                 .ok_or(V13Error::ArithmeticOverflow)?;
             worst_case_loss = worst_case_loss
                 .checked_add(risk_notional)
@@ -768,10 +1101,7 @@ impl MarketGroupV13 {
         Ok(cert)
     }
 
-    pub fn ensure_favorable_action_allowed(
-        &self,
-        account: &PortfolioAccountV13,
-    ) -> V13Result<()> {
+    pub fn ensure_favorable_action_allowed(&self, account: &PortfolioAccountV13) -> V13Result<()> {
         self.validate_account_shape(account)?;
         if self.h_lock_lane(Some(account), false)? == HLockLaneV13::HMax {
             return Err(V13Error::LockActive);
@@ -886,6 +1216,488 @@ impl MarketGroupV13 {
         Ok(chunk)
     }
 
+    pub fn settle_account_side_effects_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        b_delta_budget: u128,
+    ) -> V13Result<PermissionlessProgressOutcomeV13> {
+        self.validate_account_shape(account)?;
+        let n = self.config.max_portfolio_assets as usize;
+        for i in 0..n {
+            if !account.legs[i].active {
+                continue;
+            }
+            self.settle_leg_kf_effects(account, i)?;
+            let target = self.b_target_for_leg(i, account.legs[i])?;
+            if target > account.legs[i].b_snap {
+                self.mark_leg_b_stale(account, i)?;
+                let chunk = self.settle_account_b_chunk(account, i, b_delta_budget)?;
+                if chunk.remaining_after != 0 {
+                    return Ok(PermissionlessProgressOutcomeV13::AccountBChunk(chunk));
+                }
+            }
+        }
+        self.settle_negative_pnl_from_principal(account)?;
+        account.health_cert.valid = false;
+        Ok(PermissionlessProgressOutcomeV13::AccountCurrent)
+    }
+
+    pub fn accrue_asset_to_not_atomic(
+        &mut self,
+        asset_index: usize,
+        now_slot: u64,
+        effective_price: u64,
+        funding_rate_e9: i128,
+        protective_progress_committed: bool,
+    ) -> V13Result<AccrueAssetOutcomeV13> {
+        if self.mode != MarketModeV13::Live || self.active_bankrupt_close_present {
+            return Err(V13Error::LockActive);
+        }
+        if asset_index >= self.config.max_portfolio_assets as usize
+            || effective_price == 0
+            || effective_price > MAX_ORACLE_PRICE
+            || funding_rate_e9.unsigned_abs() > self.config.max_abs_funding_e9_per_slot as u128
+            || now_slot < self.slot_last
+        {
+            return Err(V13Error::InvalidConfig);
+        }
+        let dt_total = now_slot - self.slot_last;
+        let segment_dt = if dt_total > self.config.max_accrual_dt_slots {
+            self.config.max_accrual_dt_slots
+        } else {
+            dt_total
+        };
+        let old = self.assets[asset_index];
+        let exposed = old.oi_eff_long_q != 0 || old.oi_eff_short_q != 0;
+        let balanced_exposure = old.oi_eff_long_q != 0 && old.oi_eff_short_q != 0;
+        let price_move_active = effective_price != old.effective_price && exposed;
+        let funding_active =
+            segment_dt > 0 && funding_rate_e9 != 0 && balanced_exposure && old.fund_px_last > 0;
+        let equity_active = price_move_active || funding_active;
+        if equity_active {
+            if segment_dt == 0 {
+                return Err(V13Error::NonProgress);
+            }
+            let price_diff = effective_price.abs_diff(old.effective_price) as u128;
+            let lhs = price_diff
+                .checked_mul(MAX_MARGIN_BPS as u128)
+                .ok_or(V13Error::ArithmeticOverflow)?;
+            let rhs = (self.config.max_price_move_bps_per_slot as u128)
+                .checked_mul(segment_dt as u128)
+                .and_then(|v| v.checked_mul(old.effective_price as u128))
+                .ok_or(V13Error::ArithmeticOverflow)?;
+            if lhs > rhs {
+                return Err(V13Error::RecoveryRequired);
+            }
+            if !protective_progress_committed {
+                return Err(V13Error::NonProgress);
+            }
+        }
+
+        let price_delta = effective_price as i128 - old.effective_price as i128;
+        let k_delta = checked_i128_mul(price_delta, ADL_ONE as i128)?;
+        let funding_delta = if funding_active {
+            let n = funding_rate_e9
+                .checked_mul(segment_dt as i128)
+                .and_then(|v| v.checked_mul(effective_price as i128))
+                .ok_or(V13Error::ArithmeticOverflow)?;
+            floor_div_signed_conservative_i128(n, FUNDING_DEN)
+                .checked_mul(ADL_ONE as i128)
+                .ok_or(V13Error::ArithmeticOverflow)?
+        } else {
+            0
+        };
+
+        let asset = &mut self.assets[asset_index];
+        asset.k_long = add_non_min_i128(asset.k_long, k_delta)?;
+        asset.k_short = add_non_min_i128(asset.k_short, -k_delta)?;
+        asset.f_long_num = add_non_min_i128(asset.f_long_num, -funding_delta)?;
+        asset.f_short_num = add_non_min_i128(asset.f_short_num, funding_delta)?;
+        asset.effective_price = effective_price;
+        asset.fund_px_last = effective_price;
+        self.current_slot = now_slot;
+        self.slot_last = self
+            .slot_last
+            .checked_add(segment_dt)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.loss_stale_active = self.slot_last < now_slot;
+        if price_move_active {
+            self.oracle_epoch = self
+                .oracle_epoch
+                .checked_add(1)
+                .ok_or(V13Error::CounterOverflow)?;
+        }
+        if funding_active {
+            self.funding_epoch = self
+                .funding_epoch
+                .checked_add(1)
+                .ok_or(V13Error::CounterOverflow)?;
+        }
+        self.assert_public_invariants()?;
+        Ok(AccrueAssetOutcomeV13 {
+            dt: segment_dt,
+            price_move_active,
+            funding_active,
+            equity_active,
+            loss_stale_after: self.loss_stale_active,
+        })
+    }
+
+    pub fn execute_trade_with_fee_not_atomic(
+        &mut self,
+        long_account: &mut PortfolioAccountV13,
+        short_account: &mut PortfolioAccountV13,
+        request: TradeRequestV13,
+        effective_prices: &[u64; V13_MAX_PORTFOLIO_ASSETS_N],
+    ) -> V13Result<TradeOutcomeV13> {
+        if request.asset_index >= self.config.max_portfolio_assets as usize
+            || request.size_q == 0
+            || request.size_q > MAX_TRADE_SIZE_Q
+            || request.exec_price == 0
+            || request.exec_price > MAX_ORACLE_PRICE
+            || request.fee_bps > self.config.max_trading_fee_bps
+        {
+            return Err(V13Error::InvalidConfig);
+        }
+        if self.mode != MarketModeV13::Live || self.loss_stale_active {
+            return Err(V13Error::LockActive);
+        }
+        self.settle_account_side_effects_not_atomic(
+            long_account,
+            self.config.public_b_chunk_atoms,
+        )?;
+        self.settle_account_side_effects_not_atomic(
+            short_account,
+            self.config.public_b_chunk_atoms,
+        )?;
+        self.full_account_refresh(long_account, effective_prices)?;
+        self.full_account_refresh(short_account, effective_prices)?;
+
+        let locked = self.h_lock_lane(Some(long_account), false)? == HLockLaneV13::HMax
+            || self.h_lock_lane(Some(short_account), false)? == HLockLaneV13::HMax;
+        if locked && request.allow_risk_increase_under_locks {
+            return Err(V13Error::LockActive);
+        }
+
+        let notional = trade_notional_floor(request.size_q, request.exec_price)?;
+        let fee = checked_fee_bps(notional, request.fee_bps)?;
+        self.charge_account_fee_not_atomic(long_account, fee)?;
+        self.charge_account_fee_not_atomic(short_account, fee)?;
+        self.apply_position_delta(long_account, request.asset_index, request.size_q as i128)?;
+        let short_delta = i128::try_from(request.size_q)
+            .map_err(|_| V13Error::ArithmeticOverflow)?
+            .checked_neg()
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        self.apply_position_delta(short_account, request.asset_index, short_delta)?;
+        self.full_account_refresh(long_account, effective_prices)?;
+        self.full_account_refresh(short_account, effective_prices)?;
+        self.assert_public_invariants()?;
+        Ok(TradeOutcomeV13 {
+            fee_a: fee,
+            fee_b: fee,
+            notional,
+        })
+    }
+
+    pub fn liquidate_account_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        request: LiquidationRequestV13,
+        effective_prices: &[u64; V13_MAX_PORTFOLIO_ASSETS_N],
+    ) -> V13Result<LiquidationOutcomeV13> {
+        if request.asset_index >= self.config.max_portfolio_assets as usize
+            || request.close_q == 0
+            || request.fee_bps
+                > self
+                    .config
+                    .liquidation_fee_bps
+                    .max(self.config.max_trading_fee_bps)
+        {
+            return Err(V13Error::InvalidConfig);
+        }
+        self.settle_account_side_effects_not_atomic(account, self.config.public_b_chunk_atoms)?;
+        self.full_account_refresh(account, effective_prices)?;
+        if account.health_cert.certified_liq_deficit == 0 {
+            return Err(V13Error::NonProgress);
+        }
+        let before = *account;
+        let leg = account.legs[request.asset_index];
+        if !leg.active {
+            return Err(V13Error::InvalidLeg);
+        }
+        let close_q = request.close_q.min(leg.basis_pos_q.unsigned_abs());
+        let fee_notional = risk_notional_ceil(close_q, effective_prices[request.asset_index])?;
+        let fee = checked_fee_bps(fee_notional, request.fee_bps)?
+            .max(self.config.min_liquidation_abs)
+            .min(self.config.liquidation_fee_cap);
+        let charged_fee = self.charge_account_fee_not_atomic(account, fee)?;
+        self.reduce_position(account, request.asset_index, close_q)?;
+        self.settle_negative_pnl_from_principal(account)?;
+        let residual = if account.pnl < 0 {
+            account.pnl.unsigned_abs()
+        } else {
+            0
+        };
+        let mut booked = 0u128;
+        let mut explicit = 0u128;
+        if residual != 0 {
+            let bankrupt_side = leg.side;
+            let outcome =
+                self.book_bankruptcy_residual_chunk(request.asset_index, bankrupt_side, residual)?;
+            booked = outcome.booked_loss;
+            explicit = outcome.explicit_loss;
+            let cleared = booked
+                .checked_add(explicit)
+                .ok_or(V13Error::ArithmeticOverflow)?
+                .min(residual);
+            let cleared_i128 = i128::try_from(cleared).map_err(|_| V13Error::ArithmeticOverflow)?;
+            self.set_account_pnl(
+                account,
+                account
+                    .pnl
+                    .checked_add(cleared_i128)
+                    .ok_or(V13Error::ArithmeticOverflow)?,
+            )?;
+            self.bankruptcy_hlock_active = true;
+        }
+        self.full_account_refresh(account, effective_prices)?;
+        self.validate_liquidation_progress(&before, account)?;
+        self.assert_public_invariants()?;
+        Ok(LiquidationOutcomeV13 {
+            closed_q: close_q,
+            residual_booked: booked,
+            explicit_loss: explicit,
+            fee_charged: charged_fee,
+        })
+    }
+
+    pub fn permissionless_crank_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        request: PermissionlessCrankRequestV13,
+        effective_prices: &[u64; V13_MAX_PORTFOLIO_ASSETS_N],
+    ) -> V13Result<PermissionlessProgressOutcomeV13> {
+        self.validate_account_shape(account)?;
+        let protective_progress = match request.action {
+            PermissionlessCrankActionV13::Refresh => {
+                self.settle_account_side_effects_not_atomic(
+                    account,
+                    self.config.public_b_chunk_atoms,
+                )?;
+                self.full_account_refresh(account, effective_prices)?;
+                true
+            }
+            PermissionlessCrankActionV13::SettleB { asset_index } => {
+                let out = self.settle_account_b_chunk(
+                    account,
+                    asset_index,
+                    self.config.public_b_chunk_atoms,
+                )?;
+                return Ok(PermissionlessProgressOutcomeV13::AccountBChunk(out));
+            }
+            PermissionlessCrankActionV13::Liquidate(liq) => {
+                self.liquidate_account_not_atomic(account, liq, effective_prices)?;
+                true
+            }
+            PermissionlessCrankActionV13::Recover(reason) => {
+                return self.declare_permissionless_recovery(reason);
+            }
+        };
+        self.accrue_asset_to_not_atomic(
+            request.asset_index,
+            request.now_slot,
+            request.effective_price,
+            request.funding_rate_e9,
+            protective_progress,
+        )?;
+        Ok(PermissionlessProgressOutcomeV13::AccountCurrent)
+    }
+
+    pub fn resolve_market_not_atomic(&mut self, resolved_slot: u64) -> V13Result<()> {
+        if resolved_slot < self.current_slot {
+            return Err(V13Error::Stale);
+        }
+        self.mode = MarketModeV13::Resolved;
+        self.resolved_slot = resolved_slot;
+        self.current_slot = resolved_slot;
+        self.loss_stale_active = false;
+        self.assert_public_invariants()
+    }
+
+    pub fn close_resolved_account_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        fee_rate_per_slot: u128,
+    ) -> V13Result<ResolvedCloseOutcomeV13> {
+        if self.mode != MarketModeV13::Resolved {
+            return Err(V13Error::LockActive);
+        }
+        self.settle_account_side_effects_not_atomic(account, self.config.public_b_chunk_atoms)?;
+        self.sync_account_fee_to_slot_not_atomic(account, self.resolved_slot, fee_rate_per_slot)?;
+        self.settle_negative_pnl_from_principal(account)?;
+        if account.active_bitmap != 0
+            || account.pnl < 0
+            || account.b_stale_state
+            || account.stale_state
+        {
+            return Ok(ResolvedCloseOutcomeV13::ProgressOnly);
+        }
+        if account.pnl > 0 && !self.resolved_positive_payout_ready() {
+            return Ok(ResolvedCloseOutcomeV13::ProgressOnly);
+        }
+        if !self.payout_snapshot_captured {
+            self.payout_snapshot = self.residual();
+            self.payout_snapshot_captured = true;
+        }
+        let payout = account
+            .capital
+            .checked_add(account.pnl.max(0) as u128)
+            .ok_or(V13Error::ArithmeticOverflow)?
+            .min(self.vault);
+        self.vault = self
+            .vault
+            .checked_sub(payout)
+            .ok_or(V13Error::CounterUnderflow)?;
+        self.c_tot = self.c_tot.saturating_sub(account.capital.min(self.c_tot));
+        self.set_account_pnl(account, 0)?;
+        account.capital = 0;
+        account.reserved_pnl = 0;
+        account.fee_credits = 0;
+        account.health_cert.valid = false;
+        self.assert_public_invariants()?;
+        Ok(ResolvedCloseOutcomeV13::Closed { payout })
+    }
+
+    pub fn book_bankruptcy_residual_chunk(
+        &mut self,
+        asset_index: usize,
+        bankrupt_side: SideV13,
+        residual_remaining: u128,
+    ) -> V13Result<BResidualBookingOutcomeV13> {
+        if asset_index >= self.config.max_portfolio_assets as usize {
+            return Err(V13Error::InvalidLeg);
+        }
+        if residual_remaining == 0 {
+            return Ok(BResidualBookingOutcomeV13 {
+                booked_loss: 0,
+                explicit_loss: 0,
+                delta_b: 0,
+                remaining_after: 0,
+            });
+        }
+        let opp = opposite_side(bankrupt_side);
+        let asset = self.assets[asset_index];
+        let (b_now, weight_sum, rem) = match opp {
+            SideV13::Long => (
+                asset.b_long_num,
+                asset.loss_weight_sum_long,
+                asset.social_loss_remainder_long_num,
+            ),
+            SideV13::Short => (
+                asset.b_short_num,
+                asset.loss_weight_sum_short,
+                asset.social_loss_remainder_short_num,
+            ),
+        };
+        if weight_sum == 0 {
+            let asset = &mut self.assets[asset_index];
+            match opp {
+                SideV13::Long => {
+                    asset.explicit_unallocated_loss_long = asset
+                        .explicit_unallocated_loss_long
+                        .checked_add(residual_remaining)
+                        .ok_or(V13Error::ArithmeticOverflow)?;
+                }
+                SideV13::Short => {
+                    asset.explicit_unallocated_loss_short = asset
+                        .explicit_unallocated_loss_short
+                        .checked_add(residual_remaining)
+                        .ok_or(V13Error::ArithmeticOverflow)?;
+                }
+            }
+            self.bankruptcy_hlock_active = true;
+            return Ok(BResidualBookingOutcomeV13 {
+                booked_loss: 0,
+                explicit_loss: residual_remaining,
+                delta_b: 0,
+                remaining_after: 0,
+            });
+        }
+        let headroom_plus_one = U256::from_u128(u128::MAX - b_now)
+            .checked_add(U256::ONE)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        let max_scaled = headroom_plus_one
+            .checked_mul(U256::from_u128(weight_sum))
+            .and_then(|v| v.checked_sub(U256::ONE))
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        if U256::from_u128(rem) > max_scaled {
+            return self
+                .declare_permissionless_recovery(
+                    PermissionlessRecoveryReasonV13::BIndexHeadroomExhausted,
+                )
+                .map(|_| BResidualBookingOutcomeV13 {
+                    booked_loss: 0,
+                    explicit_loss: 0,
+                    delta_b: 0,
+                    remaining_after: residual_remaining,
+                });
+        }
+        let scaled_after_remainder = max_scaled
+            .checked_sub(U256::from_u128(rem))
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        let max_chunk_by_b_wide = scaled_after_remainder
+            .checked_div(U256::from_u128(SOCIAL_LOSS_DEN))
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        let max_chunk_by_b = max_chunk_by_b_wide
+            .try_into_u128()
+            .unwrap_or(residual_remaining);
+        let engine_chunk = residual_remaining
+            .min(max_chunk_by_b)
+            .min(self.config.public_b_chunk_atoms);
+        if engine_chunk == 0 {
+            self.declare_permissionless_recovery(
+                PermissionlessRecoveryReasonV13::BIndexHeadroomExhausted,
+            )?;
+            return Err(V13Error::RecoveryRequired);
+        }
+        let numerator = engine_chunk
+            .checked_mul(SOCIAL_LOSS_DEN)
+            .and_then(|v| v.checked_add(rem))
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        let delta_b = numerator / weight_sum;
+        let new_rem = numerator % weight_sum;
+        if delta_b == 0 || b_now.checked_add(delta_b).is_none() {
+            self.declare_permissionless_recovery(
+                PermissionlessRecoveryReasonV13::BIndexHeadroomExhausted,
+            )?;
+            return Err(V13Error::RecoveryRequired);
+        }
+        let asset = &mut self.assets[asset_index];
+        match opp {
+            SideV13::Long => {
+                asset.b_long_num = asset
+                    .b_long_num
+                    .checked_add(delta_b)
+                    .ok_or(V13Error::ArithmeticOverflow)?;
+                asset.social_loss_remainder_long_num = new_rem;
+            }
+            SideV13::Short => {
+                asset.b_short_num = asset
+                    .b_short_num
+                    .checked_add(delta_b)
+                    .ok_or(V13Error::ArithmeticOverflow)?;
+                asset.social_loss_remainder_short_num = new_rem;
+            }
+        }
+        self.bankruptcy_hlock_active = true;
+        Ok(BResidualBookingOutcomeV13 {
+            booked_loss: engine_chunk,
+            explicit_loss: 0,
+            delta_b,
+            remaining_after: residual_remaining - engine_chunk,
+        })
+    }
+
     pub fn risk_score(&self, account: &PortfolioAccountV13) -> V13Result<RiskScoreV13> {
         self.validate_account_shape(account)?;
         if !account.health_cert.valid {
@@ -994,6 +1806,163 @@ impl MarketGroupV13 {
         }
     }
 
+    fn residual(&self) -> u128 {
+        self.vault
+            .saturating_sub(self.c_tot.saturating_add(self.insurance))
+    }
+
+    fn resolved_positive_payout_ready(&self) -> bool {
+        if self.active_bankrupt_close_present
+            || self.b_stale_account_count != 0
+            || self.stale_certificate_count != 0
+            || self.negative_pnl_account_count != 0
+        {
+            return false;
+        }
+        for i in 0..self.config.max_portfolio_assets as usize {
+            let asset = self.assets[i];
+            if asset.stored_pos_count_long != 0
+                || asset.stored_pos_count_short != 0
+                || asset.stale_account_count_long != 0
+                || asset.stale_account_count_short != 0
+            {
+                return false;
+            }
+        }
+        true
+    }
+
+    fn settle_leg_kf_effects(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        asset_index: usize,
+    ) -> V13Result<()> {
+        let leg = account.legs[asset_index];
+        if !leg.active {
+            return Ok(());
+        }
+        let asset = self.assets[asset_index];
+        let (k_now, f_now) = match leg.side {
+            SideV13::Long => (asset.k_long, asset.f_long_num),
+            SideV13::Short => (asset.k_short, asset.f_short_num),
+        };
+        let den = leg
+            .a_basis
+            .checked_mul(POS_SCALE)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        let k_delta = wide_signed_mul_div_floor_from_k_pair(
+            leg.basis_pos_q.unsigned_abs(),
+            leg.k_snap,
+            k_now,
+            den,
+        );
+        let f_delta = wide_signed_mul_div_floor_from_k_pair(
+            leg.basis_pos_q.unsigned_abs(),
+            leg.f_snap,
+            f_now,
+            den,
+        );
+        let net = k_delta
+            .checked_add(f_delta)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        if net != 0 {
+            let new_pnl = account
+                .pnl
+                .checked_add(net)
+                .ok_or(V13Error::ArithmeticOverflow)?;
+            self.set_account_pnl(account, new_pnl)?;
+        }
+        account.legs[asset_index].k_snap = k_now;
+        account.legs[asset_index].f_snap = f_now;
+        account.health_cert.valid = false;
+        Ok(())
+    }
+
+    fn apply_position_delta(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        asset_index: usize,
+        delta_q: i128,
+    ) -> V13Result<()> {
+        if delta_q == 0 {
+            return Ok(());
+        }
+        if asset_index >= self.config.max_portfolio_assets as usize {
+            return Err(V13Error::InvalidLeg);
+        }
+        self.settle_leg_kf_effects(account, asset_index)?;
+        let current = signed_position(account.legs[asset_index]);
+        let new = current
+            .checked_add(delta_q)
+            .ok_or(V13Error::ArithmeticOverflow)?;
+        validate_basis_or_zero(new)?;
+        if current == 0 {
+            let side = if new > 0 {
+                SideV13::Long
+            } else {
+                SideV13::Short
+            };
+            return self.attach_leg(account, asset_index, side, new);
+        }
+        if new == 0 {
+            return self.clear_leg(account, asset_index);
+        }
+        if current.signum() != new.signum() {
+            self.clear_leg(account, asset_index)?;
+            let side = if new > 0 {
+                SideV13::Long
+            } else {
+                SideV13::Short
+            };
+            return self.attach_leg(account, asset_index, side, new);
+        }
+
+        let old_leg = account.legs[asset_index];
+        let old_abs = old_leg.basis_pos_q.unsigned_abs();
+        let new_abs = new.unsigned_abs();
+        let new_weight = loss_weight_for_basis(new_abs, old_leg.a_basis)?;
+        let asset = &mut self.assets[asset_index];
+        match old_leg.side {
+            SideV13::Long => {
+                asset.oi_eff_long_q = adjust_u128(asset.oi_eff_long_q, old_abs, new_abs)?;
+                asset.loss_weight_sum_long =
+                    adjust_u128(asset.loss_weight_sum_long, old_leg.loss_weight, new_weight)?;
+            }
+            SideV13::Short => {
+                asset.oi_eff_short_q = adjust_u128(asset.oi_eff_short_q, old_abs, new_abs)?;
+                asset.loss_weight_sum_short =
+                    adjust_u128(asset.loss_weight_sum_short, old_leg.loss_weight, new_weight)?;
+            }
+        }
+        account.legs[asset_index].basis_pos_q = new;
+        account.legs[asset_index].loss_weight = new_weight;
+        account.health_cert.valid = false;
+        self.validate_account_shape(account)
+    }
+
+    fn reduce_position(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        asset_index: usize,
+        close_q: u128,
+    ) -> V13Result<()> {
+        if close_q == 0 {
+            return Ok(());
+        }
+        let leg = account.legs[asset_index];
+        if !leg.active {
+            return Err(V13Error::InvalidLeg);
+        }
+        let close_i128 = i128::try_from(close_q).map_err(|_| V13Error::ArithmeticOverflow)?;
+        let delta = match leg.side {
+            SideV13::Long => close_i128
+                .checked_neg()
+                .ok_or(V13Error::ArithmeticOverflow)?,
+            SideV13::Short => close_i128,
+        };
+        self.apply_position_delta(account, asset_index, delta)
+    }
+
     fn set_account_pnl(
         &mut self,
         account: &mut PortfolioAccountV13,
@@ -1062,7 +2031,9 @@ impl RiskScoreV13 {
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PermissionlessProgressOutcomeV13 {
+    AccountCurrent,
     AccountBChunk(AccountBSettlementChunkV13),
+    ResidualBooked(BResidualBookingOutcomeV13),
     RecoveryDeclared(PermissionlessRecoveryReasonV13),
 }
 
@@ -1089,6 +2060,104 @@ pub fn account_equity(account: &PortfolioAccountV13) -> V13Result<i128> {
         .checked_add(account.pnl)
         .and_then(|v| v.checked_sub(fee_debt))
         .ok_or(V13Error::ArithmeticOverflow)
+}
+
+fn account_equity_with_capital(
+    account: &PortfolioAccountV13,
+    capital_override: u128,
+) -> V13Result<i128> {
+    validate_non_min_i128(account.pnl)?;
+    validate_fee_credits(account.fee_credits)?;
+    let capital = i128::try_from(capital_override).map_err(|_| V13Error::ArithmeticOverflow)?;
+    let fee_debt =
+        i128::try_from(fee_debt_u128(account)?).map_err(|_| V13Error::ArithmeticOverflow)?;
+    capital
+        .checked_add(account.pnl)
+        .and_then(|v| v.checked_sub(fee_debt))
+        .ok_or(V13Error::ArithmeticOverflow)
+}
+
+fn margin_requirement(notional: u128, bps: u64, floor: u128) -> V13Result<u128> {
+    if notional == 0 {
+        return Ok(0);
+    }
+    let raw = wide_mul_div_floor_u128(notional, bps as u128, MAX_MARGIN_BPS as u128);
+    Ok(raw.max(floor))
+}
+
+fn trade_notional_floor(size_q: u128, exec_price: u64) -> V13Result<u128> {
+    if size_q == 0 {
+        return Ok(0);
+    }
+    let (q, _) = mul_div_floor_u256_with_rem(
+        U256::from_u128(size_q),
+        U256::from_u128(exec_price as u128),
+        U256::from_u128(POS_SCALE),
+    );
+    q.try_into_u128().ok_or(V13Error::ArithmeticOverflow)
+}
+
+fn checked_fee_bps(notional: u128, fee_bps: u64) -> V13Result<u128> {
+    if notional == 0 || fee_bps == 0 {
+        return Ok(0);
+    }
+    checked_mul_div_ceil_u256(
+        U256::from_u128(notional),
+        U256::from_u128(fee_bps as u128),
+        U256::from_u128(MAX_MARGIN_BPS as u128),
+    )
+    .and_then(|v| v.try_into_u128())
+    .ok_or(V13Error::ArithmeticOverflow)
+}
+
+fn checked_i128_mul(a: i128, b: i128) -> V13Result<i128> {
+    let out = a.checked_mul(b).ok_or(V13Error::ArithmeticOverflow)?;
+    validate_non_min_i128(out)?;
+    Ok(out)
+}
+
+fn add_non_min_i128(a: i128, b: i128) -> V13Result<i128> {
+    let out = a.checked_add(b).ok_or(V13Error::ArithmeticOverflow)?;
+    validate_non_min_i128(out)?;
+    Ok(out)
+}
+
+fn adjust_u128(current: u128, old: u128, new: u128) -> V13Result<u128> {
+    if new >= old {
+        current
+            .checked_add(new - old)
+            .ok_or(V13Error::ArithmeticOverflow)
+    } else {
+        current
+            .checked_sub(old - new)
+            .ok_or(V13Error::CounterUnderflow)
+    }
+}
+
+fn validate_basis_or_zero(basis_pos_q: i128) -> V13Result<()> {
+    if basis_pos_q == 0 {
+        Ok(())
+    } else {
+        validate_basis(basis_pos_q)
+    }
+}
+
+fn signed_position(leg: PortfolioLegV13) -> i128 {
+    if !leg.active {
+        0
+    } else {
+        match leg.side {
+            SideV13::Long => leg.basis_pos_q.unsigned_abs() as i128,
+            SideV13::Short => -(leg.basis_pos_q.unsigned_abs() as i128),
+        }
+    }
+}
+
+fn opposite_side(side: SideV13) -> SideV13 {
+    match side {
+        SideV13::Long => SideV13::Short,
+        SideV13::Short => SideV13::Long,
+    }
 }
 
 fn validate_non_min_i128(v: i128) -> V13Result<()> {
@@ -1150,10 +2219,7 @@ fn loss_weight_for_basis(abs_basis_q: u128, a_basis: u128) -> V13Result<u128> {
 }
 
 fn has_b_stale_leg(account: &PortfolioAccountV13) -> bool {
-    account
-        .legs
-        .iter()
-        .any(|leg| leg.active && leg.b_stale)
+    account.legs.iter().any(|leg| leg.active && leg.b_stale)
 }
 
 fn account_b_loss_bound(account: &PortfolioAccountV13) -> V13Result<u128> {

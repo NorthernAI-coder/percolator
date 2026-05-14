@@ -2,9 +2,9 @@
 
 use percolator::v13::{
     account_equity, HLockLaneV13, MarketGroupV13, PortfolioAccountV13, ProvenanceHeaderV13,
-    SideV13, V13Config, V13Error, V13_MAX_PORTFOLIO_ASSETS_N,
+    SideV13, TradeRequestV13, V13Config, V13Error, V13_MAX_PORTFOLIO_ASSETS_N,
 };
-use percolator::SOCIAL_LOSS_DEN;
+use percolator::{POS_SCALE, SOCIAL_LOSS_DEN};
 
 fn symbolic_ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
     let market: [u8; 32] = kani::any();
@@ -80,7 +80,10 @@ fn proof_v13_hmin_zero_remains_available_when_no_lock_state_exists() {
         MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, h_max as u64)).unwrap();
     let account = PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
 
-    assert_eq!(group.h_lock_lane(Some(&account), false), Ok(HLockLaneV13::HMin));
+    assert_eq!(
+        group.h_lock_lane(Some(&account), false),
+        Ok(HLockLaneV13::HMin)
+    );
     assert_eq!(group.select_h_lock(Some(&account), false), Ok(0));
 }
 
@@ -236,7 +239,8 @@ fn proof_v13_favorable_action_requires_current_full_refresh() {
         group.ensure_favorable_action_allowed(&account),
         Err(V13Error::Stale)
     );
-    group.full_account_refresh(&mut account, &[1; V13_MAX_PORTFOLIO_ASSETS_N])
+    group
+        .full_account_refresh(&mut account, &[1; V13_MAX_PORTFOLIO_ASSETS_N])
         .unwrap();
     assert_eq!(group.ensure_favorable_action_allowed(&account), Ok(()));
     group.oracle_epoch += 1;
@@ -244,4 +248,128 @@ fn proof_v13_favorable_action_requires_current_full_refresh() {
         group.ensure_favorable_action_allowed(&account),
         Err(V13Error::Stale)
     );
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_fee_charge_settles_loss_before_fee() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+
+    group.deposit_not_atomic(&mut account, 1).unwrap();
+    account.pnl = -1;
+    group.negative_pnl_account_count = 1;
+    let charged = group
+        .charge_account_fee_not_atomic(&mut account, 1)
+        .unwrap();
+
+    kani::cover!(
+        account.pnl < 0 || charged == 0,
+        "v13 loss-before-fee path reached"
+    );
+    assert_eq!(charged, 0);
+    assert_eq!(account.capital, 0);
+    assert_eq!(account.pnl, 0);
+    assert_eq!(group.insurance, 0);
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_equity_active_accrual_requires_protective_progress() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    group
+        .attach_leg(&mut account, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+
+    let result = group.accrue_asset_to_not_atomic(0, 1, 2, 0, false);
+    assert_eq!(result, Err(V13Error::NonProgress));
+    assert_eq!(group.slot_last, 0);
+
+    let ok = group.accrue_asset_to_not_atomic(0, 1, 2, 0, true);
+    assert!(ok.is_ok());
+    assert_eq!(group.slot_last, 1);
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_equity_active_accrual_advances_at_most_one_bounded_segment() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    group.config.max_accrual_dt_slots = 2;
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    group
+        .attach_leg(&mut account, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+
+    let out = group.accrue_asset_to_not_atomic(0, 10, 3, 0, true).unwrap();
+    assert_eq!(out.dt, 2);
+    assert_eq!(group.slot_last, 2);
+    assert_eq!(group.current_slot, 10);
+    assert!(group.loss_stale_active);
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_trade_dynamic_fee_cap_is_enforced_before_mutation() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    group.config.max_trading_fee_bps = 1;
+    let mut long = PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    let mut short = PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, [4; 32], owner));
+    group.deposit_not_atomic(&mut long, 10).unwrap();
+    group.deposit_not_atomic(&mut short, 10).unwrap();
+
+    let result = group.execute_trade_with_fee_not_atomic(
+        &mut long,
+        &mut short,
+        TradeRequestV13 {
+            asset_index: 0,
+            size_q: 1,
+            exec_price: 1,
+            fee_bps: 2,
+            allow_risk_increase_under_locks: false,
+        },
+        &[1; V13_MAX_PORTFOLIO_ASSETS_N],
+    );
+    assert_eq!(result, Err(V13Error::InvalidConfig));
+    assert_eq!(long.active_bitmap, 0);
+    assert_eq!(short.active_bitmap, 0);
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_b_residual_booking_makes_durable_progress_or_fails_closed() {
+    let residual_units: u8 = kani::any();
+    kani::assume(residual_units <= 4);
+    let (market, account_id, owner) = symbolic_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    group
+        .attach_leg(&mut account, 0, SideV13::Short, -1)
+        .unwrap();
+
+    let before_b = group.assets[0].b_short_num;
+    let residual = residual_units as u128;
+    let result = group.book_bankruptcy_residual_chunk(0, SideV13::Long, residual);
+    if residual == 0 {
+        assert_eq!(result.unwrap().remaining_after, 0);
+        assert_eq!(group.assets[0].b_short_num, before_b);
+    } else {
+        let out = result.unwrap();
+        kani::cover!(out.booked_loss > 0, "v13 residual B booking reachable");
+        assert!(out.booked_loss > 0 || out.explicit_loss > 0);
+        assert!(group.bankruptcy_hlock_active);
+    }
 }

@@ -494,6 +494,12 @@ fn v13_close_portfolio_account_requires_clean_local_state() {
     assert_eq!(g.materialized_portfolio_count, 1);
 
     a.capital = 0;
+    a.b_stale_state = true;
+    assert_eq!(g.close_portfolio_account(&a), Err(V13Error::LockActive));
+    assert_eq!(g.materialized_portfolio_count, 1);
+
+    a.b_stale_state = false;
+    a.capital = 0;
     g.close_portfolio_account(&a).unwrap();
     assert_eq!(g.materialized_portfolio_count, 0);
 }

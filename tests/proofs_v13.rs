@@ -607,7 +607,7 @@ fn proof_v13_multiple_deposits_aggregate_c_tot_and_vault() {
 #[kani::solver(cadical)]
 fn proof_v13_close_portfolio_account_requires_clean_local_state() {
     let dirty_case: u8 = kani::any();
-    kani::assume(dirty_case < 5);
+    kani::assume(dirty_case < 6);
     let (market, account_id, owner) = symbolic_ids();
     let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
     let clean = PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
@@ -623,13 +623,15 @@ fn proof_v13_close_portfolio_account_requires_clean_local_state() {
             dirty.reserved_pnl = 1;
         }
         3 => dirty.fee_credits = -1,
-        _ => dirty.stale_state = true,
+        4 => dirty.stale_state = true,
+        _ => dirty.b_stale_state = true,
     }
     kani::cover!(dirty_case == 0, "v13 close rejects capital");
     kani::cover!(dirty_case == 1, "v13 close rejects pnl");
     kani::cover!(dirty_case == 2, "v13 close rejects reserved pnl");
     kani::cover!(dirty_case == 3, "v13 close rejects fee debt");
     kani::cover!(dirty_case == 4, "v13 close rejects stale account");
+    kani::cover!(dirty_case == 5, "v13 close rejects b-stale account");
     assert_eq!(
         group.close_portfolio_account(&dirty),
         Err(V13Error::LockActive)

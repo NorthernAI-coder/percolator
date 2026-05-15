@@ -10,9 +10,9 @@ use crate::wide_math::{
     wide_mul_div_floor_u128, wide_signed_mul_div_floor_from_k_pair, U256,
 };
 use crate::{
-    ADL_ONE, FUNDING_DEN, MAX_MARGIN_BPS, MAX_ORACLE_PRICE, MAX_POSITION_ABS_Q,
-    MAX_PROTOCOL_FEE_ABS, MAX_TRADE_SIZE_Q, MAX_VAULT_TVL, MIN_A_SIDE, POS_SCALE, SOCIAL_LOSS_DEN,
-    SOCIAL_WEIGHT_SCALE,
+    ADL_ONE, FUNDING_DEN, MAX_ACCOUNT_NOTIONAL, MAX_MARGIN_BPS, MAX_ORACLE_PRICE,
+    MAX_POSITION_ABS_Q, MAX_PROTOCOL_FEE_ABS, MAX_TRADE_SIZE_Q, MAX_VAULT_TVL, MIN_A_SIDE,
+    POS_SCALE, SOCIAL_LOSS_DEN, SOCIAL_WEIGHT_SCALE,
 };
 
 pub const V13_MAX_PORTFOLIO_ASSETS_N: usize = 16;
@@ -154,6 +154,366 @@ impl V13Config {
         }
     }
 
+    fn ceil_div_u256_to_u128(n: U256, d: U256) -> V13Result<u128> {
+        if d.is_zero() {
+            return Err(V13Error::InvalidConfig);
+        }
+        let q = n.checked_div(d).ok_or(V13Error::InvalidConfig)?;
+        let r = n.checked_rem(d).ok_or(V13Error::InvalidConfig)?;
+        let q = if r.is_zero() {
+            q
+        } else {
+            q.checked_add(U256::ONE).ok_or(V13Error::InvalidConfig)?
+        };
+        q.try_into_u128().ok_or(V13Error::InvalidConfig)
+    }
+
+    fn checked_mul_div_ceil_to_u128(a: u128, b: u128, d: u128) -> V13Result<u128> {
+        checked_mul_div_ceil_u256(U256::from_u128(a), U256::from_u128(b), U256::from_u128(d))
+            .and_then(|v| v.try_into_u128())
+            .ok_or(V13Error::InvalidConfig)
+    }
+
+    fn solvency_envelope_total_for_notional(
+        &self,
+        n: u128,
+        loss_budget_num: u128,
+        loss_budget_den: u128,
+        price_budget_bps: u128,
+    ) -> V13Result<u128> {
+        let loss = Self::checked_mul_div_ceil_to_u128(n, loss_budget_num, loss_budget_den)?;
+
+        let worst_liq_multiplier = 10_000u128
+            .checked_add(price_budget_bps)
+            .ok_or(V13Error::InvalidConfig)?;
+        let worst_liq_notional =
+            Self::checked_mul_div_ceil_to_u128(n, worst_liq_multiplier, 10_000)?;
+        let liq_fee_raw = Self::checked_mul_div_ceil_to_u128(
+            worst_liq_notional,
+            self.liquidation_fee_bps as u128,
+            10_000,
+        )?;
+        let liq_fee = core::cmp::min(
+            core::cmp::max(liq_fee_raw, self.min_liquidation_abs),
+            self.liquidation_fee_cap,
+        );
+
+        loss.checked_add(liq_fee).ok_or(V13Error::InvalidConfig)
+    }
+
+    fn maintenance_requirement_for_notional(&self, n: u128) -> V13Result<u128> {
+        let mm_prop = U256::from_u128(n)
+            .checked_mul(U256::from_u128(self.maintenance_margin_bps as u128))
+            .and_then(|v| v.checked_div(U256::from_u128(10_000)))
+            .and_then(|v| v.try_into_u128())
+            .ok_or(V13Error::InvalidConfig)?;
+        Ok(core::cmp::max(mm_prop, self.min_nonzero_mm_req))
+    }
+
+    fn solvency_envelope_holds_for_notional(
+        &self,
+        n: u128,
+        loss_budget_num: u128,
+        loss_budget_den: u128,
+        price_budget_bps: u128,
+    ) -> V13Result<bool> {
+        let total = self.solvency_envelope_total_for_notional(
+            n,
+            loss_budget_num,
+            loss_budget_den,
+            price_budget_bps,
+        )?;
+        let mm_req = self.maintenance_requirement_for_notional(n)?;
+        Ok(total <= mm_req)
+    }
+
+    fn solvency_envelope_interval_certifies(
+        &self,
+        lo: u128,
+        hi: u128,
+        loss_budget_num: u128,
+        loss_budget_den: u128,
+        price_budget_bps: u128,
+    ) -> V13Result<bool> {
+        let total_hi = self.solvency_envelope_total_for_notional(
+            hi,
+            loss_budget_num,
+            loss_budget_den,
+            price_budget_bps,
+        )?;
+        let mm_lo = self.maintenance_requirement_for_notional(lo)?;
+        Ok(total_hi <= mm_lo)
+    }
+
+    fn validate_solvency_envelope_range(
+        &self,
+        lo: u128,
+        hi: u128,
+        loss_budget_num: u128,
+        loss_budget_den: u128,
+        price_budget_bps: u128,
+    ) -> V13Result<()> {
+        if lo > hi {
+            return Ok(());
+        }
+
+        const MAX_SOLVENCY_INTERVALS: usize = 96;
+        const MAX_SOLVENCY_STEPS: usize = 4096;
+        const EXACT_CHUNK: u128 = 64;
+
+        let mut stack = [(0u128, 0u128); MAX_SOLVENCY_INTERVALS];
+        let mut len = 1usize;
+        let mut steps = 0usize;
+        stack[0] = (lo, hi);
+
+        while len != 0 {
+            steps = steps.checked_add(1).ok_or(V13Error::InvalidConfig)?;
+            if steps > MAX_SOLVENCY_STEPS {
+                return Err(V13Error::InvalidConfig);
+            }
+
+            len -= 1;
+            let (range_lo, range_hi) = stack[len];
+
+            if self.solvency_envelope_interval_certifies(
+                range_lo,
+                range_hi,
+                loss_budget_num,
+                loss_budget_den,
+                price_budget_bps,
+            )? {
+                continue;
+            }
+
+            if range_hi == range_lo || range_hi - range_lo <= EXACT_CHUNK {
+                let mut n = range_lo;
+                loop {
+                    if !self.solvency_envelope_holds_for_notional(
+                        n,
+                        loss_budget_num,
+                        loss_budget_den,
+                        price_budget_bps,
+                    )? {
+                        return Err(V13Error::InvalidConfig);
+                    }
+                    if n == range_hi {
+                        break;
+                    }
+                    n = n.checked_add(1).ok_or(V13Error::InvalidConfig)?;
+                }
+                continue;
+            }
+
+            let mid = range_lo + (range_hi - range_lo) / 2;
+            if len + 2 > MAX_SOLVENCY_INTERVALS {
+                return Err(V13Error::InvalidConfig);
+            }
+            stack[len] = (mid.checked_add(1).ok_or(V13Error::InvalidConfig)?, range_hi);
+            stack[len + 1] = (range_lo, mid);
+            len += 2;
+        }
+
+        Ok(())
+    }
+
+    fn validate_funding_headroom(&self, slots: u64) -> V13Result<()> {
+        let max_signed = U256::from_u128(i128::MAX as u128);
+        let headroom = U256::from_u128(ADL_ONE)
+            .checked_mul(U256::from_u128(MAX_ORACLE_PRICE as u128))
+            .and_then(|v| v.checked_mul(U256::from_u128(self.max_abs_funding_e9_per_slot as u128)))
+            .and_then(|v| v.checked_mul(U256::from_u128(slots as u128)))
+            .ok_or(V13Error::InvalidConfig)?;
+        if headroom <= max_signed {
+            Ok(())
+        } else {
+            Err(V13Error::InvalidConfig)
+        }
+    }
+
+    fn validate_exact_solvency_envelope(&self) -> V13Result<()> {
+        let price_budget_fast = (self.max_price_move_bps_per_slot as u128)
+            .checked_mul(self.max_accrual_dt_slots as u128)
+            .ok_or(V13Error::InvalidConfig)?;
+        if self.maintenance_margin_bps == 10_000
+            && price_budget_fast <= 10_000
+            && self.max_abs_funding_e9_per_slot == 0
+            && self.liquidation_fee_bps == 0
+            && self.min_liquidation_abs == 0
+        {
+            return Ok(());
+        }
+
+        self.validate_funding_headroom(self.max_accrual_dt_slots)?;
+        self.validate_funding_headroom(self.min_funding_lifetime_slots)?;
+
+        let move_cap = U256::from_u128(self.max_price_move_bps_per_slot as u128);
+        let dt = U256::from_u128(self.max_accrual_dt_slots as u128);
+        let rate = U256::from_u128(self.max_abs_funding_e9_per_slot as u128);
+        let ten_thousand = U256::from_u128(10_000);
+        let funding_den = U256::from_u128(FUNDING_DEN);
+
+        let price_budget_bps = move_cap
+            .checked_mul(dt)
+            .and_then(|v| v.try_into_u128())
+            .ok_or(V13Error::InvalidConfig)?;
+        let funding_budget_num = rate
+            .checked_mul(dt)
+            .and_then(|v| v.checked_mul(ten_thousand))
+            .ok_or(V13Error::InvalidConfig)?;
+        let loss_budget_num_wide = U256::from_u128(price_budget_bps)
+            .checked_mul(funding_den)
+            .and_then(|v| v.checked_add(funding_budget_num))
+            .ok_or(V13Error::InvalidConfig)?;
+        let loss_budget_den_wide = ten_thousand
+            .checked_mul(funding_den)
+            .ok_or(V13Error::InvalidConfig)?;
+
+        let funding_budget_bps_ceil = Self::ceil_div_u256_to_u128(funding_budget_num, funding_den)?;
+        let loss_budget_bps_ceil = price_budget_bps
+            .checked_add(funding_budget_bps_ceil)
+            .ok_or(V13Error::InvalidConfig)?;
+        let worst_liq_budget_bps_ceil = Self::ceil_div_u256_to_u128(
+            U256::from_u128(
+                10_000u128
+                    .checked_add(price_budget_bps)
+                    .ok_or(V13Error::InvalidConfig)?,
+            )
+            .checked_mul(U256::from_u128(self.liquidation_fee_bps as u128))
+            .ok_or(V13Error::InvalidConfig)?,
+            ten_thousand,
+        )?;
+        let linear_budget_bps = loss_budget_bps_ceil
+            .checked_add(worst_liq_budget_bps_ceil)
+            .ok_or(V13Error::InvalidConfig)?;
+
+        if self.maintenance_margin_bps == 10_000
+            && loss_budget_bps_ceil == 10_000
+            && worst_liq_budget_bps_ceil == 0
+            && self.min_liquidation_abs == 0
+        {
+            return Ok(());
+        }
+
+        let loss_budget_num = loss_budget_num_wide
+            .try_into_u128()
+            .ok_or(V13Error::InvalidConfig)?;
+        let loss_budget_den = loss_budget_den_wide
+            .try_into_u128()
+            .ok_or(V13Error::InvalidConfig)?;
+        let domain_max = MAX_ACCOUNT_NOTIONAL;
+
+        if self.maintenance_margin_bps == 0 {
+            if self.solvency_envelope_holds_for_notional(
+                domain_max,
+                loss_budget_num,
+                loss_budget_den,
+                price_budget_bps,
+            )? {
+                return Ok(());
+            }
+            return Err(V13Error::InvalidConfig);
+        }
+
+        let floor_region_max = U256::from_u128(
+            self.min_nonzero_mm_req
+                .checked_add(1)
+                .ok_or(V13Error::InvalidConfig)?,
+        )
+        .checked_mul(ten_thousand)
+        .and_then(|v| v.checked_sub(U256::ONE))
+        .and_then(|v| v.checked_div(U256::from_u128(self.maintenance_margin_bps as u128)))
+        .and_then(|v| v.try_into_u128())
+        .ok_or(V13Error::InvalidConfig)?;
+        let floor_region_end = core::cmp::min(floor_region_max, domain_max);
+        if floor_region_end != 0
+            && !self.solvency_envelope_holds_for_notional(
+                floor_region_end,
+                loss_budget_num,
+                loss_budget_den,
+                price_budget_bps,
+            )?
+        {
+            return Err(V13Error::InvalidConfig);
+        }
+        if floor_region_max >= domain_max {
+            return Ok(());
+        }
+
+        let exact_start = floor_region_end
+            .checked_add(1)
+            .ok_or(V13Error::InvalidConfig)?;
+
+        if linear_budget_bps < self.maintenance_margin_bps as u128 {
+            let slope_gap = (self.maintenance_margin_bps as u128) - linear_budget_bps;
+            let tail_for_linear = Self::ceil_div_u256_to_u128(
+                U256::from_u128(3 * 10_000),
+                U256::from_u128(slope_gap),
+            )?;
+
+            let loss_gap = (self.maintenance_margin_bps as u128)
+                .checked_sub(loss_budget_bps_ceil)
+                .ok_or(V13Error::InvalidConfig)?;
+            let floor_fee_slack = self
+                .min_liquidation_abs
+                .checked_add(2)
+                .ok_or(V13Error::InvalidConfig)?;
+            let tail_for_fee_floor = Self::ceil_div_u256_to_u128(
+                U256::from_u128(floor_fee_slack)
+                    .checked_mul(ten_thousand)
+                    .ok_or(V13Error::InvalidConfig)?,
+                U256::from_u128(loss_gap),
+            )?;
+
+            let exact_tail = core::cmp::max(tail_for_linear, tail_for_fee_floor);
+            if exact_tail <= exact_start {
+                return Ok(());
+            }
+            let exact_end = core::cmp::min(exact_tail.saturating_sub(1), domain_max);
+            return self.validate_solvency_envelope_range(
+                exact_start,
+                exact_end,
+                loss_budget_num,
+                loss_budget_den,
+                price_budget_bps,
+            );
+        }
+
+        if loss_budget_bps_ceil >= self.maintenance_margin_bps as u128 {
+            return self.validate_solvency_envelope_range(
+                exact_start,
+                domain_max,
+                loss_budget_num,
+                loss_budget_den,
+                price_budget_bps,
+            );
+        }
+
+        let slope_gap = (self.maintenance_margin_bps as u128) - loss_budget_bps_ceil;
+        let capped_fee_slack = self
+            .liquidation_fee_cap
+            .checked_add(3)
+            .ok_or(V13Error::InvalidConfig)?;
+        let exact_tail = Self::ceil_div_u256_to_u128(
+            U256::from_u128(capped_fee_slack)
+                .checked_mul(ten_thousand)
+                .ok_or(V13Error::InvalidConfig)?,
+            U256::from_u128(slope_gap),
+        )?;
+
+        if exact_tail <= exact_start {
+            return Ok(());
+        }
+
+        let exact_end = core::cmp::min(exact_tail.saturating_sub(1), domain_max);
+        self.validate_solvency_envelope_range(
+            exact_start,
+            exact_end,
+            loss_budget_num,
+            loss_budget_den,
+            price_budget_bps,
+        )
+    }
+
     pub fn validate_public_user_fund(&self) -> V13Result<()> {
         if self.max_portfolio_assets == 0
             || self.max_portfolio_assets as usize > V13_MAX_PORTFOLIO_ASSETS_N
@@ -189,7 +549,7 @@ impl V13Config {
         {
             return Err(V13Error::InvalidConfig);
         }
-        Ok(())
+        self.validate_exact_solvency_envelope()
     }
 }
 

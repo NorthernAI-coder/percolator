@@ -7,13 +7,29 @@ use percolator::v13::{
     ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
     V13_MAX_PORTFOLIO_ASSETS_N,
 };
-use percolator::{MAX_POSITION_ABS_Q, POS_SCALE, SOCIAL_LOSS_DEN};
+use percolator::{MAX_POSITION_ABS_Q, MAX_PROTOCOL_FEE_ABS, POS_SCALE, SOCIAL_LOSS_DEN};
 
 fn symbolic_ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
     let market: [u8; 32] = kani::any();
     let account: [u8; 32] = kani::any();
     let owner: [u8; 32] = kani::any();
     (market, account, owner)
+}
+
+fn tight_envelope_config() -> V13Config {
+    let mut cfg = V13Config::public_user_fund(1, 0, 1);
+    cfg.maintenance_margin_bps = 500;
+    cfg.initial_margin_bps = 600;
+    cfg.min_nonzero_mm_req = 100;
+    cfg.min_nonzero_im_req = 101;
+    cfg.max_price_move_bps_per_slot = 3;
+    cfg.max_accrual_dt_slots = 100;
+    cfg.min_funding_lifetime_slots = 100;
+    cfg.max_abs_funding_e9_per_slot = 10_000;
+    cfg.liquidation_fee_bps = 100;
+    cfg.liquidation_fee_cap = MAX_PROTOCOL_FEE_ABS;
+    cfg.min_liquidation_abs = 0;
+    cfg
 }
 
 #[kani::proof]
@@ -170,6 +186,91 @@ fn proof_v13_public_config_rejects_invalid_user_fund_shapes() {
         MarketGroupV13::new(market, cfg),
         Err(V13Error::InvalidConfig)
     );
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_public_config_accepts_full_margin_loss_only_envelope() {
+    let (market, _, _) = symbolic_ids();
+    let cfg = V13Config::public_user_fund(1, 0, 1);
+
+    kani::cover!(
+        cfg.maintenance_margin_bps == 10_000 && cfg.max_price_move_bps_per_slot == 10_000,
+        "v13 full-margin one-segment loss envelope reachable"
+    );
+    assert!(MarketGroupV13::new(market, cfg).is_ok());
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_public_config_rejects_price_funding_envelope_breach() {
+    let (market, _, _) = symbolic_ids();
+    let mut cfg = tight_envelope_config();
+    cfg.max_price_move_bps_per_slot = 10;
+
+    kani::cover!(
+        cfg.max_price_move_bps_per_slot == 10,
+        "v13 price/funding envelope breach rejected"
+    );
+    assert_eq!(
+        MarketGroupV13::new(market, cfg),
+        Err(V13Error::InvalidConfig)
+    );
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_public_config_rejects_liquidation_fee_envelope_breach() {
+    let (market, _, _) = symbolic_ids();
+    let mut cfg = tight_envelope_config();
+    cfg.liquidation_fee_bps = 400;
+
+    kani::cover!(
+        cfg.liquidation_fee_bps == 400,
+        "v13 liquidation-fee envelope breach rejected"
+    );
+    assert_eq!(
+        MarketGroupV13::new(market, cfg),
+        Err(V13Error::InvalidConfig)
+    );
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_public_config_rejects_funding_headroom_breach() {
+    let (market, _, _) = symbolic_ids();
+    let mut cfg = tight_envelope_config();
+    cfg.max_accrual_dt_slots = 1_000_000_000;
+    cfg.min_funding_lifetime_slots = 1_000_000_000;
+
+    kani::cover!(
+        cfg.max_accrual_dt_slots == 1_000_000_000,
+        "v13 funding K/F headroom breach rejected"
+    );
+    assert_eq!(
+        MarketGroupV13::new(market, cfg),
+        Err(V13Error::InvalidConfig)
+    );
+}
+
+#[kani::proof]
+#[kani::unwind(80)]
+#[kani::solver(cadical)]
+fn proof_v13_public_config_accepts_capped_liquidation_fee_envelope() {
+    let (market, _, _) = symbolic_ids();
+    let mut cfg = tight_envelope_config();
+    cfg.liquidation_fee_bps = 10_000;
+    cfg.liquidation_fee_cap = 1;
+
+    kani::cover!(
+        cfg.liquidation_fee_bps == 10_000 && cfg.liquidation_fee_cap == 1,
+        "v13 capped liquidation fee envelope reachable"
+    );
+    assert!(MarketGroupV13::new(market, cfg).is_ok());
 }
 
 #[kani::proof]

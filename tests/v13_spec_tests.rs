@@ -5,7 +5,7 @@ use percolator::v13::{
     RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
     V13_MAX_PORTFOLIO_ASSETS_N,
 };
-use percolator::{ADL_ONE, POS_SCALE, SOCIAL_LOSS_DEN};
+use percolator::{ADL_ONE, MAX_ACCOUNT_NOTIONAL, MAX_PROTOCOL_FEE_ABS, POS_SCALE, SOCIAL_LOSS_DEN};
 
 fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
     ([1; 32], [2; 32], [3; 32])
@@ -14,6 +14,22 @@ fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
 fn group() -> MarketGroupV13 {
     let (market, _, _) = ids();
     MarketGroupV13::new(market, V13Config::public_user_fund(4, 0, 10)).unwrap()
+}
+
+fn tight_envelope_config() -> V13Config {
+    let mut cfg = V13Config::public_user_fund(4, 0, 10);
+    cfg.maintenance_margin_bps = 500;
+    cfg.initial_margin_bps = 600;
+    cfg.min_nonzero_mm_req = 100;
+    cfg.min_nonzero_im_req = 101;
+    cfg.max_price_move_bps_per_slot = 3;
+    cfg.max_accrual_dt_slots = 100;
+    cfg.min_funding_lifetime_slots = 100;
+    cfg.max_abs_funding_e9_per_slot = 10_000;
+    cfg.liquidation_fee_bps = 100;
+    cfg.liquidation_fee_cap = MAX_PROTOCOL_FEE_ABS;
+    cfg.min_liquidation_abs = 0;
+    cfg
 }
 
 fn account() -> PortfolioAccountV13 {
@@ -201,6 +217,111 @@ fn v13_public_init_rejects_disabled_recovery_profile() {
         MarketGroupV13::new(market, cfg),
         Err(V13Error::InvalidConfig)
     );
+}
+
+#[test]
+fn v13_public_init_accepts_tight_exact_solvency_envelope() {
+    let (market, _, _) = ids();
+    let cfg = tight_envelope_config();
+    assert!(MarketGroupV13::new(market, cfg).is_ok());
+}
+
+#[test]
+fn v13_public_init_rejects_price_funding_or_liquidation_envelope_breach() {
+    let (market, _, _) = ids();
+
+    let mut price_breach = tight_envelope_config();
+    price_breach.max_price_move_bps_per_slot = 10;
+    assert_eq!(
+        MarketGroupV13::new(market, price_breach),
+        Err(V13Error::InvalidConfig)
+    );
+
+    let mut funding_breach = tight_envelope_config();
+    funding_breach.max_accrual_dt_slots = 10_000;
+    funding_breach.min_funding_lifetime_slots = 10_000;
+    assert_eq!(
+        MarketGroupV13::new(market, funding_breach),
+        Err(V13Error::InvalidConfig)
+    );
+
+    let mut liquidation_breach = tight_envelope_config();
+    liquidation_breach.liquidation_fee_bps = 400;
+    assert_eq!(
+        MarketGroupV13::new(market, liquidation_breach),
+        Err(V13Error::InvalidConfig)
+    );
+}
+
+#[test]
+fn v13_public_init_accepts_capped_liquidation_fee_envelope() {
+    let (market, _, _) = ids();
+    let mut cfg = tight_envelope_config();
+    cfg.liquidation_fee_bps = 10_000;
+    cfg.liquidation_fee_cap = 1;
+    cfg.min_liquidation_abs = 0;
+    assert!(MarketGroupV13::new(market, cfg).is_ok());
+}
+
+#[test]
+fn v13_public_init_accepts_capped_liquidation_fee_with_min_near_cap() {
+    let (market, _, _) = ids();
+    let mut cfg = tight_envelope_config();
+    cfg.liquidation_fee_bps = 10_000;
+    cfg.liquidation_fee_cap = 100;
+    cfg.min_liquidation_abs = 99;
+    cfg.min_nonzero_mm_req = 300;
+    cfg.min_nonzero_im_req = 301;
+    assert!(MarketGroupV13::new(market, cfg).is_ok());
+}
+
+#[test]
+fn v13_public_init_handles_zero_proportional_maintenance_exactly() {
+    let (market, _, _) = ids();
+    let mut cfg = V13Config::public_user_fund(4, 0, 10);
+    cfg.maintenance_margin_bps = 0;
+    cfg.max_price_move_bps_per_slot = 1;
+    cfg.max_accrual_dt_slots = 1;
+    cfg.min_funding_lifetime_slots = 1;
+    cfg.max_abs_funding_e9_per_slot = 0;
+    cfg.min_nonzero_mm_req = MAX_ACCOUNT_NOTIONAL;
+    cfg.min_nonzero_im_req = MAX_ACCOUNT_NOTIONAL + 1;
+    assert!(MarketGroupV13::new(market, cfg).is_ok());
+
+    cfg.min_nonzero_mm_req = 1;
+    cfg.min_nonzero_im_req = 2;
+    assert_eq!(
+        MarketGroupV13::new(market, cfg),
+        Err(V13Error::InvalidConfig)
+    );
+}
+
+#[test]
+fn v13_public_init_rejects_funding_headroom_overflow() {
+    let (market, _, _) = ids();
+    let mut cfg = V13Config::public_user_fund(4, 0, 10);
+    cfg.max_accrual_dt_slots = 1_000_000_000;
+    cfg.min_funding_lifetime_slots = 1_000_000_000;
+    cfg.max_abs_funding_e9_per_slot = 10_000;
+    assert_eq!(
+        MarketGroupV13::new(market, cfg),
+        Err(V13Error::InvalidConfig)
+    );
+}
+
+#[test]
+fn v13_public_init_accepts_exact_envelope_boundary() {
+    let (market, _, _) = ids();
+    let mut cfg = V13Config::public_user_fund(4, 0, 10);
+    cfg.maintenance_margin_bps = 500;
+    cfg.initial_margin_bps = 600;
+    cfg.max_price_move_bps_per_slot = 390;
+    cfg.max_accrual_dt_slots = 1;
+    cfg.min_funding_lifetime_slots = 1;
+    cfg.max_abs_funding_e9_per_slot = 0;
+    cfg.min_nonzero_mm_req = 200;
+    cfg.min_nonzero_im_req = 201;
+    assert!(MarketGroupV13::new(market, cfg).is_ok());
 }
 
 #[test]
@@ -781,6 +902,7 @@ fn v13_price_accrual_then_refresh_matches_eager_mark_pnl() {
 fn v13_funding_accrual_then_refresh_matches_sign_and_floor() {
     let (market, _, _) = ids();
     let mut cfg = V13Config::public_user_fund(4, 0, 10);
+    cfg.max_price_move_bps_per_slot = 9_990;
     cfg.max_abs_funding_e9_per_slot = 10_000;
     let mut g = MarketGroupV13::new(market, cfg).unwrap();
     g.assets[0].effective_price = 100_000;
@@ -1283,6 +1405,9 @@ fn v13_bankrupt_liquidation_consumes_insurance_before_social_loss() {
 fn v13_bankrupt_liquidation_drops_uncollectible_fee_and_spends_insurance_once() {
     let (market, _, _) = ids();
     let mut cfg = V13Config::public_user_fund(1, 0, 10);
+    cfg.max_price_move_bps_per_slot = 1;
+    cfg.min_nonzero_mm_req = 12;
+    cfg.min_nonzero_im_req = 13;
     cfg.liquidation_fee_bps = 10_000;
     cfg.liquidation_fee_cap = 10;
     cfg.min_liquidation_abs = 1;

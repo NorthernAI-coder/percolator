@@ -2,7 +2,7 @@ use percolator::v13::{
     account_equity, risk_notional_ceil, HLockLaneV13, LiquidationRequestV13, MarketGroupV13,
     PermissionlessCrankActionV13, PermissionlessCrankRequestV13, PermissionlessProgressOutcomeV13,
     PermissionlessRecoveryReasonV13, PortfolioAccountV13, PortfolioLegV13, ProvenanceHeaderV13,
-    ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
+    RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
     V13_MAX_PORTFOLIO_ASSETS_N,
 };
 use percolator::{ADL_ONE, POS_SCALE, SOCIAL_LOSS_DEN};
@@ -822,4 +822,56 @@ fn v13_bankrupt_liquidation_consumes_insurance_before_social_loss() {
     assert_eq!(g.insurance, 0);
     assert_eq!(a.pnl, 0);
     assert_eq!(a.active_bitmap, 0);
+}
+
+#[test]
+fn v13_rebalance_reduce_position_requires_strict_risk_progress_and_preserves_senior_claims() {
+    let mut g = group();
+    let mut a = account();
+    g.attach_leg(&mut a, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    let senior_before = g.c_tot + g.insurance;
+    let out = g
+        .rebalance_reduce_position_not_atomic(
+            &mut a,
+            RebalanceRequestV13 {
+                asset_index: 0,
+                reduce_q: POS_SCALE / 2,
+            },
+            &[1_000_000; V13_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .unwrap();
+
+    assert_eq!(out.reduced_q, POS_SCALE / 2);
+    assert_eq!(a.legs[0].basis_pos_q.unsigned_abs(), POS_SCALE / 2);
+    assert_eq!(g.c_tot + g.insurance, senior_before);
+}
+
+#[test]
+fn v13_rebalance_rejects_missing_or_zero_progress() {
+    let mut g = group();
+    let mut a = account();
+
+    assert_eq!(
+        g.rebalance_reduce_position_not_atomic(
+            &mut a,
+            RebalanceRequestV13 {
+                asset_index: 0,
+                reduce_q: 1,
+            },
+            &[1_000_000; V13_MAX_PORTFOLIO_ASSETS_N],
+        ),
+        Err(V13Error::InvalidLeg)
+    );
+    assert_eq!(
+        g.rebalance_reduce_position_not_atomic(
+            &mut a,
+            RebalanceRequestV13 {
+                asset_index: 0,
+                reduce_q: 0,
+            },
+            &[1_000_000; V13_MAX_PORTFOLIO_ASSETS_N],
+        ),
+        Err(V13Error::InvalidConfig)
+    );
 }

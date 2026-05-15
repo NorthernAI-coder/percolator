@@ -2,8 +2,8 @@
 
 use percolator::v13::{
     account_equity, HLockLaneV13, LiquidationRequestV13, MarketGroupV13, PortfolioAccountV13,
-    ProvenanceHeaderV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
-    V13_MAX_PORTFOLIO_ASSETS_N,
+    ProvenanceHeaderV13, RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13,
+    V13Config, V13Error, V13_MAX_PORTFOLIO_ASSETS_N,
 };
 use percolator::{POS_SCALE, SOCIAL_LOSS_DEN};
 
@@ -613,6 +613,67 @@ fn proof_v13_bankrupt_liquidation_consumes_insurance_before_social_loss() {
     assert_eq!(group.insurance, 0);
     assert_eq!(account.pnl, 0);
     assert_eq!(account.active_bitmap, 0);
+}
+
+#[kani::proof]
+#[kani::unwind(50)]
+#[kani::solver(cadical)]
+fn proof_v13_rebalance_reduce_position_preserves_senior_claims_and_reduces_risk() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    group
+        .attach_leg(&mut account, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    let senior_before = group.c_tot + group.insurance;
+
+    let out = group
+        .rebalance_reduce_position_not_atomic(
+            &mut account,
+            RebalanceRequestV13 {
+                asset_index: 0,
+                reduce_q: POS_SCALE / 2,
+            },
+            &[1_000_000; V13_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .unwrap();
+
+    kani::cover!(out.reduced_q == POS_SCALE / 2);
+    assert_eq!(out.reduced_q, POS_SCALE / 2);
+    assert!(account.legs[0].active);
+    assert_eq!(account.legs[0].side, SideV13::Long);
+    assert_eq!(account.legs[0].basis_pos_q.unsigned_abs(), POS_SCALE / 2);
+    assert_eq!(group.c_tot + group.insurance, senior_before);
+    assert!(account.health_cert.valid);
+    assert!(account.health_cert.certified_worst_case_loss <= 500_000);
+
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    group
+        .attach_leg(&mut account, 0, SideV13::Short, -(POS_SCALE as i128))
+        .unwrap();
+    let senior_before = group.c_tot + group.insurance;
+
+    let out = group
+        .rebalance_reduce_position_not_atomic(
+            &mut account,
+            RebalanceRequestV13 {
+                asset_index: 0,
+                reduce_q: POS_SCALE,
+            },
+            &[1_000_000; V13_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .unwrap();
+
+    kani::cover!(out.reduced_q == POS_SCALE);
+    assert_eq!(out.reduced_q, POS_SCALE);
+    assert_eq!(account.active_bitmap, 0);
+    assert!(!account.legs[0].active);
+    assert_eq!(group.c_tot + group.insurance, senior_before);
+    assert!(account.health_cert.valid);
+    assert_eq!(account.health_cert.certified_worst_case_loss, 0);
 }
 
 #[kani::proof]

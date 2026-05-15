@@ -451,6 +451,17 @@ pub struct LiquidationOutcomeV13 {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct RebalanceRequestV13 {
+    pub asset_index: usize,
+    pub reduce_q: u128,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct RebalanceOutcomeV13 {
+    pub reduced_q: u128,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct BResidualBookingOutcomeV13 {
     pub booked_loss: u128,
     pub explicit_loss: u128,
@@ -1543,6 +1554,37 @@ impl MarketGroupV13 {
             residual_booked: booked,
             explicit_loss: explicit,
             fee_charged: charged_fee,
+        })
+    }
+
+    pub fn rebalance_reduce_position_not_atomic(
+        &mut self,
+        account: &mut PortfolioAccountV13,
+        request: RebalanceRequestV13,
+        effective_prices: &[u64; V13_MAX_PORTFOLIO_ASSETS_N],
+    ) -> V13Result<RebalanceOutcomeV13> {
+        if request.asset_index >= self.config.max_portfolio_assets as usize || request.reduce_q == 0
+        {
+            return Err(V13Error::InvalidConfig);
+        }
+        self.settle_account_side_effects_not_atomic(account, self.config.public_b_chunk_atoms)?;
+        self.full_account_refresh(account, effective_prices)?;
+        let before = *account;
+        let leg = account.legs[request.asset_index];
+        if !leg.active {
+            return Err(V13Error::InvalidLeg);
+        }
+        let reduce_q = request.reduce_q.min(leg.basis_pos_q.unsigned_abs());
+        if reduce_q == 0 {
+            return Err(V13Error::NonProgress);
+        }
+        self.reduce_position(account, request.asset_index, reduce_q)?;
+        self.settle_negative_pnl_from_principal(account)?;
+        self.full_account_refresh(account, effective_prices)?;
+        self.validate_liquidation_progress(&before, account)?;
+        self.assert_public_invariants()?;
+        Ok(RebalanceOutcomeV13 {
+            reduced_q: reduce_q,
         })
     }
 

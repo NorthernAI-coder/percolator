@@ -936,6 +936,42 @@ fn v13_risk_increasing_trade_requires_initial_health_after_refresh() {
 }
 
 #[test]
+fn v13_trade_hint_cannot_hide_toxic_portfolio_leg_on_other_asset() {
+    let mut g = group();
+    let mut long = account();
+    let mut short = account();
+    short.provenance_header.portfolio_account_id = [4; 32];
+    g.deposit_not_atomic(&mut long, 1).unwrap();
+    g.deposit_not_atomic(&mut short, 1_000).unwrap();
+    g.attach_leg(&mut long, 1, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    g.assets[1].k_long = -(3 * ADL_ONE as i128);
+    let before_group = g;
+    let before_long = long;
+    let before_short = short;
+
+    let res = g.execute_trade_with_fee_not_atomic(
+        &mut long,
+        &mut short,
+        TradeRequestV13 {
+            asset_index: 0,
+            size_q: POS_SCALE,
+            exec_price: 1,
+            fee_bps: 0,
+        },
+        &[1; V13_MAX_PORTFOLIO_ASSETS_N],
+    );
+
+    assert!(
+        res.is_err(),
+        "risk-increasing trade on hinted asset must not ignore toxic active legs"
+    );
+    assert_eq!(g, before_group);
+    assert_eq!(long, before_long);
+    assert_eq!(short, before_short);
+}
+
+#[test]
 fn v13_invalid_trade_request_rejects_before_any_mutation() {
     let mut g = group();
     let mut long = account();

@@ -1196,6 +1196,48 @@ fn proof_v13_risk_increasing_trade_requires_initial_health_before_mutation() {
 #[kani::proof]
 #[kani::unwind(70)]
 #[kani::solver(cadical)]
+fn proof_v13_trade_hint_cannot_hide_toxic_portfolio_leg_on_other_asset() {
+    let hidden_loss_units: u8 = kani::any();
+    kani::assume((2..=5).contains(&hidden_loss_units));
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(2, 0, 1)).unwrap();
+    let mut long = PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    let mut short = PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, [4; 32], owner));
+    group.deposit_not_atomic(&mut long, 1).unwrap();
+    group.deposit_not_atomic(&mut short, 1_000).unwrap();
+    group
+        .attach_leg(&mut long, 1, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    group.assets[1].k_long = -((hidden_loss_units as i128) * (ADL_ONE as i128));
+    let before_group = group;
+    let before_long = long;
+    let before_short = short;
+
+    let result = group.execute_trade_with_fee_not_atomic(
+        &mut long,
+        &mut short,
+        TradeRequestV13 {
+            asset_index: 0,
+            size_q: POS_SCALE,
+            exec_price: 1,
+            fee_bps: 0,
+        },
+        &[1; V13_MAX_PORTFOLIO_ASSETS_N],
+    );
+
+    kani::cover!(
+        hidden_loss_units > 1,
+        "v13 trade hint with toxic unhinted active leg reachable"
+    );
+    assert!(result.is_err());
+    assert_eq!(group, before_group);
+    assert_eq!(long, before_long);
+    assert_eq!(short, before_short);
+}
+
+#[kani::proof]
+#[kani::unwind(70)]
+#[kani::solver(cadical)]
 fn proof_v13_sign_flip_trade_preserves_oi_symmetry_and_senior_accounting() {
     let (market, account_id, owner) = concrete_ids();
     let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();

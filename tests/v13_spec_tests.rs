@@ -355,6 +355,40 @@ fn v13_risk_notional_and_equity_use_exact_conservative_shapes() {
 }
 
 #[test]
+fn v13_account_shape_rejects_malformed_persistent_economic_state() {
+    let g = group();
+
+    let mut min_pnl = account();
+    min_pnl.pnl = i128::MIN;
+    assert_eq!(
+        g.validate_account_shape(&min_pnl),
+        Err(V13Error::ArithmeticOverflow)
+    );
+
+    let mut positive_fee_credit = account();
+    positive_fee_credit.fee_credits = 1;
+    assert_eq!(
+        g.validate_account_shape(&positive_fee_credit),
+        Err(V13Error::InvalidLeg)
+    );
+
+    let mut min_fee_credit = account();
+    min_fee_credit.fee_credits = i128::MIN;
+    assert_eq!(
+        g.validate_account_shape(&min_fee_credit),
+        Err(V13Error::ArithmeticOverflow)
+    );
+
+    let mut over_reserved = account();
+    over_reserved.pnl = 1;
+    over_reserved.reserved_pnl = 2;
+    assert_eq!(
+        g.validate_account_shape(&over_reserved),
+        Err(V13Error::InvalidLeg)
+    );
+}
+
+#[test]
 fn v13_flat_account_equity_is_capital_plus_pnl_minus_fee_debt() {
     let mut a = account();
     a.capital = 123;

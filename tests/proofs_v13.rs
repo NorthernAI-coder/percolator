@@ -201,6 +201,44 @@ fn proof_v13_account_equity_rejects_malformed_fee_credits() {
 #[kani::proof]
 #[kani::unwind(40)]
 #[kani::solver(cadical)]
+fn proof_v13_account_shape_rejects_malformed_persistent_economic_state() {
+    let dirty_case: u8 = kani::any();
+    kani::assume(dirty_case < 4);
+    let (market, account_id, owner) = symbolic_ids();
+    let group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+
+    let expected = match dirty_case {
+        0 => {
+            account.pnl = i128::MIN;
+            V13Error::ArithmeticOverflow
+        }
+        1 => {
+            account.fee_credits = 1;
+            V13Error::InvalidLeg
+        }
+        2 => {
+            account.fee_credits = i128::MIN;
+            V13Error::ArithmeticOverflow
+        }
+        _ => {
+            account.pnl = 1;
+            account.reserved_pnl = 2;
+            V13Error::InvalidLeg
+        }
+    };
+
+    kani::cover!(dirty_case == 0, "v13 shape rejects i128 min pnl");
+    kani::cover!(dirty_case == 1, "v13 shape rejects positive fee credit");
+    kani::cover!(dirty_case == 2, "v13 shape rejects i128 min fee credit");
+    kani::cover!(dirty_case == 3, "v13 shape rejects over-reserved pnl");
+    assert_eq!(group.validate_account_shape(&account), Err(expected));
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
 fn proof_v13_flat_account_equity_is_exact_capital_plus_pnl_minus_fee_debt() {
     let capital: u16 = kani::any();
     let pnl: i16 = kani::any();

@@ -1320,6 +1320,46 @@ fn proof_v13_resolved_flat_close_returns_exact_capital() {
 }
 
 #[kani::proof]
+#[kani::unwind(45)]
+#[kani::solver(cadical)]
+fn proof_v13_resolved_flat_close_syncs_fee_before_terminal_payout() {
+    let fee_rate: u8 = kani::any();
+    kani::assume(fee_rate > 0);
+    kani::assume(fee_rate <= 5);
+    let (market, account_id, owner) = symbolic_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    group.deposit_not_atomic(&mut account, 100).unwrap();
+    group.resolve_market_not_atomic(10).unwrap();
+
+    let outcome = group
+        .close_resolved_account_not_atomic(&mut account, fee_rate as u128)
+        .unwrap();
+    let expected_fee = fee_rate as u128 * 10;
+    let expected_payout = 100 - expected_fee;
+
+    kani::cover!(
+        expected_fee > 0,
+        "v13 resolved terminal close positive fee sync reachable"
+    );
+    assert_eq!(
+        outcome,
+        ResolvedCloseOutcomeV13::Closed {
+            payout: expected_payout
+        }
+    );
+    assert_eq!(account.last_fee_slot, group.resolved_slot);
+    assert_eq!(account.capital, 0);
+    assert_eq!(account.pnl, 0);
+    assert_eq!(account.fee_credits, 0);
+    assert_eq!(group.insurance, expected_fee);
+    assert_eq!(group.vault, expected_fee);
+    assert_eq!(group.c_tot, 0);
+    assert_eq!(group.assert_public_invariants(), Ok(()));
+}
+
+#[kani::proof]
 #[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v13_resolved_profit_close_pays_snapshot_residual_and_clears_claim() {

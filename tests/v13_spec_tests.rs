@@ -1,9 +1,9 @@
 use percolator::v13::{
     account_equity, risk_notional_ceil, HLockLaneV13, LiquidationRequestV13, MarketGroupV13,
-    PermissionlessCrankActionV13, PermissionlessCrankRequestV13, PermissionlessProgressOutcomeV13,
-    PermissionlessRecoveryReasonV13, PortfolioAccountV13, PortfolioLegV13, ProvenanceHeaderV13,
-    RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
-    V13_MAX_PORTFOLIO_ASSETS_N,
+    MarketModeV13, PermissionlessCrankActionV13, PermissionlessCrankRequestV13,
+    PermissionlessProgressOutcomeV13, PermissionlessRecoveryReasonV13, PortfolioAccountV13,
+    PortfolioLegV13, ProvenanceHeaderV13, RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13,
+    TradeRequestV13, V13Config, V13Error, V13_MAX_PORTFOLIO_ASSETS_N,
 };
 use percolator::{ADL_ONE, MAX_ACCOUNT_NOTIONAL, MAX_PROTOCOL_FEE_ABS, POS_SCALE, SOCIAL_LOSS_DEN};
 
@@ -568,6 +568,21 @@ fn v13_permissionless_recovery_is_declared_by_reason_not_caller_price() {
         Ok(PermissionlessProgressOutcomeV13::RecoveryDeclared(reason))
     );
     assert_eq!(g.recovery_reason, Some(reason));
+}
+
+#[test]
+fn v13_permissionless_recovery_fails_closed_when_disabled() {
+    let mut g = group();
+    g.config.permissionless_recovery_enabled = false;
+
+    assert_eq!(
+        g.declare_permissionless_recovery(
+            PermissionlessRecoveryReasonV13::BlockedSegmentHeadroomOrRepresentability
+        ),
+        Err(V13Error::InvalidConfig)
+    );
+    assert_eq!(g.recovery_reason, None);
+    assert_eq!(g.mode, MarketModeV13::Live);
 }
 
 #[test]

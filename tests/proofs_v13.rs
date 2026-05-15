@@ -1,7 +1,7 @@
 #![cfg(kani)]
 
 use percolator::v13::{
-    account_equity, HLockLaneV13, LiquidationRequestV13, MarketGroupV13,
+    account_equity, HLockLaneV13, LiquidationRequestV13, MarketGroupV13, MarketModeV13,
     PermissionlessCrankActionV13, PermissionlessCrankRequestV13, PermissionlessProgressOutcomeV13,
     PermissionlessRecoveryReasonV13, PortfolioAccountV13, PortfolioLegV13, ProvenanceHeaderV13,
     RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
@@ -288,6 +288,67 @@ fn proof_v13_public_config_rejects_invalid_user_fund_shapes() {
         MarketGroupV13::new(market, cfg),
         Err(V13Error::InvalidConfig)
     );
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_permissionless_recovery_declares_reason_or_fails_closed() {
+    let reason_case: u8 = kani::any();
+    kani::assume(reason_case < 8);
+    let enabled: bool = kani::any();
+    let reason = match reason_case {
+        0 => PermissionlessRecoveryReasonV13::BelowProgressFloor,
+        1 => PermissionlessRecoveryReasonV13::BlockedSegmentHeadroomOrRepresentability,
+        2 => PermissionlessRecoveryReasonV13::AccountBSettlementCannotProgress,
+        3 => PermissionlessRecoveryReasonV13::BIndexHeadroomExhausted,
+        4 => PermissionlessRecoveryReasonV13::ActiveBankruptCloseCannotProgress,
+        5 => PermissionlessRecoveryReasonV13::ExplicitLossOrDustAuditOverflow,
+        6 => PermissionlessRecoveryReasonV13::OracleOrTargetUnavailableByAuthenticatedPolicy,
+        _ => PermissionlessRecoveryReasonV13::CounterOrEpochOverflowDeclaredRecovery,
+    };
+    let (market, _, _) = symbolic_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    group.config.permissionless_recovery_enabled = enabled;
+
+    let before_mode = group.mode;
+    let before_vault = group.vault;
+    let before_c_tot = group.c_tot;
+    let before_insurance = group.insurance;
+    let result = group.declare_permissionless_recovery(reason);
+
+    kani::cover!(
+        enabled,
+        "v13 permissionless recovery enabled path reachable"
+    );
+    kani::cover!(
+        !enabled,
+        "v13 permissionless recovery disabled path reachable"
+    );
+    kani::cover!(
+        reason_case == 0,
+        "v13 permissionless recovery first reason reachable"
+    );
+    kani::cover!(
+        reason_case == 7,
+        "v13 permissionless recovery last reason reachable"
+    );
+
+    if enabled {
+        assert_eq!(
+            result,
+            Ok(PermissionlessProgressOutcomeV13::RecoveryDeclared(reason))
+        );
+        assert_eq!(group.recovery_reason, Some(reason));
+    } else {
+        assert_eq!(result, Err(V13Error::InvalidConfig));
+        assert_eq!(group.recovery_reason, None);
+    }
+    assert_eq!(before_mode, MarketModeV13::Live);
+    assert_eq!(group.mode, before_mode);
+    assert_eq!(group.vault, before_vault);
+    assert_eq!(group.c_tot, before_c_tot);
+    assert_eq!(group.insurance, before_insurance);
 }
 
 #[kani::proof]

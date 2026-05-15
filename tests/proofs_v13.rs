@@ -306,6 +306,49 @@ fn proof_v13_deposit_then_withdraw_roundtrip_preserves_accounting() {
 }
 
 #[kani::proof]
+#[kani::unwind(45)]
+#[kani::solver(cadical)]
+fn proof_v13_deposit_does_not_draw_insurance_or_sweep_loss_bearing_account() {
+    let amount: u16 = kani::any();
+    let fee_debt: u8 = kani::any();
+    kani::assume(amount > 0);
+    kani::assume(amount <= 1_000);
+    let (market, account_id, owner) = symbolic_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+
+    group.vault = 10;
+    group.insurance = 10;
+    group
+        .attach_leg(&mut account, 0, SideV13::Long, 10)
+        .unwrap();
+    account.pnl = -10_000;
+    account.fee_credits = -(fee_debt as i128);
+
+    let insurance_before = group.insurance;
+    let pnl_before = account.pnl;
+    let fee_credits_before = account.fee_credits;
+    let leg_before = account.legs[0];
+    let oi_before = group.assets[0].oi_eff_long_q;
+
+    group
+        .deposit_not_atomic(&mut account, amount as u128)
+        .unwrap();
+
+    kani::cover!(fee_debt > 0, "v13 deposit with fee debt reachable");
+    assert_eq!(group.insurance, insurance_before);
+    assert_eq!(account.pnl, pnl_before);
+    assert_eq!(account.fee_credits, fee_credits_before);
+    assert_eq!(account.legs[0], leg_before);
+    assert_eq!(group.assets[0].oi_eff_long_q, oi_before);
+    assert_eq!(account.capital, amount as u128);
+    assert_eq!(group.c_tot, amount as u128);
+    assert_eq!(group.vault, 10 + amount as u128);
+    assert_eq!(group.assert_public_invariants(), Ok(()));
+}
+
+#[kani::proof]
 #[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v13_partial_withdraw_can_leave_small_remainder() {

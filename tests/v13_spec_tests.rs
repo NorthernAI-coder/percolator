@@ -355,6 +355,35 @@ fn v13_deposit_withdraw_roundtrip_preserves_accounting() {
 }
 
 #[test]
+fn v13_deposit_does_not_draw_insurance_or_sweep_loss_bearing_account() {
+    let mut g = group();
+    let mut a = account();
+    g.vault = 50;
+    g.insurance = 50;
+    g.attach_leg(&mut a, 0, SideV13::Long, 10).unwrap();
+    a.pnl = -100;
+    a.fee_credits = -7;
+
+    let insurance_before = g.insurance;
+    let pnl_before = a.pnl;
+    let fee_credits_before = a.fee_credits;
+    let bitmap_before = a.active_bitmap;
+    let leg_before = a.legs[0];
+
+    g.deposit_not_atomic(&mut a, 10).unwrap();
+
+    assert_eq!(g.insurance, insurance_before);
+    assert_eq!(a.pnl, pnl_before);
+    assert_eq!(a.fee_credits, fee_credits_before);
+    assert_eq!(a.active_bitmap, bitmap_before);
+    assert_eq!(a.legs[0], leg_before);
+    assert_eq!(a.capital, 10);
+    assert_eq!(g.c_tot, 10);
+    assert_eq!(g.vault, 60);
+    assert_eq!(g.assert_public_invariants(), Ok(()));
+}
+
+#[test]
 fn v13_partial_withdraw_can_leave_small_remainder() {
     let mut g = group();
     let mut a = account();

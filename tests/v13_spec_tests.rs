@@ -197,6 +197,28 @@ fn v13_favorable_action_requires_current_full_account_refresh() {
 }
 
 #[test]
+fn v13_global_residual_is_not_account_health_proof() {
+    let mut g = group();
+    let mut a = account();
+    a.pnl = 10;
+    a.reserved_pnl = 0;
+    g.pnl_pos_tot = 10;
+    g.pnl_matured_pos_tot = 10;
+    g.vault = g.c_tot + g.insurance + 10;
+    assert_eq!(g.assert_public_invariants(), Ok(()));
+    assert!(!a.health_cert.valid);
+
+    let before_group = g;
+    let before_account = a;
+    assert_eq!(
+        g.convert_released_pnl_to_capital_not_atomic(&mut a),
+        Err(V13Error::Stale)
+    );
+    assert_eq!(g, before_group);
+    assert_eq!(a, before_account);
+}
+
+#[test]
 fn v13_b_stale_blocks_refresh_and_favorable_actions_without_scanning_market() {
     let mut g = group();
     let mut a = account();

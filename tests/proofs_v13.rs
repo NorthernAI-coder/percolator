@@ -858,6 +858,37 @@ fn proof_v13_favorable_action_requires_current_full_refresh() {
 #[kani::proof]
 #[kani::unwind(40)]
 #[kani::solver(cadical)]
+fn proof_v13_global_residual_is_not_account_health_proof() {
+    let residual_units: u8 = kani::any();
+    kani::assume(residual_units > 0);
+    kani::assume(residual_units <= 5);
+    let residual = residual_units as u128;
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+    account.pnl = residual as i128;
+    account.reserved_pnl = 0;
+    group.pnl_pos_tot = residual;
+    group.pnl_matured_pos_tot = residual;
+    group.vault = group.c_tot + group.insurance + residual;
+    let before_group = group;
+    let before_account = account;
+
+    let result = group.convert_released_pnl_to_capital_not_atomic(&mut account);
+
+    kani::cover!(
+        residual > 0 && !account.health_cert.valid,
+        "v13 aggregate residual with stale account certificate reachable"
+    );
+    assert_eq!(result, Err(V13Error::Stale));
+    assert_eq!(group, before_group);
+    assert_eq!(account, before_account);
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
 fn proof_v13_full_refresh_clears_stale_certificate() {
     let (market, account_id, owner) = concrete_ids();
     let mut group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();

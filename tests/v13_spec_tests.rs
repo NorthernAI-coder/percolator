@@ -1220,15 +1220,63 @@ fn v13_same_epoch_full_refresh_is_idempotent_after_kf_settlement() {
 }
 
 #[test]
+fn v13_sequential_kf_refresh_is_additive_not_compounding() {
+    let mut sequential = group();
+    sequential.assets[0].effective_price = 100;
+    sequential.assets[0].fund_px_last = 100;
+    sequential.assets[0].raw_oracle_target_price = 100;
+    let mut seq_account = account();
+    sequential
+        .attach_leg(&mut seq_account, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+
+    sequential
+        .accrue_asset_to_not_atomic(0, 1, 101, 0, true)
+        .unwrap();
+    sequential
+        .full_account_refresh(&mut seq_account, &[101; V13_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+    assert_eq!(seq_account.pnl, 1);
+
+    sequential
+        .accrue_asset_to_not_atomic(0, 2, 102, 0, true)
+        .unwrap();
+    sequential
+        .full_account_refresh(&mut seq_account, &[102; V13_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+
+    let mut direct = group();
+    direct.assets[0].effective_price = 100;
+    direct.assets[0].fund_px_last = 100;
+    direct.assets[0].raw_oracle_target_price = 100;
+    let mut direct_account = account();
+    direct
+        .attach_leg(&mut direct_account, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+
+    direct
+        .accrue_asset_to_not_atomic(0, 1, 102, 0, true)
+        .unwrap();
+    direct
+        .full_account_refresh(&mut direct_account, &[102; V13_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+
+    assert_eq!(seq_account.pnl, 2);
+    assert_eq!(direct_account.pnl, 2);
+    assert_eq!(seq_account.pnl, direct_account.pnl);
+    assert_eq!(sequential.pnl_pos_tot, direct.pnl_pos_tot);
+}
+
+#[test]
 fn v13_funding_accrual_then_refresh_matches_sign_and_floor() {
     let (market, _, _) = ids();
     let mut cfg = V13Config::public_user_fund(4, 0, 10);
-    cfg.max_price_move_bps_per_slot = 9_990;
-    cfg.max_abs_funding_e9_per_slot = 10_000;
+    cfg.max_price_move_bps_per_slot = 4_999;
+    cfg.max_abs_funding_e9_per_slot = 1;
     let mut g = MarketGroupV13::new(market, cfg).unwrap();
-    g.assets[0].effective_price = 100_000;
-    g.assets[0].fund_px_last = 100_000;
-    g.assets[0].raw_oracle_target_price = 100_000;
+    g.assets[0].effective_price = 1_000_000_000;
+    g.assets[0].fund_px_last = 1_000_000_000;
+    g.assets[0].raw_oracle_target_price = 1_000_000_000;
     let mut long = account();
     let mut short = account();
     short.provenance_header.portfolio_account_id = [4; 32];
@@ -1238,16 +1286,112 @@ fn v13_funding_accrual_then_refresh_matches_sign_and_floor() {
     g.attach_leg(&mut short, 0, SideV13::Short, -(POS_SCALE as i128))
         .unwrap();
     let out = g
-        .accrue_asset_to_not_atomic(0, 1, 100_000, 10_000, true)
+        .accrue_asset_to_not_atomic(0, 1, 1_000_000_000, 1, true)
         .unwrap();
     assert!(out.funding_active);
 
-    g.full_account_refresh(&mut long, &[100_000; V13_MAX_PORTFOLIO_ASSETS_N])
+    g.full_account_refresh(&mut long, &[1_000_000_000; V13_MAX_PORTFOLIO_ASSETS_N])
         .unwrap();
-    g.full_account_refresh(&mut short, &[100_000; V13_MAX_PORTFOLIO_ASSETS_N])
+    g.full_account_refresh(&mut short, &[1_000_000_000; V13_MAX_PORTFOLIO_ASSETS_N])
         .unwrap();
     assert_eq!(long.pnl, -1);
     assert_eq!(short.pnl, 1);
+}
+
+#[test]
+fn v13_funding_accrual_requires_bilateral_exposure() {
+    let (market, _, _) = ids();
+    let mut cfg = V13Config::public_user_fund(4, 0, 10);
+    cfg.max_price_move_bps_per_slot = 9_999;
+    cfg.max_abs_funding_e9_per_slot = 1;
+    let mut no_oi = MarketGroupV13::new(market, cfg).unwrap();
+    no_oi.assets[0].effective_price = 1_000_000_000;
+    no_oi.assets[0].fund_px_last = 1_000_000_000;
+    no_oi.assets[0].raw_oracle_target_price = 1_000_000_000;
+    let no_oi_before = no_oi.assets[0];
+    let out = no_oi
+        .accrue_asset_to_not_atomic(0, 1, 1_000_000_000, 1, false)
+        .unwrap();
+    assert!(!out.funding_active);
+    assert_eq!(no_oi.assets[0].f_long_num, no_oi_before.f_long_num);
+    assert_eq!(no_oi.assets[0].f_short_num, no_oi_before.f_short_num);
+    assert_eq!(no_oi.funding_epoch, 0);
+
+    let mut one_sided = MarketGroupV13::new(market, cfg).unwrap();
+    one_sided.assets[0].effective_price = 1_000_000_000;
+    one_sided.assets[0].fund_px_last = 1_000_000_000;
+    one_sided.assets[0].raw_oracle_target_price = 1_000_000_000;
+    let mut long = account();
+    one_sided
+        .attach_leg(&mut long, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    let one_sided_before = one_sided.assets[0];
+    let out = one_sided
+        .accrue_asset_to_not_atomic(0, 1, 1_000_000_000, 1, false)
+        .unwrap();
+    assert!(!out.funding_active);
+    assert_eq!(one_sided.assets[0].f_long_num, one_sided_before.f_long_num);
+    assert_eq!(
+        one_sided.assets[0].f_short_num,
+        one_sided_before.f_short_num
+    );
+    assert_eq!(one_sided.funding_epoch, 0);
+
+    let mut short_only = MarketGroupV13::new(market, cfg).unwrap();
+    short_only.assets[0].effective_price = 1_000_000_000;
+    short_only.assets[0].fund_px_last = 1_000_000_000;
+    short_only.assets[0].raw_oracle_target_price = 1_000_000_000;
+    let mut short = account();
+    short.provenance_header.portfolio_account_id = [5; 32];
+    short_only
+        .attach_leg(&mut short, 0, SideV13::Short, -(POS_SCALE as i128))
+        .unwrap();
+    let short_only_before = short_only.assets[0];
+    let out = short_only
+        .accrue_asset_to_not_atomic(0, 1, 1_000_000_000, 1, false)
+        .unwrap();
+    assert!(!out.funding_active);
+    assert_eq!(
+        short_only.assets[0].f_long_num,
+        short_only_before.f_long_num
+    );
+    assert_eq!(
+        short_only.assets[0].f_short_num,
+        short_only_before.f_short_num
+    );
+    assert_eq!(short_only.funding_epoch, 0);
+}
+
+#[test]
+fn v13_funding_accrual_uses_only_bounded_segment_dt() {
+    let (market, _, _) = ids();
+    let mut cfg = V13Config::public_user_fund(4, 0, 10);
+    cfg.max_price_move_bps_per_slot = 4_999;
+    cfg.max_abs_funding_e9_per_slot = 1;
+    cfg.max_accrual_dt_slots = 2;
+    cfg.min_funding_lifetime_slots = 2;
+    let mut g = MarketGroupV13::new(market, cfg).unwrap();
+    g.assets[0].effective_price = 1_000_000_000;
+    g.assets[0].fund_px_last = 1_000_000_000;
+    g.assets[0].raw_oracle_target_price = 1_000_000_000;
+    let mut long = account();
+    let mut short = account();
+    short.provenance_header.portfolio_account_id = [4; 32];
+    g.attach_leg(&mut long, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    g.attach_leg(&mut short, 0, SideV13::Short, -(POS_SCALE as i128))
+        .unwrap();
+
+    let out = g
+        .accrue_asset_to_not_atomic(0, 10, 1_000_000_000, 1, true)
+        .unwrap();
+    assert!(out.funding_active);
+    assert_eq!(out.dt, 2);
+    assert!(out.loss_stale_after);
+    assert_eq!(g.slot_last, 2);
+    assert_eq!(g.current_slot, 10);
+    assert_eq!(g.assets[0].f_long_num, -2 * ADL_ONE as i128);
+    assert_eq!(g.assets[0].f_short_num, 2 * ADL_ONE as i128);
 }
 
 #[test]

@@ -1362,8 +1362,14 @@ fn v13_e2e_trade_mark_close_convert_withdraw_conserves() {
     .unwrap();
     g.full_account_refresh(&mut alice, &px2).unwrap();
     g.full_account_refresh(&mut bob, &px2).unwrap();
-    assert!(alice.pnl > 0, "long should have mark profit after price increase");
-    assert!(bob.pnl < 0, "short should have mark loss after price increase");
+    assert!(
+        alice.pnl > 0,
+        "long should have mark profit after price increase"
+    );
+    assert!(
+        bob.pnl < 0,
+        "short should have mark loss after price increase"
+    );
 
     g.execute_trade_with_fee_not_atomic(
         &mut bob,

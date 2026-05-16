@@ -1,8 +1,8 @@
-//! Percolator risk engine — v13.
+//! Percolator risk engine — v14.
 //!
-//! v13 removes the finite global account slab. The public engine surface is
-//! account-local: each `PortfolioAccountV13` is independently authenticated
-//! against its `MarketGroupV13`, and bounded full-account refresh replaces
+//! v14 removes the finite global account slab. The public engine surface is
+//! account-local: each `PortfolioAccountV14` is independently authenticated
+//! against its `MarketGroupV14`, and bounded full-account refresh replaces
 //! full-market scans as the safety primitive.
 
 #![no_std]
@@ -31,7 +31,7 @@ pub const MAX_PROTOCOL_FEE_ABS: u128 = 1_000_000_000_000_000_000_000_000_000_000
 pub const MAX_WARMUP_SLOTS: u64 = u64::MAX;
 pub const MAX_RESOLVE_PRICE_DEVIATION_BPS: u64 = 10_000;
 
-pub mod v13;
+pub mod v14;
 pub mod wide_math;
 
-pub use v13::*;
+pub use v14::*;

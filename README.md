@@ -2,10 +2,10 @@
 
 **EDUCATIONAL RESEARCH PROJECT — NOT PRODUCTION READY. NOT AUDITED. Do NOT use with real funds.**
 
-Current normative spec: [`spec.md`](spec.md), **v13.0.0**.
+Current normative spec: [`spec.md`](spec.md), **v14.0.0**.
 
 Percolator is a perpetual-futures risk-engine library for account-local,
-permissionless risk progress. v13 removes the finite global account slab: every
+permissionless risk progress. v14 removes the finite global account slab: every
 portfolio account is a distinct authenticated account bound to a market group,
 and safety depends on bounded full-account refresh plus fail-closed stale
 states, not on scanning every account in the market.
@@ -21,9 +21,9 @@ or increase risk using optimistic health.
 2. **Account-local safety:** every favorable action refreshes the account's full active portfolio first; hidden, stale, or B-stale legs fail closed.
 3. **Bounded progress:** cranks and recovery paths are account-local and incremental; no public instruction needs to evaluate the whole market.
 
-## Account-Local v13
+## Account-Local v14
 
-Each `PortfolioAccountV13` carries provenance:
+Each `PortfolioAccountV14` carries provenance:
 
 ```text
 market_group_id
@@ -33,7 +33,7 @@ version/layout discriminator
 ```
 
 The engine rejects any account whose provenance does not match the
-`MarketGroupV13`. Active positions are defined only by the canonical active
+`MarketGroupV14`. Active positions are defined only by the canonical active
 bitmap and bounded leg array. There is no hidden slab slot and no global account
 table to scan.
 
@@ -58,7 +58,7 @@ inputs; the engine selects the lane from committed market/account state.
 
 ## A/K/F/B
 
-v13 keeps the lazy index model but makes bankruptcy residuals explicit:
+v14 keeps the lazy index model but makes bankruptcy residuals explicit:
 
 - **A** scales effective quantity for side-level quantity ADL.
 - **K/F** represent mark and funding settlement.
@@ -83,8 +83,8 @@ deterministic recovery reason. The caller does not choose a recovery price.
 
 ## Proofs
 
-The current v13 proof suite is intentionally account-local and runs over the
-production v13 methods:
+The current v14 proof suite is intentionally account-local and runs over the
+production v14 methods:
 
 ```bash
 cargo install --locked kani-verifier
@@ -100,7 +100,7 @@ kani_audit_final.tsv
 scripts/proof-strength-audit-results.md
 ```
 
-The v12 slab proof inventory was retired with the v13 cutover because it no
+The v12 slab proof inventory was retired with the v14 cutover because it no
 longer applies to the architecture.
 
 ## Tests

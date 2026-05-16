@@ -1660,6 +1660,84 @@ fn proof_v14_attach_then_clear_leg_restores_account_local_counters_for_long() {
 #[kani::proof]
 #[kani::unwind(45)]
 #[kani::solver(cadical)]
+fn proof_v14_same_asset_duplicate_leg_cannot_double_count_support() {
+    let start_long: bool = kani::any();
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, account_id, owner));
+    let (existing_side, existing_basis, duplicate_side, duplicate_basis) = if start_long {
+        (SideV14::Long, 7, SideV14::Short, -7)
+    } else {
+        (SideV14::Short, -7, SideV14::Long, 7)
+    };
+    account.legs[0] = PortfolioLegV14 {
+        active: true,
+        side: existing_side,
+        basis_pos_q: existing_basis,
+        a_basis: ADL_ONE,
+        k_snap: 0,
+        f_snap: 0,
+        epoch_snap: 0,
+        loss_weight: 7,
+        b_snap: 0,
+        b_rem: 0,
+        b_epoch_snap: 0,
+        b_stale: false,
+        stale: false,
+    };
+    account.active_bitmap = 1;
+    match existing_side {
+        SideV14::Long => {
+            group.assets[0].stored_pos_count_long = 1;
+            group.assets[0].oi_eff_long_q = 7;
+            group.assets[0].loss_weight_sum_long = 7;
+        }
+        SideV14::Short => {
+            group.assets[0].stored_pos_count_short = 1;
+            group.assets[0].oi_eff_short_q = 7;
+            group.assets[0].loss_weight_sum_short = 7;
+        }
+    }
+
+    let asset_before = group.assets[0];
+    let leg_before = account.legs[0];
+    let bitmap_before = account.active_bitmap;
+    let cert_before = account.health_cert;
+    let result = group.attach_leg(&mut account, 0, duplicate_side, duplicate_basis);
+
+    kani::cover!(
+        matches!(result, Err(V14Error::InvalidLeg)),
+        "v14 same-asset duplicate attach rejected"
+    );
+    assert!(matches!(result, Err(V14Error::InvalidLeg)));
+    assert_eq!(account.legs[0], leg_before);
+    assert_eq!(account.active_bitmap, bitmap_before);
+    assert_eq!(account.health_cert, cert_before);
+    assert_eq!(group.assets[0].oi_eff_long_q, asset_before.oi_eff_long_q);
+    assert_eq!(group.assets[0].oi_eff_short_q, asset_before.oi_eff_short_q);
+    assert_eq!(
+        group.assets[0].stored_pos_count_long,
+        asset_before.stored_pos_count_long
+    );
+    assert_eq!(
+        group.assets[0].stored_pos_count_short,
+        asset_before.stored_pos_count_short
+    );
+    assert_eq!(
+        group.assets[0].loss_weight_sum_long,
+        asset_before.loss_weight_sum_long
+    );
+    assert_eq!(
+        group.assets[0].loss_weight_sum_short,
+        asset_before.loss_weight_sum_short
+    );
+    assert_eq!(account.active_bitmap.count_ones(), 1);
+}
+
+#[kani::proof]
+#[kani::unwind(45)]
+#[kani::solver(cadical)]
 fn proof_v14_bilateral_oi_decomposition_counts_long_short_pair() {
     let size_q = 3u128;
     let (market, account_id, owner) = concrete_ids();

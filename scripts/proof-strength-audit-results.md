@@ -10,18 +10,18 @@ Static inventory from the current `v14` tree:
 
 | Item | Count |
 |---|---:|
-| Rust spec/fuzz tests | 148 |
-| Kani proofs | 143 |
-| Kani cover checks | 227 |
+| Rust spec/fuzz tests | 149 |
+| Kani proofs | 144 |
+| Kani cover checks | 228 |
 | Kani assumptions | 125 |
 
 Breakdown:
 
 | File | Tests | Kani proofs | Cover checks |
 |---|---:|---:|---:|
-| `tests/v14_spec_tests.rs` | 147 | 0 | 0 |
+| `tests/v14_spec_tests.rs` | 148 | 0 | 0 |
 | `tests/v14_fuzzing.rs` | 1 | 0 | 0 |
-| `tests/proofs_v14.rs` | 0 | 136 | 219 |
+| `tests/proofs_v14.rs` | 0 | 137 | 220 |
 | `tests/proofs_v14_arithmetic.rs` | 0 | 7 | 8 |
 
 The v14 suite is over production engine code and shared production arithmetic
@@ -62,7 +62,7 @@ Aggregate timing from that completed sweep:
 | Slowest harness | `proof_v14_bankrupt_liquidation_cannot_free_exposure_before_residual_durable` |
 | Slowest harness time | 397s |
 
-The current tree has 143 Kani proofs, so the timing artifacts must be regenerated
+The current tree has 144 Kani proofs, so the timing artifacts must be regenerated
 before using them as a current full-proof pass record.
 
 Focused incremental proofs added after the last completed full sweep:
@@ -116,6 +116,7 @@ Focused incremental proofs added after the last completed full sweep:
 | `proof_v14_per_asset_slot_last_prevents_cross_asset_accrual_aliasing` | 27s | PASS |
 | `proof_v14_resolved_payout_readiness_uses_exact_counters_and_bounds` | 15s | PASS |
 | `proof_v14_reset_pending_epoch_start_snapshots_prevent_prior_epoch_resurrection` | 32s | PASS |
+| `proof_v14_same_asset_duplicate_leg_cannot_double_count_support` | 3.5s | PASS |
 
 ## Slowest Harnesses From Last Completed Sweep
 
@@ -195,6 +196,7 @@ Each item below maps to production-code tests, Kani proofs, or both.
 | `worst_case_hinted_progress_totality` | `v14_worst_case_hinted_progress_actions_are_total_and_bounded`; `proof_v14_worst_case_hinted_progress_actions_are_total_and_bounded` |
 | `global_accumulator_not_account_health_proof` | `v14_global_residual_is_not_account_health_proof`; `proof_v14_global_residual_is_not_account_health_proof` |
 | `active_bitmap_canonical_no_hidden_legs` | `v14_active_bitmap_is_the_only_active_leg_authority`; `proof_v14_hidden_leg_rejected_by_bitmap_authority` |
+| `canonical_single_leg_per_asset_no_same_asset_double_support` | `v14_same_asset_duplicate_leg_cannot_double_count_support`; `proof_v14_same_asset_duplicate_leg_cannot_double_count_support`; production `attach_leg` duplicate guard |
 | `N_too_large_rejected_at_public_user_fund_init` / `cfg_max_bankrupt_close_lifetime_slots_positive` | `v14_public_init_rejects_unbounded_portfolio_width`; `v14_public_init_requires_crankforward_recovery_and_chunk_caps`; `proof_v14_configured_portfolio_width_rejects_out_of_range_leg`; public config proof |
 | `PNL_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay` | `v14_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay`; `proof_v14_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay`; resolved positive-payout bound-denominator test/proof |
 | `resolved_payout_readiness_uses_exact_counters_and_bounds` | `v14_resolved_payout_readiness_uses_exact_counters_and_bounds`; `proof_v14_resolved_payout_readiness_uses_exact_counters_and_bounds`; existing resolved close partial-B/active-position/payout proofs |

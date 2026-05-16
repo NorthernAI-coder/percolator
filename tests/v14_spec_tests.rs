@@ -235,6 +235,29 @@ fn v14_active_bitmap_is_the_only_active_leg_authority() {
 }
 
 #[test]
+fn v14_same_asset_duplicate_leg_cannot_double_count_support() {
+    let mut g = group();
+    let mut a = account();
+    g.attach_leg(&mut a, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    let account_before = a;
+    let asset_before = g.assets[0];
+
+    assert_eq!(
+        g.attach_leg(&mut a, 0, SideV14::Short, -(POS_SCALE as i128)),
+        Err(V14Error::InvalidLeg)
+    );
+    assert_eq!(a, account_before);
+    assert_eq!(g.assets[0], asset_before);
+    assert_eq!(a.active_bitmap.count_ones(), 1);
+    assert_eq!(g.validate_account_shape(&a), Ok(()));
+
+    g.full_account_refresh(&mut a, &[1; V14_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+    assert_eq!(a.health_cert.active_bitmap_at_cert, 1);
+}
+
+#[test]
 fn v14_stale_and_b_stale_counters_are_exact_and_idempotent() {
     let mut g = group();
     let mut a = account();

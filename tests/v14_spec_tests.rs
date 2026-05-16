@@ -2711,6 +2711,81 @@ fn v14_pending_domain_loss_barrier_blocks_other_participants_until_residual_done
 }
 
 #[test]
+fn v14_pending_domain_loss_barrier_blocks_trade_weight_escape_before_fee_or_position_mutation() {
+    let (market, _, owner) = ids();
+    let mut cfg = V14Config::public_user_fund(1, 0, 10);
+    cfg.public_b_chunk_atoms = 1;
+    cfg.max_trading_fee_bps = 10;
+    let mut g = MarketGroupV14::new(market, cfg).unwrap();
+    let mut participant =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, [4; 32], owner));
+    let mut counterparty =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, [5; 32], owner));
+
+    g.deposit_not_atomic(&mut participant, 1_000).unwrap();
+    g.deposit_not_atomic(&mut counterparty, 1_000).unwrap();
+    g.attach_leg(&mut participant, 0, SideV14::Short, -(POS_SCALE as i128))
+        .unwrap();
+    g.attach_leg(&mut counterparty, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    g.pending_domain_loss_barriers[1] = 1;
+    assert_eq!(
+        g.pending_domain_loss_barrier_count(0, SideV14::Short),
+        Ok(1)
+    );
+
+    let before_group = g;
+    let before_participant = participant;
+    let before_counterparty = counterparty;
+    let res = g.execute_trade_with_fee_not_atomic(
+        &mut participant,
+        &mut counterparty,
+        TradeRequestV14 {
+            asset_index: 0,
+            size_q: POS_SCALE / 2,
+            exec_price: 100,
+            fee_bps: 10,
+        },
+        &[100; V14_MAX_PORTFOLIO_ASSETS_N],
+    );
+
+    assert_eq!(res, Err(V14Error::LockActive));
+    assert_eq!(g, before_group);
+    assert_eq!(participant, before_participant);
+    assert_eq!(counterparty, before_counterparty);
+}
+
+#[test]
+fn v14_pending_domain_loss_barrier_blocks_rebalance_weight_escape_before_position_mutation() {
+    let (market, _, owner) = ids();
+    let mut g = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 10)).unwrap();
+    let mut participant =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, [4; 32], owner));
+
+    g.deposit_not_atomic(&mut participant, 1_000).unwrap();
+    g.attach_leg(&mut participant, 0, SideV14::Short, -(POS_SCALE as i128))
+        .unwrap();
+    g.full_account_refresh(&mut participant, &[100; V14_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+    g.pending_domain_loss_barriers[1] = 1;
+
+    let before_group = g;
+    let before_participant = participant;
+    let res = g.rebalance_reduce_position_not_atomic(
+        &mut participant,
+        RebalanceRequestV14 {
+            asset_index: 0,
+            reduce_q: POS_SCALE / 2,
+        },
+        &[100; V14_MAX_PORTFOLIO_ASSETS_N],
+    );
+
+    assert_eq!(res, Err(V14Error::LockActive));
+    assert_eq!(g, before_group);
+    assert_eq!(participant, before_participant);
+}
+
+#[test]
 fn v14_expired_close_progress_routes_recovery_before_b_booking() {
     let mut g = group();
     let mut participant = account();

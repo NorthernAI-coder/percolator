@@ -4523,6 +4523,164 @@ fn proof_v14_pending_domain_barrier_blocks_participants_until_residual_finalized
 }
 
 #[kani::proof]
+#[kani::unwind(70)]
+#[kani::solver(cadical)]
+fn proof_v14_pending_domain_barrier_blocks_trade_weight_escape_before_mutation() {
+    let (market, _, owner) = concrete_ids();
+    let mut cfg = V14Config::public_user_fund(1, 0, 1);
+    cfg.public_b_chunk_atoms = 1;
+    cfg.max_trading_fee_bps = 1;
+    let mut group = MarketGroupV14::new(market, cfg).unwrap();
+    let mut participant =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, [4; 32], owner));
+    let mut counterparty =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, [5; 32], owner));
+
+    group.deposit_not_atomic(&mut participant, 100).unwrap();
+    group.deposit_not_atomic(&mut counterparty, 100).unwrap();
+    group
+        .attach_leg(&mut participant, 0, SideV14::Short, -10)
+        .unwrap();
+    group
+        .attach_leg(&mut counterparty, 0, SideV14::Long, 10)
+        .unwrap();
+    group.pending_domain_loss_barriers[1] = 1;
+    kani::cover!(
+        group.pending_domain_loss_barrier_count(0, SideV14::Short) == Ok(1),
+        "v14 pending domain barrier with bilateral trade escape attempt reachable"
+    );
+
+    let before_vault = group.vault;
+    let before_insurance = group.insurance;
+    let before_c_tot = group.c_tot;
+    let before_oi_long = group.assets[0].oi_eff_long_q;
+    let before_oi_short = group.assets[0].oi_eff_short_q;
+    let before_weight_long = group.assets[0].loss_weight_sum_long;
+    let before_weight_short = group.assets[0].loss_weight_sum_short;
+    let before_stored_long = group.assets[0].stored_pos_count_long;
+    let before_stored_short = group.assets[0].stored_pos_count_short;
+    let before_barrier = group.pending_domain_loss_barriers[1];
+    let before_participant_capital = participant.capital;
+    let before_participant_pnl = participant.pnl;
+    let before_participant_fee_credits = participant.fee_credits;
+    let before_participant_bitmap = participant.active_bitmap;
+    let before_participant_basis = participant.legs[0].basis_pos_q;
+    let before_participant_loss_weight = participant.legs[0].loss_weight;
+    let before_participant_b_snap = participant.legs[0].b_snap;
+    let before_counterparty_capital = counterparty.capital;
+    let before_counterparty_pnl = counterparty.pnl;
+    let before_counterparty_fee_credits = counterparty.fee_credits;
+    let before_counterparty_bitmap = counterparty.active_bitmap;
+    let before_counterparty_basis = counterparty.legs[0].basis_pos_q;
+    let before_counterparty_loss_weight = counterparty.legs[0].loss_weight;
+    let before_counterparty_b_snap = counterparty.legs[0].b_snap;
+    let result = group.execute_trade_with_fee_not_atomic(
+        &mut participant,
+        &mut counterparty,
+        TradeRequestV14 {
+            asset_index: 0,
+            size_q: 5,
+            exec_price: POS_SCALE as u64,
+            fee_bps: 1,
+        },
+        &[POS_SCALE as u64; V14_MAX_PORTFOLIO_ASSETS_N],
+    );
+
+    assert_eq!(result, Err(V14Error::LockActive));
+    assert_eq!(group.vault, before_vault);
+    assert_eq!(group.insurance, before_insurance);
+    assert_eq!(group.c_tot, before_c_tot);
+    assert_eq!(group.assets[0].oi_eff_long_q, before_oi_long);
+    assert_eq!(group.assets[0].oi_eff_short_q, before_oi_short);
+    assert_eq!(group.assets[0].loss_weight_sum_long, before_weight_long);
+    assert_eq!(group.assets[0].loss_weight_sum_short, before_weight_short);
+    assert_eq!(group.assets[0].stored_pos_count_long, before_stored_long);
+    assert_eq!(group.assets[0].stored_pos_count_short, before_stored_short);
+    assert_eq!(group.pending_domain_loss_barriers[1], before_barrier);
+    assert_eq!(participant.capital, before_participant_capital);
+    assert_eq!(participant.pnl, before_participant_pnl);
+    assert_eq!(participant.fee_credits, before_participant_fee_credits);
+    assert_eq!(participant.active_bitmap, before_participant_bitmap);
+    assert_eq!(participant.legs[0].basis_pos_q, before_participant_basis);
+    assert_eq!(
+        participant.legs[0].loss_weight,
+        before_participant_loss_weight
+    );
+    assert_eq!(participant.legs[0].b_snap, before_participant_b_snap);
+    assert_eq!(counterparty.capital, before_counterparty_capital);
+    assert_eq!(counterparty.pnl, before_counterparty_pnl);
+    assert_eq!(counterparty.fee_credits, before_counterparty_fee_credits);
+    assert_eq!(counterparty.active_bitmap, before_counterparty_bitmap);
+    assert_eq!(counterparty.legs[0].basis_pos_q, before_counterparty_basis);
+    assert_eq!(
+        counterparty.legs[0].loss_weight,
+        before_counterparty_loss_weight
+    );
+    assert_eq!(counterparty.legs[0].b_snap, before_counterparty_b_snap);
+}
+
+#[kani::proof]
+#[kani::unwind(70)]
+#[kani::solver(cadical)]
+fn proof_v14_pending_domain_barrier_blocks_rebalance_weight_escape_before_mutation() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut participant =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, account_id, owner));
+
+    group.deposit_not_atomic(&mut participant, 100).unwrap();
+    group
+        .attach_leg(&mut participant, 0, SideV14::Short, -10)
+        .unwrap();
+    group
+        .full_account_refresh(
+            &mut participant,
+            &[POS_SCALE as u64; V14_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .unwrap();
+    group.pending_domain_loss_barriers[1] = 1;
+    kani::cover!(
+        group.pending_domain_loss_barrier_count(0, SideV14::Short) == Ok(1),
+        "v14 pending domain barrier with rebalance escape attempt reachable"
+    );
+
+    let before_vault = group.vault;
+    let before_insurance = group.insurance;
+    let before_c_tot = group.c_tot;
+    let before_oi_short = group.assets[0].oi_eff_short_q;
+    let before_weight_short = group.assets[0].loss_weight_sum_short;
+    let before_stored_short = group.assets[0].stored_pos_count_short;
+    let before_barrier = group.pending_domain_loss_barriers[1];
+    let before_capital = participant.capital;
+    let before_pnl = participant.pnl;
+    let before_bitmap = participant.active_bitmap;
+    let before_basis = participant.legs[0].basis_pos_q;
+    let before_loss_weight = participant.legs[0].loss_weight;
+    let result = group.rebalance_reduce_position_not_atomic(
+        &mut participant,
+        RebalanceRequestV14 {
+            asset_index: 0,
+            reduce_q: 5,
+        },
+        &[POS_SCALE as u64; V14_MAX_PORTFOLIO_ASSETS_N],
+    );
+
+    assert_eq!(result, Err(V14Error::LockActive));
+    assert_eq!(group.vault, before_vault);
+    assert_eq!(group.insurance, before_insurance);
+    assert_eq!(group.c_tot, before_c_tot);
+    assert_eq!(group.assets[0].oi_eff_short_q, before_oi_short);
+    assert_eq!(group.assets[0].loss_weight_sum_short, before_weight_short);
+    assert_eq!(group.assets[0].stored_pos_count_short, before_stored_short);
+    assert_eq!(group.pending_domain_loss_barriers[1], before_barrier);
+    assert_eq!(participant.capital, before_capital);
+    assert_eq!(participant.pnl, before_pnl);
+    assert_eq!(participant.active_bitmap, before_bitmap);
+    assert_eq!(participant.legs[0].basis_pos_q, before_basis);
+    assert_eq!(participant.legs[0].loss_weight, before_loss_weight);
+}
+
+#[kani::proof]
 #[kani::unwind(60)]
 #[kani::solver(cadical)]
 fn proof_v14_new_close_cannot_overwrite_active_finalized_close_ledger() {

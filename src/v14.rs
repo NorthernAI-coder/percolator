@@ -2876,6 +2876,19 @@ impl MarketGroupV14 {
             position_delta_increases_risk(long_account, request.asset_index, long_delta)?
                 || position_delta_increases_risk(short_account, request.asset_index, short_delta)?;
         let target_effective_lag = self.asset_has_target_effective_lag(request.asset_index)?;
+        let touches_pending_domain_barrier =
+            self.position_delta_touches_pending_domain_loss_barrier(
+                long_account,
+                request.asset_index,
+                long_delta,
+            )? || self.position_delta_touches_pending_domain_loss_barrier(
+                short_account,
+                request.asset_index,
+                short_delta,
+            )?;
+        if touches_pending_domain_barrier {
+            return Err(V14Error::LockActive);
+        }
         if risk_increasing && (locked || target_effective_lag) {
             return Err(V14Error::LockActive);
         }
@@ -2932,6 +2945,20 @@ impl MarketGroupV14 {
             return Err(V14Error::InvalidLeg);
         }
         let close_q = request.close_q.min(leg.basis_pos_q.unsigned_abs());
+        let close_i128 = i128::try_from(close_q).map_err(|_| V14Error::ArithmeticOverflow)?;
+        let close_delta = match leg.side {
+            SideV14::Long => close_i128
+                .checked_neg()
+                .ok_or(V14Error::ArithmeticOverflow)?,
+            SideV14::Short => close_i128,
+        };
+        if self.position_delta_touches_pending_domain_loss_barrier(
+            account,
+            request.asset_index,
+            close_delta,
+        )? {
+            return Err(V14Error::LockActive);
+        }
         let uncovered_loss_after_principal = if account.pnl < 0 {
             account.pnl.unsigned_abs().saturating_sub(account.capital)
         } else {
@@ -3168,6 +3195,20 @@ impl MarketGroupV14 {
         let reduce_q = request.reduce_q.min(leg.basis_pos_q.unsigned_abs());
         if reduce_q == 0 {
             return Err(V14Error::NonProgress);
+        }
+        let reduce_i128 = i128::try_from(reduce_q).map_err(|_| V14Error::ArithmeticOverflow)?;
+        let reduce_delta = match leg.side {
+            SideV14::Long => reduce_i128
+                .checked_neg()
+                .ok_or(V14Error::ArithmeticOverflow)?,
+            SideV14::Short => reduce_i128,
+        };
+        if self.position_delta_touches_pending_domain_loss_barrier(
+            account,
+            request.asset_index,
+            reduce_delta,
+        )? {
+            return Err(V14Error::LockActive);
         }
         self.reduce_position(account, request.asset_index, reduce_q)?;
         self.settle_negative_pnl_from_principal(account)?;
@@ -4365,6 +4406,47 @@ impl MarketGroupV14 {
         Ok(false)
     }
 
+    fn position_delta_touches_pending_domain_loss_barrier(
+        &self,
+        account: &PortfolioAccountV14,
+        asset_index: usize,
+        delta_q: i128,
+    ) -> V14Result<bool> {
+        self.validate_account_shape(account)?;
+        if delta_q == 0 {
+            return Ok(false);
+        }
+        if asset_index >= self.config.max_portfolio_assets as usize {
+            return Err(V14Error::InvalidLeg);
+        }
+        let current = signed_position(account.legs[asset_index]);
+        let next = current
+            .checked_add(delta_q)
+            .ok_or(V14Error::ArithmeticOverflow)?;
+        validate_basis_or_zero(next)?;
+        if current != 0 {
+            let current_side = if current > 0 {
+                SideV14::Long
+            } else {
+                SideV14::Short
+            };
+            if self.has_pending_domain_loss_barrier(asset_index, current_side)? {
+                return Ok(true);
+            }
+        }
+        if next != 0 {
+            let next_side = if next > 0 {
+                SideV14::Long
+            } else {
+                SideV14::Short
+            };
+            if self.has_pending_domain_loss_barrier(asset_index, next_side)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
     fn available_domain_insurance(&self, domain: usize) -> u128 {
         if domain >= V14_DOMAIN_COUNT {
             return 0;
@@ -4633,6 +4715,9 @@ impl MarketGroupV14 {
         }
         if asset_index >= self.config.max_portfolio_assets as usize {
             return Err(V14Error::InvalidLeg);
+        }
+        if self.position_delta_touches_pending_domain_loss_barrier(account, asset_index, delta_q)? {
+            return Err(V14Error::LockActive);
         }
         self.settle_leg_kf_effects(account, asset_index)?;
         let current = signed_position(account.legs[asset_index]);

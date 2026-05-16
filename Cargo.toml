@@ -9,7 +9,7 @@ name = "percolator"
 path = "src/lib.rs"
 
 [dependencies]
-# No runtime dependencies - pure no_std compatible library
+bytemuck = { version = "1.23", default-features = false, features = ["derive"] }
 
 [dev-dependencies]
 proptest = "1.4"

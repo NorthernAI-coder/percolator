@@ -1,10 +1,11 @@
 #![cfg(kani)]
 
 use percolator::v13::{
-    account_equity, HLockLaneV13, LiquidationRequestV13, MarketGroupV13, MarketModeV13,
-    PermissionlessCrankActionV13, PermissionlessCrankRequestV13, PermissionlessProgressOutcomeV13,
-    PermissionlessRecoveryReasonV13, PortfolioAccountV13, PortfolioLegV13, ProvenanceHeaderV13,
-    RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
+    account_equity, HLockLaneV13, LiquidationRequestV13, MarketGroupV13, MarketGroupV13Account,
+    MarketModeV13, PermissionlessCrankActionV13, PermissionlessCrankRequestV13,
+    PermissionlessProgressOutcomeV13, PermissionlessRecoveryReasonV13, PortfolioAccountV13,
+    PortfolioAccountV13Account, PortfolioLegV13, ProvenanceHeaderV13, RebalanceRequestV13,
+    ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config, V13Error,
     V13_MAX_PORTFOLIO_ASSETS_N,
 };
 use percolator::{
@@ -253,6 +254,59 @@ fn proof_v13_account_shape_rejects_malformed_persistent_economic_state() {
     kani::cover!(dirty_case == 2, "v13 shape rejects i128 min fee credit");
     kani::cover!(dirty_case == 3, "v13 shape rejects over-reserved pnl");
     assert_eq!(group.validate_account_shape(&account), Err(expected));
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v13_persisted_wire_rejects_noncanonical_bool_enum_and_option() {
+    let bad_bool: u8 = kani::any();
+    let bad_market_mode: u8 = kani::any();
+    let bad_side_mode: u8 = kani::any();
+    let bad_option_present: u8 = kani::any();
+    kani::assume(bad_bool > 1);
+    kani::assume(bad_market_mode > 2);
+    kani::assume(bad_side_mode > 2);
+    kani::assume(bad_option_present > 1);
+
+    let (market, account_id, owner) = symbolic_ids();
+    let group = MarketGroupV13::new(market, V13Config::public_user_fund(1, 0, 1)).unwrap();
+    let account = PortfolioAccountV13::empty(ProvenanceHeaderV13::new(market, account_id, owner));
+
+    let mut account_wire = PortfolioAccountV13Account::from_runtime(&account);
+    account_wire.stale_state = bad_bool;
+    kani::cover!(bad_bool == 2, "v13 persisted invalid bool branch reachable");
+    assert_eq!(account_wire.try_to_runtime(), Err(V13Error::InvalidConfig));
+
+    let mut market_mode_wire = MarketGroupV13Account::from_runtime(&group);
+    market_mode_wire.mode = bad_market_mode;
+    kani::cover!(
+        bad_market_mode == 3,
+        "v13 persisted invalid market mode branch reachable"
+    );
+    assert_eq!(
+        market_mode_wire.try_to_runtime(),
+        Err(V13Error::InvalidConfig)
+    );
+
+    let mut side_mode_wire = MarketGroupV13Account::from_runtime(&group);
+    side_mode_wire.assets[0].mode_long = bad_side_mode;
+    kani::cover!(
+        bad_side_mode == 3,
+        "v13 persisted invalid side mode branch reachable"
+    );
+    assert_eq!(
+        side_mode_wire.try_to_runtime(),
+        Err(V13Error::InvalidConfig)
+    );
+
+    let mut option_wire = MarketGroupV13Account::from_runtime(&group);
+    option_wire.recovery_reason.present = bad_option_present;
+    kani::cover!(
+        bad_option_present == 2,
+        "v13 persisted invalid option-present branch reachable"
+    );
+    assert_eq!(option_wire.try_to_runtime(), Err(V13Error::InvalidConfig));
 }
 
 #[kani::proof]

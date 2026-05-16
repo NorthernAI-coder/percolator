@@ -876,6 +876,707 @@ pub enum ResolvedCloseOutcomeV13 {
     Closed { payout: u128 },
 }
 
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct V13PodU16 {
+    pub bytes: [u8; 2],
+}
+
+impl V13PodU16 {
+    pub fn new(value: u16) -> Self {
+        Self {
+            bytes: value.to_le_bytes(),
+        }
+    }
+
+    pub fn get(self) -> u16 {
+        u16::from_le_bytes(self.bytes)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct V13PodU32 {
+    pub bytes: [u8; 4],
+}
+
+impl V13PodU32 {
+    pub fn new(value: u32) -> Self {
+        Self {
+            bytes: value.to_le_bytes(),
+        }
+    }
+
+    pub fn get(self) -> u32 {
+        u32::from_le_bytes(self.bytes)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct V13PodU64 {
+    pub bytes: [u8; 8],
+}
+
+impl V13PodU64 {
+    pub fn new(value: u64) -> Self {
+        Self {
+            bytes: value.to_le_bytes(),
+        }
+    }
+
+    pub fn get(self) -> u64 {
+        u64::from_le_bytes(self.bytes)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct V13PodU128 {
+    pub bytes: [u8; 16],
+}
+
+impl V13PodU128 {
+    pub fn new(value: u128) -> Self {
+        Self {
+            bytes: value.to_le_bytes(),
+        }
+    }
+
+    pub fn get(self) -> u128 {
+        u128::from_le_bytes(self.bytes)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct V13PodI128 {
+    pub bytes: [u8; 16],
+}
+
+impl V13PodI128 {
+    pub fn new(value: i128) -> Self {
+        Self {
+            bytes: value.to_le_bytes(),
+        }
+    }
+
+    pub fn get(self) -> i128 {
+        i128::from_le_bytes(self.bytes)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct V13OptionalRecoveryReasonAccount {
+    pub present: u8,
+    pub value: u8,
+}
+
+impl V13OptionalRecoveryReasonAccount {
+    pub fn from_runtime(value: Option<PermissionlessRecoveryReasonV13>) -> Self {
+        match value {
+            Some(reason) => Self {
+                present: 1,
+                value: encode_recovery_reason(reason),
+            },
+            None => Self {
+                present: 0,
+                value: 0,
+            },
+        }
+    }
+
+    pub fn try_to_runtime(self) -> V13Result<Option<PermissionlessRecoveryReasonV13>> {
+        match self.present {
+            0 if self.value == 0 => Ok(None),
+            1 => Ok(Some(decode_recovery_reason(self.value)?)),
+            _ => Err(V13Error::InvalidConfig),
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct ProvenanceHeaderV13Account {
+    pub market_group_id: [u8; 32],
+    pub portfolio_account_id: [u8; 32],
+    pub owner: [u8; 32],
+    pub version: V13PodU16,
+    pub layout_discriminator: V13PodU16,
+}
+
+impl ProvenanceHeaderV13Account {
+    pub fn from_runtime(value: &ProvenanceHeaderV13) -> Self {
+        Self {
+            market_group_id: value.market_group_id,
+            portfolio_account_id: value.portfolio_account_id,
+            owner: value.owner,
+            version: V13PodU16::new(value.version),
+            layout_discriminator: V13PodU16::new(value.layout_discriminator),
+        }
+    }
+
+    pub fn try_to_runtime(&self) -> V13Result<ProvenanceHeaderV13> {
+        let out = ProvenanceHeaderV13 {
+            market_group_id: self.market_group_id,
+            portfolio_account_id: self.portfolio_account_id,
+            owner: self.owner,
+            version: self.version.get(),
+            layout_discriminator: self.layout_discriminator.get(),
+        };
+        if out.version != V13_ACCOUNT_VERSION
+            || out.layout_discriminator != V13_LAYOUT_DISCRIMINATOR
+        {
+            return Err(V13Error::ProvenanceMismatch);
+        }
+        Ok(out)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct V13ConfigAccount {
+    pub max_portfolio_assets: u8,
+    pub min_nonzero_mm_req: V13PodU128,
+    pub min_nonzero_im_req: V13PodU128,
+    pub h_min: V13PodU64,
+    pub h_max: V13PodU64,
+    pub maintenance_margin_bps: V13PodU64,
+    pub initial_margin_bps: V13PodU64,
+    pub max_trading_fee_bps: V13PodU64,
+    pub liquidation_fee_bps: V13PodU64,
+    pub liquidation_fee_cap: V13PodU128,
+    pub min_liquidation_abs: V13PodU128,
+    pub max_accrual_dt_slots: V13PodU64,
+    pub max_abs_funding_e9_per_slot: V13PodU64,
+    pub min_funding_lifetime_slots: V13PodU64,
+    pub max_price_move_bps_per_slot: V13PodU64,
+    pub max_account_b_settlement_chunks: V13PodU64,
+    pub max_bankrupt_close_chunks: V13PodU64,
+    pub public_b_chunk_atoms: V13PodU128,
+    pub permissionless_recovery_enabled: u8,
+    pub stale_certificate_penalty_enabled: u8,
+    pub full_refresh_required_for_favorable_actions: u8,
+    pub public_liveness_profile_crank_forward: u8,
+}
+
+impl V13ConfigAccount {
+    pub fn from_runtime(value: &V13Config) -> Self {
+        Self {
+            max_portfolio_assets: value.max_portfolio_assets,
+            min_nonzero_mm_req: V13PodU128::new(value.min_nonzero_mm_req),
+            min_nonzero_im_req: V13PodU128::new(value.min_nonzero_im_req),
+            h_min: V13PodU64::new(value.h_min),
+            h_max: V13PodU64::new(value.h_max),
+            maintenance_margin_bps: V13PodU64::new(value.maintenance_margin_bps),
+            initial_margin_bps: V13PodU64::new(value.initial_margin_bps),
+            max_trading_fee_bps: V13PodU64::new(value.max_trading_fee_bps),
+            liquidation_fee_bps: V13PodU64::new(value.liquidation_fee_bps),
+            liquidation_fee_cap: V13PodU128::new(value.liquidation_fee_cap),
+            min_liquidation_abs: V13PodU128::new(value.min_liquidation_abs),
+            max_accrual_dt_slots: V13PodU64::new(value.max_accrual_dt_slots),
+            max_abs_funding_e9_per_slot: V13PodU64::new(value.max_abs_funding_e9_per_slot),
+            min_funding_lifetime_slots: V13PodU64::new(value.min_funding_lifetime_slots),
+            max_price_move_bps_per_slot: V13PodU64::new(value.max_price_move_bps_per_slot),
+            max_account_b_settlement_chunks: V13PodU64::new(value.max_account_b_settlement_chunks),
+            max_bankrupt_close_chunks: V13PodU64::new(value.max_bankrupt_close_chunks),
+            public_b_chunk_atoms: V13PodU128::new(value.public_b_chunk_atoms),
+            permissionless_recovery_enabled: encode_bool(value.permissionless_recovery_enabled),
+            stale_certificate_penalty_enabled: encode_bool(value.stale_certificate_penalty_enabled),
+            full_refresh_required_for_favorable_actions: encode_bool(
+                value.full_refresh_required_for_favorable_actions,
+            ),
+            public_liveness_profile_crank_forward: encode_bool(
+                value.public_liveness_profile_crank_forward,
+            ),
+        }
+    }
+
+    pub fn try_to_runtime(&self) -> V13Result<V13Config> {
+        let out = V13Config {
+            max_portfolio_assets: self.max_portfolio_assets,
+            min_nonzero_mm_req: self.min_nonzero_mm_req.get(),
+            min_nonzero_im_req: self.min_nonzero_im_req.get(),
+            h_min: self.h_min.get(),
+            h_max: self.h_max.get(),
+            maintenance_margin_bps: self.maintenance_margin_bps.get(),
+            initial_margin_bps: self.initial_margin_bps.get(),
+            max_trading_fee_bps: self.max_trading_fee_bps.get(),
+            liquidation_fee_bps: self.liquidation_fee_bps.get(),
+            liquidation_fee_cap: self.liquidation_fee_cap.get(),
+            min_liquidation_abs: self.min_liquidation_abs.get(),
+            max_accrual_dt_slots: self.max_accrual_dt_slots.get(),
+            max_abs_funding_e9_per_slot: self.max_abs_funding_e9_per_slot.get(),
+            min_funding_lifetime_slots: self.min_funding_lifetime_slots.get(),
+            max_price_move_bps_per_slot: self.max_price_move_bps_per_slot.get(),
+            max_account_b_settlement_chunks: self.max_account_b_settlement_chunks.get(),
+            max_bankrupt_close_chunks: self.max_bankrupt_close_chunks.get(),
+            public_b_chunk_atoms: self.public_b_chunk_atoms.get(),
+            permissionless_recovery_enabled: decode_bool(self.permissionless_recovery_enabled)?,
+            stale_certificate_penalty_enabled: decode_bool(self.stale_certificate_penalty_enabled)?,
+            full_refresh_required_for_favorable_actions: decode_bool(
+                self.full_refresh_required_for_favorable_actions,
+            )?,
+            public_liveness_profile_crank_forward: decode_bool(
+                self.public_liveness_profile_crank_forward,
+            )?,
+        };
+        out.validate_public_user_fund()?;
+        Ok(out)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct AssetStateV13Account {
+    pub raw_oracle_target_price: V13PodU64,
+    pub effective_price: V13PodU64,
+    pub fund_px_last: V13PodU64,
+    pub a_long: V13PodU128,
+    pub a_short: V13PodU128,
+    pub k_long: V13PodI128,
+    pub k_short: V13PodI128,
+    pub f_long_num: V13PodI128,
+    pub f_short_num: V13PodI128,
+    pub k_epoch_start_long: V13PodI128,
+    pub k_epoch_start_short: V13PodI128,
+    pub f_epoch_start_long_num: V13PodI128,
+    pub f_epoch_start_short_num: V13PodI128,
+    pub b_long_num: V13PodU128,
+    pub b_short_num: V13PodU128,
+    pub b_epoch_start_long_num: V13PodU128,
+    pub b_epoch_start_short_num: V13PodU128,
+    pub oi_eff_long_q: V13PodU128,
+    pub oi_eff_short_q: V13PodU128,
+    pub stored_pos_count_long: V13PodU64,
+    pub stored_pos_count_short: V13PodU64,
+    pub stale_account_count_long: V13PodU64,
+    pub stale_account_count_short: V13PodU64,
+    pub loss_weight_sum_long: V13PodU128,
+    pub loss_weight_sum_short: V13PodU128,
+    pub social_loss_remainder_long_num: V13PodU128,
+    pub social_loss_remainder_short_num: V13PodU128,
+    pub social_loss_dust_long_num: V13PodU128,
+    pub social_loss_dust_short_num: V13PodU128,
+    pub explicit_unallocated_loss_long: V13PodU128,
+    pub explicit_unallocated_loss_short: V13PodU128,
+    pub epoch_long: V13PodU64,
+    pub epoch_short: V13PodU64,
+    pub mode_long: u8,
+    pub mode_short: u8,
+}
+
+impl AssetStateV13Account {
+    pub fn from_runtime(value: &AssetStateV13) -> Self {
+        Self {
+            raw_oracle_target_price: V13PodU64::new(value.raw_oracle_target_price),
+            effective_price: V13PodU64::new(value.effective_price),
+            fund_px_last: V13PodU64::new(value.fund_px_last),
+            a_long: V13PodU128::new(value.a_long),
+            a_short: V13PodU128::new(value.a_short),
+            k_long: V13PodI128::new(value.k_long),
+            k_short: V13PodI128::new(value.k_short),
+            f_long_num: V13PodI128::new(value.f_long_num),
+            f_short_num: V13PodI128::new(value.f_short_num),
+            k_epoch_start_long: V13PodI128::new(value.k_epoch_start_long),
+            k_epoch_start_short: V13PodI128::new(value.k_epoch_start_short),
+            f_epoch_start_long_num: V13PodI128::new(value.f_epoch_start_long_num),
+            f_epoch_start_short_num: V13PodI128::new(value.f_epoch_start_short_num),
+            b_long_num: V13PodU128::new(value.b_long_num),
+            b_short_num: V13PodU128::new(value.b_short_num),
+            b_epoch_start_long_num: V13PodU128::new(value.b_epoch_start_long_num),
+            b_epoch_start_short_num: V13PodU128::new(value.b_epoch_start_short_num),
+            oi_eff_long_q: V13PodU128::new(value.oi_eff_long_q),
+            oi_eff_short_q: V13PodU128::new(value.oi_eff_short_q),
+            stored_pos_count_long: V13PodU64::new(value.stored_pos_count_long),
+            stored_pos_count_short: V13PodU64::new(value.stored_pos_count_short),
+            stale_account_count_long: V13PodU64::new(value.stale_account_count_long),
+            stale_account_count_short: V13PodU64::new(value.stale_account_count_short),
+            loss_weight_sum_long: V13PodU128::new(value.loss_weight_sum_long),
+            loss_weight_sum_short: V13PodU128::new(value.loss_weight_sum_short),
+            social_loss_remainder_long_num: V13PodU128::new(value.social_loss_remainder_long_num),
+            social_loss_remainder_short_num: V13PodU128::new(value.social_loss_remainder_short_num),
+            social_loss_dust_long_num: V13PodU128::new(value.social_loss_dust_long_num),
+            social_loss_dust_short_num: V13PodU128::new(value.social_loss_dust_short_num),
+            explicit_unallocated_loss_long: V13PodU128::new(value.explicit_unallocated_loss_long),
+            explicit_unallocated_loss_short: V13PodU128::new(value.explicit_unallocated_loss_short),
+            epoch_long: V13PodU64::new(value.epoch_long),
+            epoch_short: V13PodU64::new(value.epoch_short),
+            mode_long: encode_side_mode(value.mode_long),
+            mode_short: encode_side_mode(value.mode_short),
+        }
+    }
+
+    pub fn try_to_runtime(&self) -> V13Result<AssetStateV13> {
+        let out = AssetStateV13 {
+            raw_oracle_target_price: self.raw_oracle_target_price.get(),
+            effective_price: self.effective_price.get(),
+            fund_px_last: self.fund_px_last.get(),
+            a_long: self.a_long.get(),
+            a_short: self.a_short.get(),
+            k_long: self.k_long.get(),
+            k_short: self.k_short.get(),
+            f_long_num: self.f_long_num.get(),
+            f_short_num: self.f_short_num.get(),
+            k_epoch_start_long: self.k_epoch_start_long.get(),
+            k_epoch_start_short: self.k_epoch_start_short.get(),
+            f_epoch_start_long_num: self.f_epoch_start_long_num.get(),
+            f_epoch_start_short_num: self.f_epoch_start_short_num.get(),
+            b_long_num: self.b_long_num.get(),
+            b_short_num: self.b_short_num.get(),
+            b_epoch_start_long_num: self.b_epoch_start_long_num.get(),
+            b_epoch_start_short_num: self.b_epoch_start_short_num.get(),
+            oi_eff_long_q: self.oi_eff_long_q.get(),
+            oi_eff_short_q: self.oi_eff_short_q.get(),
+            stored_pos_count_long: self.stored_pos_count_long.get(),
+            stored_pos_count_short: self.stored_pos_count_short.get(),
+            stale_account_count_long: self.stale_account_count_long.get(),
+            stale_account_count_short: self.stale_account_count_short.get(),
+            loss_weight_sum_long: self.loss_weight_sum_long.get(),
+            loss_weight_sum_short: self.loss_weight_sum_short.get(),
+            social_loss_remainder_long_num: self.social_loss_remainder_long_num.get(),
+            social_loss_remainder_short_num: self.social_loss_remainder_short_num.get(),
+            social_loss_dust_long_num: self.social_loss_dust_long_num.get(),
+            social_loss_dust_short_num: self.social_loss_dust_short_num.get(),
+            explicit_unallocated_loss_long: self.explicit_unallocated_loss_long.get(),
+            explicit_unallocated_loss_short: self.explicit_unallocated_loss_short.get(),
+            epoch_long: self.epoch_long.get(),
+            epoch_short: self.epoch_short.get(),
+            mode_long: decode_side_mode(self.mode_long)?,
+            mode_short: decode_side_mode(self.mode_short)?,
+        };
+        validate_non_min_i128(out.k_long)?;
+        validate_non_min_i128(out.k_short)?;
+        validate_non_min_i128(out.f_long_num)?;
+        validate_non_min_i128(out.f_short_num)?;
+        validate_non_min_i128(out.k_epoch_start_long)?;
+        validate_non_min_i128(out.k_epoch_start_short)?;
+        validate_non_min_i128(out.f_epoch_start_long_num)?;
+        validate_non_min_i128(out.f_epoch_start_short_num)?;
+        Ok(out)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct PortfolioLegV13Account {
+    pub active: u8,
+    pub side: u8,
+    pub basis_pos_q: V13PodI128,
+    pub a_basis: V13PodU128,
+    pub k_snap: V13PodI128,
+    pub f_snap: V13PodI128,
+    pub epoch_snap: V13PodU64,
+    pub loss_weight: V13PodU128,
+    pub b_snap: V13PodU128,
+    pub b_rem: V13PodU128,
+    pub b_epoch_snap: V13PodU64,
+    pub b_stale: u8,
+    pub stale: u8,
+}
+
+impl PortfolioLegV13Account {
+    pub fn from_runtime(value: &PortfolioLegV13) -> Self {
+        Self {
+            active: encode_bool(value.active),
+            side: encode_side(value.side),
+            basis_pos_q: V13PodI128::new(value.basis_pos_q),
+            a_basis: V13PodU128::new(value.a_basis),
+            k_snap: V13PodI128::new(value.k_snap),
+            f_snap: V13PodI128::new(value.f_snap),
+            epoch_snap: V13PodU64::new(value.epoch_snap),
+            loss_weight: V13PodU128::new(value.loss_weight),
+            b_snap: V13PodU128::new(value.b_snap),
+            b_rem: V13PodU128::new(value.b_rem),
+            b_epoch_snap: V13PodU64::new(value.b_epoch_snap),
+            b_stale: encode_bool(value.b_stale),
+            stale: encode_bool(value.stale),
+        }
+    }
+
+    pub fn try_to_runtime(&self) -> V13Result<PortfolioLegV13> {
+        let out = PortfolioLegV13 {
+            active: decode_bool(self.active)?,
+            side: decode_side(self.side)?,
+            basis_pos_q: self.basis_pos_q.get(),
+            a_basis: self.a_basis.get(),
+            k_snap: self.k_snap.get(),
+            f_snap: self.f_snap.get(),
+            epoch_snap: self.epoch_snap.get(),
+            loss_weight: self.loss_weight.get(),
+            b_snap: self.b_snap.get(),
+            b_rem: self.b_rem.get(),
+            b_epoch_snap: self.b_epoch_snap.get(),
+            b_stale: decode_bool(self.b_stale)?,
+            stale: decode_bool(self.stale)?,
+        };
+        if out.active {
+            validate_active_leg(out)?;
+        } else if out != PortfolioLegV13::EMPTY {
+            return Err(V13Error::HiddenLeg);
+        }
+        Ok(out)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct HealthCertV13Account {
+    pub certified_equity: V13PodI128,
+    pub certified_initial_req: V13PodU128,
+    pub certified_maintenance_req: V13PodU128,
+    pub certified_liq_deficit: V13PodU128,
+    pub certified_worst_case_loss: V13PodU128,
+    pub cert_oracle_epoch: V13PodU64,
+    pub cert_funding_epoch: V13PodU64,
+    pub cert_risk_epoch: V13PodU64,
+    pub active_bitmap_at_cert: V13PodU32,
+    pub valid: u8,
+}
+
+impl HealthCertV13Account {
+    pub fn from_runtime(value: &HealthCertV13) -> Self {
+        Self {
+            certified_equity: V13PodI128::new(value.certified_equity),
+            certified_initial_req: V13PodU128::new(value.certified_initial_req),
+            certified_maintenance_req: V13PodU128::new(value.certified_maintenance_req),
+            certified_liq_deficit: V13PodU128::new(value.certified_liq_deficit),
+            certified_worst_case_loss: V13PodU128::new(value.certified_worst_case_loss),
+            cert_oracle_epoch: V13PodU64::new(value.cert_oracle_epoch),
+            cert_funding_epoch: V13PodU64::new(value.cert_funding_epoch),
+            cert_risk_epoch: V13PodU64::new(value.cert_risk_epoch),
+            active_bitmap_at_cert: V13PodU32::new(value.active_bitmap_at_cert),
+            valid: encode_bool(value.valid),
+        }
+    }
+
+    pub fn try_to_runtime(&self) -> V13Result<HealthCertV13> {
+        let out = HealthCertV13 {
+            certified_equity: self.certified_equity.get(),
+            certified_initial_req: self.certified_initial_req.get(),
+            certified_maintenance_req: self.certified_maintenance_req.get(),
+            certified_liq_deficit: self.certified_liq_deficit.get(),
+            certified_worst_case_loss: self.certified_worst_case_loss.get(),
+            cert_oracle_epoch: self.cert_oracle_epoch.get(),
+            cert_funding_epoch: self.cert_funding_epoch.get(),
+            cert_risk_epoch: self.cert_risk_epoch.get(),
+            active_bitmap_at_cert: self.active_bitmap_at_cert.get(),
+            valid: decode_bool(self.valid)?,
+        };
+        validate_non_min_i128(out.certified_equity)?;
+        Ok(out)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct PortfolioAccountV13Account {
+    pub provenance_header: ProvenanceHeaderV13Account,
+    pub owner: [u8; 32],
+    pub capital: V13PodU128,
+    pub pnl: V13PodI128,
+    pub reserved_pnl: V13PodU128,
+    pub fee_credits: V13PodI128,
+    pub last_fee_slot: V13PodU64,
+    pub active_bitmap: V13PodU32,
+    pub legs: [PortfolioLegV13Account; V13_MAX_PORTFOLIO_ASSETS_N],
+    pub health_cert: HealthCertV13Account,
+    pub stale_state: u8,
+    pub b_stale_state: u8,
+    pub rebalance_lock: u8,
+    pub liquidation_lock: u8,
+}
+
+impl PortfolioAccountV13Account {
+    pub fn try_empty(header: ProvenanceHeaderV13Account) -> V13Result<Self> {
+        Ok(Self::from_runtime(&PortfolioAccountV13::empty(
+            header.try_to_runtime()?,
+        )))
+    }
+
+    pub fn from_runtime(value: &PortfolioAccountV13) -> Self {
+        let mut legs = [PortfolioLegV13Account::default(); V13_MAX_PORTFOLIO_ASSETS_N];
+        let mut i = 0;
+        while i < V13_MAX_PORTFOLIO_ASSETS_N {
+            legs[i] = PortfolioLegV13Account::from_runtime(&value.legs[i]);
+            i += 1;
+        }
+        Self {
+            provenance_header: ProvenanceHeaderV13Account::from_runtime(&value.provenance_header),
+            owner: value.owner,
+            capital: V13PodU128::new(value.capital),
+            pnl: V13PodI128::new(value.pnl),
+            reserved_pnl: V13PodU128::new(value.reserved_pnl),
+            fee_credits: V13PodI128::new(value.fee_credits),
+            last_fee_slot: V13PodU64::new(value.last_fee_slot),
+            active_bitmap: V13PodU32::new(value.active_bitmap),
+            legs,
+            health_cert: HealthCertV13Account::from_runtime(&value.health_cert),
+            stale_state: encode_bool(value.stale_state),
+            b_stale_state: encode_bool(value.b_stale_state),
+            rebalance_lock: encode_bool(value.rebalance_lock),
+            liquidation_lock: encode_bool(value.liquidation_lock),
+        }
+    }
+
+    pub fn try_to_runtime(&self) -> V13Result<PortfolioAccountV13> {
+        let mut legs = [PortfolioLegV13::EMPTY; V13_MAX_PORTFOLIO_ASSETS_N];
+        let mut i = 0;
+        while i < V13_MAX_PORTFOLIO_ASSETS_N {
+            legs[i] = self.legs[i].try_to_runtime()?;
+            i += 1;
+        }
+        let out = PortfolioAccountV13 {
+            provenance_header: self.provenance_header.try_to_runtime()?,
+            owner: self.owner,
+            capital: self.capital.get(),
+            pnl: self.pnl.get(),
+            reserved_pnl: self.reserved_pnl.get(),
+            fee_credits: self.fee_credits.get(),
+            last_fee_slot: self.last_fee_slot.get(),
+            active_bitmap: self.active_bitmap.get(),
+            legs,
+            health_cert: self.health_cert.try_to_runtime()?,
+            stale_state: decode_bool(self.stale_state)?,
+            b_stale_state: decode_bool(self.b_stale_state)?,
+            rebalance_lock: decode_bool(self.rebalance_lock)?,
+            liquidation_lock: decode_bool(self.liquidation_lock)?,
+        };
+        if out.provenance_header.owner != out.owner {
+            return Err(V13Error::ProvenanceMismatch);
+        }
+        validate_non_min_i128(out.pnl)?;
+        validate_fee_credits(out.fee_credits)?;
+        if out.reserved_pnl > out.pnl.max(0) as u128 {
+            return Err(V13Error::InvalidLeg);
+        }
+        Ok(out)
+    }
+
+    pub fn validate_with_market(&self, market: &MarketGroupV13) -> V13Result<PortfolioAccountV13> {
+        let out = self.try_to_runtime()?;
+        market.validate_account_shape(&out)?;
+        Ok(out)
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, bytemuck::Zeroable, bytemuck::Pod)]
+pub struct MarketGroupV13Account {
+    pub market_group_id: [u8; 32],
+    pub config: V13ConfigAccount,
+    pub vault: V13PodU128,
+    pub insurance: V13PodU128,
+    pub c_tot: V13PodU128,
+    pub pnl_pos_tot: V13PodU128,
+    pub pnl_matured_pos_tot: V13PodU128,
+    pub materialized_portfolio_count: V13PodU64,
+    pub stale_certificate_count: V13PodU64,
+    pub b_stale_account_count: V13PodU64,
+    pub negative_pnl_account_count: V13PodU64,
+    pub risk_epoch: V13PodU64,
+    pub oracle_epoch: V13PodU64,
+    pub funding_epoch: V13PodU64,
+    pub slot_last: V13PodU64,
+    pub current_slot: V13PodU64,
+    pub assets: [AssetStateV13Account; V13_MAX_PORTFOLIO_ASSETS_N],
+    pub bankruptcy_hlock_active: u8,
+    pub threshold_stress_active: u8,
+    pub active_bankrupt_close_present: u8,
+    pub loss_stale_active: u8,
+    pub recovery_reason: V13OptionalRecoveryReasonAccount,
+    pub mode: u8,
+    pub resolved_slot: V13PodU64,
+    pub payout_snapshot: V13PodU128,
+    pub payout_snapshot_pnl_pos_tot: V13PodU128,
+    pub payout_snapshot_captured: u8,
+}
+
+impl MarketGroupV13Account {
+    pub fn from_runtime(value: &MarketGroupV13) -> Self {
+        let mut assets = [AssetStateV13Account::default(); V13_MAX_PORTFOLIO_ASSETS_N];
+        let mut i = 0;
+        while i < V13_MAX_PORTFOLIO_ASSETS_N {
+            assets[i] = AssetStateV13Account::from_runtime(&value.assets[i]);
+            i += 1;
+        }
+        Self {
+            market_group_id: value.market_group_id,
+            config: V13ConfigAccount::from_runtime(&value.config),
+            vault: V13PodU128::new(value.vault),
+            insurance: V13PodU128::new(value.insurance),
+            c_tot: V13PodU128::new(value.c_tot),
+            pnl_pos_tot: V13PodU128::new(value.pnl_pos_tot),
+            pnl_matured_pos_tot: V13PodU128::new(value.pnl_matured_pos_tot),
+            materialized_portfolio_count: V13PodU64::new(value.materialized_portfolio_count),
+            stale_certificate_count: V13PodU64::new(value.stale_certificate_count),
+            b_stale_account_count: V13PodU64::new(value.b_stale_account_count),
+            negative_pnl_account_count: V13PodU64::new(value.negative_pnl_account_count),
+            risk_epoch: V13PodU64::new(value.risk_epoch),
+            oracle_epoch: V13PodU64::new(value.oracle_epoch),
+            funding_epoch: V13PodU64::new(value.funding_epoch),
+            slot_last: V13PodU64::new(value.slot_last),
+            current_slot: V13PodU64::new(value.current_slot),
+            assets,
+            bankruptcy_hlock_active: encode_bool(value.bankruptcy_hlock_active),
+            threshold_stress_active: encode_bool(value.threshold_stress_active),
+            active_bankrupt_close_present: encode_bool(value.active_bankrupt_close_present),
+            loss_stale_active: encode_bool(value.loss_stale_active),
+            recovery_reason: V13OptionalRecoveryReasonAccount::from_runtime(value.recovery_reason),
+            mode: encode_market_mode(value.mode),
+            resolved_slot: V13PodU64::new(value.resolved_slot),
+            payout_snapshot: V13PodU128::new(value.payout_snapshot),
+            payout_snapshot_pnl_pos_tot: V13PodU128::new(value.payout_snapshot_pnl_pos_tot),
+            payout_snapshot_captured: encode_bool(value.payout_snapshot_captured),
+        }
+    }
+
+    pub fn try_to_runtime(&self) -> V13Result<MarketGroupV13> {
+        let mut assets = [AssetStateV13::default(); V13_MAX_PORTFOLIO_ASSETS_N];
+        let mut i = 0;
+        while i < V13_MAX_PORTFOLIO_ASSETS_N {
+            assets[i] = self.assets[i].try_to_runtime()?;
+            i += 1;
+        }
+        let out = MarketGroupV13 {
+            market_group_id: self.market_group_id,
+            config: self.config.try_to_runtime()?,
+            vault: self.vault.get(),
+            insurance: self.insurance.get(),
+            c_tot: self.c_tot.get(),
+            pnl_pos_tot: self.pnl_pos_tot.get(),
+            pnl_matured_pos_tot: self.pnl_matured_pos_tot.get(),
+            materialized_portfolio_count: self.materialized_portfolio_count.get(),
+            stale_certificate_count: self.stale_certificate_count.get(),
+            b_stale_account_count: self.b_stale_account_count.get(),
+            negative_pnl_account_count: self.negative_pnl_account_count.get(),
+            risk_epoch: self.risk_epoch.get(),
+            oracle_epoch: self.oracle_epoch.get(),
+            funding_epoch: self.funding_epoch.get(),
+            slot_last: self.slot_last.get(),
+            current_slot: self.current_slot.get(),
+            assets,
+            bankruptcy_hlock_active: decode_bool(self.bankruptcy_hlock_active)?,
+            threshold_stress_active: decode_bool(self.threshold_stress_active)?,
+            active_bankrupt_close_present: decode_bool(self.active_bankrupt_close_present)?,
+            loss_stale_active: decode_bool(self.loss_stale_active)?,
+            recovery_reason: self.recovery_reason.try_to_runtime()?,
+            mode: decode_market_mode(self.mode)?,
+            resolved_slot: self.resolved_slot.get(),
+            payout_snapshot: self.payout_snapshot.get(),
+            payout_snapshot_pnl_pos_tot: self.payout_snapshot_pnl_pos_tot.get(),
+            payout_snapshot_captured: decode_bool(self.payout_snapshot_captured)?,
+        };
+        out.assert_public_invariants()?;
+        Ok(out)
+    }
+
+    pub fn validate(&self) -> V13Result<MarketGroupV13> {
+        self.try_to_runtime()
+    }
+}
+
 impl MarketGroupV13 {
     #[cfg(not(target_os = "solana"))]
     pub fn new(market_group_id: [u8; 32], config: V13Config) -> V13Result<Self> {
@@ -3066,6 +3767,98 @@ fn adjust_u128(current: u128, old: u128, new: u128) -> V13Result<u128> {
         current
             .checked_sub(old - new)
             .ok_or(V13Error::CounterUnderflow)
+    }
+}
+
+fn encode_bool(value: bool) -> u8 {
+    if value {
+        1
+    } else {
+        0
+    }
+}
+
+fn decode_bool(value: u8) -> V13Result<bool> {
+    match value {
+        0 => Ok(false),
+        1 => Ok(true),
+        _ => Err(V13Error::InvalidConfig),
+    }
+}
+
+fn encode_side(value: SideV13) -> u8 {
+    match value {
+        SideV13::Long => 0,
+        SideV13::Short => 1,
+    }
+}
+
+fn decode_side(value: u8) -> V13Result<SideV13> {
+    match value {
+        0 => Ok(SideV13::Long),
+        1 => Ok(SideV13::Short),
+        _ => Err(V13Error::InvalidConfig),
+    }
+}
+
+fn encode_side_mode(value: SideModeV13) -> u8 {
+    match value {
+        SideModeV13::Normal => 0,
+        SideModeV13::DrainOnly => 1,
+        SideModeV13::ResetPending => 2,
+    }
+}
+
+fn decode_side_mode(value: u8) -> V13Result<SideModeV13> {
+    match value {
+        0 => Ok(SideModeV13::Normal),
+        1 => Ok(SideModeV13::DrainOnly),
+        2 => Ok(SideModeV13::ResetPending),
+        _ => Err(V13Error::InvalidConfig),
+    }
+}
+
+fn encode_market_mode(value: MarketModeV13) -> u8 {
+    match value {
+        MarketModeV13::Live => 0,
+        MarketModeV13::Resolved => 1,
+        MarketModeV13::Recovery => 2,
+    }
+}
+
+fn decode_market_mode(value: u8) -> V13Result<MarketModeV13> {
+    match value {
+        0 => Ok(MarketModeV13::Live),
+        1 => Ok(MarketModeV13::Resolved),
+        2 => Ok(MarketModeV13::Recovery),
+        _ => Err(V13Error::InvalidConfig),
+    }
+}
+
+fn encode_recovery_reason(value: PermissionlessRecoveryReasonV13) -> u8 {
+    match value {
+        PermissionlessRecoveryReasonV13::BelowProgressFloor => 0,
+        PermissionlessRecoveryReasonV13::BlockedSegmentHeadroomOrRepresentability => 1,
+        PermissionlessRecoveryReasonV13::AccountBSettlementCannotProgress => 2,
+        PermissionlessRecoveryReasonV13::BIndexHeadroomExhausted => 3,
+        PermissionlessRecoveryReasonV13::ActiveBankruptCloseCannotProgress => 4,
+        PermissionlessRecoveryReasonV13::ExplicitLossOrDustAuditOverflow => 5,
+        PermissionlessRecoveryReasonV13::OracleOrTargetUnavailableByAuthenticatedPolicy => 6,
+        PermissionlessRecoveryReasonV13::CounterOrEpochOverflowDeclaredRecovery => 7,
+    }
+}
+
+fn decode_recovery_reason(value: u8) -> V13Result<PermissionlessRecoveryReasonV13> {
+    match value {
+        0 => Ok(PermissionlessRecoveryReasonV13::BelowProgressFloor),
+        1 => Ok(PermissionlessRecoveryReasonV13::BlockedSegmentHeadroomOrRepresentability),
+        2 => Ok(PermissionlessRecoveryReasonV13::AccountBSettlementCannotProgress),
+        3 => Ok(PermissionlessRecoveryReasonV13::BIndexHeadroomExhausted),
+        4 => Ok(PermissionlessRecoveryReasonV13::ActiveBankruptCloseCannotProgress),
+        5 => Ok(PermissionlessRecoveryReasonV13::ExplicitLossOrDustAuditOverflow),
+        6 => Ok(PermissionlessRecoveryReasonV13::OracleOrTargetUnavailableByAuthenticatedPolicy),
+        7 => Ok(PermissionlessRecoveryReasonV13::CounterOrEpochOverflowDeclaredRecovery),
+        _ => Err(V13Error::InvalidConfig),
     }
 }
 

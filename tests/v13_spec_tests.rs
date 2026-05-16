@@ -1,9 +1,12 @@
 use percolator::v13::{
-    account_equity, risk_notional_ceil, HLockLaneV13, LiquidationRequestV13, MarketGroupV13,
-    MarketModeV13, PermissionlessCrankActionV13, PermissionlessCrankRequestV13,
-    PermissionlessProgressOutcomeV13, PermissionlessRecoveryReasonV13, PortfolioAccountV13,
-    PortfolioLegV13, ProvenanceHeaderV13, RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13,
-    TradeRequestV13, V13Config, V13Error, V13_MAX_PORTFOLIO_ASSETS_N,
+    account_equity, risk_notional_ceil, AssetStateV13Account, HLockLaneV13, HealthCertV13Account,
+    LiquidationRequestV13, MarketGroupV13, MarketGroupV13Account, MarketModeV13,
+    PermissionlessCrankActionV13, PermissionlessCrankRequestV13, PermissionlessProgressOutcomeV13,
+    PermissionlessRecoveryReasonV13, PortfolioAccountV13, PortfolioAccountV13Account,
+    PortfolioLegV13, PortfolioLegV13Account, ProvenanceHeaderV13, ProvenanceHeaderV13Account,
+    RebalanceRequestV13, ResolvedCloseOutcomeV13, SideV13, TradeRequestV13, V13Config,
+    V13ConfigAccount, V13Error, V13OptionalRecoveryReasonAccount, V13PodI128, V13PodU128,
+    V13PodU16, V13PodU32, V13PodU64, V13_MAX_PORTFOLIO_ASSETS_N,
 };
 use percolator::{
     ADL_ONE, MAX_ACCOUNT_NOTIONAL, MAX_ORACLE_PRICE, MAX_PROTOCOL_FEE_ABS, POS_SCALE,
@@ -56,6 +59,98 @@ fn active_leg(side: SideV13, basis_pos_q: i128) -> PortfolioLegV13 {
         b_stale: false,
         stale: false,
     }
+}
+
+fn assert_pod_zeroable<T: bytemuck::Pod + bytemuck::Zeroable>() {}
+
+#[test]
+fn v13_persisted_account_wire_structs_are_bytemuck_pod() {
+    assert_pod_zeroable::<V13PodU16>();
+    assert_pod_zeroable::<V13PodU32>();
+    assert_pod_zeroable::<V13PodU64>();
+    assert_pod_zeroable::<V13PodU128>();
+    assert_pod_zeroable::<V13PodI128>();
+    assert_pod_zeroable::<V13OptionalRecoveryReasonAccount>();
+    assert_pod_zeroable::<ProvenanceHeaderV13Account>();
+    assert_pod_zeroable::<V13ConfigAccount>();
+    assert_pod_zeroable::<AssetStateV13Account>();
+    assert_pod_zeroable::<PortfolioLegV13Account>();
+    assert_pod_zeroable::<HealthCertV13Account>();
+    assert_pod_zeroable::<PortfolioAccountV13Account>();
+    assert_pod_zeroable::<MarketGroupV13Account>();
+
+    assert_eq!(core::mem::align_of::<PortfolioAccountV13Account>(), 1);
+    assert_eq!(core::mem::align_of::<MarketGroupV13Account>(), 1);
+}
+
+#[test]
+fn v13_persisted_account_wire_roundtrips_runtime_state() {
+    let mut g = group();
+    let mut a = account();
+    g.create_portfolio_account(&a).unwrap();
+    g.deposit_not_atomic(&mut a, 10_000).unwrap();
+    g.attach_leg(&mut a, 0, SideV13::Long, POS_SCALE as i128)
+        .unwrap();
+    g.full_account_refresh(&mut a, &[100; V13_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+
+    let wire_group = MarketGroupV13Account::from_runtime(&g);
+    let wire_account = PortfolioAccountV13Account::from_runtime(&a);
+    let group_bytes = bytemuck::bytes_of(&wire_group);
+    let account_bytes = bytemuck::bytes_of(&wire_account);
+
+    assert_eq!(
+        group_bytes.len(),
+        core::mem::size_of::<MarketGroupV13Account>()
+    );
+    assert_eq!(
+        account_bytes.len(),
+        core::mem::size_of::<PortfolioAccountV13Account>()
+    );
+
+    let decoded_group = *bytemuck::from_bytes::<MarketGroupV13Account>(group_bytes);
+    let decoded_account = *bytemuck::from_bytes::<PortfolioAccountV13Account>(account_bytes);
+    let runtime_group = decoded_group.validate().unwrap();
+    let runtime_account = decoded_account
+        .validate_with_market(&runtime_group)
+        .unwrap();
+
+    assert_eq!(runtime_group, g);
+    assert_eq!(runtime_account, a);
+}
+
+#[test]
+fn v13_persisted_account_wire_rejects_invalid_bool_enum_and_option_encoding() {
+    let g = group();
+    let a = account();
+
+    let mut bad_account_bool = PortfolioAccountV13Account::from_runtime(&a);
+    bad_account_bool.stale_state = 2;
+    assert_eq!(
+        bad_account_bool.try_to_runtime(),
+        Err(V13Error::InvalidConfig)
+    );
+
+    let mut bad_leg_enum = PortfolioAccountV13Account::from_runtime(&a);
+    bad_leg_enum.legs[0].active = 1;
+    bad_leg_enum.legs[0].side = 9;
+    assert_eq!(bad_leg_enum.try_to_runtime(), Err(V13Error::InvalidConfig));
+
+    let mut bad_market_mode = MarketGroupV13Account::from_runtime(&g);
+    bad_market_mode.mode = 9;
+    assert_eq!(
+        bad_market_mode.try_to_runtime(),
+        Err(V13Error::InvalidConfig)
+    );
+
+    let mut bad_side_mode = MarketGroupV13Account::from_runtime(&g);
+    bad_side_mode.assets[0].mode_long = 9;
+    assert_eq!(bad_side_mode.try_to_runtime(), Err(V13Error::InvalidConfig));
+
+    let mut bad_option = MarketGroupV13Account::from_runtime(&g);
+    bad_option.recovery_reason.present = 0;
+    bad_option.recovery_reason.value = 1;
+    assert_eq!(bad_option.try_to_runtime(), Err(V13Error::InvalidConfig));
 }
 
 #[test]

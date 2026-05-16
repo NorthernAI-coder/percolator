@@ -1103,6 +1103,36 @@ fn v14_permissionless_recovery_cannot_override_resolved_mode() {
 }
 
 #[test]
+fn v14_recovery_reason_is_terminal_and_idempotent() {
+    let mut g = group();
+    let first = PermissionlessRecoveryReasonV14::BelowProgressFloor;
+    let second = PermissionlessRecoveryReasonV14::CounterOrEpochOverflowDeclaredRecovery;
+
+    assert_eq!(
+        g.declare_permissionless_recovery(first),
+        Ok(PermissionlessProgressOutcomeV14::RecoveryDeclared(first))
+    );
+    assert_eq!(
+        g.declare_permissionless_recovery(second),
+        Ok(PermissionlessProgressOutcomeV14::RecoveryDeclared(first))
+    );
+    assert_eq!(g.recovery_reason, Some(first));
+    assert_eq!(g.mode, MarketModeV14::Recovery);
+}
+
+#[test]
+fn v14_recovery_mode_cannot_be_overridden_by_resolve() {
+    let mut g = group();
+    let reason = PermissionlessRecoveryReasonV14::BelowProgressFloor;
+    g.declare_permissionless_recovery(reason).unwrap();
+
+    assert_eq!(g.resolve_market_not_atomic(10), Err(V14Error::LockActive));
+    assert_eq!(g.mode, MarketModeV14::Recovery);
+    assert_eq!(g.recovery_reason, Some(reason));
+    assert_eq!(g.resolved_slot, 0);
+}
+
+#[test]
 fn v14_recovery_mode_blocks_value_escape_and_fee_sync_before_mutation() {
     let mut g = group();
     let mut a = account();
@@ -1135,6 +1165,45 @@ fn v14_recovery_mode_blocks_value_escape_and_fee_sync_before_mutation() {
     assert_eq!(g.vault, vault_before);
     assert_eq!(g.c_tot, c_tot_before);
     assert_eq!(g.insurance, insurance_before);
+}
+
+#[test]
+fn v14_recovery_mode_rejects_liquidation_and_rebalance_before_account_mutation() {
+    let mut g = group();
+    let mut a = account();
+    g.attach_leg(&mut a, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    let account_before = a;
+    let asset_before = g.assets[0];
+    let reason = PermissionlessRecoveryReasonV14::BlockedSegmentHeadroomOrRepresentability;
+    g.declare_permissionless_recovery(reason).unwrap();
+
+    let liquidation = g.liquidate_account_not_atomic(
+        &mut a,
+        LiquidationRequestV14 {
+            asset_index: 0,
+            close_q: POS_SCALE,
+            fee_bps: 0,
+        },
+        &[1; V14_MAX_PORTFOLIO_ASSETS_N],
+    );
+    assert_eq!(liquidation, Err(V14Error::LockActive));
+    assert_eq!(a, account_before);
+    assert_eq!(g.assets[0], asset_before);
+
+    let rebalance = g.rebalance_reduce_position_not_atomic(
+        &mut a,
+        RebalanceRequestV14 {
+            asset_index: 0,
+            reduce_q: POS_SCALE,
+        },
+        &[1; V14_MAX_PORTFOLIO_ASSETS_N],
+    );
+    assert_eq!(rebalance, Err(V14Error::LockActive));
+    assert_eq!(a, account_before);
+    assert_eq!(g.assets[0], asset_before);
+    assert_eq!(g.mode, MarketModeV14::Recovery);
+    assert_eq!(g.recovery_reason, Some(reason));
 }
 
 #[test]

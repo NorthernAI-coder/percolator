@@ -953,6 +953,113 @@ fn proof_v14_recovery_mode_rejects_non_recovery_crank_before_account_mutation() 
 }
 
 #[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v14_terminal_recovery_reason_and_mode_are_immutable() {
+    let second_case: u8 = kani::any();
+    kani::assume(second_case < 8);
+    let first_reason = PermissionlessRecoveryReasonV14::BelowProgressFloor;
+    let second_reason = match second_case {
+        0 => PermissionlessRecoveryReasonV14::BelowProgressFloor,
+        1 => PermissionlessRecoveryReasonV14::BlockedSegmentHeadroomOrRepresentability,
+        2 => PermissionlessRecoveryReasonV14::AccountBSettlementCannotProgress,
+        3 => PermissionlessRecoveryReasonV14::BIndexHeadroomExhausted,
+        4 => PermissionlessRecoveryReasonV14::ActiveBankruptCloseCannotProgress,
+        5 => PermissionlessRecoveryReasonV14::ExplicitLossOrDustAuditOverflow,
+        6 => PermissionlessRecoveryReasonV14::OracleOrTargetUnavailableByAuthenticatedPolicy,
+        _ => PermissionlessRecoveryReasonV14::CounterOrEpochOverflowDeclaredRecovery,
+    };
+    let (market, _, _) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+
+    let first = group.declare_permissionless_recovery(first_reason);
+    let second = group.declare_permissionless_recovery(second_reason);
+    let resolve = group.resolve_market_not_atomic(1);
+
+    kani::cover!(
+        second_reason != first_reason,
+        "v14 terminal recovery attempted reason override reachable"
+    );
+    kani::cover!(
+        resolve == Err(V14Error::LockActive),
+        "v14 terminal recovery rejects resolved-mode override"
+    );
+    assert_eq!(
+        first,
+        Ok(PermissionlessProgressOutcomeV14::RecoveryDeclared(
+            first_reason
+        ))
+    );
+    assert_eq!(
+        second,
+        Ok(PermissionlessProgressOutcomeV14::RecoveryDeclared(
+            first_reason
+        ))
+    );
+    assert_eq!(resolve, Err(V14Error::LockActive));
+    assert_eq!(group.mode, MarketModeV14::Recovery);
+    assert_eq!(group.recovery_reason, Some(first_reason));
+    assert_eq!(group.resolved_slot, 0);
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v14_recovery_mode_rejects_liquidation_and_rebalance_before_mutation() {
+    let use_liquidation: bool = kani::any();
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, account_id, owner));
+    group
+        .attach_leg(&mut account, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    let asset_before = group.assets[0];
+    let reason = PermissionlessRecoveryReasonV14::BlockedSegmentHeadroomOrRepresentability;
+    group.declare_permissionless_recovery(reason).unwrap();
+    let account_before = account;
+
+    let result = if use_liquidation {
+        group
+            .liquidate_account_not_atomic(
+                &mut account,
+                LiquidationRequestV14 {
+                    asset_index: 0,
+                    close_q: POS_SCALE,
+                    fee_bps: 0,
+                },
+                &[1; V14_MAX_PORTFOLIO_ASSETS_N],
+            )
+            .map(|_| ())
+    } else {
+        group
+            .rebalance_reduce_position_not_atomic(
+                &mut account,
+                RebalanceRequestV14 {
+                    asset_index: 0,
+                    reduce_q: POS_SCALE,
+                },
+                &[1; V14_MAX_PORTFOLIO_ASSETS_N],
+            )
+            .map(|_| ())
+    };
+
+    kani::cover!(
+        use_liquidation,
+        "v14 terminal recovery rejects liquidation before mutation"
+    );
+    kani::cover!(
+        !use_liquidation,
+        "v14 terminal recovery rejects rebalance before mutation"
+    );
+    assert_eq!(result, Err(V14Error::LockActive));
+    assert_eq!(account, account_before);
+    assert_eq!(group.assets[0], asset_before);
+    assert_eq!(group.mode, MarketModeV14::Recovery);
+    assert_eq!(group.recovery_reason, Some(reason));
+}
+
+#[kani::proof]
 #[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v14_public_config_accepts_full_margin_loss_only_envelope() {

@@ -2894,6 +2894,9 @@ impl MarketGroupV14 {
         request: LiquidationRequestV14,
         effective_prices: &[u64; V14_MAX_PORTFOLIO_ASSETS_N],
     ) -> V14Result<LiquidationOutcomeV14> {
+        if self.mode != MarketModeV14::Live {
+            return Err(V14Error::LockActive);
+        }
         if request.asset_index >= self.config.max_portfolio_assets as usize
             || request.close_q == 0
             || request.fee_bps
@@ -3134,6 +3137,9 @@ impl MarketGroupV14 {
         request: RebalanceRequestV14,
         effective_prices: &[u64; V14_MAX_PORTFOLIO_ASSETS_N],
     ) -> V14Result<RebalanceOutcomeV14> {
+        if self.mode != MarketModeV14::Live {
+            return Err(V14Error::LockActive);
+        }
         if request.asset_index >= self.config.max_portfolio_assets as usize || request.reduce_q == 0
         {
             return Err(V14Error::InvalidConfig);
@@ -3216,6 +3222,9 @@ impl MarketGroupV14 {
     }
 
     pub fn resolve_market_not_atomic(&mut self, resolved_slot: u64) -> V14Result<()> {
+        if self.mode == MarketModeV14::Recovery {
+            return Err(V14Error::LockActive);
+        }
         if resolved_slot < self.current_slot {
             return Err(V14Error::Stale);
         }
@@ -3921,6 +3930,11 @@ impl MarketGroupV14 {
         }
         if self.mode == MarketModeV14::Resolved {
             return Err(V14Error::LockActive);
+        }
+        if let Some(existing_reason) = self.recovery_reason {
+            return Ok(PermissionlessProgressOutcomeV14::RecoveryDeclared(
+                existing_reason,
+            ));
         }
         self.mode = MarketModeV14::Recovery;
         self.recovery_reason = Some(reason);

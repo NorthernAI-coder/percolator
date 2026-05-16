@@ -2424,6 +2424,47 @@ fn proof_v14_side_reset_finalize_requires_prior_epoch_positions_clear() {
 }
 
 #[kani::proof]
+#[kani::unwind(60)]
+#[kani::solver(cadical)]
+fn proof_v14_reset_pending_epoch_start_snapshots_prevent_prior_epoch_resurrection() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut prior = PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, account_id, owner));
+    group
+        .attach_leg(&mut prior, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    group.assets[0].k_long = 5 * ADL_ONE as i128;
+    group.assets[0].oi_eff_long_q = 0;
+
+    group.begin_full_drain_reset(0, SideV14::Long).unwrap();
+    kani::cover!(
+        group.assets[0].mode_long == SideModeV14::ResetPending,
+        "v14 reset-pending side captured prior epoch"
+    );
+    assert_eq!(group.assets[0].k_epoch_start_long, 5 * ADL_ONE as i128);
+    assert_eq!(group.assets[0].k_long, 0);
+
+    group
+        .full_account_refresh(&mut prior, &[1; V14_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+    assert_eq!(prior.pnl, 5);
+    assert_eq!(prior.legs[0].k_snap, 5 * ADL_ONE as i128);
+    group.clear_leg(&mut prior, 0).unwrap();
+    group.finalize_ready_reset_side(0, SideV14::Long).unwrap();
+    assert_eq!(group.assets[0].mode_long, SideModeV14::Normal);
+    assert_eq!(group.assets[0].stored_pos_count_long, 0);
+    assert_eq!(group.assets[0].k_long, 0);
+
+    let mut next = PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, [9; 32], owner));
+    group
+        .attach_leg(&mut next, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    assert_eq!(next.legs[0].epoch_snap, group.assets[0].epoch_long);
+    assert_eq!(next.legs[0].k_snap, group.assets[0].k_long);
+    assert_eq!(next.pnl, 0);
+}
+
+#[kani::proof]
 #[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v14_quantity_adl_preserves_oi_symmetry_after_close() {

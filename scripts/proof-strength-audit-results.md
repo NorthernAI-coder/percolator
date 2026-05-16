@@ -11,8 +11,8 @@ Static inventory from the current `v14` tree:
 | Item | Count |
 |---|---:|
 | Rust spec/fuzz tests | 148 |
-| Kani proofs | 142 |
-| Kani cover checks | 226 |
+| Kani proofs | 143 |
+| Kani cover checks | 227 |
 | Kani assumptions | 125 |
 
 Breakdown:
@@ -21,7 +21,7 @@ Breakdown:
 |---|---:|---:|---:|
 | `tests/v14_spec_tests.rs` | 147 | 0 | 0 |
 | `tests/v14_fuzzing.rs` | 1 | 0 | 0 |
-| `tests/proofs_v14.rs` | 0 | 135 | 218 |
+| `tests/proofs_v14.rs` | 0 | 136 | 219 |
 | `tests/proofs_v14_arithmetic.rs` | 0 | 7 | 8 |
 
 The v14 suite is over production engine code and shared production arithmetic
@@ -62,7 +62,7 @@ Aggregate timing from that completed sweep:
 | Slowest harness | `proof_v14_bankrupt_liquidation_cannot_free_exposure_before_residual_durable` |
 | Slowest harness time | 397s |
 
-The current tree has 142 Kani proofs, so the timing artifacts must be regenerated
+The current tree has 143 Kani proofs, so the timing artifacts must be regenerated
 before using them as a current full-proof pass record.
 
 Focused incremental proofs added after the last completed full sweep:
@@ -115,6 +115,7 @@ Focused incremental proofs added after the last completed full sweep:
 | `proof_v14_health_certificate_bound_to_market_epochs_and_prices` | 52s | PASS |
 | `proof_v14_per_asset_slot_last_prevents_cross_asset_accrual_aliasing` | 27s | PASS |
 | `proof_v14_resolved_payout_readiness_uses_exact_counters_and_bounds` | 15s | PASS |
+| `proof_v14_reset_pending_epoch_start_snapshots_prevent_prior_epoch_resurrection` | 32s | PASS |
 
 ## Slowest Harnesses From Last Completed Sweep
 
@@ -155,6 +156,7 @@ Each item below maps to production-code tests, Kani proofs, or both.
 | `full_account_refresh_is_O_N_and_required_for_favorable_actions` | `v14_favorable_action_requires_current_full_account_refresh`; `proof_v14_favorable_action_requires_current_full_refresh`; `proof_v14_full_refresh_settles_and_scores_two_active_assets`; bounded `PortfolioLegV14` array coverage |
 | `certificate_bound_to_market_config_asset_slots_and_prices` | `v14_health_certificate_is_bound_to_market_epochs_and_prices`; `proof_v14_health_certificate_bound_to_market_epochs_and_prices`; favorable-action stale certificate rejection tests/proofs |
 | `per_asset_slot_last_prevents_cross_asset_accrual_aliasing` | `v14_per_asset_slot_last_prevents_cross_asset_accrual_aliasing`; strengthened `proof_v14_per_asset_slot_last_prevents_cross_asset_accrual_aliasing` checks full non-accrued asset state isolation |
+| `reset_pending_epoch_start_snapshots_prevent_prior_epoch_resurrection` | `v14_side_reset_snapshots_epoch_start_for_prior_epoch_accounts`; `proof_v14_reset_pending_epoch_start_snapshots_prevent_prior_epoch_resurrection`; side-reset finalize prior-epoch tests/proofs |
 | `hinted_subset_cannot_hide_toxic_leg` | `v14_trade_hint_cannot_hide_toxic_portfolio_leg_on_other_asset`; `proof_v14_trade_hint_cannot_hide_toxic_portfolio_leg_on_other_asset` |
 | `stale_certificate_loses_margin_credit` | `v14_full_refresh_clears_stale_certificate_but_not_b_stale_loss`; `proof_v14_full_refresh_clears_stale_certificate`; stale counter proofs |
 | `stale_profitable_leg_cannot_support_risk_increase` | stale certificate and full-refresh gating tests/proofs; target/effective lag and h-lock no-positive-credit trade proofs |

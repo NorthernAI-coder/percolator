@@ -3603,6 +3603,26 @@ fn v14_resolved_positive_payout_uses_conservative_bound_denominator() {
 }
 
 #[test]
+fn v14_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay() {
+    let mut g = group();
+    let mut first_mover = account();
+    g.vault = 100;
+    first_mover.pnl = 100;
+    g.pnl_pos_tot = 100;
+    g.pnl_pos_bound_tot = 300;
+    g.resolve_market_not_atomic(1).unwrap();
+
+    let out = g
+        .close_resolved_account_not_atomic(&mut first_mover, 0)
+        .unwrap();
+
+    assert_eq!(out, ResolvedCloseOutcomeV14::Closed { payout: 33 });
+    assert_eq!(g.payout_snapshot, 100);
+    assert_eq!(g.payout_snapshot_pnl_pos_tot, 300);
+    assert_eq!(g.vault, 67);
+}
+
+#[test]
 fn v14_liquidation_requires_strict_account_risk_progress() {
     let mut g = group();
     let mut a = account();

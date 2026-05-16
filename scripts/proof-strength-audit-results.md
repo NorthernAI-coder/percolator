@@ -10,18 +10,18 @@ Static inventory from the current `v14` tree:
 
 | Item | Count |
 |---|---:|
-| Rust spec/fuzz tests | 145 |
-| Kani proofs | 139 |
-| Kani cover checks | 222 |
+| Rust spec/fuzz tests | 146 |
+| Kani proofs | 140 |
+| Kani cover checks | 223 |
 | Kani assumptions | 124 |
 
 Breakdown:
 
 | File | Tests | Kani proofs | Cover checks |
 |---|---:|---:|---:|
-| `tests/v14_spec_tests.rs` | 144 | 0 | 0 |
+| `tests/v14_spec_tests.rs` | 145 | 0 | 0 |
 | `tests/v14_fuzzing.rs` | 1 | 0 | 0 |
-| `tests/proofs_v14.rs` | 0 | 132 | 214 |
+| `tests/proofs_v14.rs` | 0 | 133 | 215 |
 | `tests/proofs_v14_arithmetic.rs` | 0 | 7 | 8 |
 
 The v14 suite is over production engine code and shared production arithmetic
@@ -111,6 +111,7 @@ Focused incremental proofs added after the last completed full sweep:
 | `proof_v14_bankrupt_liquidation_cannot_free_exposure_before_residual_durable` | 499s | PASS |
 | `proof_v14_bankrupt_liquidation_excludes_fee_from_residual_and_spends_insurance_once` | 536s | PASS |
 | `proof_v14_rebalance_reduce_position_preserves_senior_claims_and_reduces_risk` | 159s | PASS |
+| `proof_v14_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay` | 18s | PASS |
 
 ## Slowest Harnesses From Last Completed Sweep
 
@@ -140,9 +141,9 @@ All per-harness timings are recorded in `kani_audit_final.tsv`.
 | `proof_v14_b_residual_booking_makes_durable_progress_or_fails_closed` | 35s | PASS |
 | `proof_v14_public_invariants_reject_hard_global_bounds` | 5s | PASS |
 
-## Spec Section 15 Traceability
+## Spec Section 16 Traceability
 
-The current v14 source-of-truth spec requires the following proof/TDD coverage.
+The current v14.12 source-of-truth spec requires the following proof/TDD coverage.
 Each item below maps to production-code tests, Kani proofs, or both.
 
 | Spec §15 item | Coverage |
@@ -188,8 +189,9 @@ Each item below maps to production-code tests, Kani proofs, or both.
 | `global_accumulator_not_account_health_proof` | `v14_global_residual_is_not_account_health_proof`; `proof_v14_global_residual_is_not_account_health_proof` |
 | `active_bitmap_canonical_no_hidden_legs` | `v14_active_bitmap_is_the_only_active_leg_authority`; `proof_v14_hidden_leg_rejected_by_bitmap_authority` |
 | `N_too_large_rejected_at_public_user_fund_init` / `cfg_max_bankrupt_close_lifetime_slots_positive` | `v14_public_init_rejects_unbounded_portfolio_width`; `v14_public_init_requires_crankforward_recovery_and_chunk_caps`; `proof_v14_configured_portfolio_width_rejects_out_of_range_leg`; public config proof |
+| `PNL_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay` | `v14_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay`; `proof_v14_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay`; resolved positive-payout bound-denominator test/proof |
 
-No missing engine-side spec §15 coverage item was identified in this pass.
+No missing engine-side spec §16 coverage item was identified in this pass.
 
 Additional Anchor v2 zero-copy persistence coverage:
 

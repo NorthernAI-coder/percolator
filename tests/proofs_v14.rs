@@ -3691,6 +3691,32 @@ fn proof_v14_resolved_payout_uses_positive_bound_denominator() {
 }
 
 #[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v14_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut first_mover =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, account_id, owner));
+    group.vault = 100;
+    first_mover.pnl = 100;
+    group.pnl_pos_tot = 100;
+    group.pnl_pos_bound_tot = 300;
+    group.resolve_market_not_atomic(1).unwrap();
+
+    let close = group.close_resolved_account_not_atomic(&mut first_mover, 0);
+
+    kani::cover!(
+        group.payout_snapshot_pnl_pos_tot > group.pnl_pos_tot,
+        "v14 first-mover payout uses lazy positive PnL bound denominator"
+    );
+    assert_eq!(close, Ok(ResolvedCloseOutcomeV14::Closed { payout: 33 }));
+    assert_eq!(group.payout_snapshot, 100);
+    assert_eq!(group.payout_snapshot_pnl_pos_tot, 300);
+    assert_eq!(group.vault, 67);
+}
+
+#[kani::proof]
 #[kani::unwind(50)]
 #[kani::solver(cadical)]
 fn proof_v14_resolved_close_partial_b_settlement_makes_progress_without_closing() {

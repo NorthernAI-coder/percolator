@@ -1,6 +1,6 @@
 # Kani Proof Strength Audit Results
 
-Generated: 2026-05-16
+Generated: 2026-05-17
 
 Source prompt: `scripts/audit-proof-strength.md`.
 
@@ -10,18 +10,18 @@ Static inventory from the current `v14` tree:
 
 | Item | Count |
 |---|---:|
-| Rust spec/fuzz tests | 155 |
-| Kani proofs | 149 |
-| Kani cover checks | 235 |
+| Rust spec/fuzz tests | 161 |
+| Kani proofs | 156 |
+| Kani cover checks | 241 |
 | Kani assumptions | 125 |
 
 Breakdown:
 
 | File | Tests | Kani proofs | Cover checks |
 |---|---:|---:|---:|
-| `tests/v14_spec_tests.rs` | 154 | 0 | 0 |
+| `tests/v14_spec_tests.rs` | 160 | 0 | 0 |
 | `tests/v14_fuzzing.rs` | 1 | 0 | 0 |
-| `tests/proofs_v14.rs` | 0 | 142 | 227 |
+| `tests/proofs_v14.rs` | 0 | 149 | 233 |
 | `tests/proofs_v14_arithmetic.rs` | 0 | 7 | 8 |
 
 The v14 suite is over production engine code and shared production arithmetic
@@ -62,7 +62,7 @@ Aggregate timing from that completed sweep:
 | Slowest harness | `proof_v14_bankrupt_liquidation_cannot_free_exposure_before_residual_durable` |
 | Slowest harness time | 397s |
 
-The current tree has 149 Kani proofs, so the timing artifacts must be regenerated
+The current tree has 156 Kani proofs, so the timing artifacts must be regenerated
 before using them as a current full-proof pass record.
 
 Focused incremental proofs added after the last completed full sweep:
@@ -123,6 +123,7 @@ Focused incremental proofs added after the last completed full sweep:
 | `proof_v14_resolved_payout_readiness_uses_exact_counters_and_bounds` | 16.9s | PASS |
 | `proof_v14_reset_pending_epoch_start_snapshots_prevent_prior_epoch_resurrection` | 32s | PASS |
 | `proof_v14_same_asset_duplicate_leg_cannot_double_count_support` | 3.5s | PASS |
+| `proof_v14_stale_profitable_leg_cannot_withdraw_using_pre_refresh_positive_pnl` | 22.521006s | PASS |
 
 ## Slowest Harnesses From Last Completed Sweep
 
@@ -175,6 +176,7 @@ Each item below maps to production-code tests, Kani proofs, or both.
 | `hinted_subset_cannot_hide_toxic_leg` | `v14_trade_hint_cannot_hide_toxic_portfolio_leg_on_other_asset`; `proof_v14_trade_hint_cannot_hide_toxic_portfolio_leg_on_other_asset` |
 | `stale_certificate_loses_margin_credit` | `v14_full_refresh_clears_stale_certificate_but_not_b_stale_loss`; `proof_v14_full_refresh_clears_stale_certificate`; stale counter proofs |
 | `stale_profitable_leg_cannot_support_risk_increase` | stale certificate and full-refresh gating tests/proofs; target/effective lag and h-lock no-positive-credit trade proofs |
+| `stale_profitable_leg_zero_or_penalty_credit_for_withdraw` | `v14_stale_profitable_leg_cannot_withdraw_using_pre_refresh_positive_pnl`; `proof_v14_stale_profitable_leg_cannot_withdraw_using_pre_refresh_positive_pnl`; stale profitable support is refreshed and hidden losses are settled before withdrawal can extract vault value |
 | `rebalance_conserves_senior_claims` | `v14_rebalance_reduce_position_requires_strict_risk_progress_and_preserves_senior_claims`; `proof_v14_rebalance_reduce_position_preserves_senior_claims_and_reduces_risk` |
 | `rebalance_cannot_double_count_collateral` | `v14_cross_margin_collateral_counted_once_and_not_below_loss_envelope`; `proof_v14_cross_margin_equity_counts_collateral_once_and_score_uses_full_envelope` |
 | `cross_margin_offset_cap_never_below_loss_envelope` | `v14_cross_margin_collateral_counted_once_and_not_below_loss_envelope`; public config envelope proofs |
@@ -196,6 +198,7 @@ Each item below maps to production-code tests, Kani proofs, or both.
 | `bankruptcy_residual_excludes_protocol_fees` | `v14_bankrupt_liquidation_drops_uncollectible_fee_and_spends_insurance_once`; `proof_v14_bankrupt_liquidation_excludes_fee_from_residual_and_spends_insurance_once` |
 | `uncollectible_fees_forgiven_not_socialized` | fee loss-seniority tests/proofs; wide fee sync test/proof; bankrupt liquidation fee-exclusion test/proof |
 | `insurance_boundary_non_deficit_paths` | `proof_v14_non_deficit_public_paths_do_not_decrease_insurance`; bankrupt liquidation insurance-spend proofs |
+| `positive_pnl_support_not_withdrawable_without_gates` | h-lock/no-positive-credit withdraw proofs; favorable-action lock conversion proofs; stale-profitable withdraw test/proof shows pre-refresh positive PnL cannot become withdrawable value |
 | `account_free_equity_active_accrual_requires_protective_progress` | `v14_account_free_equity_active_accrual_requires_protective_progress`; `v14_permissionless_crank_flat_refresh_is_not_protective_for_equity_active_accrual`; `v14_permissionless_crank_cross_asset_liquidation_is_not_protective_for_accrued_asset`; `proof_v14_equity_active_accrual_requires_protective_progress`; `proof_v14_permissionless_flat_refresh_is_not_protective_for_equity_active_accrual`; `proof_v14_permissionless_cross_asset_liquidation_is_not_protective_for_equity_active_accrual` |
 | `effective_price_raw_target_lag_no_free_option` | target/effective lag trade, withdraw, and conversion tests; `proof_v14_target_effective_lag_rejects_risk_increasing_trade_before_mutation`; `proof_v14_target_effective_lag_blocks_pnl_conversion_before_mutation`; `proof_v14_favorable_locks_block_released_pnl_conversion_before_mutation` |
 | `loss_stale_catchup_blocks_risk_increase_until_current` | `v14_loss_stale_blocks_nonflat_withdrawal_even_if_no_positive_credit_suffices`; `v14_loss_stale_blocks_risk_increasing_trade_even_with_no_positive_credit_margin`; `v14_loss_stale_allows_pure_risk_reducing_trade_path`; `proof_v14_loss_stale_blocks_nonflat_withdrawal`; `proof_v14_loss_stale_blocks_risk_increasing_trade_before_mutation` |

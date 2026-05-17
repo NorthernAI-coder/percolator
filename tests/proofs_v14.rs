@@ -4101,6 +4101,39 @@ fn proof_v14_hlock_withdraw_uses_no_positive_credit_lane() {
 }
 
 #[kani::proof]
+#[kani::unwind(70)]
+#[kani::solver(cadical)]
+fn proof_v14_stale_profitable_leg_cannot_withdraw_using_pre_refresh_positive_pnl() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV14::empty(ProvenanceHeaderV14::new(market, account_id, owner));
+    group.deposit_not_atomic(&mut account, 40).unwrap();
+    group
+        .attach_leg(&mut account, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    account.pnl = 100;
+    group.pnl_pos_tot = 100;
+    group.pnl_pos_bound_tot = 100;
+    group.vault = group.c_tot + 50;
+    group.assets[0].k_long = -(100 * ADL_ONE as i128);
+    group.mark_account_stale(&mut account).unwrap();
+
+    let before_vault = group.vault;
+    let before_c_tot = group.c_tot;
+    let result = group.withdraw_not_atomic(&mut account, 41, &[1; V14_MAX_PORTFOLIO_ASSETS_N]);
+
+    kani::cover!(
+        account.pnl <= 0 && before_vault > before_c_tot,
+        "v14 stale profitable withdraw refreshes hidden loss before extraction"
+    );
+    assert!(result.is_err());
+    assert_eq!(group.vault, before_vault);
+    assert!(group.c_tot <= before_c_tot);
+    assert!(account.pnl <= 0);
+}
+
+#[kani::proof]
 #[kani::unwind(50)]
 #[kani::solver(cadical)]
 fn proof_v14_released_pnl_conversion_is_residual_bounded_and_conserves_vault() {

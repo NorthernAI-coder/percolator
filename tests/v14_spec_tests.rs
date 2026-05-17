@@ -502,6 +502,39 @@ fn v14_withdraw_uses_haircut_positive_credit_not_face_pnl_when_unlocked() {
 }
 
 #[test]
+fn v14_stale_profitable_leg_cannot_withdraw_using_pre_refresh_positive_pnl() {
+    let mut g = group();
+    let mut a = account();
+    g.deposit_not_atomic(&mut a, 40).unwrap();
+    g.attach_leg(&mut a, 0, SideV14::Long, POS_SCALE as i128)
+        .unwrap();
+    a.pnl = 100;
+    g.pnl_pos_tot = 100;
+    g.pnl_pos_bound_tot = 100;
+    g.vault = g.c_tot + 50;
+    g.assets[0].k_long = -(100 * ADL_ONE as i128);
+    g.mark_account_stale(&mut a).unwrap();
+
+    let before_vault = g.vault;
+    let before_c_tot = g.c_tot;
+    let res = g.withdraw_not_atomic(&mut a, 41, &[1; V14_MAX_PORTFOLIO_ASSETS_N]);
+
+    assert!(res.is_err());
+    assert_eq!(
+        g.vault, before_vault,
+        "withdraw must not extract vault value using stale positive PnL"
+    );
+    assert!(
+        g.c_tot <= before_c_tot,
+        "only loss settlement may reduce senior capital before rejection"
+    );
+    assert!(
+        a.pnl <= 0,
+        "pre-refresh positive PnL must be consumed by current hidden losses"
+    );
+}
+
+#[test]
 fn v14_public_invariants_reject_broken_senior_claim_conservation() {
     let mut g = group();
     g.vault = 10;

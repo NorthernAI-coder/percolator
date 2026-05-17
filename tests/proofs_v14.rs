@@ -3260,6 +3260,47 @@ fn proof_v14_pending_domain_barrier_blocks_side_reset_before_mutation() {
 #[kani::proof]
 #[kani::unwind(40)]
 #[kani::solver(cadical)]
+fn proof_v14_pending_domain_barrier_does_not_block_unrelated_side_reset() {
+    let (market, _, _) = concrete_ids();
+    let mut group = MarketGroupV14::new(market, V14Config::public_user_fund(1, 0, 1)).unwrap();
+    group.pending_domain_loss_barriers[0] = 1;
+    group.assets[0].k_long = 7;
+    group.assets[0].f_long_num = -3;
+    group.assets[0].b_long_num = 11;
+    group.assets[0].a_long = ADL_ONE - 1;
+    group.assets[0].k_short = -9;
+    group.assets[0].f_short_num = 4;
+    group.assets[0].b_short_num = 13;
+    group.assets[0].a_short = ADL_ONE - 2;
+    group.assets[0].epoch_short = 6;
+    let before_long_k = group.assets[0].k_long;
+    let before_long_f = group.assets[0].f_long_num;
+    let before_long_b = group.assets[0].b_long_num;
+    let before_long_a = group.assets[0].a_long;
+
+    let result = group.begin_full_drain_reset(0, SideV14::Short);
+
+    kani::cover!(
+        result.is_ok(),
+        "v14 pending-domain barrier unrelated side-reset progress reachable"
+    );
+    assert!(result.is_ok());
+    assert_eq!(group.pending_domain_loss_barriers[0], 1);
+    assert_eq!(group.assets[0].k_long, before_long_k);
+    assert_eq!(group.assets[0].f_long_num, before_long_f);
+    assert_eq!(group.assets[0].b_long_num, before_long_b);
+    assert_eq!(group.assets[0].a_long, before_long_a);
+    assert_eq!(group.assets[0].k_short, 0);
+    assert_eq!(group.assets[0].f_short_num, 0);
+    assert_eq!(group.assets[0].b_short_num, 0);
+    assert_eq!(group.assets[0].a_short, ADL_ONE);
+    assert_eq!(group.assets[0].epoch_short, 7);
+    assert_eq!(group.assets[0].mode_short, SideModeV14::ResetPending);
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
 fn proof_v14_permissionless_crank_does_not_require_full_market_scan() {
     let stale_count: u16 = kani::any();
     let b_stale_count: u16 = kani::any();

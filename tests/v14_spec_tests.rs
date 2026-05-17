@@ -1738,6 +1738,35 @@ fn v14_pending_domain_loss_barrier_blocks_side_reset_before_residual_done() {
 }
 
 #[test]
+fn v14_pending_domain_loss_barrier_does_not_block_unrelated_side_reset() {
+    let mut g = group();
+    g.pending_domain_loss_barriers[0] = 1;
+    g.assets[0].k_long = 7;
+    g.assets[0].f_long_num = -3;
+    g.assets[0].b_long_num = 11;
+    g.assets[0].a_long = ADL_ONE - 1;
+    g.assets[0].k_short = -9;
+    g.assets[0].f_short_num = 4;
+    g.assets[0].b_short_num = 13;
+    g.assets[0].a_short = ADL_ONE - 2;
+    g.assets[0].epoch_short = 6;
+
+    g.begin_full_drain_reset(0, SideV14::Short)
+        .expect("pending long-domain residual must not freeze unrelated short-domain reset");
+    assert_eq!(g.pending_domain_loss_barriers[0], 1);
+    assert_eq!(g.assets[0].k_long, 7);
+    assert_eq!(g.assets[0].f_long_num, -3);
+    assert_eq!(g.assets[0].b_long_num, 11);
+    assert_eq!(g.assets[0].a_long, ADL_ONE - 1);
+    assert_eq!(g.assets[0].k_short, 0);
+    assert_eq!(g.assets[0].f_short_num, 0);
+    assert_eq!(g.assets[0].b_short_num, 0);
+    assert_eq!(g.assets[0].a_short, ADL_ONE);
+    assert_eq!(g.assets[0].epoch_short, 7);
+    assert_eq!(g.assets[0].mode_short, SideModeV14::ResetPending);
+}
+
+#[test]
 fn v14_per_asset_slot_last_prevents_cross_asset_accrual_aliasing() {
     let (market, _, _) = ids();
     let mut g = MarketGroupV14::new(market, V14Config::public_user_fund(2, 0, 10)).unwrap();

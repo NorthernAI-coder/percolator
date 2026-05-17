@@ -90,6 +90,7 @@ Focused incremental proofs added after the last completed full sweep:
 | `proof_v14_partial_liquidation_cannot_socialize_residual_while_open_risk_remains` | 29s | PASS |
 | `proof_v14_pending_domain_loss_barrier_does_not_freeze_asset_accrual` | 15s | PASS |
 | `proof_v14_pending_domain_barrier_blocks_side_reset_before_mutation` | 3s | PASS |
+| `proof_v14_pending_domain_barrier_does_not_block_unrelated_side_reset` | 5s | PASS |
 | `proof_v14_new_close_cannot_overwrite_active_finalized_close_ledger` | 60s | PASS |
 | `proof_v14_account_shape_rejects_malformed_quantity_adl_close_progress` | 32s | PASS |
 | `proof_v14_account_shape_rejects_close_progress_domain_mismatch_for_open_leg` | 77s | PASS |
@@ -189,6 +190,7 @@ Each item below maps to production-code tests, Kani proofs, or both.
 | `effective_price_raw_target_lag_no_free_option` | target/effective lag trade, withdraw, and conversion tests; `proof_v14_target_effective_lag_rejects_risk_increasing_trade_before_mutation`; `proof_v14_target_effective_lag_blocks_pnl_conversion_before_mutation`; `proof_v14_favorable_locks_block_released_pnl_conversion_before_mutation` |
 | `loss_stale_catchup_blocks_risk_increase_until_current` | `v14_loss_stale_blocks_nonflat_withdrawal_even_if_no_positive_credit_suffices`; `v14_loss_stale_blocks_risk_increasing_trade_even_with_no_positive_credit_margin`; `v14_loss_stale_allows_pure_risk_reducing_trade_path`; `proof_v14_loss_stale_blocks_nonflat_withdrawal`; `proof_v14_loss_stale_blocks_risk_increasing_trade_before_mutation` |
 | `domain_locks_do_not_freeze_asset_accrual` | `v14_pending_domain_loss_barrier_does_not_freeze_asset_accrual`; `proof_v14_pending_domain_loss_barrier_does_not_freeze_asset_accrual` |
+| `current_step_locking_does_not_reintroduce_maximal_serialization` / `side_lock_does_not_freeze_unrelated_side_accrual` | `v14_pending_domain_loss_barrier_does_not_block_unrelated_side_reset`; `proof_v14_pending_domain_barrier_does_not_block_unrelated_side_reset`; unrelated positive-credit and asset-accrual barrier tests/proofs |
 | `close_id_reused_across_preemption_restart_until_finalized` / `new_close_id_for_unfinalized_account_reverts` | `v14_new_close_cannot_overwrite_active_finalized_close_ledger`; `proof_v14_new_close_cannot_overwrite_active_finalized_close_ledger` |
 | `drift_reference_slot_immutable_across_preemption_restart` / `max_close_slot_immutable_across_recompute` / `repeated_preemption_cannot_extend_close_lifetime` | `v14_close_progress_uses_configured_lifetime_and_does_not_refresh_on_continuation`; `proof_v14_close_lifetime_uses_configured_bound_and_is_not_refreshed`; stale/expired close recovery tests/proofs |
 | `durable_quantity_adl_requires_matching_close_progress_ledger_advance` | `v14_account_shape_rejects_malformed_quantity_adl_close_progress`; `proof_v14_account_shape_rejects_malformed_quantity_adl_close_progress`; quantity-ADL finalization tests/proofs |

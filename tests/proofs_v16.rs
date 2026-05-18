@@ -5000,6 +5000,52 @@ fn proof_v16_permissionless_crank_does_not_require_full_market_scan() {
 }
 
 #[kani::proof]
+#[kani::unwind(70)]
+#[kani::solver(cadical)]
+fn proof_v16_permissionless_refresh_can_advance_one_equity_active_segment() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV16::new(market, V16Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut long = PortfolioAccountV16::empty(ProvenanceHeaderV16::new(market, account_id, owner));
+    let mut short = PortfolioAccountV16::empty(ProvenanceHeaderV16::new(market, [4; 32], owner));
+    group
+        .attach_leg(&mut long, 0, SideV16::Long, POS_SCALE as i128)
+        .unwrap();
+    group
+        .attach_leg(&mut short, 0, SideV16::Short, -(POS_SCALE as i128))
+        .unwrap();
+
+    let out = group
+        .permissionless_crank_not_atomic(
+            &mut long,
+            PermissionlessCrankRequestV16 {
+                now_slot: 3,
+                asset_index: 0,
+                effective_price: 2,
+                funding_rate_e9: 0,
+                action: PermissionlessCrankActionV16::Refresh,
+            },
+            &[1; V16_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .unwrap();
+
+    kani::cover!(
+        group.loss_stale_active && group.assets[0].slot_last == 1,
+        "v16 permissionless refresh commits bounded equity-active segment"
+    );
+    assert_eq!(out, PermissionlessProgressOutcomeV16::AccountCurrent);
+    assert_eq!(group.assets[0].slot_last, 1);
+    assert_eq!(group.slot_last, 1);
+    assert_eq!(group.current_slot, 3);
+    assert!(group.loss_stale_active);
+    assert_eq!(group.assets[0].effective_price, 2);
+    assert_eq!(group.assets[0].k_long, ADL_ONE as i128);
+    assert_eq!(group.assets[0].k_short, -(ADL_ONE as i128));
+    assert_eq!(group.assets[0].oi_eff_long_q, POS_SCALE);
+    assert_eq!(group.assets[0].oi_eff_short_q, POS_SCALE);
+    assert_eq!(group.assert_public_invariants(), Ok(()));
+}
+
+#[kani::proof]
 #[kani::unwind(50)]
 #[kani::solver(cadical)]
 fn proof_v16_permissionless_refresh_returns_partial_b_progress_without_accrual() {

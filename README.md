@@ -2,13 +2,13 @@
 
 **EDUCATIONAL RESEARCH PROJECT — NOT PRODUCTION READY. NOT AUDITED. Do NOT use with real funds.**
 
-Current normative spec: [`spec.md`](spec.md), **v15.10.0**.
+Current normative spec: [`spec.md`](spec.md), **v16.8.0**.
 
 Percolator is a perpetual-futures risk-engine library for account-local,
-permissionless risk progress. v15 removes the finite global account slab: every
-portfolio account is a distinct authenticated account bound to a market group,
-and safety depends on bounded full-account refresh plus fail-closed stale
-states, not on scanning every account in the market.
+permissionless risk progress. v16 keeps the slab-free account model and adds
+source-domain realizable credit: positive PnL from one source domain is usable
+only up to conservatively proven counterparty or insurance backing for that
+domain.
 
 The core promise is narrower and more realistic than global auto-discovery:
 if an honest crank supplies a valid account hint, the engine can make bounded
@@ -17,13 +17,13 @@ or increase risk using optimistic health.
 
 ## Three Invariants
 
-1. **Backed exits:** protected principal is senior, positive PnL is junior, and no withdrawal can claim more value than the balance sheet can pay.
+1. **Realizable credit:** protected principal is senior, positive PnL is junior, and source-domain positive credit cannot exceed realizable backing reserved for that domain.
 2. **Account-local safety:** every favorable action refreshes the account's full active portfolio first; hidden, stale, or B-stale legs fail closed.
 3. **Bounded progress:** cranks and recovery paths are account-local and incremental; no public instruction needs to evaluate the whole market.
 
-## Account-Local v15
+## Account-Local v16
 
-Each `PortfolioAccountV15` carries provenance:
+Each `PortfolioAccountV16` carries provenance:
 
 ```text
 market_group_id
@@ -33,7 +33,7 @@ version/layout discriminator
 ```
 
 The engine rejects any account whose provenance does not match the
-`MarketGroupV15`. Active positions are defined only by the canonical active
+`MarketGroupV16`. Active positions are defined only by the canonical active
 bitmap and bounded leg array. There is no hidden slab slot and no global account
 table to scan.
 
@@ -66,7 +66,7 @@ refinements can only increase claimable top-ups.
 
 ## A/K/F/B
 
-v15 keeps the lazy index model but makes bankruptcy residuals explicit:
+v16 keeps the lazy index model but makes bankruptcy residuals explicit:
 
 - **A** scales effective quantity for side-level quantity ADL.
 - **K/F** represent mark and funding settlement.
@@ -91,8 +91,8 @@ deterministic recovery reason. The caller does not choose a recovery price.
 
 ## Proofs
 
-The current v15 proof suite is intentionally account-local and runs over the
-production v15 methods:
+The current v16 proof suite is intentionally account-local and runs over the
+production v16 methods:
 
 ```bash
 cargo install --locked kani-verifier
@@ -108,7 +108,7 @@ kani_audit_final.tsv
 scripts/proof-strength-audit-results.md
 ```
 
-The old slab proof inventory was retired with the v15 cutover because it no
+The old slab proof inventory was retired with the v16 cutover because it no
 longer applies to the architecture.
 
 ## Tests

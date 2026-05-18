@@ -1,9 +1,8 @@
-//! Percolator risk engine — v15.
+//! Percolator risk engine — v16.
 //!
-//! v15 removes the finite global account slab. The public engine surface is
-//! account-local: each `PortfolioAccountV15` is independently authenticated
-//! against its `MarketGroupV15`, and bounded full-account refresh replaces
-//! full-market scans as the safety primitive.
+//! v16 keeps the account-local engine surface and adds source-domain realizable
+//! credit accounting so positive PnL cannot be used beyond proven source-domain
+//! backing.
 
 #![no_std]
 #![forbid(unsafe_code)]
@@ -22,6 +21,7 @@ pub const SOCIAL_LOSS_DEN: u128 = 1_000_000_000_000_000_000_000;
 pub const SUPPORT_WEIGHT_SCALE: u128 = 1_000_000;
 pub const FULL_SUPPORT_WEIGHT: u128 = SUPPORT_WEIGHT_SCALE;
 pub const BOUND_SCALE: u128 = 1_000_000_000_000;
+pub const CREDIT_RATE_SCALE: u128 = 1_000_000_000_000;
 pub const MAX_VAULT_TVL: u128 = 10_000_000_000_000_000;
 pub const MAX_POSITION_ABS_Q: u128 = 100_000_000_000_000;
 pub const MAX_ACCOUNT_NOTIONAL: u128 = 100_000_000_000_000_000_000;
@@ -33,8 +33,9 @@ pub const MAX_LIQUIDATION_FEE_BPS: u64 = 10_000;
 pub const MAX_PROTOCOL_FEE_ABS: u128 = 1_000_000_000_000_000_000_000_000_000_000_000_000;
 pub const MAX_WARMUP_SLOTS: u64 = u64::MAX;
 pub const MAX_RESOLVE_PRICE_DEVIATION_BPS: u64 = 10_000;
+pub const MAX_RECOVERY_FALLBACK_DEVIATION_BPS: u64 = MAX_RESOLVE_PRICE_DEVIATION_BPS;
 
-pub mod v15;
+pub mod v16;
 pub mod wide_math;
 
-pub use v15::*;
+pub use v16::*;

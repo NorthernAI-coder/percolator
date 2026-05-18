@@ -3615,7 +3615,6 @@ impl MarketGroupV16 {
         &mut self,
         account: &mut PortfolioAccountV16,
     ) -> V16Result<u128> {
-        self.validate_account_shape(account)?;
         let configured_domains = self.config.max_portfolio_assets as usize * 2;
         let mut impaired_effective = 0u128;
         let mut d = 0;
@@ -4161,6 +4160,7 @@ impl MarketGroupV16 {
             valid: true,
         };
         account.health_cert = cert;
+        self.validate_account_shape(account)?;
         Ok(cert)
     }
 
@@ -4562,7 +4562,7 @@ impl MarketGroupV16 {
         if account.health_cert.certified_liq_deficit == 0 {
             return Err(V16Error::NonProgress);
         }
-        let before_score = self.risk_score(account)?;
+        let before_score = self.risk_score_unchecked(account)?;
         let leg = account.legs[request.asset_index];
         if !leg.active {
             return Err(V16Error::InvalidLeg);
@@ -4811,7 +4811,7 @@ impl MarketGroupV16 {
         self.require_asset_live_reducible(request.asset_index)?;
         self.settle_account_side_effects_not_atomic(account, self.config.public_b_chunk_atoms)?;
         self.full_account_refresh(account, effective_prices)?;
-        let before_score = self.risk_score(account)?;
+        let before_score = self.risk_score_unchecked(account)?;
         let leg = account.legs[request.asset_index];
         if !leg.active {
             return Err(V16Error::InvalidLeg);
@@ -5671,6 +5671,10 @@ impl MarketGroupV16 {
 
     pub fn risk_score(&self, account: &PortfolioAccountV16) -> V16Result<RiskScoreV16> {
         self.validate_account_shape(account)?;
+        self.risk_score_unchecked(account)
+    }
+
+    fn risk_score_unchecked(&self, account: &PortfolioAccountV16) -> V16Result<RiskScoreV16> {
         if !account.health_cert.valid {
             return Err(V16Error::Stale);
         }
@@ -5697,7 +5701,7 @@ impl MarketGroupV16 {
         before_score: RiskScoreV16,
         after: &PortfolioAccountV16,
     ) -> V16Result<()> {
-        let after_score = self.risk_score(after)?;
+        let after_score = self.risk_score_unchecked(after)?;
         if after_score.strictly_reduces_from(before_score)
             || after_score.certified_liq_deficit < before_score.certified_liq_deficit
         {
@@ -5956,6 +5960,18 @@ impl MarketGroupV16 {
         amount: u128,
         expiry_slot: u64,
     ) -> V16Result<()> {
+        self.add_fresh_counterparty_backing_unchecked(domain, amount, expiry_slot)?;
+        self.reservation_encumbrance_proof_for_domain(domain)?
+            .validate()?;
+        self.assert_public_invariants()
+    }
+
+    fn add_fresh_counterparty_backing_unchecked(
+        &mut self,
+        domain: usize,
+        amount: u128,
+        expiry_slot: u64,
+    ) -> V16Result<()> {
         self.validate_source_domain_index(domain)?;
         if amount == 0 || expiry_slot <= self.current_slot {
             return Err(V16Error::InvalidConfig);
@@ -5977,7 +5993,7 @@ impl MarketGroupV16 {
             .fresh_reserved_backing_num
             .checked_add(amount)
             .ok_or(V16Error::CounterOverflow)?;
-        self.refresh_source_credit_domain_after_mutation(domain)
+        self.recompute_source_credit_domain_after_mutation(domain)
     }
 
     fn fresh_counterparty_backing_expiry_slot(&self, domain: usize) -> V16Result<u64> {
@@ -6005,7 +6021,7 @@ impl MarketGroupV16 {
         negative_before: u128,
         negative_after: u128,
     ) -> V16Result<()> {
-        self.validate_account_shape(account)?;
+        self.validate_source_domain_index(domain)?;
         let new_negative_loss = negative_after.saturating_sub(negative_before);
         if new_negative_loss == 0 {
             return Ok(());
@@ -6040,9 +6056,9 @@ impl MarketGroupV16 {
         )?
         .validate()?;
         let expiry_slot = self.fresh_counterparty_backing_expiry_slot(domain)?;
-        self.add_fresh_counterparty_backing_not_atomic(domain, backing_num, expiry_slot)?;
+        self.add_fresh_counterparty_backing_unchecked(domain, backing_num, expiry_slot)?;
         account.health_cert.valid = false;
-        self.validate_account_shape(account)
+        Ok(())
     }
 
     pub fn create_source_credit_lien_from_counterparty_not_atomic(

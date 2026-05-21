@@ -1,7 +1,8 @@
 use percolator::v16::{
     account_equity, risk_notional_ceil, AssetLifecycleV16, AssetStateV16Account,
-    CloseProgressLedgerV16, EngineAssetSlotV16Account, EngineAssetSlotWithExtV16Account,
-    HLockLaneV16, HealthCertV16Account, LiquidationRequestV16, MarketGroupV16,
+    CloseProgressLedgerV16, EngineAssetSlotV16Account, HLockLaneV16, HealthCertV16Account,
+    LiquidationRequestV16, Market, MarketGroupV16, MarketGroupV16View,
+    MarketGroupV16ViewMut,
     MarketGroupV16HeaderAccount, MarketModeV16, PermissionlessCrankActionV16,
     PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
     PermissionlessRecoveryReasonV16, PortfolioAccountV16, PortfolioAccountV16Account,
@@ -198,6 +199,128 @@ fn v16_deposit_and_withdraw_paths_validate_token_value_flow() {
     assert_eq!(g.vault, 7);
     assert_eq!(g.c_tot, 7);
     assert_eq!(a.capital, 7);
+}
+
+#[test]
+fn v16_zero_copy_market_view_deposit_mutates_pod_without_runtime_vecs() {
+    let g = group();
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: 0xCAFE_0000u64 + i as u64,
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let runtime_account = account();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&runtime_account);
+    let mut source_domains =
+        PortfolioAccountV16Account::source_domains_from_runtime(&runtime_account).unwrap();
+    let preserved_wrapper = markets[0].wrapper;
+
+    let mut account_view = percolator::v16::PortfolioV16ViewMut::new(
+        &mut account_header,
+        &mut source_domains,
+    );
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    market_view.deposit_not_atomic(&mut account_view, 17).unwrap();
+
+    assert_eq!(account_view.header.capital.get(), 17);
+    assert_eq!(market_view.header.vault.get(), 17);
+    assert_eq!(market_view.header.c_tot.get(), 17);
+    assert_eq!(market_view.markets[0].wrapper, preserved_wrapper);
+    market_view.validate_shape().unwrap();
+    account_view
+        .validate_with_market(&market_view.as_view())
+        .unwrap();
+}
+
+#[test]
+fn v16_zero_copy_fee_sync_settles_flat_loss_before_fee_without_runtime_vecs() {
+    let mut g = group();
+    let mut a = account();
+    g.vault = 100;
+    g.c_tot = 100;
+    a.capital = 100;
+    a.pnl = -40;
+    g.negative_pnl_account_count = 1;
+    g.current_slot = 10;
+    g.slot_last = 10;
+    a.last_fee_slot = 0;
+
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: 0xDAD0_0000u64 + i as u64,
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&a);
+    let mut source_domains = PortfolioAccountV16Account::source_domains_from_runtime(&a).unwrap();
+
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    let charged = market_view
+        .sync_account_fee_to_slot_not_atomic(&mut account_view, 10, 10)
+        .unwrap();
+
+    assert_eq!(charged, 60);
+    assert_eq!(account_view.header.pnl.get(), 0);
+    assert_eq!(account_view.header.capital.get(), 0);
+    assert_eq!(account_view.header.last_fee_slot.get(), 10);
+    assert_eq!(market_view.header.c_tot.get(), 0);
+    assert_eq!(market_view.header.insurance.get(), 60);
+    assert_eq!(market_view.header.vault.get(), 100);
+    assert_eq!(market_view.header.negative_pnl_account_count.get(), 0);
+    market_view.validate_shape().unwrap();
+    account_view
+        .validate_with_market(&market_view.as_view())
+        .unwrap();
+}
+
+#[test]
+fn v16_zero_copy_principal_settlement_starts_hlock_on_unpaid_flat_loss() {
+    let mut g = group();
+    let mut a = account();
+    g.vault = 100;
+    g.c_tot = 100;
+    a.capital = 100;
+    a.pnl = -150;
+    g.negative_pnl_account_count = 1;
+
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: i as u64,
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&a);
+    let mut source_domains = PortfolioAccountV16Account::source_domains_from_runtime(&a).unwrap();
+
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    let paid = market_view
+        .settle_negative_pnl_from_principal_not_atomic(&mut account_view)
+        .unwrap();
+
+    assert_eq!(paid, 100);
+    assert_eq!(account_view.header.capital.get(), 0);
+    assert_eq!(account_view.header.pnl.get(), -50);
+    assert_eq!(market_view.header.c_tot.get(), 0);
+    assert_eq!(market_view.header.bankruptcy_hlock_active, 1);
+    assert_eq!(market_view.header.negative_pnl_account_count.get(), 1);
+    market_view.validate_shape().unwrap();
+    account_view
+        .validate_with_market(&market_view.as_view())
+        .unwrap();
 }
 
 #[test]
@@ -1796,9 +1919,9 @@ fn v16_dynamic_market_header_and_slot_table_roundtrip_runtime_state() {
     let decoded = header.try_to_runtime_with_slots(&slots).unwrap();
     assert_eq!(decoded, g);
     assert_eq!(
-        MarketGroupV16HeaderAccount::dynamic_market_group_account_len(4, 24).unwrap(),
+        MarketGroupV16HeaderAccount::dynamic_market_group_account_len::<[u8; 24]>(4).unwrap(),
         core::mem::size_of::<MarketGroupV16HeaderAccount>()
-            + 4 * (core::mem::size_of::<EngineAssetSlotV16Account>() + 24)
+            + 4 * core::mem::size_of::<Market<[u8; 24]>>()
     );
 }
 
@@ -1808,22 +1931,24 @@ fn v16_market_header_decodes_wrapper_owned_overallocated_slot_slice() {
     let capacity = g.config.max_market_slots as usize + 3;
     let header = MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, capacity).unwrap();
     let mut slots = (0..g.assets.len())
-        .map(|i| EngineAssetSlotWithExtV16Account {
+        .map(|i| Market {
+            wrapper: 0xA5A5_0000u64 + i as u64,
             engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
-            ext: 0xA5A5_0000u64 + i as u64,
         })
         .collect::<Vec<_>>();
     while slots.len() < capacity {
         let idx = slots.len();
-        slots.push(EngineAssetSlotWithExtV16Account {
+        slots.push(Market {
+            wrapper: 0xFFFF_0000u64 + idx as u64,
             engine: EngineAssetSlotV16Account::empty_for_market(0),
-            ext: 0xFFFF_0000u64 + idx as u64,
         });
     }
 
     let decoded = header.try_to_runtime_with_market_slots(&slots).unwrap();
+    let view = MarketGroupV16View::new(&header, &slots);
 
     assert_eq!(decoded.config.max_market_slots, g.config.max_market_slots);
+    assert_eq!(view.validate_shape(), Ok(()));
     assert_eq!(decoded.assets.len(), capacity);
     assert_eq!(&decoded.assets[..g.assets.len()], &g.assets[..]);
     assert_eq!(decoded.source_credit.len(), capacity * 2);
@@ -1832,7 +1957,7 @@ fn v16_market_header_decodes_wrapper_owned_overallocated_slot_slice() {
         assert_eq!(asset.market_id, 0);
     }
     assert_eq!(
-        slots[capacity - 1].ext,
+        slots[capacity - 1].wrapper,
         0xFFFF_0000u64 + capacity as u64 - 1
     );
 }
@@ -1876,14 +2001,14 @@ fn v16_market_header_rejects_nonempty_hidden_wrapper_slot() {
     let capacity = g.config.max_market_slots as usize + 1;
     let header = MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, capacity).unwrap();
     let mut slots = (0..g.assets.len())
-        .map(|i| EngineAssetSlotWithExtV16Account {
+        .map(|i| Market {
+            wrapper: (),
             engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
-            ext: (),
         })
         .collect::<Vec<_>>();
-    slots.push(EngineAssetSlotWithExtV16Account {
+    slots.push(Market {
+        wrapper: (),
         engine: EngineAssetSlotV16Account::empty_for_market(0),
-        ext: (),
     });
     slots[g.assets.len()].engine.asset.market_id = V16PodU64::new(99);
 
@@ -1891,6 +2016,10 @@ fn v16_market_header_rejects_nonempty_hidden_wrapper_slot() {
         header.try_to_runtime_with_market_slots(&slots),
         Err(V16Error::InvalidConfig),
         "wrapper-owned spare slots must be empty until config exposes them"
+    );
+    assert_eq!(
+        MarketGroupV16View::new(&header, &slots).validate_shape(),
+        Err(V16Error::InvalidConfig)
     );
 }
 
@@ -3602,20 +3731,22 @@ fn v16_dynamic_header_activates_generic_wrapper_slot_without_touching_wrapper_da
     .unwrap();
     let mut header = MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, 8).unwrap();
     header.grow_asset_slot_capacity_not_atomic(8, 8).unwrap();
-    let mut slot = EngineAssetSlotWithExtV16Account {
-        engine: EngineAssetSlotV16Account::default(),
-        ext: [7u8; 32],
-    };
+    let mut markets = (0..8u8)
+        .map(|i| Market {
+            wrapper: [i; 32],
+            engine: EngineAssetSlotV16Account::default(),
+        })
+        .collect::<Vec<_>>();
     let market_id = header.next_market_id.get();
 
-    header
-        .activate_empty_market_slot_not_atomic(7, &mut slot, 777, 2)
+    MarketGroupV16ViewMut::new(&mut header, &mut markets)
+        .activate_empty_market_not_atomic(7, 777, 2)
         .unwrap();
 
-    assert_eq!(slot.ext, [7u8; 32]);
-    assert_eq!(slot.engine.asset.market_id.get(), market_id);
-    assert_eq!(slot.engine.asset.effective_price.get(), 777);
-    assert_eq!(slot.engine.backing_long.market_id.get(), market_id);
+    assert_eq!(markets[7].wrapper, [7u8; 32]);
+    assert_eq!(markets[7].engine.asset.market_id.get(), market_id);
+    assert_eq!(markets[7].engine.asset.effective_price.get(), 777);
+    assert_eq!(markets[7].engine.backing_long.market_id.get(), market_id);
 }
 
 #[test]
@@ -3672,27 +3803,23 @@ fn v16_dynamic_header_capacity_is_wrapper_supplied_not_fixed_runtime_window() {
 #[test]
 fn v16_dynamic_realloc_layout_is_capacity_driven_not_fixed_runtime_window() {
     let capacity = 263usize;
-    let wrapper_ext_len = 24usize;
-    let slot_len = MarketGroupV16HeaderAccount::dynamic_asset_slot_stride(wrapper_ext_len).unwrap();
+    type Wrapper = [u8; 24];
+    let slot_len = MarketGroupV16HeaderAccount::dynamic_asset_slot_stride::<Wrapper>();
     let account_len =
-        MarketGroupV16HeaderAccount::dynamic_market_group_account_len(capacity, wrapper_ext_len)
-            .unwrap();
+        MarketGroupV16HeaderAccount::dynamic_market_group_account_len::<Wrapper>(capacity).unwrap();
     let last_offset =
-        MarketGroupV16HeaderAccount::dynamic_asset_slot_offset(capacity - 1, wrapper_ext_len)
-            .unwrap();
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_offset::<Wrapper>(capacity - 1).unwrap();
 
     assert_eq!(
-        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len(
-            account_len,
-            wrapper_ext_len
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len::<Wrapper>(
+            account_len
         ),
         Ok(capacity)
     );
     assert_eq!(
-        MarketGroupV16HeaderAccount::validate_dynamic_market_group_account_len(
+        MarketGroupV16HeaderAccount::validate_dynamic_market_group_account_len::<Wrapper>(
             account_len,
-            capacity,
-            wrapper_ext_len
+            capacity
         ),
         Ok(())
     );
@@ -3707,30 +3834,26 @@ fn v16_dynamic_realloc_layout_is_capacity_driven_not_fixed_runtime_window() {
 #[test]
 fn v16_dynamic_realloc_layout_rejects_truncated_or_misaligned_lengths() {
     let capacity = 67usize;
-    let wrapper_ext_len = 7usize;
+    type Wrapper = [u8; 7];
     let account_len =
-        MarketGroupV16HeaderAccount::dynamic_market_group_account_len(capacity, wrapper_ext_len)
-            .unwrap();
+        MarketGroupV16HeaderAccount::dynamic_market_group_account_len::<Wrapper>(capacity).unwrap();
 
     assert_eq!(
-        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len(
-            core::mem::size_of::<MarketGroupV16HeaderAccount>() - 1,
-            wrapper_ext_len
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len::<Wrapper>(
+            core::mem::size_of::<MarketGroupV16HeaderAccount>() - 1
         ),
         Err(V16Error::InvalidConfig)
     );
     assert_eq!(
-        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len(
-            account_len - 1,
-            wrapper_ext_len
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len::<Wrapper>(
+            account_len - 1
         ),
         Err(V16Error::InvalidConfig)
     );
     assert_eq!(
-        MarketGroupV16HeaderAccount::validate_dynamic_market_group_account_len(
+        MarketGroupV16HeaderAccount::validate_dynamic_market_group_account_len::<Wrapper>(
             account_len,
-            capacity + 1,
-            wrapper_ext_len
+            capacity + 1
         ),
         Err(V16Error::InvalidConfig)
     );

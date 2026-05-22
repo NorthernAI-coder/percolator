@@ -1895,6 +1895,94 @@ fn v16_zero_copy_account_source_lien_release_and_impair_without_runtime_vecs() {
 }
 
 #[test]
+fn v16_zero_copy_quantity_adl_finalizes_account_and_aggregate_oi_without_runtime_vecs() {
+    let mut g = group();
+    let mut closing = account();
+    let mut survivor = account_with_id(47);
+    let mut opposing = account_with_id(48);
+    g.attach_leg(&mut closing, 0, SideV16::Long, 4).unwrap();
+    g.attach_leg(&mut survivor, 0, SideV16::Long, 6).unwrap();
+    g.attach_leg(&mut opposing, 0, SideV16::Short, -10).unwrap();
+    closing.close_progress = CloseProgressLedgerV16 {
+        active: true,
+        finalized: true,
+        close_id: 1,
+        asset_index: 0,
+        market_id: g.assets[0].market_id,
+        domain_side: SideV16::Short,
+        gross_loss_at_close_start: 1,
+        explicit_loss_assigned: 1,
+        residual_remaining: 0,
+        ..CloseProgressLedgerV16::EMPTY
+    };
+    let survivor_weight = survivor.legs[0].loss_weight;
+    closing.ensure_source_domain_capacity(
+        v16_domain_count_for_market_slots(g.config.max_market_slots).unwrap(),
+    );
+
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: [i as u8; 32],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&closing);
+    let mut account_sources =
+        PortfolioAccountV16Account::source_domains_from_runtime(&closing).unwrap();
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut account_sources);
+
+    let out = market_view
+        .apply_quantity_adl_after_residual_for_account_not_atomic(
+            &mut account_view,
+            0,
+            SideV16::Long,
+            4,
+        )
+        .unwrap();
+
+    assert_eq!(out.closed_q, 4);
+    assert_eq!(
+        account_view.header.active_bitmap.map(V16PodU64::get),
+        bitmap(&[])
+    );
+    assert!(!account_view.header.legs[0].try_to_runtime().unwrap().active);
+    assert_eq!(
+        account_view
+            .header
+            .close_progress
+            .quantity_adl_applied_q
+            .get(),
+        4
+    );
+    assert_eq!(market_view.markets[0].engine.asset.oi_eff_long_q.get(), 6);
+    assert_eq!(market_view.markets[0].engine.asset.oi_eff_short_q.get(), 6);
+    assert_eq!(
+        market_view.markets[0]
+            .engine
+            .asset
+            .stored_pos_count_long
+            .get(),
+        1
+    );
+    assert_eq!(
+        market_view.markets[0]
+            .engine
+            .asset
+            .loss_weight_sum_long
+            .get(),
+        survivor_weight
+    );
+    account_view
+        .validate_with_market(&market_view.as_view())
+        .unwrap();
+    market_view.validate_shape().unwrap();
+}
+
+#[test]
 fn v16_zero_copy_asset_lifecycle_and_explicit_recovery_without_runtime_vecs() {
     let g = group();
     let mut header =

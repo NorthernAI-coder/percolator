@@ -1681,6 +1681,89 @@ fn v16_zero_copy_source_credit_lien_lifecycles_without_runtime_vecs() {
 }
 
 #[test]
+fn v16_zero_copy_asset_lifecycle_and_explicit_recovery_without_runtime_vecs() {
+    let g = group();
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: [i as u8; 32],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let preserved_wrapper = markets[0].wrapper;
+    let risk_epoch_before = header.risk_epoch.get();
+    let asset_set_epoch_before = header.asset_set_epoch.get();
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    market_view.mark_asset_drain_only_not_atomic(0).unwrap();
+    assert_eq!(
+        market_view.markets[0].engine.asset.lifecycle,
+        AssetLifecycleV16::DrainOnly as u8
+    );
+    assert!(market_view.header.risk_epoch.get() > risk_epoch_before);
+    assert!(market_view.header.asset_set_epoch.get() > asset_set_epoch_before);
+    assert_eq!(market_view.markets[0].wrapper, preserved_wrapper);
+
+    market_view.retire_empty_asset_not_atomic(0, 1).unwrap();
+    assert_eq!(
+        market_view.markets[0].engine.asset.lifecycle,
+        AssetLifecycleV16::Retired as u8
+    );
+    assert_eq!(market_view.markets[0].engine.asset.retired_slot.get(), 1);
+    assert_eq!(market_view.header.current_slot.get(), 1);
+    assert_eq!(market_view.markets[0].wrapper, preserved_wrapper);
+    market_view.retire_empty_asset_not_atomic(0, 1).unwrap();
+    market_view.validate_shape().unwrap();
+
+    let mut blocked_group = group();
+    blocked_group.vault = 1;
+    blocked_group.insurance = 1;
+    let mut blocked_header = MarketGroupV16HeaderAccount::from_runtime_with_capacity(
+        &blocked_group,
+        blocked_group.assets.len(),
+    )
+    .unwrap();
+    let mut blocked_markets = (0..blocked_group.assets.len())
+        .map(|i| Market {
+            wrapper: [9u8; 32],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&blocked_group, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut blocked_view = MarketGroupV16ViewMut::new(&mut blocked_header, &mut blocked_markets);
+    blocked_view
+        .add_fresh_counterparty_backing_not_atomic(0, BOUND_SCALE, 10)
+        .unwrap();
+    assert_eq!(
+        blocked_view.retire_empty_asset_not_atomic(0, 1),
+        Err(V16Error::LockActive),
+        "zero-copy retirement must not orphan source-credit backing"
+    );
+
+    let recovery_group = group();
+    let mut recovery_header = MarketGroupV16HeaderAccount::from_runtime_with_capacity(
+        &recovery_group,
+        recovery_group.assets.len(),
+    )
+    .unwrap();
+    let mut recovery_markets = (0..recovery_group.assets.len())
+        .map(|i| Market {
+            wrapper: [7u8; 32],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&recovery_group, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut recovery_view = MarketGroupV16ViewMut::new(&mut recovery_header, &mut recovery_markets);
+    assert_eq!(
+        recovery_view.declare_explicit_loss_or_dust_audit_overflow_not_atomic(),
+        Ok(PermissionlessProgressOutcomeV16::RecoveryDeclared(
+            PermissionlessRecoveryReasonV16::ExplicitLossOrDustAuditOverflow
+        ))
+    );
+    assert_eq!(recovery_view.header.mode, MarketModeV16::Recovery as u8);
+    recovery_view.validate_shape().unwrap();
+}
+
+#[test]
 fn v16_withdraw_that_uses_positive_credit_creates_source_lien() {
     let (market, _, _) = ids();
     let mut cfg = V16Config::public_user_fund(1, 0, 10);

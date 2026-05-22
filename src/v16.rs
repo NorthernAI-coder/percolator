@@ -6619,6 +6619,14 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(PermissionlessProgressOutcomeV16::RecoveryDeclared(reason))
     }
 
+    pub fn declare_explicit_loss_or_dust_audit_overflow_not_atomic(
+        &mut self,
+    ) -> V16Result<PermissionlessProgressOutcomeV16> {
+        self.declare_permissionless_recovery(
+            PermissionlessRecoveryReasonV16::ExplicitLossOrDustAuditOverflow,
+        )
+    }
+
     pub fn permissionless_crank_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,
@@ -6776,12 +6784,96 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(())
     }
 
+    fn checked_asset_set_epoch_bump(&self) -> V16Result<(u64, u64)> {
+        let next_asset_set_epoch = self
+            .header
+            .asset_set_epoch
+            .get()
+            .checked_add(1)
+            .ok_or(V16Error::CounterOverflow)?;
+        let next_risk_epoch = self
+            .header
+            .risk_epoch
+            .get()
+            .checked_add(1)
+            .ok_or(V16Error::CounterOverflow)?;
+        Ok((next_asset_set_epoch, next_risk_epoch))
+    }
+
+    fn commit_asset_set_epoch_bump(&mut self, next_asset_set_epoch: u64, next_risk_epoch: u64) {
+        self.header.asset_set_epoch = V16PodU64::new(next_asset_set_epoch);
+        self.header.risk_epoch = V16PodU64::new(next_risk_epoch);
+    }
+
     fn require_asset_live_reducible(&self, asset_index: usize) -> V16Result<()> {
         let asset = self.asset_state(asset_index)?;
         match asset.lifecycle {
             AssetLifecycleV16::Active | AssetLifecycleV16::DrainOnly => Ok(()),
             _ => Err(V16Error::LockActive),
         }
+    }
+
+    fn require_empty_asset_lifecycle_state(&self, asset_index: usize) -> V16Result<()> {
+        self.validate_configured_asset_index(asset_index)?;
+        let asset = self.asset_state(asset_index)?;
+        let long_domain = self.insurance_domain_index(asset_index, SideV16::Long)?;
+        let short_domain = self.insurance_domain_index(asset_index, SideV16::Short)?;
+        let long_bucket = self.backing_bucket_for_domain(long_domain)?;
+        let short_bucket = self.backing_bucket_for_domain(short_domain)?;
+        let long_source = self.source_credit_for_domain_shape(long_domain)?;
+        let short_source = self.source_credit_for_domain_shape(short_domain)?;
+        let long_reservation = self.insurance_reservation_for_domain(long_domain)?;
+        let short_reservation = self.insurance_reservation_for_domain(short_domain)?;
+        let slot = self.markets[asset_index].engine_slot();
+
+        if slot.pending_domain_loss_barrier_long.get() != 0
+            || slot.pending_domain_loss_barrier_short.get() != 0
+            || asset.mode_long != SideModeV16::Normal
+            || asset.mode_short != SideModeV16::Normal
+            || !((asset.a_long == ADL_ONE && asset.a_short == ADL_ONE)
+                || (asset.a_long == 0 && asset.a_short == 0))
+            || asset.k_long != 0
+            || asset.k_short != 0
+            || asset.f_long_num != 0
+            || asset.f_short_num != 0
+            || asset.k_epoch_start_long != 0
+            || asset.k_epoch_start_short != 0
+            || asset.f_epoch_start_long_num != 0
+            || asset.f_epoch_start_short_num != 0
+            || asset.b_long_num != 0
+            || asset.b_short_num != 0
+            || asset.b_epoch_start_long_num != 0
+            || asset.b_epoch_start_short_num != 0
+            || asset.oi_eff_long_q != 0
+            || asset.oi_eff_short_q != 0
+            || asset.stored_pos_count_long != 0
+            || asset.stored_pos_count_short != 0
+            || asset.stale_account_count_long != 0
+            || asset.stale_account_count_short != 0
+            || asset.pending_obligation_count_long != 0
+            || asset.pending_obligation_count_short != 0
+            || asset.loss_weight_sum_long != 0
+            || asset.loss_weight_sum_short != 0
+            || asset.social_loss_remainder_long_num != 0
+            || asset.social_loss_remainder_short_num != 0
+            || asset.social_loss_dust_long_num != 0
+            || asset.social_loss_dust_short_num != 0
+            || asset.explicit_unallocated_loss_long != 0
+            || asset.explicit_unallocated_loss_short != 0
+            || slot.insurance_domain_spent_long.get() != 0
+            || slot.insurance_domain_spent_short.get() != 0
+            || long_source != SourceCreditStateV16::EMPTY
+            || short_source != SourceCreditStateV16::EMPTY
+            || !long_bucket.is_empty_amount_shape()
+            || !short_bucket.is_empty_amount_shape()
+            || long_bucket.market_id != asset.market_id
+            || short_bucket.market_id != asset.market_id
+            || long_reservation != InsuranceCreditReservationV16::EMPTY
+            || short_reservation != InsuranceCreditReservationV16::EMPTY
+        {
+            return Err(V16Error::LockActive);
+        }
+        Ok(())
     }
 
     fn side_mode_for(&self, asset_index: usize, side: SideV16) -> V16Result<SideModeV16> {
@@ -9414,6 +9506,58 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.header.vault = V16PodU128::new(vault);
         account.validate_with_market(&self.as_view())?;
         self.validate_shape()
+    }
+
+    pub fn mark_asset_drain_only_not_atomic(&mut self, asset_index: usize) -> V16Result<()> {
+        self.validate_configured_asset_index(asset_index)?;
+        if decode_market_mode(self.header.mode)? != MarketModeV16::Live {
+            return Err(V16Error::LockActive);
+        }
+        let mut asset = self.asset_state(asset_index)?;
+        match asset.lifecycle {
+            AssetLifecycleV16::Active => {
+                let (next_asset_set_epoch, next_risk_epoch) =
+                    self.checked_asset_set_epoch_bump()?;
+                asset.lifecycle = AssetLifecycleV16::DrainOnly;
+                self.set_asset_state(asset_index, asset)?;
+                self.commit_asset_set_epoch_bump(next_asset_set_epoch, next_risk_epoch);
+                self.validate_shape()
+            }
+            AssetLifecycleV16::DrainOnly => Ok(()),
+            _ => Err(V16Error::LockActive),
+        }
+    }
+
+    pub fn retire_empty_asset_not_atomic(
+        &mut self,
+        asset_index: usize,
+        now_slot: u64,
+    ) -> V16Result<()> {
+        self.validate_configured_asset_index(asset_index)?;
+        if now_slot < self.header.current_slot.get() {
+            return Err(V16Error::Stale);
+        }
+        let mut asset = self.asset_state(asset_index)?;
+        match asset.lifecycle {
+            AssetLifecycleV16::Active
+            | AssetLifecycleV16::DrainOnly
+            | AssetLifecycleV16::Recovery => {
+                self.require_empty_asset_lifecycle_state(asset_index)?;
+                let (next_asset_set_epoch, next_risk_epoch) =
+                    self.checked_asset_set_epoch_bump()?;
+                asset.lifecycle = AssetLifecycleV16::Retired;
+                asset.retired_slot = now_slot;
+                self.set_asset_state(asset_index, asset)?;
+                self.header.current_slot = V16PodU64::new(now_slot);
+                self.commit_asset_set_epoch_bump(next_asset_set_epoch, next_risk_epoch);
+                self.validate_shape()
+            }
+            AssetLifecycleV16::Retired => {
+                self.require_empty_asset_lifecycle_state(asset_index)?;
+                self.validate_shape()
+            }
+            _ => Err(V16Error::LockActive),
+        }
     }
 
     pub fn activate_empty_market_not_atomic(

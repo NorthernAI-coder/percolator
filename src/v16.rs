@@ -4084,6 +4084,66 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(charged)
     }
 
+    pub fn withdraw_not_atomic(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        amount: u128,
+    ) -> V16Result<()> {
+        if amount == 0 {
+            return Ok(());
+        }
+        account.validate_with_market(&self.as_view())?;
+        if decode_market_mode(self.header.mode)? != MarketModeV16::Live {
+            return Err(V16Error::LockActive);
+        }
+        if !active_bitmap_is_empty(account.header.active_bitmap.map(V16PodU64::get)) {
+            return Err(V16Error::Stale);
+        }
+        if account.header.close_progress.try_to_runtime()? != CloseProgressLedgerV16::EMPTY {
+            return Err(V16Error::LockActive);
+        }
+        self.settle_negative_pnl_from_principal_not_atomic(account)?;
+        if account.header.pnl.get() < 0 || amount > account.header.capital.get() {
+            return Err(V16Error::LockActive);
+        }
+        let post_capital = account
+            .header
+            .capital
+            .get()
+            .checked_sub(amount)
+            .ok_or(V16Error::CounterUnderflow)?;
+        let equity_after = account_equity_from_parts(
+            post_capital,
+            account.header.pnl.get(),
+            account.header.fee_credits.get(),
+        )?;
+        if equity_after < 0 {
+            return Err(V16Error::InvalidConfig);
+        }
+
+        let vault_before = self.header.vault.get();
+        let c_tot = self
+            .header
+            .c_tot
+            .get()
+            .checked_sub(amount)
+            .ok_or(V16Error::CounterUnderflow)?;
+        let vault = self
+            .header
+            .vault
+            .get()
+            .checked_sub(amount)
+            .ok_or(V16Error::CounterUnderflow)?;
+        account.header.capital = V16PodU128::new(post_capital);
+        self.header.c_tot = V16PodU128::new(c_tot);
+        self.header.vault = V16PodU128::new(vault);
+        TokenValueFlowProofV16::account_capital_to_external_out(amount, vault_before, vault)?
+            .validate()?;
+        account.header.health_cert.valid = 0;
+        account.validate_with_market(&self.as_view())?;
+        self.validate_shape()
+    }
+
     pub fn deposit_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,

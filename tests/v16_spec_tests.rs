@@ -324,6 +324,73 @@ fn v16_zero_copy_principal_settlement_starts_hlock_on_unpaid_flat_loss() {
 }
 
 #[test]
+fn v16_zero_copy_flat_withdraw_mutates_pod_without_runtime_vecs() {
+    let mut g = group();
+    let mut a = account();
+    g.vault = 100;
+    g.c_tot = 100;
+    a.capital = 100;
+
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: [i as u8; 24],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&a);
+    let mut source_domains = PortfolioAccountV16Account::source_domains_from_runtime(&a).unwrap();
+
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    market_view
+        .withdraw_not_atomic(&mut account_view, 35)
+        .unwrap();
+
+    assert_eq!(account_view.header.capital.get(), 65);
+    assert_eq!(market_view.header.c_tot.get(), 65);
+    assert_eq!(market_view.header.vault.get(), 65);
+    assert_eq!(market_view.markets[0].wrapper, [0u8; 24]);
+    market_view.validate_shape().unwrap();
+    account_view
+        .validate_with_market(&market_view.as_view())
+        .unwrap();
+}
+
+#[test]
+fn v16_zero_copy_withdraw_rejects_nonflat_until_view_refresh_exists() {
+    let mut g = group();
+    let mut a = account();
+    g.deposit_not_atomic(&mut a, 100).unwrap();
+    g.attach_leg(&mut a, 0, SideV16::Long, POS_SCALE as i128)
+        .unwrap();
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: [i as u8; 24],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&a);
+    let mut source_domains = PortfolioAccountV16Account::source_domains_from_runtime(&a).unwrap();
+
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    assert_eq!(
+        market_view.withdraw_not_atomic(&mut account_view, 1),
+        Err(V16Error::Stale)
+    );
+    assert_eq!(account_view.header.capital.get(), 100);
+    assert_eq!(market_view.header.vault.get(), 100);
+}
+
+#[test]
 fn v16_stock_reconciliation_proof_decomposes_vault_into_single_stock_classes() {
     let mut g = group();
     let mut a = account();

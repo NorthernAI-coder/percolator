@@ -651,6 +651,64 @@ fn v16_zero_copy_trade_updates_positions_like_runtime_without_vecs() {
 }
 
 #[test]
+fn v16_zero_copy_trade_rejects_corrupt_unconfigured_market_tail() {
+    let mut g = group();
+    let mut long = account();
+    let mut short = account_with_id(96);
+    g.deposit_not_atomic(&mut long, 100).unwrap();
+    g.deposit_not_atomic(&mut short, 100).unwrap();
+    let request = TradeRequestV16 {
+        asset_index: 0,
+        size_q: POS_SCALE,
+        exec_price: 1,
+        fee_bps: 0,
+    };
+
+    let configured = g.config.max_market_slots as usize;
+    assert_eq!(configured, g.assets.len());
+    let capacity = configured + 1;
+    let mut header = MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, capacity).unwrap();
+    let mut markets = (0..capacity)
+        .map(|i| Market {
+            wrapper: [i as u8; 32],
+            engine: if i < configured {
+                EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap()
+            } else {
+                EngineAssetSlotV16Account::default()
+            },
+        })
+        .collect::<Vec<_>>();
+    markets[configured].engine.asset.market_id = V16PodU64::new(99);
+
+    let mut long_header = PortfolioAccountV16Account::from_runtime(&long);
+    let mut short_header = PortfolioAccountV16Account::from_runtime(&short);
+    let mut long_sources = PortfolioAccountV16Account::source_domains_from_runtime(&long).unwrap();
+    let mut short_sources =
+        PortfolioAccountV16Account::source_domains_from_runtime(&short).unwrap();
+    let long_before = long_header;
+    let short_before = short_header;
+    let market_before = markets[0].engine;
+
+    let mut long_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut long_header, &mut long_sources);
+    let mut short_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut short_header, &mut short_sources);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    assert_eq!(
+        market_view.execute_trade_with_fee_in_place_not_atomic(
+            &mut long_view,
+            &mut short_view,
+            request,
+        ),
+        Err(V16Error::InvalidConfig)
+    );
+    assert_eq!(*long_view.header, long_before);
+    assert_eq!(*short_view.header, short_before);
+    assert_eq!(market_view.markets[0].engine, market_before);
+}
+
+#[test]
 fn v16_zero_copy_permissionless_crank_refresh_accrues_without_runtime_vecs() {
     let mut g = group();
     let mut long = account();

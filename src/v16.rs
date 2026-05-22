@@ -724,15 +724,12 @@ impl V16Core {
             .and_then(|v| v.checked_div(U256::from_u128(CREDIT_RATE_SCALE)))
             .and_then(|v| v.try_into_u128())
             .ok_or(V16Error::ArithmeticOverflow)?;
-        Ok((credited_num / BOUND_SCALE).min(
-            Self::available_backing_num_for_source_credit_state(state)? / BOUND_SCALE,
-        ))
+        Ok((credited_num / BOUND_SCALE)
+            .min(Self::available_backing_num_for_source_credit_state(state)? / BOUND_SCALE))
     }
 
     #[cfg(any(kani, feature = "runtime-vec-api"))]
-    fn account_source_claim_bound_sum_num_static(
-        account: &PortfolioAccountV16,
-    ) -> V16Result<u128> {
+    fn account_source_claim_bound_sum_num_static(account: &PortfolioAccountV16) -> V16Result<u128> {
         let mut sum = 0u128;
         let mut d = 0;
         let domain_count = account.source_domain_capacity();
@@ -1994,8 +1991,7 @@ impl<'a> PortfolioV16View<'a> {
             }
             return Ok(());
         }
-        let exact_num =
-            V16Core::bound_num_from_amount(receipt.terminal_positive_claim_face)?;
+        let exact_num = V16Core::bound_num_from_amount(receipt.terminal_positive_claim_face)?;
         if exact_num > receipt.prior_bound_contribution_num
             || receipt.paid_effective > receipt.terminal_positive_claim_face
             || receipt.finalized != (receipt.paid_effective == receipt.terminal_positive_claim_face)
@@ -2524,8 +2520,22 @@ pub struct TradeOutcomeV16 {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct TradePositionPreflightV16 {
     risk_increasing: bool,
+    long_lookup: PositionDeltaLookupV16,
+    short_lookup: PositionDeltaLookupV16,
     long_old_abs_q: u128,
     short_old_abs_q: u128,
+    long_new_abs_q: u128,
+    short_new_abs_q: u128,
+    long_has_source_claims: bool,
+    short_has_source_claims: bool,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct PositionDeltaLookupV16 {
+    existing_slot: Option<usize>,
+    empty_slot: Option<usize>,
+    current_q: i128,
+    next_q: i128,
 }
 
 pub const V16_TOKEN_VALUE_CLASS_COUNT: usize = 17;
@@ -4670,14 +4680,8 @@ impl<'a, T> MarketGroupV16View<'a, T> {
         if spent > budget || pending_barrier > 1 {
             return Err(V16Error::InvalidConfig);
         }
-        V16Core::validate_source_domain_ledger_parts(
-            market_id,
-            source,
-            bucket,
-            reservation,
-        )?;
-        let reserved_atoms =
-            V16Core::amount_from_bound_num(source.insurance_credit_reserved_num)?;
+        V16Core::validate_source_domain_ledger_parts(market_id, source, bucket, reservation)?;
+        let reserved_atoms = V16Core::amount_from_bound_num(source.insurance_credit_reserved_num)?;
         *live_source_credit_insurance_atoms = live_source_credit_insurance_atoms
             .checked_add(reserved_atoms)
             .ok_or(V16Error::ArithmeticOverflow)?;
@@ -4900,11 +4904,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
 
     fn recompute_source_credit_domain_after_mutation(&mut self, domain: usize) -> V16Result<()> {
         let source = self.source_credit_for_domain_shape(domain)?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.set_source_credit_for_domain(domain, source)?;
         self.header.risk_epoch = V16PodU64::new(next_risk_epoch);
         Ok(())
@@ -5142,11 +5145,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.header.current_slot.get(),
             amount,
         )?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5175,11 +5177,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.header.current_slot.get(),
             amount,
         )?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5207,11 +5208,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.source_credit_for_domain(domain)?,
             amount,
         )?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5248,11 +5248,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.source_credit_for_domain(domain)?,
             amount,
         )?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5323,11 +5322,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             .insurance_credit_reserved_num
             .checked_add(amount)
             .ok_or(V16Error::CounterOverflow)?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5355,11 +5353,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.source_credit_for_domain(domain)?,
             amount,
         )?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5387,11 +5384,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.source_credit_for_domain(domain)?,
             amount,
         )?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5429,11 +5425,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             .checked_sub(next_insurance)
             .ok_or(V16Error::CounterUnderflow)?;
         let vault_before = self.header.vault.get();
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         TokenValueFlowProofV16::validate_insurance_to_close_insurance_spent(
             spend_atoms,
             vault_before,
@@ -5468,11 +5463,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.source_credit_for_domain(domain)?,
             amount,
         )?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5942,11 +5936,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         )?;
         let (bucket, source) =
             V16Core::prepare_counterparty_lien_consume_delta(bucket, source, amount)?;
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         self.reservation_encumbrance_proof_for_domain_parts(
             domain,
             source,
@@ -5988,11 +5981,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             .checked_sub(next_insurance)
             .ok_or(V16Error::CounterUnderflow)?;
         let vault_before = self.header.vault.get();
-        let (source, next_risk_epoch) =
-            V16Core::prepare_source_credit_domain_recompute_for_epoch(
-                source,
-                self.header.risk_epoch.get(),
-            )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
         TokenValueFlowProofV16::validate_insurance_to_close_insurance_spent(
             spend_atoms,
             vault_before,
@@ -6314,8 +6306,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 .pnl_pos_bound_tot_num
                 .get()
                 .saturating_sub(decrease_num);
-            let exact_min_num =
-                V16Core::bound_num_from_amount(self.header.pnl_pos_tot.get())?;
+            let exact_min_num = V16Core::bound_num_from_amount(self.header.pnl_pos_tot.get())?;
             self.header.pnl_pos_bound_tot_num = V16PodU128::new(next_bound_num.max(exact_min_num));
             self.header.pnl_matured_pos_tot = V16PodU128::new(
                 self.header
@@ -7381,6 +7372,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         account: &mut PortfolioV16ViewMut<'_>,
         request: PermissionlessCrankRequestV16,
     ) -> V16Result<PermissionlessProgressOutcomeV16> {
+        self.validate_unconfigured_market_tail()?;
         if decode_market_mode(self.header.mode)? != MarketModeV16::Live
             && !matches!(request.action, PermissionlessCrankActionV16::Recover(_))
         {
@@ -7531,6 +7523,12 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             return Err(V16Error::InvalidLeg);
         }
         Ok(())
+    }
+
+    #[inline]
+    fn validate_unconfigured_market_tail(&self) -> V16Result<()> {
+        self.header
+            .validate_dynamic_market_slots_shape(self.markets)
     }
 
     fn checked_asset_set_epoch_bump(&self) -> V16Result<(u64, u64)> {
@@ -7919,32 +7917,29 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         let short_delta = long_delta
             .checked_neg()
             .ok_or(V16Error::ArithmeticOverflow)?;
-        let long_current =
-            signed_position(Self::active_leg_for_asset(long_account, request.asset_index)?);
-        let short_current =
-            signed_position(Self::active_leg_for_asset(short_account, request.asset_index)?);
-        let long_next = long_current
-            .checked_add(long_delta)
-            .ok_or(V16Error::ArithmeticOverflow)?;
-        let short_next = short_current
-            .checked_add(short_delta)
-            .ok_or(V16Error::ArithmeticOverflow)?;
-        validate_basis_or_zero(long_next)?;
-        validate_basis_or_zero(short_next)?;
-        let risk_increasing = position_delta_increases_risk(long_current, long_delta)?
-            || position_delta_increases_risk(short_current, short_delta)?;
+        let long_lookup =
+            Self::position_delta_lookup_for_asset(long_account, request.asset_index, long_delta)?;
+        let short_lookup =
+            Self::position_delta_lookup_for_asset(short_account, request.asset_index, short_delta)?;
+        let risk_increasing = position_delta_increases_risk(long_lookup.current_q, long_delta)?
+            || position_delta_increases_risk(short_lookup.current_q, short_delta)?;
         let target_effective_lag = self.asset_has_target_effective_lag(request.asset_index)?;
         let touches_pending_domain_barrier =
             (self.position_change_touches_pending_domain_loss_barrier(
                 request.asset_index,
-                long_current,
-                long_next,
-            )? && !same_side_risk_reduction_or_flat_obligation(long_current, long_next))
-                || (self.position_change_touches_pending_domain_loss_barrier(
-                    request.asset_index,
-                    short_current,
-                    short_next,
-                )? && !same_side_risk_reduction_or_flat_obligation(short_current, short_next));
+                long_lookup.current_q,
+                long_lookup.next_q,
+            )? && !same_side_risk_reduction_or_flat_obligation(
+                long_lookup.current_q,
+                long_lookup.next_q,
+            )) || (self.position_change_touches_pending_domain_loss_barrier(
+                request.asset_index,
+                short_lookup.current_q,
+                short_lookup.next_q,
+            )? && !same_side_risk_reduction_or_flat_obligation(
+                short_lookup.current_q,
+                short_lookup.next_q,
+            ));
         if touches_pending_domain_barrier {
             return Err(V16Error::LockActive);
         }
@@ -7954,8 +7949,57 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         }
         Ok(TradePositionPreflightV16 {
             risk_increasing,
-            long_old_abs_q: long_current.unsigned_abs(),
-            short_old_abs_q: short_current.unsigned_abs(),
+            long_lookup,
+            short_lookup,
+            long_old_abs_q: long_lookup.current_q.unsigned_abs(),
+            short_old_abs_q: short_lookup.current_q.unsigned_abs(),
+            long_new_abs_q: long_lookup.next_q.unsigned_abs(),
+            short_new_abs_q: short_lookup.next_q.unsigned_abs(),
+            long_has_source_claims: Self::account_has_source_claims(long_account)?,
+            short_has_source_claims: Self::account_has_source_claims(short_account)?,
+        })
+    }
+
+    fn position_delta_lookup_for_asset(
+        account: &PortfolioV16View<'_>,
+        asset_index: usize,
+        delta_q: i128,
+    ) -> V16Result<PositionDeltaLookupV16> {
+        let bitmap = account.header.active_bitmap.map(V16PodU64::get);
+        let mut existing_slot = None;
+        let mut empty_slot = None;
+        let mut current_q = 0i128;
+        let mut slot = 0usize;
+        while slot < V16_MAX_PORTFOLIO_ASSETS_N {
+            let in_bitmap = active_bitmap_get(bitmap, slot);
+            let leg = account.header.legs[slot].try_to_runtime()?;
+            if in_bitmap {
+                if !leg.active {
+                    return Err(V16Error::HiddenLeg);
+                }
+                if leg.asset_index as usize == asset_index {
+                    if existing_slot.is_some() {
+                        return Err(V16Error::HiddenLeg);
+                    }
+                    existing_slot = Some(slot);
+                    current_q = signed_position(leg);
+                }
+            } else if leg.active || !leg.is_empty() {
+                return Err(V16Error::HiddenLeg);
+            } else if empty_slot.is_none() {
+                empty_slot = Some(slot);
+            }
+            slot += 1;
+        }
+        let next_q = current_q
+            .checked_add(delta_q)
+            .ok_or(V16Error::ArithmeticOverflow)?;
+        validate_basis_or_zero(next_q)?;
+        Ok(PositionDeltaLookupV16 {
+            existing_slot,
+            empty_slot,
+            current_q,
+            next_q,
         })
     }
 
@@ -7966,14 +8010,33 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         side: SideV16,
         basis_pos_q: i128,
     ) -> V16Result<()> {
-        if self.has_pending_domain_loss_barrier(asset_index, side)? {
-            return Err(V16Error::LockActive);
-        }
         if Self::active_leg_slot_for_asset(&account.as_view(), asset_index)?.is_some() {
             return Err(V16Error::InvalidLeg);
         }
-        validate_basis(basis_pos_q)?;
         let leg_slot = Self::empty_leg_slot(&account.as_view())?;
+        self.attach_leg_at_slot(account, asset_index, side, basis_pos_q, leg_slot)
+    }
+
+    fn attach_leg_at_slot(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        asset_index: usize,
+        side: SideV16,
+        basis_pos_q: i128,
+        leg_slot: usize,
+    ) -> V16Result<()> {
+        if leg_slot >= V16_MAX_PORTFOLIO_ASSETS_N {
+            return Err(V16Error::InvalidLeg);
+        }
+        let bitmap = account.header.active_bitmap.map(V16PodU64::get);
+        let existing = account.header.legs[leg_slot].try_to_runtime()?;
+        if active_bitmap_get(bitmap, leg_slot) || existing.active || !existing.is_empty() {
+            return Err(V16Error::HiddenLeg);
+        }
+        if self.has_pending_domain_loss_barrier(asset_index, side)? {
+            return Err(V16Error::LockActive);
+        }
+        validate_basis(basis_pos_q)?;
         let mut asset = self.asset_state(asset_index)?;
         self.require_asset_active_for_risk_increase(asset_index)?;
         let (a_basis, k_snap, f_snap, b_snap, epoch_snap) = match side {
@@ -8179,25 +8242,49 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if delta_q == 0 {
             return Ok(());
         }
-        let existing_slot = Self::active_leg_slot_for_asset(&account.as_view(), asset_index)?;
+        let lookup =
+            Self::position_delta_lookup_for_asset(&account.as_view(), asset_index, delta_q)?;
+        self.apply_position_delta_with_lookup(account, asset_index, delta_q, lookup)
+    }
+
+    fn apply_position_delta_with_lookup(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        asset_index: usize,
+        delta_q: i128,
+        lookup: PositionDeltaLookupV16,
+    ) -> V16Result<()> {
+        if delta_q == 0 {
+            return Ok(());
+        }
+        let expected_next = lookup
+            .current_q
+            .checked_add(delta_q)
+            .ok_or(V16Error::ArithmeticOverflow)?;
+        if expected_next != lookup.next_q {
+            return Err(V16Error::InvalidLeg);
+        }
+        validate_basis_or_zero(lookup.next_q)?;
+        let existing_slot = lookup.existing_slot;
         if let Some(existing_slot) = existing_slot {
             self.settle_leg_kf_effects_at_slot(account, existing_slot)?;
         }
         let current_leg = if let Some(existing_slot) = existing_slot {
-            account.header.legs[existing_slot].try_to_runtime()?
+            let leg = account.header.legs[existing_slot].try_to_runtime()?;
+            if !leg.active || leg.asset_index as usize != asset_index {
+                return Err(V16Error::HiddenLeg);
+            }
+            leg
         } else {
             PortfolioLegV16::EMPTY
         };
         let current = signed_position(current_leg);
-        let new = current
-            .checked_add(delta_q)
-            .ok_or(V16Error::ArithmeticOverflow)?;
-        validate_basis_or_zero(new)?;
-        if self.position_change_touches_pending_domain_loss_barrier(
-            asset_index,
-            current,
-            new,
-        )? && !same_side_risk_reduction_or_flat_obligation(current, new)
+        if current != lookup.current_q {
+            return Err(V16Error::HiddenLeg);
+        }
+        let new = lookup.next_q;
+        if self.position_change_touches_pending_domain_loss_barrier(asset_index, current, new)?
+            && !same_side_risk_reduction_or_flat_obligation(current, new)
         {
             return Err(V16Error::LockActive);
         }
@@ -8207,7 +8294,8 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             } else {
                 SideV16::Short
             };
-            return self.attach_leg(account, asset_index, side, new);
+            let leg_slot = lookup.empty_slot.ok_or(V16Error::InvalidLeg)?;
+            return self.attach_leg_at_slot(account, asset_index, side, new, leg_slot);
         }
         let leg_slot = existing_slot.ok_or(V16Error::InvalidLeg)?;
         if new == 0 {
@@ -9317,6 +9405,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         account: &mut PortfolioV16ViewMut<'_>,
         asset_index: usize,
         old_abs_q: u128,
+        new_abs_q: u128,
         price: u64,
     ) -> V16Result<HealthCertV16> {
         if asset_index >= self.header.config.max_market_slots.get() as usize
@@ -9326,9 +9415,6 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             return Err(V16Error::InvalidConfig);
         }
         let existing = account.header.health_cert.try_to_runtime()?;
-        let new_abs_q =
-            signed_position(Self::active_leg_for_asset(&account.as_view(), asset_index)?)
-                .unsigned_abs();
         let old_notional = risk_notional_ceil(old_abs_q, price)?;
         let new_notional = risk_notional_ceil(new_abs_q, price)?;
         let config = self.header.config.try_to_runtime()?;
@@ -9397,6 +9483,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         request: TradeRequestV16,
     ) -> V16Result<TradeOutcomeV16> {
         self.validate_trade_request(request)?;
+        self.validate_unconfigured_market_tail()?;
         if decode_market_mode(self.header.mode)? != MarketModeV16::Live {
             return Err(V16Error::LockActive);
         }
@@ -9424,30 +9511,40 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         let price = self.asset_state(request.asset_index)?.effective_price;
         self.charge_account_fee_current_not_atomic(long_account, fee)?;
         self.charge_account_fee_current_not_atomic(short_account, fee)?;
-        self.apply_position_delta(long_account, request.asset_index, long_delta)?;
-        self.apply_position_delta(short_account, request.asset_index, short_delta)?;
+        self.apply_position_delta_with_lookup(
+            long_account,
+            request.asset_index,
+            long_delta,
+            trade_preflight.long_lookup,
+        )?;
+        self.apply_position_delta_with_lookup(
+            short_account,
+            request.asset_index,
+            short_delta,
+            trade_preflight.short_lookup,
+        )?;
         self.recertify_account_after_trade_delta(
             long_account,
             request.asset_index,
             trade_preflight.long_old_abs_q,
+            trade_preflight.long_new_abs_q,
             price,
         )?;
         self.recertify_account_after_trade_delta(
             short_account,
             request.asset_index,
             trade_preflight.short_old_abs_q,
+            trade_preflight.short_new_abs_q,
             price,
         )?;
 
-        let long_has_source_claims = Self::account_has_source_claims(&long_account.as_view())?;
-        let short_has_source_claims = Self::account_has_source_claims(&short_account.as_view())?;
         if risk_increasing && !locked {
-            if long_has_source_claims
+            if trade_preflight.long_has_source_claims
                 && Self::ensure_no_positive_credit_initial_margin(&long_account.as_view()).is_err()
             {
                 return Err(V16Error::LockActive);
             }
-            if short_has_source_claims
+            if trade_preflight.short_has_source_claims
                 && Self::ensure_no_positive_credit_initial_margin(&short_account.as_view()).is_err()
             {
                 return Err(V16Error::LockActive);

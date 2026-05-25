@@ -458,6 +458,45 @@ fn v16_zero_copy_full_refresh_settles_kf_like_runtime_without_vecs() {
 }
 
 #[test]
+fn v16_zero_copy_source_backed_equity_ignores_unrelated_global_junior_bound() {
+    let mut g = group();
+    let mut a = account();
+    g.vault = g.c_tot + g.insurance;
+    g.add_account_source_positive_pnl_not_atomic(&mut a, 0, 10)
+        .unwrap();
+    g.add_fresh_counterparty_backing_not_atomic(0, 10 * BOUND_SCALE, 10)
+        .unwrap();
+    set_junior_bound(&mut g, 1_000);
+
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: [i as u8; 32],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&a);
+    let mut source_domains = PortfolioAccountV16Account::source_domains_from_runtime(&a).unwrap();
+
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    let cert = market_view
+        .full_account_refresh_not_atomic(&mut account_view)
+        .unwrap();
+
+    assert_eq!(
+        cert.certified_equity, 10,
+        "zero-copy source-backed PnL must not be haircut by unrelated global junior-bound inflation"
+    );
+    account_view
+        .validate_with_market(&market_view.as_view())
+        .unwrap();
+}
+
+#[test]
 fn v16_zero_copy_full_refresh_marks_b_stale_like_runtime_without_vecs() {
     let mut g = group();
     let mut a = account();
@@ -1124,6 +1163,28 @@ fn v16_account_source_claim_equity_is_capped_by_source_credit_rate() {
 }
 
 #[test]
+fn v16_source_backed_equity_ignores_unrelated_global_junior_bound() {
+    let mut g = group();
+    let mut a = account();
+    g.vault = g.c_tot + g.insurance;
+
+    g.add_account_source_positive_pnl_not_atomic(&mut a, 0, 10)
+        .unwrap();
+    g.add_fresh_counterparty_backing_not_atomic(0, 10 * BOUND_SCALE, 10)
+        .unwrap();
+    set_junior_bound(&mut g, 1_000);
+
+    let cert = g
+        .full_account_refresh(&mut a, &[1; V16_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+
+    assert_eq!(
+        cert.certified_equity, 10,
+        "fully source-backed PnL must not be haircut by unrelated global junior-bound inflation"
+    );
+}
+
+#[test]
 fn v16_convert_released_pnl_requires_realizable_source_credit_when_claim_is_attributed() {
     let mut g = group();
     let mut a = account();
@@ -1152,6 +1213,30 @@ fn v16_convert_released_pnl_requires_realizable_source_credit_when_claim_is_attr
     assert_eq!(g.source_credit[0].fresh_reserved_backing_num, 0);
     assert_eq!(g.source_credit[0].spent_backing_num, 4 * BOUND_SCALE);
     assert_eq!(g.source_credit_available_backing_num(0), Ok(0));
+}
+
+#[test]
+fn v16_source_backed_conversion_ignores_unrelated_global_junior_bound() {
+    let mut g = group();
+    let mut a = account();
+    g.vault = g.c_tot + g.insurance + 10;
+    g.add_account_source_positive_pnl_not_atomic(&mut a, 0, 10)
+        .unwrap();
+    g.add_fresh_counterparty_backing_not_atomic(0, 10 * BOUND_SCALE, 10)
+        .unwrap();
+    set_junior_bound(&mut g, 1_000);
+    g.full_account_refresh(&mut a, &[1; V16_MAX_PORTFOLIO_ASSETS_N])
+        .unwrap();
+
+    let converted = g
+        .convert_released_pnl_to_capital_not_atomic(&mut a)
+        .unwrap();
+
+    assert_eq!(converted, 10);
+    assert_eq!(a.capital, 10);
+    assert_eq!(a.pnl, 0);
+    assert_eq!(a.source_claim_bound_num[0], 0);
+    assert_eq!(g.source_credit[0].spent_backing_num, 10 * BOUND_SCALE);
 }
 
 #[test]

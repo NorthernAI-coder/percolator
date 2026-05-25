@@ -208,6 +208,58 @@ fn proof_v16_source_domain_realizable_support_full_backing_gives_full_credit() {
 }
 
 #[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_unrelated_global_junior_bound_does_not_haircut_source_backed_equity() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV16::new(market, V16Config::public_user_fund(2, 0, 1)).unwrap();
+    let mut account =
+        PortfolioAccountV16::empty(ProvenanceHeaderV16::new(market, account_id, owner));
+    let claim_num = 10 * BOUND_SCALE;
+
+    account.ensure_source_domain_capacity(group.source_credit.len());
+    account.pnl = 10;
+    account.source_claim_market_id[0] = group.assets[0].market_id;
+    account.source_claim_bound_num[0] = claim_num;
+    group.pnl_pos_tot = 10;
+    group.source_credit[0] = SourceCreditStateV16 {
+        positive_claim_bound_num: claim_num,
+        exact_positive_claim_num: claim_num,
+        fresh_reserved_backing_num: claim_num,
+        credit_rate_num: CREDIT_RATE_SCALE,
+        ..SourceCreditStateV16::EMPTY
+    };
+    group.source_backing_buckets[0] = BackingBucketV16 {
+        market_id: group.assets[0].market_id,
+        fresh_unliened_backing_num: claim_num,
+        expiry_slot: 10,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    };
+
+    // Model an unrelated market inflating the global lazy junior bound while
+    // this account's own source-domain claim remains fully backed.
+    set_junior_bound(&mut group, 1_000);
+    group.vault = group.c_tot + group.insurance;
+
+    let equity = group.kani_account_haircut_equity(&account).unwrap();
+
+    kani::cover!(
+        group.pnl_pos_bound_tot > account.pnl as u128
+            && group.vault == group.c_tot + group.insurance,
+        "v16 source-backed equity is exercised with zero global residual and inflated unrelated bound"
+    );
+    assert_eq!(
+        group.kani_account_source_realizable_support(&account, 10),
+        Ok(10)
+    );
+    assert_eq!(
+        equity, 10,
+        "fully source-backed PnL must not be haircut by unrelated global junior bound inflation"
+    );
+}
+
+#[kani::proof]
 #[kani::unwind(130)]
 #[kani::solver(cadical)]
 fn proof_v16_expired_fresh_backing_stale_cert_blocks_source_credit_conversion() {
@@ -1916,7 +1968,10 @@ fn proof_v16_persisted_wire_rejects_noncanonical_config_bool() {
     let slots = group_slots_for_one_asset(&group);
     let mut config_bool_wire = group_header_for_one_asset(&group);
     config_bool_wire.config.recovery_fallback_price_enabled = bad_bool;
-    kani::cover!(bad_bool == 3, "v16 persisted invalid config bool branch reachable");
+    kani::cover!(
+        bad_bool == 3,
+        "v16 persisted invalid config bool branch reachable"
+    );
     assert_eq!(
         decode_one_asset_group(&config_bool_wire, &slots),
         Err(V16Error::InvalidConfig)
@@ -1934,7 +1989,10 @@ fn proof_v16_persisted_wire_rejects_noncanonical_market_mode() {
     let slots = group_slots_for_one_asset(&group);
     let mut market_mode_wire = group_header_for_one_asset(&group);
     market_mode_wire.mode = bad_market_mode;
-    kani::cover!(bad_market_mode == 3, "v16 persisted invalid market mode branch reachable");
+    kani::cover!(
+        bad_market_mode == 3,
+        "v16 persisted invalid market mode branch reachable"
+    );
     assert_eq!(
         decode_one_asset_group(&market_mode_wire, &slots),
         Err(V16Error::InvalidConfig)
@@ -1952,7 +2010,10 @@ fn proof_v16_persisted_wire_rejects_noncanonical_side_mode() {
     let header = group_header_for_one_asset(&group);
     let mut side_mode_slots = group_slots_for_one_asset(&group);
     side_mode_slots[0].asset.mode_long = bad_side_mode;
-    kani::cover!(bad_side_mode == 3, "v16 persisted invalid side mode branch reachable");
+    kani::cover!(
+        bad_side_mode == 3,
+        "v16 persisted invalid side mode branch reachable"
+    );
     assert_eq!(
         decode_one_asset_group(&header, &side_mode_slots),
         Err(V16Error::InvalidConfig)
@@ -1970,7 +2031,10 @@ fn proof_v16_persisted_wire_rejects_noncanonical_option_present() {
     let slots = group_slots_for_one_asset(&group);
     let mut option_wire = group_header_for_one_asset(&group);
     option_wire.recovery_reason.present = bad_option_present;
-    kani::cover!(bad_option_present == 2, "v16 persisted invalid option-present branch reachable");
+    kani::cover!(
+        bad_option_present == 2,
+        "v16 persisted invalid option-present branch reachable"
+    );
     assert_eq!(
         decode_one_asset_group(&option_wire, &slots),
         Err(V16Error::InvalidConfig)
@@ -2482,8 +2546,7 @@ fn persisted_wire_rejects_i128_min_account_field(
     mutate: impl FnOnce(&mut PortfolioAccountV16Account),
 ) {
     let (market, account_id, owner) = concrete_ids();
-    let account =
-        PortfolioAccountV16::empty(ProvenanceHeaderV16::new(market, account_id, owner));
+    let account = PortfolioAccountV16::empty(ProvenanceHeaderV16::new(market, account_id, owner));
     let mut wire = PortfolioAccountV16Account::from_runtime(&account);
     mutate(&mut wire);
     let source_domains = source_domains_for_one_asset(&account);
@@ -2596,7 +2659,7 @@ fn persisted_wire_rejects_smuggling_case(
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_persisted_wire_rejects_wrong_market_group_id() {
     persisted_wire_rejects_smuggling_case(
@@ -2622,7 +2685,7 @@ fn proof_v16_persisted_wire_rejects_wrong_owner() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_persisted_wire_rejects_bitmap_only_leg() {
     persisted_wire_rejects_smuggling_case(
@@ -2635,7 +2698,7 @@ fn proof_v16_persisted_wire_rejects_bitmap_only_leg() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_persisted_wire_rejects_hidden_active_leg() {
     persisted_wire_rejects_smuggling_case(
@@ -2649,7 +2712,7 @@ fn proof_v16_persisted_wire_rejects_hidden_active_leg() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_persisted_wire_rejects_out_of_config_leg() {
     persisted_wire_rejects_smuggling_case(
@@ -6769,7 +6832,7 @@ fn proof_v16_pending_domain_barrier_does_not_block_unrelated_side_reset() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_permissionless_crank_does_not_require_full_market_scan() {
     let stale_count: u16 = kani::any();
@@ -7177,7 +7240,7 @@ fn proof_v16_permissionless_crank_liquidation_insurance_plus_residual_advances_a
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_permissionless_crank_liquidation_uninsured_residual_advances_accrual() {
     assert_permissionless_crank_liquidation_books_bankruptcy_and_advances_accrual(2, 0);
@@ -8452,7 +8515,7 @@ fn proof_v16_resolved_positive_payout_snapshot_is_order_stable() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_resolved_payout_uses_positive_bound_denominator() {
     let (market, account_id, owner) = concrete_ids();
@@ -8478,7 +8541,7 @@ fn proof_v16_resolved_payout_uses_positive_bound_denominator() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_scaled_junior_bound_remainder_ceil_controls_resolved_payout() {
     let extra_num: u16 = kani::any();
@@ -8658,7 +8721,7 @@ fn proof_v16_public_invariants_reject_scaled_junior_bound_cache_mismatch() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_pnl_pos_bound_tot_prevents_lazy_positive_pnl_first_mover_overpay() {
     let (market, account_id, owner) = concrete_ids();
@@ -8911,7 +8974,7 @@ fn proof_v16_pending_domain_barrier_does_not_freeze_unrelated_positive_credit() 
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_resolved_flat_close_returns_exact_capital() {
     let amount: u16 = kani::any();
@@ -9657,7 +9720,7 @@ fn proof_v16_pending_domain_barrier_blocks_participants_until_residual_finalized
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_single_domain_close_lock_rejects_second_origin_until_first_finalized() {
     let (market, _, owner) = concrete_ids();
@@ -10914,7 +10977,7 @@ fn proof_v16_unexposed_oracle_bounds_fail_closed_and_allow_max_price_liveness() 
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_permissionless_crank_accepts_configured_funding_rate_boundaries() {
     let positive_rate: bool = kani::any();
@@ -10956,7 +11019,7 @@ fn proof_v16_permissionless_crank_accepts_configured_funding_rate_boundaries() {
 }
 
 #[kani::proof]
-#[kani::unwind(130)]
+#[kani::unwind(40)]
 #[kani::solver(cadical)]
 fn proof_v16_per_asset_slot_last_prevents_cross_asset_accrual_aliasing() {
     let (market, _, _) = concrete_ids();

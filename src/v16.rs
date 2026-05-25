@@ -6190,16 +6190,14 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 .and_then(|v| v.checked_sub(fee_debt))
                 .ok_or(V16Error::ArithmeticOverflow);
         }
-        let positive_face = account.header.pnl.get() as u128;
-        let global_support = self.haircut_effective_support(
-            positive_face,
-            self.residual(),
-            self.junior_claim_bound(),
-        )?;
         let positive_support = if Self::account_has_source_claims(account)? {
-            global_support.min(self.account_source_realizable_support(account, positive_face)?)
+            self.account_source_realizable_support(account, account.header.pnl.get() as u128)?
         } else {
-            global_support
+            self.haircut_effective_support(
+                account.header.pnl.get() as u128,
+                self.residual(),
+                self.junior_claim_bound(),
+            )?
         };
         let positive_support_i128 =
             i128::try_from(positive_support).map_err(|_| V16Error::ArithmeticOverflow)?;
@@ -10105,14 +10103,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         {
             return Err(V16Error::LockActive);
         }
-        let residual = self.residual();
-        let junior_bound = self.junior_claim_bound();
-        let global_support = self.haircut_effective_support(released, residual, junior_bound)?;
         let converted = if Self::account_has_source_claims(&account.as_view())? {
-            global_support
-                .min(self.account_source_realizable_support(&account.as_view(), released)?)
+            self.account_source_realizable_support(&account.as_view(), released)?
         } else {
-            global_support
+            self.haircut_effective_support(released, self.residual(), self.junior_claim_bound())?
         };
         if converted == 0 {
             return Err(V16Error::LockActive);
@@ -10123,6 +10117,8 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 account, converted,
             )?
         } else {
+            let residual = self.residual();
+            let junior_bound = self.junior_claim_bound();
             SourceCreditConsumptionV16 {
                 face_burn: self.face_claim_to_burn_for_support(
                     converted,
@@ -12671,13 +12667,10 @@ impl MarketGroupV16 {
         {
             return Err(V16Error::LockActive);
         }
-        let residual = self.residual();
-        let junior_bound = self.junior_claim_bound();
-        let global_support = self.haircut_effective_support(released, residual, junior_bound)?;
         let converted = if Self::account_has_source_claims(account)? {
-            global_support.min(self.account_source_realizable_support(account, released)?)
+            self.account_source_realizable_support(account, released)?
         } else {
-            global_support
+            self.haircut_effective_support(released, self.residual(), self.junior_claim_bound())?
         };
         if converted == 0 {
             return Err(V16Error::LockActive);
@@ -12688,6 +12681,8 @@ impl MarketGroupV16 {
                 account, converted,
             )?
         } else {
+            let residual = self.residual();
+            let junior_bound = self.junior_claim_bound();
             SourceCreditConsumptionV16 {
                 face_burn: self.face_claim_to_burn_for_support(
                     converted,
@@ -18259,6 +18254,11 @@ impl MarketGroupV16 {
         self.account_haircut_equity_with_capital(account, account.capital)
     }
 
+    #[cfg(kani)]
+    pub fn kani_account_haircut_equity(&self, account: &PortfolioAccountV16) -> V16Result<i128> {
+        self.account_haircut_equity(account)
+    }
+
     fn account_haircut_equity_with_capital(
         &self,
         account: &PortfolioAccountV16,
@@ -18275,16 +18275,14 @@ impl MarketGroupV16 {
                 .and_then(|v| v.checked_sub(fee_debt))
                 .ok_or(V16Error::ArithmeticOverflow);
         }
-        let positive_face = account.pnl.max(0) as u128;
-        let global_support = self.haircut_effective_support(
-            positive_face,
-            self.residual(),
-            self.junior_claim_bound(),
-        )?;
         let positive_support = if Self::account_has_source_claims(account)? {
-            global_support.min(self.account_source_realizable_support(account, positive_face)?)
+            self.account_source_realizable_support(account, account.pnl.max(0) as u128)?
         } else {
-            global_support
+            self.haircut_effective_support(
+                account.pnl.max(0) as u128,
+                self.residual(),
+                self.junior_claim_bound(),
+            )?
         };
         let positive_support_i128 =
             i128::try_from(positive_support).map_err(|_| V16Error::ArithmeticOverflow)?;

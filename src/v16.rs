@@ -5862,8 +5862,32 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
 
     fn available_domain_insurance(&self, domain: usize) -> V16Result<u128> {
         let (budget, spent) = self.domain_insurance_budget_spent(domain)?;
-        let budget_remaining = budget.saturating_sub(spent);
-        Ok(self.header.insurance.get().min(budget_remaining))
+        let configured_domains = self.configured_domain_count()?;
+        let mut total_reserved_atoms = 0u128;
+        let mut domain_reserved_atoms = 0u128;
+        let mut d = 0usize;
+        while d < configured_domains {
+            let reserved_atoms = V16Core::amount_from_bound_num(
+                self.insurance_reservation_for_domain(d)?
+                    .insurance_credit_reserved_num,
+            )?;
+            total_reserved_atoms = total_reserved_atoms
+                .checked_add(reserved_atoms)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            if d == domain {
+                domain_reserved_atoms = reserved_atoms;
+            }
+            d += 1;
+        }
+        let global_available = self
+            .header
+            .insurance
+            .get()
+            .saturating_sub(total_reserved_atoms);
+        let budget_remaining = budget
+            .saturating_sub(spent)
+            .saturating_sub(domain_reserved_atoms);
+        Ok(global_available.min(budget_remaining))
     }
 
     fn consume_domain_insurance_for_negative_pnl(
@@ -5913,6 +5937,16 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         )?;
         account.header.health_cert.valid = 0;
         Ok(used)
+    }
+
+    #[cfg(kani)]
+    pub fn kani_consume_domain_insurance_for_negative_pnl(
+        &mut self,
+        asset_index: usize,
+        bankrupt_side: SideV16,
+        account: &mut PortfolioV16ViewMut<'_>,
+    ) -> V16Result<u128> {
+        self.consume_domain_insurance_for_negative_pnl(asset_index, bankrupt_side, account)
     }
 
     fn preflight_liquidation_residual_durability(
@@ -18690,13 +18724,31 @@ impl MarketGroupV16 {
         self.position_delta_blocked_by_pending_domain_loss_barrier(account, asset_index, delta_q)
     }
 
-    fn available_domain_insurance(&self, domain: usize) -> u128 {
+    fn available_domain_insurance(&self, domain: usize) -> V16Result<u128> {
         if domain >= self.insurance_domain_budget.len() {
-            return 0;
+            return Err(V16Error::InvalidLeg);
         }
+        let configured_domains = self.configured_domain_count()?;
+        let mut total_reserved_atoms = 0u128;
+        let mut domain_reserved_atoms = 0u128;
+        let mut d = 0usize;
+        while d < configured_domains {
+            let reserved_atoms = Self::amount_from_bound_num(
+                self.insurance_credit_reservations[d].insurance_credit_reserved_num,
+            )?;
+            total_reserved_atoms = total_reserved_atoms
+                .checked_add(reserved_atoms)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            if d == domain {
+                domain_reserved_atoms = reserved_atoms;
+            }
+            d += 1;
+        }
+        let global_available = self.insurance.saturating_sub(total_reserved_atoms);
         let budget_remaining = self.insurance_domain_budget[domain]
-            .saturating_sub(self.insurance_domain_spent[domain]);
-        self.insurance.min(budget_remaining)
+            .saturating_sub(self.insurance_domain_spent[domain])
+            .saturating_sub(domain_reserved_atoms);
+        Ok(global_available.min(budget_remaining))
     }
 
     fn consume_domain_insurance_for_negative_pnl(
@@ -18711,7 +18763,7 @@ impl MarketGroupV16 {
         }
         self.bankruptcy_hlock_active = true;
         let residual = account.pnl.unsigned_abs();
-        let domain_available = self.available_domain_insurance(domain);
+        let domain_available = self.available_domain_insurance(domain)?;
         let used = residual.min(domain_available);
         if used == 0 {
             return Ok(0);
@@ -18761,7 +18813,7 @@ impl MarketGroupV16 {
                 .pnl
                 .unsigned_abs()
                 .saturating_sub(account.capital)
-                .saturating_sub(self.available_domain_insurance(domain))
+                .saturating_sub(self.available_domain_insurance(domain)?)
         } else {
             0
         };

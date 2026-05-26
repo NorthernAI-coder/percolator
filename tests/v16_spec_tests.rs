@@ -9430,6 +9430,112 @@ fn v16_domain_insurance_budget_caps_bankruptcy_spend_for_one_asset_side() {
 }
 
 #[test]
+fn v16_bankruptcy_insurance_spend_excludes_source_credit_reserved_insurance() {
+    let mut g = group();
+    let mut bankrupt_long = account();
+    let mut opposing_short = account_with_id(47);
+    g.vault = 10;
+    g.insurance = 10;
+    g.reserve_insurance_credit_not_atomic(1, 10 * BOUND_SCALE)
+        .unwrap();
+    bankrupt_long.pnl = -5;
+    g.negative_pnl_account_count = 1;
+    g.attach_leg(&mut bankrupt_long, 0, SideV16::Long, 1)
+        .unwrap();
+    g.attach_leg(&mut opposing_short, 0, SideV16::Short, -1)
+        .unwrap();
+
+    let out = g
+        .liquidate_account_not_atomic(
+            &mut bankrupt_long,
+            LiquidationRequestV16 {
+                asset_index: 0,
+                close_q: 1,
+                fee_bps: 0,
+            },
+            &[1; V16_MAX_PORTFOLIO_ASSETS_N],
+        )
+        .expect("reserved source-credit insurance must not make liquidation roll back");
+
+    assert_eq!(
+        out.insurance_used, 0,
+        "bankruptcy close must not spend insurance already reserved for source credit"
+    );
+    assert_eq!(out.residual_booked, 5);
+    assert_eq!(g.insurance, 10);
+    assert_eq!(g.insurance_domain_spent[1], 0);
+    assert_eq!(bankrupt_long.close_progress.insurance_spent, 0);
+    assert_eq!(bankrupt_long.close_progress.b_loss_booked, 5);
+    assert_eq!(bankrupt_long.pnl, 0);
+    assert_eq!(bankrupt_long.active_bitmap, bitmap(&[]));
+    g.assert_public_invariants().unwrap();
+}
+
+#[test]
+fn v16_zero_copy_bankruptcy_insurance_spend_excludes_source_credit_reserved_insurance() {
+    let mut g = group();
+    let mut bankrupt_long = account();
+    let mut opposing_short = account_with_id(48);
+    g.vault = 10;
+    g.insurance = 10;
+    g.reserve_insurance_credit_not_atomic(1, 10 * BOUND_SCALE)
+        .unwrap();
+    bankrupt_long.pnl = -5;
+    g.negative_pnl_account_count = 1;
+    g.attach_leg(&mut bankrupt_long, 0, SideV16::Long, 1)
+        .unwrap();
+    g.attach_leg(&mut opposing_short, 0, SideV16::Short, -1)
+        .unwrap();
+
+    let mut header =
+        MarketGroupV16HeaderAccount::from_runtime_with_capacity(&g, g.assets.len()).unwrap();
+    let mut markets = (0..g.assets.len())
+        .map(|i| Market {
+            wrapper: [i as u8; 8],
+            engine: EngineAssetSlotV16Account::from_runtime_group_slot(&g, i).unwrap(),
+        })
+        .collect::<Vec<_>>();
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&bankrupt_long);
+    let mut source_domains =
+        PortfolioAccountV16Account::source_domains_from_runtime(&bankrupt_long).unwrap();
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    let out = market_view
+        .liquidate_account_not_atomic(
+            &mut account_view,
+            LiquidationRequestV16 {
+                asset_index: 0,
+                close_q: 1,
+                fee_bps: 0,
+            },
+        )
+        .expect("zero-copy liquidation must not spend source-credit-reserved insurance");
+
+    assert_eq!(out.insurance_used, 0);
+    assert_eq!(out.residual_booked, 5);
+    assert_eq!(market_view.header.insurance.get(), 10);
+    assert_eq!(
+        market_view.markets[0]
+            .engine
+            .insurance_domain_spent_short
+            .get(),
+        0
+    );
+    assert_eq!(account_view.header.close_progress.insurance_spent.get(), 0);
+    assert_eq!(account_view.header.close_progress.b_loss_booked.get(), 5);
+    assert_eq!(account_view.header.pnl.get(), 0);
+    assert!(percolator::active_bitmap_is_empty(
+        account_view.header.active_bitmap.map(V16PodU64::get)
+    ));
+    market_view.validate_shape().unwrap();
+    account_view
+        .validate_with_market(&market_view.as_view())
+        .unwrap();
+}
+
+#[test]
 fn v16_two_asset_refresh_without_source_backing_handles_exact_capital_loss() {
     let (market, account_id, owner) = ids();
     let mut g = MarketGroupV16::new(market, V16Config::public_user_fund(2, 0, 1)).unwrap();

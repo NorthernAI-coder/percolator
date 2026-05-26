@@ -6,15 +6,15 @@ use percolator::v16::{
     risk_notional_ceil, AssetLifecycleV16, BResidualBookingOutcomeV16, BackingBucketStatusV16,
     BackingBucketV16, CloseProgressLedgerV16, DeadLegForfeitOutcomeV16, EngineAssetSlotV16Account,
     HLockLaneV16, HealthCertV16, InsuranceCreditReservationV16, LiquidationRequestV16, Market,
-    MarketGroupV16, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketModeV16,
-    PermissionlessCrankActionV16, PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
-    PermissionlessRecoveryReasonV16, PortfolioAccountV16, PortfolioAccountV16Account,
-    PortfolioLegV16, PortfolioLegV16Account, PortfolioSourceDomainV16Account, ProvenanceHeaderV16,
-    RebalanceRequestV16, ResolvedCloseOutcomeV16, ResolvedPayoutLedgerV16,
-    ResolvedPayoutReceiptV16, RiskScoreV16, SideModeV16, SideV16,
-    SourceCreditLienAggregateProofV16, SourceCreditStateV16, StockReconciliationProofV16,
-    TradeRequestV16, V16ActiveBitmap, V16Config, V16Error, V16PodI128, V16PodU128, V16PodU64,
-    V16Result, V16_MAX_PORTFOLIO_ASSETS_N,
+    MarketGroupV16, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+    MarketModeV16, PermissionlessCrankActionV16, PermissionlessCrankRequestV16,
+    PermissionlessProgressOutcomeV16, PermissionlessRecoveryReasonV16, PortfolioAccountV16,
+    PortfolioAccountV16Account, PortfolioLegV16, PortfolioLegV16Account,
+    PortfolioSourceDomainV16Account, ProvenanceHeaderV16, RebalanceRequestV16,
+    ResolvedCloseOutcomeV16, ResolvedPayoutLedgerV16, ResolvedPayoutReceiptV16, RiskScoreV16,
+    SideModeV16, SideV16, SourceCreditLienAggregateProofV16, SourceCreditStateV16,
+    StockReconciliationProofV16, TradeRequestV16, V16ActiveBitmap, V16Config, V16Error, V16PodI128,
+    V16PodU128, V16PodU64, V16Result, V16_MAX_PORTFOLIO_ASSETS_N,
 };
 use percolator::wide_math::U256;
 use percolator::{
@@ -9271,6 +9271,96 @@ fn proof_v16_domain_insurance_budget_three_caps_bankruptcy_spend() {
 fn proof_v16_domain_insurance_budget_full_caps_bankruptcy_spend() {
     assert_domain_insurance_budget_caps_bankruptcy_spend(4);
     kani::cover!(true, "v16 domain insurance proof covers full local budget");
+}
+
+#[kani::proof]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn proof_v16_domain_insurance_spend_excludes_source_credit_reservations() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV16::new(market, V16Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut bankrupt =
+        PortfolioAccountV16::empty(ProvenanceHeaderV16::new(market, account_id, owner));
+    group.vault = 4;
+    group.insurance = 4;
+    group.insurance_credit_reservations[1] = InsuranceCreditReservationV16 {
+        insurance_credit_reserved_num: 4 * BOUND_SCALE,
+        source_credit_epoch: group.source_credit[1].credit_epoch,
+        ..InsuranceCreditReservationV16::EMPTY
+    };
+    group.source_credit[1].insurance_credit_reserved_num = 4 * BOUND_SCALE;
+    group.source_credit[1].credit_rate_num = CREDIT_RATE_SCALE;
+    bankrupt.pnl = -4;
+    group.negative_pnl_account_count = 1;
+
+    let used = group
+        .kani_consume_domain_insurance_for_negative_pnl(0, SideV16::Long, &mut bankrupt)
+        .unwrap();
+
+    kani::cover!(
+        group.insurance_credit_reservations[1].insurance_credit_reserved_num != 0,
+        "v16 source-credit insurance reservation occupies the bankrupt domain budget"
+    );
+    assert_eq!(used, 0);
+    assert_eq!(group.insurance, 4);
+    assert_eq!(group.insurance_domain_spent[1], 0);
+    assert_eq!(bankrupt.pnl, -4);
+}
+
+#[kani::proof]
+#[kani::unwind(32)]
+#[kani::solver(cadical)]
+fn proof_v16_zero_copy_domain_insurance_spend_excludes_source_credit_reservations() {
+    let (market, account_id, owner) = concrete_ids();
+    let mut group = MarketGroupV16::new(market, V16Config::public_user_fund(1, 0, 1)).unwrap();
+    let mut bankrupt =
+        PortfolioAccountV16::empty(ProvenanceHeaderV16::new(market, account_id, owner));
+    group.vault = 4;
+    group.insurance = 4;
+    group.insurance_credit_reservations[1] = InsuranceCreditReservationV16 {
+        insurance_credit_reserved_num: 4 * BOUND_SCALE,
+        source_credit_epoch: group.source_credit[1].credit_epoch,
+        ..InsuranceCreditReservationV16::EMPTY
+    };
+    group.source_credit[1].insurance_credit_reserved_num = 4 * BOUND_SCALE;
+    group.source_credit[1].credit_rate_num = CREDIT_RATE_SCALE;
+    bankrupt.pnl = -4;
+    group.negative_pnl_account_count = 1;
+
+    let mut header = group_header_for_one_asset(&group);
+    let mut markets = [Market {
+        wrapper: (),
+        engine: group_slots_for_one_asset(&group)[0],
+    }];
+    let mut account_header = PortfolioAccountV16Account::from_runtime(&bankrupt);
+    let mut source_domains = source_domains_for_one_asset(&bankrupt);
+    let mut market_view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account_view =
+        percolator::v16::PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+
+    let used = market_view
+        .kani_consume_domain_insurance_for_negative_pnl(0, SideV16::Long, &mut account_view)
+        .unwrap();
+
+    kani::cover!(
+        market_view.markets[0]
+            .engine
+            .insurance_reservation_short
+            .insurance_credit_reserved_num
+            .get()
+            != 0,
+        "v16 zero-copy source-credit insurance reservation occupies bankrupt domain budget"
+    );
+    assert_eq!(used, 0);
+    assert_eq!(market_view.header.insurance.get(), 4);
+    assert_eq!(
+        market_view.markets[0]
+            .engine
+            .insurance_domain_spent_short
+            .get(),
+        0
+    );
+    assert_eq!(account_view.header.pnl.get(), -4);
 }
 
 #[kani::proof]

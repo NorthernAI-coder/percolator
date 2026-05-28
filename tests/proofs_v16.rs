@@ -1,12 +1,13 @@
 #![cfg(kani)]
 
 use percolator::v16::{
-    EngineAssetSlotV16Account, Market, MarketGroupV16HeaderAccount, MarketGroupV16ViewMut,
-    PortfolioAccountV16Account, PortfolioLegV16, PortfolioLegV16Account,
-    PortfolioSourceDomainV16Account, PortfolioV16ViewMut, ProvenanceHeaderV16,
-    ProvenanceHeaderV16Account, SideV16, V16Config, V16Error, V16PodI128, V16PodU128, V16PodU64,
+    BackingBucketStatusV16, BackingBucketV16, EngineAssetSlotV16Account, Market,
+    MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PortfolioAccountV16Account,
+    PortfolioLegV16, PortfolioLegV16Account, PortfolioSourceDomainV16Account, PortfolioV16ViewMut,
+    ProvenanceHeaderV16, ProvenanceHeaderV16Account, SideV16, SourceCreditStateV16, V16Config,
+    V16Error, V16PodI128, V16PodU128, V16PodU64,
 };
-use percolator::{ADL_ONE, POS_SCALE};
+use percolator::{ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
 
 fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
     ([1; 32], [2; 32], [3; 32])
@@ -204,4 +205,74 @@ fn proof_v16_view_funding_target_signs_match_long_short_sides() {
         assert_eq!(account.header.capital.get(), 10);
         assert_eq!(account.header.pnl.get(), 1);
     }
+}
+
+#[kani::proof]
+#[kani::unwind(64)]
+#[kani::solver(cadical)]
+fn proof_v16_view_initial_margin_source_lien_creation_is_backed() {
+    let effective_raw: u16 = kani::any();
+    kani::assume(effective_raw > 0);
+    kani::assume(effective_raw <= 1_000);
+    let effective = effective_raw as u128;
+    let backing_num = effective * BOUND_SCALE;
+    let face_num = backing_num;
+    let current_slot = 0;
+
+    let source_credit = SourceCreditStateV16 {
+        positive_claim_bound_num: face_num,
+        exact_positive_claim_num: face_num,
+        fresh_reserved_backing_num: backing_num,
+        credit_rate_num: CREDIT_RATE_SCALE,
+        ..SourceCreditStateV16::EMPTY
+    };
+    let backing_bucket = BackingBucketV16 {
+        market_id: 1,
+        fresh_unliened_backing_num: backing_num,
+        expiry_slot: 100,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    };
+    let (backing_after, source_credit_after) =
+        MarketGroupV16ViewMut::<u64>::kani_prepare_counterparty_lien_create_delta(
+            backing_bucket,
+            source_credit,
+            current_slot,
+            backing_num,
+        )
+        .unwrap();
+    let mut source_domain = PortfolioSourceDomainV16Account::default();
+    source_domain.source_claim_market_id = V16PodU64::new(1);
+    source_domain.source_claim_bound_num = V16PodU128::new(face_num);
+    MarketGroupV16ViewMut::<u64>::kani_apply_counterparty_source_credit_lien_delta(
+        &mut source_domain,
+        face_num,
+        backing_num,
+        effective,
+        current_slot,
+    )
+    .unwrap();
+
+    kani::cover!(effective > 0, "source-credit IM lien branch is reachable");
+    assert_eq!(backing_after.fresh_unliened_backing_num, 0);
+    assert_eq!(backing_after.valid_liened_backing_num, backing_num);
+    assert_eq!(source_credit_after.valid_liened_backing_num, backing_num);
+    assert_eq!(
+        source_credit_after.fresh_reserved_backing_num,
+        backing_after.valid_liened_backing_num
+    );
+    assert_eq!(source_domain.source_claim_liened_num.get(), face_num);
+    assert_eq!(
+        source_domain.source_lien_effective_reserved.get(),
+        effective
+    );
+    assert_eq!(
+        source_domain.source_claim_counterparty_liened_num.get(),
+        face_num
+    );
+    assert_eq!(
+        source_domain.source_lien_counterparty_backing_num.get(),
+        backing_num
+    );
+    assert_eq!(source_domain.source_lien_fee_last_slot.get(), current_slot);
 }

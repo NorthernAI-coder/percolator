@@ -1,9 +1,12 @@
 use percolator::v16::{
-    v16_domain_count_for_market_slots, EngineAssetSlotV16Account, Market,
-    MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PortfolioAccountV16Account,
-    PortfolioSourceDomainV16Account, PortfolioV16ViewMut, ProvenanceHeaderV16,
-    ProvenanceHeaderV16Account, V16Config, V16Error, V16PodI128, V16PodU128, V16PodU64,
+    v16_domain_count_for_market_slots, BackingBucketStatusV16, BackingBucketV16,
+    BackingBucketV16Account, EngineAssetSlotV16Account, Market, MarketGroupV16HeaderAccount,
+    MarketGroupV16ViewMut, PortfolioAccountV16Account, PortfolioSourceDomainV16Account,
+    PortfolioV16ViewMut, ProvenanceHeaderV16, ProvenanceHeaderV16Account, SourceCreditStateV16,
+    SourceCreditStateV16Account, TradeRequestV16, V16Config, V16Error, V16PodI128, V16PodU128,
+    V16PodU64,
 };
+use percolator::{BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
 
 fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
     ([1; 32], [2; 32], [3; 32])
@@ -141,4 +144,98 @@ fn v16_view_rejects_overwithdraw_without_mutation() {
     assert_eq!(market_view.header.vault.get(), before_vault);
     assert_eq!(market_view.header.c_tot.get(), before_c_tot);
     assert_eq!(account_view.header.capital.get(), before_capital);
+}
+
+#[test]
+fn v16_risk_increasing_trade_creates_source_credit_lien_for_im() {
+    let (mut header, mut markets) = market_fixture(1, 1);
+    let (mut long_header, mut long_domains) = account_fixture(1, 8);
+    let (mut short_header, mut short_domains) = account_fixture(1, 9);
+    let claim = 100u128;
+    let claim_num = claim * BOUND_SCALE;
+    long_header.pnl = V16PodI128::new(claim as i128);
+    long_domains[0].source_claim_market_id = V16PodU64::new(1);
+    long_domains[0].source_claim_bound_num = V16PodU128::new(claim_num);
+    header.pnl_pos_tot = V16PodU128::new(claim);
+    header.pnl_pos_bound_tot_num = V16PodU128::new(claim_num);
+    header.pnl_pos_bound_tot = V16PodU128::new(claim);
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            positive_claim_bound_num: claim_num,
+            exact_positive_claim_num: claim_num,
+            fresh_reserved_backing_num: claim_num,
+            credit_rate_num: CREDIT_RATE_SCALE,
+            ..SourceCreditStateV16::EMPTY
+        });
+    markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+        market_id: 1,
+        fresh_unliened_backing_num: claim_num,
+        expiry_slot: 100,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    });
+    {
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut short = PortfolioV16ViewMut::new(&mut short_header, &mut short_domains);
+        market.deposit_not_atomic(&mut short, 1_000).unwrap();
+    }
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut long = PortfolioV16ViewMut::new(&mut long_header, &mut long_domains);
+    let mut short = PortfolioV16ViewMut::new(&mut short_header, &mut short_domains);
+    market
+        .execute_trade_with_fee_in_place_not_atomic(
+            &mut long,
+            &mut short,
+            TradeRequestV16 {
+                asset_index: 0,
+                size_q: 10 * POS_SCALE,
+                exec_price: 1,
+                fee_bps: 0,
+            },
+        )
+        .expect("risk-increasing trade should atomically lien backed source credit for IM");
+
+    assert_eq!(long.header.capital.get(), 0);
+    assert_eq!(
+        long.source_domains[0].source_claim_liened_num.get(),
+        10 * BOUND_SCALE
+    );
+    assert_eq!(
+        long.source_domains[0].source_lien_effective_reserved.get(),
+        10
+    );
+    assert_eq!(
+        long.source_domains[0]
+            .source_lien_counterparty_backing_num
+            .get(),
+        10 * BOUND_SCALE
+    );
+    assert_eq!(
+        market.markets[0]
+            .engine
+            .source_credit_long
+            .valid_liened_backing_num
+            .get(),
+        10 * BOUND_SCALE
+    );
+    assert_eq!(
+        market.markets[0]
+            .engine
+            .backing_long
+            .valid_liened_backing_num
+            .get(),
+        10 * BOUND_SCALE
+    );
+    assert_eq!(
+        market.markets[0]
+            .engine
+            .backing_long
+            .fresh_unliened_backing_num
+            .get(),
+        90 * BOUND_SCALE
+    );
+    market.validate_shape().unwrap();
+    long.validate_with_market(&market.as_view()).unwrap();
+    short.validate_with_market(&market.as_view()).unwrap();
 }

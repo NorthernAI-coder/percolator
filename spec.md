@@ -621,11 +621,11 @@ Creating a lien atomically:
    - if `InsuranceReservation`, call `create_lien_from_insurance` and record `insurance_reservation_id`;
 7. records credit epoch and purpose.
 
-For effective credit `E`:
+For effective credit `E` measured in quote atoms:
 
 ```text
-required_face = ceil(E * CREDIT_RATE_SCALE / credit_rate_num)
-required_backing = E * BOUND_SCALE
+required_face_num = ceil(E * BOUND_SCALE * CREDIT_RATE_SCALE / credit_rate_num)
+required_backing_num = E * BOUND_SCALE
 ```
 
 A lien can be released only by reversing the dependent risk, consuming it into settlement, or recovery reconciliation. If a counterparty backing bucket expires or insurance backing becomes impaired, the lien becomes `Impaired`. Insurance backing has no time-expiry bucket; it becomes impaired only by deterministic events: source-domain Recovery, market-group Recovery, insurance-reservation invariant failure, domain/global insurance cap exhaustion affecting the reservation, or governance-declared insurance impairment routed through recovery. Recovery MUST call `impair_lien_from_insurance` or `recover_or_reconcile_impaired_insurance_lien` for affected insurance-backed liens before any favorable action can use that source domain. An impaired lien cannot support new risk or payout and adds an impaired-lien penalty to the owning account until it deleverages, liquidates, ADLs, refreshes with new backing, or recovers.

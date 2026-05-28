@@ -1,10 +1,10 @@
-# Risk Engine Spec (Source of Truth) — v16.8.3 Realizable Full Shared Cross-Margin
+# Risk Engine Spec (Source of Truth) — v16.8.4 Realizable Full Shared Cross-Margin
 
 **Design:** protected principal + full instance-local cross-margin + source-domain realizable PnL credit + source-credit liens + insurance-credit reservations + exact counterparty/insurance lien lifecycle + single-category residual-cure accounting + quote-value flow proof + reservation encumbrance proof + stock reconciliation + explicit rounding-residue sink + bounded recovery fallback envelope + expiry-reconciled backing buckets + non-double-counted insurance capacity + single-sided margin penalties + strict close priority + local market-side bankruptcy domains + mutable asset lifecycle + preemptible bankrupt close + durable close-progress ledger + pending-loss obligations + instance isolation.  
 **Scope:** one Percolator market-group instance for one quote-token vault, with up to `N` configured asset slots per `PortfolioAccount` and unbounded global account count. A UI MAY aggregate multiple instances, but each instance is an independent vault, solvency, credit, insurance, B, PnL, payout, and recovery domain.  
 **Status:** normative source of truth. Terms **MUST**, **MUST NOT**, **SHOULD**, and **MAY** are normative.
 
-This revision supersedes v16.8.2 for the product goal of Hyperliquid-like cross-margin UX in permissionless accounts while containing oracle/market failure by limiting usable PnL to realizable source-domain backing.
+This revision supersedes v16.8.3 for the product goal of Hyperliquid-like cross-margin UX in permissionless accounts while containing oracle/market failure by limiting usable PnL to realizable source-domain backing.
 
 ```text
 Inside one trusted instance:
@@ -493,10 +493,11 @@ domain_spent[D]
   <= domain_budget[D]
 ```
 
-Insurance-backed lien lifecycle arithmetic mirrors counterparty-backed lien arithmetic. All amounts below are scaled insurance reservation numerators.
+Insurance-backed lien lifecycle arithmetic mirrors counterparty-backed lien arithmetic. All amounts below are scaled insurance reservation numerators and MUST be integer multiples of `BOUND_SCALE` whenever they move or release quote-atom value.
 
 ```text
 create_lien_from_insurance(reservation, amount):
+    require amount % BOUND_SCALE == 0
     require reservation.insurance_credit_reserved_num
         >= reservation.valid_liened_insurance_num
          + reservation.impaired_liened_insurance_num
@@ -507,7 +508,8 @@ create_lien_from_insurance(reservation, amount):
 
 consume_lien_from_insurance(reservation, amount):
     require reservation.valid_liened_insurance_num >= amount
-    spend_atoms = amount_from_bound_num_up(amount)
+    require amount % BOUND_SCALE == 0
+    spend_atoms = amount / BOUND_SCALE
 
     reservation.valid_liened_insurance_num -= amount
     reservation.insurance_credit_reserved_num -= amount
@@ -536,12 +538,14 @@ consume_lien_from_insurance(reservation, amount):
 
 release_lien_from_insurance(reservation, amount):
     require reservation.valid_liened_insurance_num >= amount
+    require amount % BOUND_SCALE == 0
     reservation.valid_liened_insurance_num -= amount
     SourceCreditState.valid_liened_insurance_num -= amount
     // insurance_credit_reserved_num unchanged; available insurance credit increases by amount
 
 impair_lien_from_insurance(reservation, amount):
     require reservation.valid_liened_insurance_num >= amount
+    require amount % BOUND_SCALE == 0
     reservation.valid_liened_insurance_num -= amount
     reservation.impaired_liened_insurance_num += amount
     SourceCreditState.valid_liened_insurance_num -= amount
@@ -550,6 +554,7 @@ impair_lien_from_insurance(reservation, amount):
 
 recover_or_reconcile_impaired_insurance_lien(reservation, amount, outcome):
     require reservation.impaired_liened_insurance_num >= amount
+    require amount % BOUND_SCALE == 0
     if outcome == Released:
         reservation.impaired_liened_insurance_num -= amount
         reservation.insurance_credit_reserved_num -= amount
@@ -560,7 +565,7 @@ recover_or_reconcile_impaired_insurance_lien(reservation, amount, outcome):
         reservation.insurance_credit_reserved_num -= amount
         InsuranceLedger.source_credit_reserved_num[D] -= amount
         SourceCreditState.impaired_liened_insurance_num -= amount
-        spend_atoms = amount_from_bound_num_up(amount)
+        spend_atoms = amount / BOUND_SCALE
         InsuranceLedger.domain_spent[D] += spend_atoms
         InsuranceLedger.total_available -= spend_atoms
         I -= spend_atoms
@@ -642,6 +647,12 @@ if backing_source == CounterpartyBucket and purpose == ResidualCure:
     consumed scaled backing amount is converted to cure_atoms = amount / BOUND_SCALE
     cure_atoms is recorded as consumed_counterparty_credit_lien_backing
     and MUST NOT be recorded as insurance_spent.
+
+if backing_source == CounterpartyBucket and purpose in {Withdrawal, Conversion, Fee, Payout}:
+    consumed scaled backing amount is converted to support_atoms = amount / BOUND_SCALE
+    support_atoms is recorded as counterparty source-credit support for the exact
+    account-capital, fee, or payout credit being created.
+    It MUST NOT debit V, I, insurance_spent, or any insurance ledger.
 
 if backing_source == InsuranceReservation and purpose == ResidualCure:
     consumed value is recorded as insurance_spent

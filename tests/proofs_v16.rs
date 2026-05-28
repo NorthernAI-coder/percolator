@@ -5,7 +5,8 @@ use percolator::v16::{
     InsuranceCreditReservationV16, Market, MarketGroupV16HeaderAccount, MarketGroupV16ViewMut,
     PortfolioAccountV16Account, PortfolioLegV16, PortfolioSourceDomainV16Account,
     PortfolioV16ViewMut, ProvenanceHeaderV16, ProvenanceHeaderV16Account, SideV16,
-    SourceCreditStateV16, V16Config, V16Error, V16PodI128, V16PodU128, V16PodU64,
+    SourceCreditStateV16, TokenValueClassV16, TokenValueFlowProofV16, V16Config, V16Error,
+    V16PodI128, V16PodU128, V16PodU64,
 };
 use percolator::{ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
 
@@ -510,4 +511,50 @@ fn proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing() 
     assert_eq!(source_after_consume.valid_liened_backing_num, 0);
     assert_eq!(source_after_consume.spent_backing_num, backing_num);
     assert_eq!(source_after_consume.provider_receivable_num, backing_num);
+}
+
+#[kani::proof]
+#[kani::unwind(24)]
+#[kani::solver(cadical)]
+fn proof_v16_counterparty_source_credit_support_does_not_debit_vault_or_insurance() {
+    let amount_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&amount_raw));
+    let amount = amount_raw as u128;
+    let vault_before: u128 = kani::any();
+    kani::assume(vault_before <= 1_000_000);
+
+    let proof = TokenValueFlowProofV16::support_to_account_capital(
+        amount,
+        amount,
+        0,
+        0,
+        vault_before,
+        vault_before,
+    )
+    .unwrap();
+
+    kani::cover!(
+        amount > 1,
+        "counterparty-backed source credit support mints account capital without insurance spend"
+    );
+    assert_eq!(proof.vault_after, vault_before);
+    assert_eq!(proof.external_quote_in, 0);
+    assert_eq!(proof.external_quote_out, 0);
+    assert_eq!(
+        proof.debits[TokenValueClassV16::AccountCapital as usize],
+        amount
+    );
+    assert_eq!(
+        proof.credits[TokenValueClassV16::CloseCounterpartyCreditConsumed as usize],
+        amount
+    );
+    assert_eq!(
+        proof.credits[TokenValueClassV16::CloseInsuranceSpent as usize],
+        0
+    );
+    assert_eq!(
+        proof.debits[TokenValueClassV16::InsuranceCapital as usize],
+        0
+    );
+    assert_eq!(proof.validate(), Ok(()));
 }

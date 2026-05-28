@@ -289,7 +289,7 @@ impl V16Core {
             .ok_or(V16Error::ArithmeticOverflow)
     }
 
-    #[inline]
+    #[inline(always)]
     fn source_credit_lien_amounts_for_effective(
         effective_credit: u128,
         credit_rate_num: u128,
@@ -301,6 +301,9 @@ impl V16Core {
             return Err(V16Error::InvalidConfig);
         }
         let required_backing_num = Self::bound_num_from_amount(effective_credit)?;
+        if credit_rate_num == CREDIT_RATE_SCALE {
+            return Ok((required_backing_num, required_backing_num));
+        }
         let required_face_num = checked_mul_div_ceil_u256(
             U256::from_u128(required_backing_num),
             U256::from_u128(CREDIT_RATE_SCALE),
@@ -313,6 +316,9 @@ impl V16Core {
 
     #[inline]
     fn validate_bound_num_atom_aligned(bound_num: u128) -> V16Result<()> {
+        if bound_num == 0 {
+            return Ok(());
+        }
         if bound_num % BOUND_SCALE != 0 {
             return Err(V16Error::InvalidConfig);
         }
@@ -394,6 +400,9 @@ impl V16Core {
     }
 
     fn validate_source_credit_state_shape_static(state: SourceCreditStateV16) -> V16Result<()> {
+        if state == SourceCreditStateV16::EMPTY {
+            return Ok(());
+        }
         Self::validate_bound_num_atom_aligned(state.insurance_credit_reserved_num)?;
         Self::validate_bound_num_atom_aligned(state.valid_liened_insurance_num)?;
         Self::validate_bound_num_atom_aligned(state.impaired_liened_insurance_num)?;
@@ -458,6 +467,9 @@ impl V16Core {
     fn validate_insurance_reservation_static(
         reservation: InsuranceCreditReservationV16,
     ) -> V16Result<()> {
+        if reservation == InsuranceCreditReservationV16::EMPTY {
+            return Ok(());
+        }
         Self::validate_bound_num_atom_aligned(reservation.insurance_credit_reserved_num)?;
         Self::validate_bound_num_atom_aligned(reservation.valid_liened_insurance_num)?;
         Self::validate_bound_num_atom_aligned(reservation.impaired_liened_insurance_num)?;
@@ -1163,6 +1175,16 @@ impl V16Config {
         if d.is_zero() {
             return Err(V16Error::InvalidConfig);
         }
+        if let (Some(n), Some(d)) = (n.try_into_u128(), d.try_into_u128()) {
+            if d == 0 {
+                return Err(V16Error::InvalidConfig);
+            }
+            let q = n / d;
+            let r = n % d;
+            return q
+                .checked_add(u128::from(r != 0))
+                .ok_or(V16Error::InvalidConfig);
+        }
         let q = n.checked_div(d).ok_or(V16Error::InvalidConfig)?;
         let r = n.checked_rem(d).ok_or(V16Error::InvalidConfig)?;
         let q = if r.is_zero() {
@@ -1174,6 +1196,16 @@ impl V16Config {
     }
 
     fn checked_mul_div_ceil_to_u128(a: u128, b: u128, d: u128) -> V16Result<u128> {
+        if d == 0 {
+            return Err(V16Error::InvalidConfig);
+        }
+        if let Some(product) = a.checked_mul(b) {
+            let q = product / d;
+            let r = product % d;
+            return q
+                .checked_add(u128::from(r != 0))
+                .ok_or(V16Error::InvalidConfig);
+        }
         checked_mul_div_ceil_u256(U256::from_u128(a), U256::from_u128(b), U256::from_u128(d))
             .and_then(|v| v.try_into_u128())
             .ok_or(V16Error::InvalidConfig)
@@ -1207,11 +1239,15 @@ impl V16Config {
     }
 
     fn maintenance_requirement_for_notional(&self, n: u128) -> V16Result<u128> {
-        let mm_prop = U256::from_u128(n)
-            .checked_mul(U256::from_u128(self.maintenance_margin_bps as u128))
-            .and_then(|v| v.checked_div(U256::from_u128(10_000)))
-            .and_then(|v| v.try_into_u128())
-            .ok_or(V16Error::InvalidConfig)?;
+        let mm_prop = if let Some(product) = n.checked_mul(self.maintenance_margin_bps as u128) {
+            product / 10_000
+        } else {
+            U256::from_u128(n)
+                .checked_mul(U256::from_u128(self.maintenance_margin_bps as u128))
+                .and_then(|v| v.checked_div(U256::from_u128(10_000)))
+                .and_then(|v| v.try_into_u128())
+                .ok_or(V16Error::InvalidConfig)?
+        };
         Ok(core::cmp::max(mm_prop, self.min_nonzero_mm_req))
     }
 
@@ -4352,17 +4388,8 @@ impl<'a, T> MarketGroupV16View<'a, T> {
         if self.header.vault.get() > MAX_VAULT_TVL {
             return Err(V16Error::InvalidConfig);
         }
-        let backing_provider_earnings = self.total_backing_provider_earnings()?;
-        let senior = self
-            .header
-            .c_tot
-            .get()
-            .checked_add(self.header.insurance.get())
-            .and_then(|v| v.checked_add(backing_provider_earnings))
-            .ok_or(V16Error::ArithmeticOverflow)?;
         if self.header.c_tot.get() > self.header.vault.get()
             || self.header.insurance.get() > self.header.vault.get()
-            || senior > self.header.vault.get()
         {
             return Err(V16Error::InvalidConfig);
         }
@@ -4396,11 +4423,16 @@ impl<'a, T> MarketGroupV16View<'a, T> {
         }
 
         let configured_assets = self.header.config.max_market_slots.get() as usize;
+        let mut backing_provider_earnings = 0u128;
         let mut live_source_credit_insurance_atoms = 0u128;
         let mut live_domain_budget_remaining_atoms = 0u128;
         let mut i = 0usize;
         while i < self.markets.len() {
             let slot = self.markets[i].engine_slot();
+            backing_provider_earnings = backing_provider_earnings
+                .checked_add(slot.backing_long.utilization_fee_earnings.get())
+                .and_then(|v| v.checked_add(slot.backing_short.utilization_fee_earnings.get()))
+                .ok_or(V16Error::ArithmeticOverflow)?;
             let asset = slot.asset.try_to_runtime()?;
             if i >= configured_assets {
                 if asset.lifecycle != AssetLifecycleV16::Disabled
@@ -4466,26 +4498,22 @@ impl<'a, T> MarketGroupV16View<'a, T> {
                 .ok_or(V16Error::ArithmeticOverflow)?;
             i += 1;
         }
+        let senior = self
+            .header
+            .c_tot
+            .get()
+            .checked_add(self.header.insurance.get())
+            .and_then(|v| v.checked_add(backing_provider_earnings))
+            .ok_or(V16Error::ArithmeticOverflow)?;
+        if senior > self.header.vault.get() {
+            return Err(V16Error::InvalidConfig);
+        }
         if live_source_credit_insurance_atoms > self.header.insurance.get()
             || live_domain_budget_remaining_atoms > self.header.insurance.get()
         {
             return Err(V16Error::InvalidConfig);
         }
         Ok(())
-    }
-
-    fn total_backing_provider_earnings(&self) -> V16Result<u128> {
-        let mut total = 0u128;
-        let mut i = 0usize;
-        while i < self.markets.len() {
-            let slot = self.markets[i].engine_slot();
-            total = total
-                .checked_add(slot.backing_long.utilization_fee_earnings.get())
-                .and_then(|v| v.checked_add(slot.backing_short.utilization_fee_earnings.get()))
-                .ok_or(V16Error::ArithmeticOverflow)?;
-            i += 1;
-        }
-        Ok(total)
     }
 
     fn validate_asset_shape_for_view(
@@ -6569,8 +6597,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                     .exact_positive_claim_num
                     .checked_add(increase_num)
                     .ok_or(V16Error::ArithmeticOverflow)?;
+                let (source_credit, next_risk_epoch) =
+                    V16Core::prepare_source_credit_domain_recompute_for_epoch(
+                        source_credit,
+                        self.header.risk_epoch.get(),
+                    )?;
                 self.set_source_credit_for_domain(domain, source_credit)?;
-                self.recompute_source_credit_domain_after_mutation(domain)?;
+                self.header.risk_epoch = V16PodU64::new(next_risk_epoch);
             }
         } else {
             let decrease = old_pos - new_pos;
@@ -6980,6 +7013,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         }
     }
 
+    #[inline(always)]
     fn leg_kf_delta_for_settlement(&self, leg: PortfolioLegV16) -> V16Result<(i128, i128, i128)> {
         let asset_index = leg.asset_index as usize;
         let (k_now, f_now) = self.kf_target_for_leg(asset_index, leg)?;
@@ -8700,6 +8734,27 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         delta_q: i128,
         lookup: PositionDeltaLookupV16,
     ) -> V16Result<()> {
+        self.apply_position_delta_with_lookup_inner(account, asset_index, delta_q, lookup, true)
+    }
+
+    fn apply_current_position_delta_with_lookup(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        asset_index: usize,
+        delta_q: i128,
+        lookup: PositionDeltaLookupV16,
+    ) -> V16Result<()> {
+        self.apply_position_delta_with_lookup_inner(account, asset_index, delta_q, lookup, false)
+    }
+
+    fn apply_position_delta_with_lookup_inner(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        asset_index: usize,
+        delta_q: i128,
+        lookup: PositionDeltaLookupV16,
+        settle_existing: bool,
+    ) -> V16Result<()> {
         if delta_q == 0 {
             return Ok(());
         }
@@ -8712,8 +8767,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         }
         validate_basis_or_zero(lookup.next_q)?;
         let existing_slot = lookup.existing_slot;
-        if let Some(existing_slot) = existing_slot {
-            self.settle_leg_kf_effects_at_slot(account, existing_slot)?;
+        if settle_existing {
+            if let Some(existing_slot) = existing_slot {
+                self.settle_leg_kf_effects_at_slot(account, existing_slot)?;
+            }
         }
         let current_leg = if let Some(existing_slot) = existing_slot {
             let leg = account.header.legs[existing_slot].try_to_runtime()?;
@@ -9999,13 +10056,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         let price = self.asset_state(request.asset_index)?.effective_price;
         let fee_a = self.charge_account_fee_current_not_atomic(long_account, fee)?;
         let fee_b = self.charge_account_fee_current_not_atomic(short_account, fee)?;
-        self.apply_position_delta_with_lookup(
+        self.apply_current_position_delta_with_lookup(
             long_account,
             request.asset_index,
             long_delta,
             trade_preflight.long_lookup,
         )?;
-        self.apply_position_delta_with_lookup(
+        self.apply_current_position_delta_with_lookup(
             short_account,
             request.asset_index,
             short_delta,

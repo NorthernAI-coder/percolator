@@ -16,11 +16,9 @@ proptest = "1.4"
 
 [features]
 default = []
-test = ["runtime-vec-api"]  # Enable test-only harness configuration
 stress = []  # Reserved for stress/audit harnesses
-fuzz = ["test"]  # Enable fuzzing tests (includes test feature for test_visible helpers)
+fuzz = []  # Enable fuzzing tests over the production zero-copy view path.
 audit-scan = []  # Enable full account-table invariant scans on public exits
-runtime-vec-api = []  # Legacy runtime Vec adapters for tests/proofs only; production uses zero-copy views.
 
 [profile.release]
 lto = "fat"
@@ -49,7 +47,6 @@ unwind = 70
 [[test]]
 name = "v16_spec_tests"
 path = "tests/v16_spec_tests.rs"
-required-features = ["test"]
 
 [[test]]
 name = "v16_fuzzing"

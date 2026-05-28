@@ -1,10 +1,10 @@
-# Risk Engine Spec (Source of Truth) — v16.8.2 Realizable Full Shared Cross-Margin
+# Risk Engine Spec (Source of Truth) — v16.8.3 Realizable Full Shared Cross-Margin
 
 **Design:** protected principal + full instance-local cross-margin + source-domain realizable PnL credit + source-credit liens + insurance-credit reservations + exact counterparty/insurance lien lifecycle + single-category residual-cure accounting + quote-value flow proof + reservation encumbrance proof + stock reconciliation + explicit rounding-residue sink + bounded recovery fallback envelope + expiry-reconciled backing buckets + non-double-counted insurance capacity + single-sided margin penalties + strict close priority + local market-side bankruptcy domains + mutable asset lifecycle + preemptible bankrupt close + durable close-progress ledger + pending-loss obligations + instance isolation.  
 **Scope:** one Percolator market-group instance for one quote-token vault, with up to `N` configured asset slots per `PortfolioAccount` and unbounded global account count. A UI MAY aggregate multiple instances, but each instance is an independent vault, solvency, credit, insurance, B, PnL, payout, and recovery domain.  
 **Status:** normative source of truth. Terms **MUST**, **MUST NOT**, **SHOULD**, and **MAY** are normative.
 
-This revision supersedes v16.8.1 for the product goal of Hyperliquid-like cross-margin UX in permissionless accounts while containing oracle/market failure by limiting usable PnL to realizable source-domain backing.
+This revision supersedes v16.8.2 for the product goal of Hyperliquid-like cross-margin UX in permissionless accounts while containing oracle/market failure by limiting usable PnL to realizable source-domain backing.
 
 ```text
 Inside one trusted instance:
@@ -158,7 +158,7 @@ cfg_max_account_b_settlement_chunks > 0
 cfg_max_bankrupt_close_chunks > 0
 cfg_max_bankrupt_close_lifetime_slots > 0
 cfg_credit_lien_revalidation_required == true
-cfg_backing_freshness_buckets > 0
+cfg_backing_freshness_buckets == 1
 cfg_pending_obligation_settlement_chunks > 0
 cfg_close_drift_reserve_enabled == true
 cfg_close_drift_anchor_mode == ImmutableReferenceSlot
@@ -342,7 +342,7 @@ A backing reservation may be funded only by:
 
 Open positive PnL that is not converted into a source-credit lien is not backing. Circular backing is forbidden: a reservation chain MUST strictly consume or lien already available backing and MUST NOT return to a previously visited source domain without external senior capital.
 
-Backing freshness is maintained with bounded rotating buckets:
+Backing freshness is maintained with bounded buckets. The v16.8 public profile uses exactly one freshness bucket per source domain. Any future multi-bucket profile MUST either refill the bucket holding the consumed receivable or recompute the source aggregate before admitting new backing; it MUST NOT compare a source-wide receivable against an unrelated empty bucket.
 
 ```text
 BackingBucket[D, expiry_bucket] {
@@ -368,6 +368,8 @@ create_lien_from_counterparty_backing(bucket, amount):
 
 consume_lien_backing(bucket, amount):
     require bucket.valid_liened_backing_num >= amount
+    require amount % BOUND_SCALE == 0 when consumed for quote-atom residual cure
+    cure_atoms = amount / BOUND_SCALE
     bucket.valid_liened_backing_num     -= amount
     bucket.consumed_liened_backing_num  += amount
     SourceCreditState.valid_liened_backing_num -= amount
@@ -375,6 +377,7 @@ consume_lien_backing(bucket, amount):
     SourceCreditState.spent_backing_num += amount
     SourceCreditState.provider_receivable_num += amount
     reduce or finalize the locked source-domain claim in the same atomic step
+    record only cure_atoms, never amount, in quote-atom close/support ledgers
 
 add_fresh_counterparty_backing(bucket, amount):
     require amount > 0 and bucket accepts the target freshness epoch
@@ -636,7 +639,8 @@ Close/support classification for source-credit liens:
 
 ```text
 if backing_source == CounterpartyBucket and purpose == ResidualCure:
-    consumed value is recorded as consumed_counterparty_credit_lien_backing
+    consumed scaled backing amount is converted to cure_atoms = amount / BOUND_SCALE
+    cure_atoms is recorded as consumed_counterparty_credit_lien_backing
     and MUST NOT be recorded as insurance_spent.
 
 if backing_source == InsuranceReservation and purpose == ResidualCure:

@@ -2392,3 +2392,46 @@ fn proof_v16_nontrivial_public_profile_satisfies_symbolic_mm_envelope() {
     assert!(x <= MAX_ACCOUNT_NOTIONAL);
     assert_eq!(cfg.kani_solvency_envelope_holds_for_notional(x), Ok(true));
 }
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_symbolic_conservative_fee_profile_satisfies_mm_envelope_on_small_notionals() {
+    let price_move_bps: u16 = kani::any();
+    let liq_fee_bps: u16 = kani::any();
+    let min_liq_abs_raw: u8 = kani::any();
+    let liq_fee_cap_raw: u8 = kani::any();
+    let x_raw: u16 = kani::any();
+
+    kani::assume((1..=250).contains(&price_move_bps));
+    kani::assume(liq_fee_bps <= 250);
+    kani::assume(min_liq_abs_raw <= 3);
+    kani::assume(liq_fee_cap_raw <= 3);
+    kani::assume(min_liq_abs_raw <= liq_fee_cap_raw);
+    kani::assume((1..=512).contains(&x_raw));
+
+    let mut cfg = V16Config::public_user_fund_with_market_slots(1, 1, 1, 10);
+    cfg.maintenance_margin_bps = 10_000;
+    cfg.initial_margin_bps = 10_000;
+    cfg.max_price_move_bps_per_slot = price_move_bps as u64;
+    cfg.max_accrual_dt_slots = 1;
+    cfg.min_funding_lifetime_slots = 1;
+    cfg.max_abs_funding_e9_per_slot = 0;
+    cfg.liquidation_fee_bps = liq_fee_bps as u64;
+    cfg.min_liquidation_abs = min_liq_abs_raw as u128;
+    cfg.liquidation_fee_cap = liq_fee_cap_raw as u128;
+    cfg.min_nonzero_mm_req = liq_fee_cap_raw as u128 + 1;
+    cfg.min_nonzero_im_req = cfg.min_nonzero_mm_req + 1;
+
+    let x = x_raw as u128;
+
+    kani::cover!(
+        liq_fee_bps > 0 && min_liq_abs_raw > 0,
+        "conservative profile includes nonzero proportional and absolute liquidation fee"
+    );
+    kani::cover!(
+        x > 64,
+        "conservative symbolic fee profile covers interior small-notional envelope"
+    );
+    assert_eq!(cfg.kani_solvency_envelope_holds_for_notional(x), Ok(true));
+}

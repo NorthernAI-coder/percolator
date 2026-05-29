@@ -6976,6 +6976,15 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok((out.support_consumed, out.junior_face_burned))
     }
 
+    #[cfg(kani)]
+    pub fn kani_account_unliened_source_realizable_support(
+        &self,
+        account: &PortfolioV16View<'_>,
+        face_claim: u128,
+    ) -> V16Result<u128> {
+        self.account_unliened_source_realizable_support(account, face_claim)
+    }
+
     fn reserve_new_capital_backed_loss_for_source_domain_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,

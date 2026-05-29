@@ -1135,6 +1135,76 @@ fn proof_v16_positive_kf_delta_creates_source_claim_bound() {
 }
 
 #[kani::proof]
+#[kani::unwind(24)]
+#[kani::solver(cadical)]
+fn proof_v16_unliened_source_support_is_capped_by_realizable_backing() {
+    let claim_raw: u8 = kani::any();
+    let backing_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&claim_raw));
+    kani::assume(backing_raw <= claim_raw);
+
+    let claim = claim_raw as u128;
+    let backing = backing_raw as u128;
+    let claim_num = claim * BOUND_SCALE;
+    let backing_num = backing * BOUND_SCALE;
+    let mut source_credit = SourceCreditStateV16 {
+        positive_claim_bound_num: claim_num,
+        exact_positive_claim_num: claim_num,
+        fresh_reserved_backing_num: backing_num,
+        ..SourceCreditStateV16::EMPTY
+    };
+    source_credit.credit_rate_num =
+        kani_expected_source_credit_rate_num_for_state(source_credit).unwrap();
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    account_header.pnl = V16PodI128::new(claim as i128);
+    account_header.reserved_pnl = V16PodU128::new(claim);
+    source_domains[0].source_claim_market_id = V16PodU64::new(1);
+    source_domains[0].source_claim_bound_num = V16PodU128::new(claim_num);
+    header.pnl_pos_tot = V16PodU128::new(claim);
+    header.pnl_matured_pos_tot = V16PodU128::new(claim);
+    header.pnl_pos_bound_tot_num = V16PodU128::new(claim_num);
+    header.pnl_pos_bound_tot = V16PodU128::new(claim);
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&source_credit);
+    markets[0].engine.backing_long = if backing_num == 0 {
+        BackingBucketV16Account::from_runtime(&BackingBucketV16::empty_for_market(1))
+    } else {
+        BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+            market_id: 1,
+            fresh_unliened_backing_num: backing_num,
+            expiry_slot: 100,
+            status: BackingBucketStatusV16::Fresh,
+            ..BackingBucketV16::EMPTY
+        })
+    };
+
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let support = market
+        .kani_account_unliened_source_realizable_support(&account.as_view(), claim)
+        .unwrap();
+
+    kani::cover!(
+        backing != 0 && backing < claim,
+        "unliened source support proof covers partial backing haircut"
+    );
+    kani::cover!(
+        backing == 0,
+        "unliened source support proof covers zero source support"
+    );
+    kani::cover!(
+        backing == claim,
+        "unliened source support proof covers fully backed claim"
+    );
+    assert!(support <= backing);
+    assert!(support <= claim);
+    if backing == claim {
+        assert_eq!(support, claim);
+    }
+}
+
+#[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_live_positive_kf_delta_without_source_rejects() {

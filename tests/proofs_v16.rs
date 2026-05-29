@@ -1281,6 +1281,51 @@ fn proof_v16_permissionless_recovery_crank_is_accounting_neutral() {
 }
 
 #[kani::proof]
+#[kani::unwind(80)]
+#[kani::solver(cadical)]
+fn proof_v16_public_permissionless_empty_market_crank_advances_clock_without_value_movement() {
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    header.vault = V16PodU128::new(11);
+    header.c_tot = V16PodU128::new(7);
+    header.insurance = V16PodU128::new(4);
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let insurance_before = header.insurance;
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+
+    let outcome = market
+        .permissionless_crank_not_atomic(
+            &mut account,
+            PermissionlessCrankRequestV16 {
+                now_slot: 2,
+                asset_index: 0,
+                effective_price: 101,
+                funding_rate_e9: 0,
+                action: PermissionlessCrankActionV16::Refresh,
+            },
+        )
+        .unwrap();
+    let asset = market.markets[0].engine.asset.try_to_runtime().unwrap();
+
+    kani::cover!(
+        outcome == PermissionlessProgressOutcomeV16::AccountCurrent && asset.effective_price == 101,
+        "permissionless empty-market crank advances authenticated price"
+    );
+    assert_eq!(outcome, PermissionlessProgressOutcomeV16::AccountCurrent);
+    assert_eq!(market.header.current_slot.get(), 2);
+    assert_eq!(market.header.slot_last.get(), 2);
+    assert_eq!(asset.slot_last, 2);
+    assert_eq!(asset.effective_price, 101);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.insurance, insurance_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+    assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
+}
+
+#[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_view_fee_sync_settles_negative_pnl_before_fee() {

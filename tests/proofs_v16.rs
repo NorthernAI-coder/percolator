@@ -7,14 +7,15 @@ use percolator::v16::{
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
     kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
     AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, BackingBucketV16Account,
-    CloseProgressLedgerV16, EngineAssetSlotV16Account, InsuranceCreditReservationV16,
-    InsuranceCreditReservationV16Account, Market, MarketGroupV16HeaderAccount,
-    MarketGroupV16ViewMut, PermissionlessCrankActionV16, PermissionlessCrankRequestV16,
-    PermissionlessProgressOutcomeV16, PermissionlessRecoveryReasonV16, PortfolioAccountV16Account,
-    PortfolioLegV16, PortfolioSourceDomainV16Account, PortfolioV16ViewMut, ProvenanceHeaderV16,
-    ProvenanceHeaderV16Account, ResolvedPayoutReceiptV16, SideV16, SourceCreditStateV16,
-    SourceCreditStateV16Account, TokenValueClassV16, TokenValueFlowProofV16, V16Config, V16Error,
-    V16PodI128, V16PodU128, V16PodU64, V16_EMPTY_ACTIVE_BITMAP,
+    CloseProgressLedgerV16, EngineAssetSlotV16Account, HealthCertV16, HealthCertV16Account,
+    InsuranceCreditReservationV16, InsuranceCreditReservationV16Account, Market,
+    MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PermissionlessCrankActionV16,
+    PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
+    PermissionlessRecoveryReasonV16, PortfolioAccountV16Account, PortfolioLegV16,
+    PortfolioLegV16Account, PortfolioSourceDomainV16Account, PortfolioV16ViewMut,
+    ProvenanceHeaderV16, ProvenanceHeaderV16Account, ResolvedPayoutReceiptV16, SideV16,
+    SourceCreditStateV16, SourceCreditStateV16Account, TokenValueClassV16, TokenValueFlowProofV16,
+    V16Config, V16Error, V16PodI128, V16PodU128, V16PodU64, V16_EMPTY_ACTIVE_BITMAP,
 };
 use percolator::{ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, POS_SCALE};
 
@@ -160,6 +161,80 @@ fn proof_v16_recovery_mode_blocks_withdraw_before_value_mutation() {
     assert_eq!(market.header.vault, vault_before);
     assert_eq!(market.header.c_tot, c_tot_before);
     assert_eq!(account.header.capital, capital_before);
+}
+
+#[kani::proof]
+#[kani::unwind(80)]
+#[kani::solver(cadical)]
+fn proof_v16_open_source_claim_exposure_blocks_convert_before_capital_mutation() {
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    let market_id = markets[0].engine.asset.market_id.get();
+    let face_num = 10u128 * BOUND_SCALE;
+    let mut bitmap = account_header.active_bitmap.map(V16PodU64::get);
+    active_bitmap_set(&mut bitmap, 0).unwrap();
+    let leg = PortfolioLegV16 {
+        active: true,
+        asset_index: 0,
+        market_id,
+        side: SideV16::Long,
+        basis_pos_q: POS_SCALE as i128,
+        a_basis: ADL_ONE,
+        k_snap: 0,
+        f_snap: 0,
+        epoch_snap: 0,
+        loss_weight: POS_SCALE,
+        b_snap: 0,
+        b_rem: 0,
+        b_epoch_snap: 0,
+        b_stale: false,
+        stale: false,
+    };
+    account_header.legs[0] = PortfolioLegV16Account::from_runtime(&leg);
+    account_header.active_bitmap = bitmap.map(V16PodU64::new);
+    account_header.pnl = V16PodI128::new(10);
+    account_header.health_cert = HealthCertV16Account::from_runtime(&HealthCertV16 {
+        certified_equity: 100,
+        certified_initial_req: 1,
+        certified_maintenance_req: 1,
+        certified_liq_deficit: 0,
+        certified_worst_case_loss: 1,
+        cert_oracle_epoch: header.oracle_epoch.get(),
+        cert_funding_epoch: header.funding_epoch.get(),
+        cert_risk_epoch: header.risk_epoch.get(),
+        cert_asset_set_epoch: header.asset_set_epoch.get(),
+        active_bitmap_at_cert: bitmap,
+        valid: true,
+    });
+    markets[0].engine.source_credit_short =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            positive_claim_bound_num: face_num,
+            exact_positive_claim_num: face_num,
+            credit_rate_num: 0,
+            ..SourceCreditStateV16::EMPTY
+        });
+    source_domains[1].source_claim_market_id = V16PodU64::new(market_id);
+    source_domains[1].source_claim_bound_num = V16PodU128::new(face_num);
+    let capital_before = account_header.capital;
+    let pnl_before = account_header.pnl;
+    let source_domain_before = source_domains[1];
+    let c_tot_before = header.c_tot;
+    let vault_before = header.vault;
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+
+    let result = market.convert_released_pnl_to_capital_not_atomic(&mut account);
+
+    kani::cover!(
+        result == Err(V16Error::LockActive),
+        "active source-claim exposure reaches convert guard"
+    );
+    assert_eq!(result, Err(V16Error::LockActive));
+    assert_eq!(account.header.capital, capital_before);
+    assert_eq!(account.header.pnl, pnl_before);
+    assert_eq!(account.source_domains[1], source_domain_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.vault, vault_before);
 }
 
 #[kani::proof]

@@ -2204,6 +2204,51 @@ fn proof_v16_source_credit_lien_face_and_backing_use_scaled_units() {
 }
 
 #[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_underbacked_source_credit_cannot_satisfy_im_lien_requirements() {
+    let claim_raw: u8 = kani::any();
+    let available_raw: u8 = kani::any();
+    let required_raw: u8 = kani::any();
+    kani::assume((1..=8).contains(&claim_raw));
+    kani::assume(available_raw < claim_raw);
+    kani::assume(required_raw > available_raw);
+    kani::assume(required_raw <= claim_raw);
+
+    let claim_num = claim_raw as u128 * BOUND_SCALE;
+    let available_num = available_raw as u128 * BOUND_SCALE;
+    let required_credit = required_raw as u128;
+    let source = SourceCreditStateV16 {
+        positive_claim_bound_num: claim_num,
+        exact_positive_claim_num: claim_num,
+        fresh_reserved_backing_num: available_num,
+        credit_rate_num: 0,
+        ..SourceCreditStateV16::EMPTY
+    };
+    let mut source = source;
+    source.credit_rate_num = kani_expected_source_credit_rate_num_for_state(source).unwrap();
+    let sized = MarketGroupV16ViewMut::<u64>::kani_source_credit_lien_amounts_for_effective(
+        required_credit,
+        source.credit_rate_num,
+    );
+
+    kani::cover!(
+        available_raw == 0,
+        "underbacked source-credit proof covers zero-backed domain"
+    );
+    kani::cover!(
+        available_raw != 0 && required_raw > available_raw,
+        "underbacked source-credit proof covers partially backed domain"
+    );
+    if let Ok((required_face_num, required_backing_num)) = sized {
+        assert!(required_face_num > source.positive_claim_bound_num);
+        assert!(required_backing_num > available_num);
+    } else {
+        assert_eq!(source.credit_rate_num, 0);
+    }
+}
+
+#[kani::proof]
 #[kani::unwind(16)]
 #[kani::solver(cadical)]
 fn proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing() {

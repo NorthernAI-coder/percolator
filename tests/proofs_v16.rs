@@ -1360,6 +1360,72 @@ fn proof_v16_view_fee_sync_settles_negative_pnl_before_fee() {
 #[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
+fn proof_v16_loss_senior_fee_ordering_consumes_kf_loss_before_fee() {
+    let capital_raw: u8 = kani::any();
+    let hidden_loss_raw: u8 = kani::any();
+    let requested_fee_raw: u8 = kani::any();
+    kani::assume(capital_raw <= 10);
+    kani::assume((1..=10).contains(&hidden_loss_raw));
+    kani::assume(requested_fee_raw <= 10);
+
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    let capital = capital_raw as u128;
+    let hidden_loss = hidden_loss_raw as u128;
+    let requested_fee = requested_fee_raw as u128;
+    header.vault = V16PodU128::new(capital);
+    header.c_tot = V16PodU128::new(capital);
+    account_header.capital = V16PodU128::new(capital);
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+
+    market
+        .kani_apply_signed_kf_delta_to_pnl(&mut account, -(hidden_loss as i128), None)
+        .unwrap();
+    let paid = market
+        .settle_negative_pnl_from_principal_not_atomic(&mut account)
+        .unwrap();
+    let charged = market
+        .kani_charge_account_fee_current_not_atomic(&mut account, requested_fee)
+        .unwrap();
+
+    let expected_paid = capital.min(hidden_loss);
+    let expected_pnl = if hidden_loss > capital {
+        -((hidden_loss - capital) as i128)
+    } else {
+        0
+    };
+    let expected_fee = if expected_pnl < 0 {
+        0
+    } else {
+        requested_fee.min(capital - expected_paid)
+    };
+    kani::cover!(
+        capital > 0 && hidden_loss < capital && requested_fee > capital - hidden_loss,
+        "loss-senior fee ordering covers fee capped after K/F loss"
+    );
+    kani::cover!(
+        capital > 0 && hidden_loss > capital && requested_fee > 0,
+        "loss-senior fee ordering covers no fee after bankrupt K/F loss"
+    );
+    assert_eq!(paid, expected_paid);
+    assert_eq!(charged, expected_fee);
+    assert_eq!(
+        account.header.capital.get(),
+        capital - expected_paid - expected_fee
+    );
+    assert_eq!(account.header.pnl.get(), expected_pnl);
+    assert_eq!(market.header.insurance.get(), expected_fee);
+    assert_eq!(market.header.vault.get(), capital);
+    assert_eq!(
+        market.header.c_tot.get() + market.header.insurance.get(),
+        capital - expected_paid
+    );
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
 fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
     let budget_raw: u8 = kani::any();
     kani::assume(budget_raw <= 5);

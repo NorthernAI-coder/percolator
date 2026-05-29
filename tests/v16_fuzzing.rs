@@ -1,11 +1,11 @@
 #![cfg(feature = "fuzz")]
 
 use percolator::v16::{
-    v16_domain_count_for_market_slots, EngineAssetSlotV16Account, Market,
+    v16_domain_count_for_market_slots, EngineAssetSlotV16Account, LiquidationRequestV16, Market,
     MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PermissionlessCrankActionV16,
-    PermissionlessCrankRequestV16, PortfolioAccountV16Account, PortfolioSourceDomainV16Account,
-    PortfolioV16View, PortfolioV16ViewMut, ProvenanceHeaderV16, ProvenanceHeaderV16Account,
-    TradeRequestV16, V16Config, V16Error,
+    PermissionlessCrankRequestV16, PermissionlessRecoveryReasonV16, PortfolioAccountV16Account,
+    PortfolioSourceDomainV16Account, PortfolioV16View, PortfolioV16ViewMut, ProvenanceHeaderV16,
+    ProvenanceHeaderV16Account, TradeRequestV16, V16Config, V16Error,
 };
 use proptest::prelude::*;
 
@@ -126,7 +126,7 @@ fn apply_fuzz_action(
     );
     let target_a = (selector & 0x8) == 0;
     let amount = (amount_seed as u128) % 128;
-    let result = match selector % 8 {
+    let result = match selector % 10 {
         0 => {
             let mut market = MarketGroupV16ViewMut::new(header, markets);
             if target_a {
@@ -246,7 +246,7 @@ fn apply_fuzz_action(
                     .map(|_| ())
             }
         }
-        _ => {
+        7 => {
             let mut market = MarketGroupV16ViewMut::new(header, markets);
             if target_a {
                 let mut account = PortfolioV16ViewMut::new(account_a, domains_a);
@@ -256,6 +256,71 @@ fn apply_fuzz_action(
                 market.convert_released_pnl_to_capital_not_atomic(&mut account)
             }
             .map(|_| ())
+        }
+        8 => {
+            let mut market = MarketGroupV16ViewMut::new(header, markets);
+            let close_q = 1 + (amount % 4);
+            if target_a {
+                let mut account = PortfolioV16ViewMut::new(account_a, domains_a);
+                market
+                    .liquidate_account_not_atomic(
+                        &mut account,
+                        LiquidationRequestV16 {
+                            asset_index: 0,
+                            close_q,
+                            fee_bps: 0,
+                        },
+                    )
+                    .map(|_| ())
+            } else {
+                let mut account = PortfolioV16ViewMut::new(account_b, domains_b);
+                market
+                    .liquidate_account_not_atomic(
+                        &mut account,
+                        LiquidationRequestV16 {
+                            asset_index: 0,
+                            close_q,
+                            fee_bps: 0,
+                        },
+                    )
+                    .map(|_| ())
+            }
+        }
+        _ => {
+            let mut market = MarketGroupV16ViewMut::new(header, markets);
+            if target_a {
+                let mut account = PortfolioV16ViewMut::new(account_a, domains_a);
+                market
+                    .permissionless_crank_not_atomic(
+                        &mut account,
+                        PermissionlessCrankRequestV16 {
+                            now_slot: market.header.current_slot.get(),
+                            asset_index: 0,
+                            effective_price: 1,
+                            funding_rate_e9: 0,
+                            action: PermissionlessCrankActionV16::Recover(
+                                PermissionlessRecoveryReasonV16::ExplicitLossOrDustAuditOverflow,
+                            ),
+                        },
+                    )
+                    .map(|_| ())
+            } else {
+                let mut account = PortfolioV16ViewMut::new(account_b, domains_b);
+                market
+                    .permissionless_crank_not_atomic(
+                        &mut account,
+                        PermissionlessCrankRequestV16 {
+                            now_slot: market.header.current_slot.get(),
+                            asset_index: 0,
+                            effective_price: 1,
+                            funding_rate_e9: 0,
+                            action: PermissionlessCrankActionV16::Recover(
+                                PermissionlessRecoveryReasonV16::ExplicitLossOrDustAuditOverflow,
+                            ),
+                        },
+                    )
+                    .map(|_| ())
+            }
         }
     };
 

@@ -8401,6 +8401,16 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(false)
     }
 
+    #[cfg(kani)]
+    pub fn kani_position_change_touches_pending_domain_loss_barrier(
+        &self,
+        asset_index: usize,
+        current: i128,
+        next: i128,
+    ) -> V16Result<bool> {
+        self.position_change_touches_pending_domain_loss_barrier(asset_index, current, next)
+    }
+
     fn position_delta_touches_pending_domain_loss_barrier(
         &self,
         account: &PortfolioV16View<'_>,

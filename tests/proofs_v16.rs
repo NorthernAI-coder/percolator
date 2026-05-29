@@ -611,6 +611,43 @@ fn proof_v16_live_market_shape_rejects_long_short_oi_mismatch() {
 }
 
 #[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_pending_domain_loss_barrier_detects_touching_position_changes() {
+    let long_position_raw: u8 = kani::any();
+    let short_position_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&long_position_raw));
+    kani::assume((1..=5).contains(&short_position_raw));
+    let long_position = long_position_raw as i128 * POS_SCALE as i128;
+    let short_position = -(short_position_raw as i128 * POS_SCALE as i128);
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    markets[0].engine.pending_domain_loss_barrier_long = V16PodU64::new(1);
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    let closes_long = market
+        .kani_position_change_touches_pending_domain_loss_barrier(0, long_position, 0)
+        .unwrap();
+    let opens_long = market
+        .kani_position_change_touches_pending_domain_loss_barrier(0, 0, long_position)
+        .unwrap();
+    let unrelated_short = market
+        .kani_position_change_touches_pending_domain_loss_barrier(0, short_position, 0)
+        .unwrap();
+
+    kani::cover!(
+        long_position_raw > 1,
+        "pending-domain barrier proof covers nontrivial long position"
+    );
+    kani::cover!(
+        short_position_raw > 1,
+        "pending-domain barrier proof covers nontrivial unrelated short position"
+    );
+    assert!(closes_long);
+    assert!(opens_long);
+    assert!(!unrelated_short);
+}
+
+#[kani::proof]
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
 fn proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk() {

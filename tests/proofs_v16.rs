@@ -2,6 +2,7 @@
 
 use percolator::v16::{
     active_bitmap_set, kani_add_open_interest_for_new_position,
+    kani_apply_backing_provider_earnings_withdraw, kani_apply_backing_utilization_fee_charge,
     kani_apply_resolved_payout_receipt_payment, kani_expected_source_credit_rate_num_for_state,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
     kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
@@ -340,6 +341,150 @@ fn proof_v16_trade_fee_helper_does_not_charge_negative_pnl_account() {
     assert_eq!(market.header.insurance, insurance_before);
     assert_eq!(account.header.capital, capital_before);
     assert_eq!(account.header.pnl.get(), -1);
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_negative_pnl_settlement_consumes_principal_before_residual() {
+    let capital_raw: u8 = kani::any();
+    let loss_raw: u8 = kani::any();
+    kani::assume(capital_raw <= 10);
+    kani::assume((1..=10).contains(&loss_raw));
+    let capital = capital_raw as u128;
+    let loss = loss_raw as u128;
+    let paid_expected = capital.min(loss);
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    header.vault = V16PodU128::new(capital);
+    header.c_tot = V16PodU128::new(capital);
+    header.negative_pnl_account_count = V16PodU64::new(1);
+    account_header.capital = V16PodU128::new(capital);
+    account_header.pnl = V16PodI128::new(-(loss as i128));
+    let vault_before = header.vault.get();
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let paid = market
+        .settle_negative_pnl_from_principal_not_atomic(&mut account)
+        .unwrap();
+
+    kani::cover!(
+        capital > 0 && capital < loss,
+        "principal settlement covers residual bankruptcy branch"
+    );
+    kani::cover!(
+        capital >= loss,
+        "principal settlement covers fully paid realized loss"
+    );
+    assert_eq!(paid, paid_expected);
+    assert_eq!(market.header.vault.get(), vault_before);
+    assert_eq!(market.header.c_tot.get(), capital - paid_expected);
+    assert_eq!(account.header.capital.get(), capital - paid_expected);
+    assert_eq!(
+        account.header.pnl.get(),
+        -(loss as i128) + paid_expected as i128
+    );
+    if paid_expected < loss {
+        assert_eq!(market.header.bankruptcy_hlock_active, 1);
+        assert_eq!(market.header.negative_pnl_account_count.get(), 1);
+    } else {
+        assert_eq!(market.header.negative_pnl_account_count.get(), 0);
+    }
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_backing_utilization_fee_never_charges_negative_pnl_account() {
+    let capital_raw: u8 = kani::any();
+    let fee_raw: u8 = kani::any();
+    let earnings_raw: u8 = kani::any();
+    kani::assume(capital_raw <= 10);
+    kani::assume(fee_raw <= 10);
+    kani::assume(earnings_raw <= 10);
+    let capital = capital_raw as u128;
+    let fee = fee_raw as u128;
+    let earnings = earnings_raw as u128;
+    let group_c_tot = capital;
+
+    let (charged, next_capital, next_c_tot, next_earnings) =
+        kani_apply_backing_utilization_fee_charge(capital, group_c_tot, earnings, -1, fee).unwrap();
+
+    kani::cover!(
+        fee > 0 && capital > 0,
+        "negative-PnL backing utilization fee reaches no-charge guard"
+    );
+    assert_eq!(charged, 0);
+    assert_eq!(next_capital, capital);
+    assert_eq!(next_c_tot, group_c_tot);
+    assert_eq!(next_earnings, earnings);
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_backing_utilization_fee_is_capped_by_capital_and_conserves_ctot_to_earnings() {
+    let capital_raw: u8 = kani::any();
+    let fee_raw: u8 = kani::any();
+    let earnings_raw: u8 = kani::any();
+    kani::assume(capital_raw <= 10);
+    kani::assume(fee_raw <= 10);
+    kani::assume(earnings_raw <= 10);
+    let capital = capital_raw as u128;
+    let fee = fee_raw as u128;
+    let earnings = earnings_raw as u128;
+    let group_c_tot = capital;
+    let expected = capital.min(fee);
+
+    let (charged, next_capital, next_c_tot, next_earnings) =
+        kani_apply_backing_utilization_fee_charge(capital, group_c_tot, earnings, 0, fee).unwrap();
+
+    kani::cover!(
+        fee > capital && capital > 0,
+        "backing utilization fee covers capital-capped collection"
+    );
+    kani::cover!(
+        fee <= capital && fee > 0,
+        "backing utilization fee covers full requested collection"
+    );
+    assert_eq!(charged, expected);
+    assert_eq!(next_capital, capital - expected);
+    assert_eq!(next_c_tot, group_c_tot - expected);
+    assert_eq!(next_earnings, earnings + expected);
+    assert_eq!(next_c_tot + next_earnings, group_c_tot + earnings);
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_backing_provider_earnings_withdraw_cannot_exceed_earnings() {
+    let vault_raw: u8 = kani::any();
+    let earnings_raw: u8 = kani::any();
+    let amount_raw: u8 = kani::any();
+    kani::assume(vault_raw <= 20);
+    kani::assume(earnings_raw <= vault_raw);
+    kani::assume(amount_raw <= 20);
+    let vault = vault_raw as u128;
+    let earnings = earnings_raw as u128;
+    let amount = amount_raw as u128;
+    let result = kani_apply_backing_provider_earnings_withdraw(vault, earnings, amount);
+
+    if amount <= earnings {
+        let (next_vault, next_earnings) = result.unwrap();
+        kani::cover!(
+            amount > 0 && amount < earnings,
+            "provider earnings withdraw covers partial earned payout"
+        );
+        assert_eq!(next_vault, vault - amount);
+        assert_eq!(next_earnings, earnings - amount);
+    } else {
+        kani::cover!(
+            amount > earnings,
+            "provider earnings withdraw rejects over-withdraw"
+        );
+        assert_eq!(result, Err(V16Error::CounterUnderflow));
+    }
 }
 
 #[kani::proof]

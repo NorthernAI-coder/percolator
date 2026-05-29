@@ -7,9 +7,9 @@ use percolator::v16::{
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
     kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
     AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, BackingBucketV16Account,
-    CloseProgressLedgerV16, EngineAssetSlotV16Account, HealthCertV16, HealthCertV16Account,
-    InsuranceCreditReservationV16, InsuranceCreditReservationV16Account, Market,
-    MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PermissionlessCrankActionV16,
+    CloseProgressLedgerV16, EngineAssetSlotV16Account, HLockLaneV16, HealthCertV16,
+    HealthCertV16Account, InsuranceCreditReservationV16, InsuranceCreditReservationV16Account,
+    Market, MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PermissionlessCrankActionV16,
     PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
     PermissionlessRecoveryReasonV16, PortfolioAccountV16Account, PortfolioLegV16,
     PortfolioLegV16Account, PortfolioSourceDomainV16Account, PortfolioV16ViewMut,
@@ -337,6 +337,73 @@ fn proof_v16_open_source_claim_exposure_blocks_convert() {
         "active source-claim exposure reaches convert guard"
     );
     assert_eq!(result, Err(V16Error::LockActive));
+}
+
+#[kani::proof]
+#[kani::unwind(24)]
+#[kani::solver(cadical)]
+fn proof_v16_bankruptcy_hlock_selects_hmax_before_source_backed_value_exit() {
+    let claim_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&claim_raw));
+    let claim = claim_raw as u128;
+    let claim_num = claim * BOUND_SCALE;
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    account_header.pnl = V16PodI128::new(claim as i128);
+    account_header.health_cert = HealthCertV16Account::from_runtime(&HealthCertV16 {
+        certified_equity: claim as i128,
+        certified_initial_req: 0,
+        certified_maintenance_req: 0,
+        certified_liq_deficit: 0,
+        certified_worst_case_loss: 0,
+        cert_oracle_epoch: header.oracle_epoch.get(),
+        cert_funding_epoch: header.funding_epoch.get(),
+        cert_risk_epoch: header.risk_epoch.get(),
+        cert_asset_set_epoch: header.asset_set_epoch.get(),
+        active_bitmap_at_cert: V16_EMPTY_ACTIVE_BITMAP,
+        valid: true,
+    });
+    header.pnl_pos_tot = V16PodU128::new(claim);
+    header.pnl_pos_bound_tot_num = V16PodU128::new(claim_num);
+    header.pnl_pos_bound_tot = V16PodU128::new(claim);
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            positive_claim_bound_num: claim_num,
+            exact_positive_claim_num: claim_num,
+            fresh_reserved_backing_num: claim_num,
+            credit_rate_num: CREDIT_RATE_SCALE,
+            ..SourceCreditStateV16::EMPTY
+        });
+    markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+        market_id: 1,
+        fresh_unliened_backing_num: claim_num,
+        expiry_slot: 100,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    });
+    source_domains[0].source_claim_market_id = V16PodU64::new(1);
+    source_domains[0].source_claim_bound_num = V16PodU128::new(claim_num);
+    header.bankruptcy_hlock_active = 1;
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let capital_before = account_header.capital;
+    let pnl_before = account_header.pnl;
+
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let lane = market
+        .kani_h_lock_lane(Some(&account.as_view()), false)
+        .unwrap();
+
+    kani::cover!(
+        claim > 1 && lane == HLockLaneV16::HMax,
+        "bankruptcy h-lock selects hmax for nontrivial source-backed positive PnL"
+    );
+    assert_eq!(lane, HLockLaneV16::HMax);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(account.header.capital, capital_before);
+    assert_eq!(account.header.pnl, pnl_before);
 }
 
 #[kani::proof]

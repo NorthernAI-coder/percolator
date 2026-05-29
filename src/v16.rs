@@ -8460,6 +8460,15 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(HLockLaneV16::HMin)
     }
 
+    #[cfg(kani)]
+    pub fn kani_h_lock_lane(
+        &self,
+        account: Option<&PortfolioV16View<'_>>,
+        instruction_bankruptcy_candidate: bool,
+    ) -> V16Result<HLockLaneV16> {
+        self.h_lock_lane(account, instruction_bankruptcy_candidate)
+    }
+
     fn asset_has_target_effective_lag(&self, asset_index: usize) -> V16Result<bool> {
         let asset = self.asset_state(asset_index)?;
         Ok(asset.raw_oracle_target_price != asset.effective_price)

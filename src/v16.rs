@@ -257,6 +257,55 @@ pub fn kani_liquidation_close_would_leave_uncovered_loss_with_open_risk(
     )
 }
 
+fn add_open_interest_for_new_position(
+    asset: &mut AssetStateV16,
+    side: SideV16,
+    abs_q: u128,
+    loss_weight: u128,
+) -> V16Result<()> {
+    match side {
+        SideV16::Long => {
+            asset.stored_pos_count_long = asset
+                .stored_pos_count_long
+                .checked_add(1)
+                .ok_or(V16Error::CounterOverflow)?;
+            asset.oi_eff_long_q = asset
+                .oi_eff_long_q
+                .checked_add(abs_q)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            asset.loss_weight_sum_long = asset
+                .loss_weight_sum_long
+                .checked_add(loss_weight)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+        }
+        SideV16::Short => {
+            asset.stored_pos_count_short = asset
+                .stored_pos_count_short
+                .checked_add(1)
+                .ok_or(V16Error::CounterOverflow)?;
+            asset.oi_eff_short_q = asset
+                .oi_eff_short_q
+                .checked_add(abs_q)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            asset.loss_weight_sum_short = asset
+                .loss_weight_sum_short
+                .checked_add(loss_weight)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+        }
+    }
+    Ok(())
+}
+
+#[cfg(kani)]
+pub fn kani_add_open_interest_for_new_position(
+    asset: &mut AssetStateV16,
+    side: SideV16,
+    abs_q: u128,
+    loss_weight: u128,
+) -> V16Result<()> {
+    add_open_interest_for_new_position(asset, side, abs_q, loss_weight)
+}
+
 #[inline]
 pub fn active_bitmap_count_ones(bitmap: V16ActiveBitmap) -> u32 {
     let mut total = 0u32;
@@ -990,6 +1039,13 @@ pub fn kani_validate_positive_pnl_source_attribution(
     V16Core::validate_positive_pnl_source_attribution(pnl, source_claim_sum_num)
 }
 
+#[cfg(kani)]
+pub fn kani_expected_source_credit_rate_num_for_state(
+    state: SourceCreditStateV16,
+) -> V16Result<u128> {
+    V16Core::expected_source_credit_rate_num_for_state(state)
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum HLockLaneV16 {
     HMin,
@@ -1620,6 +1676,32 @@ impl V16Config {
     pub fn validate_public_user_fund(&self) -> V16Result<()> {
         self.validate_public_user_fund_shape()?;
         self.validate_exact_solvency_envelope()
+    }
+
+    #[cfg(kani)]
+    pub fn kani_solvency_envelope_holds_for_notional(&self, n: u128) -> V16Result<bool> {
+        self.validate_funding_headroom(self.max_accrual_dt_slots)?;
+        self.validate_funding_headroom(self.min_funding_lifetime_slots)?;
+        let price_budget_bps = (self.max_price_move_bps_per_slot as u128)
+            .checked_mul(self.max_accrual_dt_slots as u128)
+            .ok_or(V16Error::InvalidConfig)?;
+        let funding_budget_num = (self.max_abs_funding_e9_per_slot as u128)
+            .checked_mul(self.max_accrual_dt_slots as u128)
+            .and_then(|v| v.checked_mul(10_000))
+            .ok_or(V16Error::InvalidConfig)?;
+        let loss_budget_num = price_budget_bps
+            .checked_mul(FUNDING_DEN)
+            .and_then(|v| v.checked_add(funding_budget_num))
+            .ok_or(V16Error::InvalidConfig)?;
+        let loss_budget_den = 10_000u128
+            .checked_mul(FUNDING_DEN)
+            .ok_or(V16Error::InvalidConfig)?;
+        self.solvency_envelope_holds_for_notional(
+            n,
+            loss_budget_num,
+            loss_budget_den,
+            price_budget_bps,
+        )
     }
 }
 
@@ -6883,6 +6965,17 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         })
     }
 
+    #[cfg(kani)]
+    pub fn kani_apply_signed_kf_delta_to_pnl(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        delta: i128,
+        source_domain: Option<usize>,
+    ) -> V16Result<(u128, u128)> {
+        let out = self.apply_signed_kf_delta_to_pnl(account, delta, source_domain)?;
+        Ok((out.support_consumed, out.junior_face_burned))
+    }
+
     fn reserve_new_capital_backed_loss_for_source_domain_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,
@@ -8542,36 +8635,12 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if loss_weight == 0 {
             return Err(V16Error::InvalidLeg);
         }
-        match side {
-            SideV16::Long => {
-                asset.stored_pos_count_long = asset
-                    .stored_pos_count_long
-                    .checked_add(1)
-                    .ok_or(V16Error::CounterOverflow)?;
-                asset.oi_eff_long_q = asset
-                    .oi_eff_long_q
-                    .checked_add(basis_pos_q.unsigned_abs())
-                    .ok_or(V16Error::ArithmeticOverflow)?;
-                asset.loss_weight_sum_long = asset
-                    .loss_weight_sum_long
-                    .checked_add(loss_weight)
-                    .ok_or(V16Error::ArithmeticOverflow)?;
-            }
-            SideV16::Short => {
-                asset.stored_pos_count_short = asset
-                    .stored_pos_count_short
-                    .checked_add(1)
-                    .ok_or(V16Error::CounterOverflow)?;
-                asset.oi_eff_short_q = asset
-                    .oi_eff_short_q
-                    .checked_add(basis_pos_q.unsigned_abs())
-                    .ok_or(V16Error::ArithmeticOverflow)?;
-                asset.loss_weight_sum_short = asset
-                    .loss_weight_sum_short
-                    .checked_add(loss_weight)
-                    .ok_or(V16Error::ArithmeticOverflow)?;
-            }
-        }
+        add_open_interest_for_new_position(
+            &mut asset,
+            side,
+            basis_pos_q.unsigned_abs(),
+            loss_weight,
+        )?;
         account.header.legs[leg_slot] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
             active: true,
             asset_index: asset_index as u32,
@@ -10347,6 +10416,15 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         .validate()?;
         account.header.health_cert.valid = 0;
         Ok(charged)
+    }
+
+    #[cfg(kani)]
+    pub fn kani_charge_account_fee_current_not_atomic(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        requested_fee: u128,
+    ) -> V16Result<u128> {
+        self.charge_account_fee_current_not_atomic(account, requested_fee)
     }
 
     fn charge_account_fee_after_loss_settlement(

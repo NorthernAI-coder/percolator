@@ -57,6 +57,24 @@ fn account_fixture(
 }
 
 #[test]
+fn v16_public_fund_validator_accepts_nontrivial_exact_solvency_profile() {
+    let mut cfg = V16Config::public_user_fund_with_market_slots(1, 1, 1, 10);
+    cfg.maintenance_margin_bps = 10_000;
+    cfg.initial_margin_bps = 10_000;
+    cfg.max_price_move_bps_per_slot = 100;
+    cfg.max_accrual_dt_slots = 1;
+    cfg.min_funding_lifetime_slots = 1;
+    cfg.max_abs_funding_e9_per_slot = 0;
+    cfg.liquidation_fee_bps = 100;
+    cfg.min_liquidation_abs = 1;
+    cfg.liquidation_fee_cap = 1;
+    cfg.min_nonzero_mm_req = 2;
+    cfg.min_nonzero_im_req = 3;
+
+    assert_eq!(cfg.validate_public_user_fund(), Ok(()));
+}
+
+#[test]
 fn v16_view_deposit_and_withdraw_are_the_tested_paths() {
     let (mut header, mut markets) = market_fixture(1, 100);
     let (mut account_header, mut source_domains) = account_fixture(1, 2);

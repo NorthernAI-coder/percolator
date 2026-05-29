@@ -1458,6 +1458,45 @@ fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
     assert_eq!(account.header.pnl.get(), -5 + budget as i128);
 }
 
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_new_unfunded_domain_cannot_consume_shared_insurance() {
+    let shared_insurance_raw: u8 = kani::any();
+    let residual_loss_raw: u8 = kani::any();
+    kani::assume(shared_insurance_raw <= 10);
+    kani::assume((1..=10).contains(&residual_loss_raw));
+    let shared_insurance = shared_insurance_raw as u128;
+    let residual_loss = residual_loss_raw as u128;
+
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    header.vault = V16PodU128::new(shared_insurance);
+    header.insurance = V16PodU128::new(shared_insurance);
+    header.negative_pnl_account_count = V16PodU64::new(1);
+    account_header.pnl = V16PodI128::new(-(residual_loss as i128));
+    assert_eq!(markets[0].engine.insurance_domain_budget_short.get(), 0);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let used = market
+        .kani_consume_domain_insurance_for_negative_pnl(0, SideV16::Long, &mut account)
+        .unwrap();
+
+    kani::cover!(
+        shared_insurance >= residual_loss,
+        "new unfunded domain covers shared insurance larger than residual"
+    );
+    assert_eq!(used, 0);
+    assert_eq!(market.header.insurance.get(), shared_insurance);
+    assert_eq!(market.header.vault.get(), shared_insurance);
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_spent_short.get(),
+        0
+    );
+    assert_eq!(account.header.pnl.get(), -(residual_loss as i128));
+}
+
 fn run_funding_target_sign_case(positive_funding: bool) -> (i128, i128, i128) {
     let (mut header, mut markets, _, _) = one_market_view_fixture();
     if positive_funding {

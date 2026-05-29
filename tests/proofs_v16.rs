@@ -578,6 +578,39 @@ fn proof_v16_view_trade_position_delta_preserves_oi_symmetry() {
 }
 
 #[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_live_market_shape_rejects_long_short_oi_mismatch() {
+    let long_units_raw: u8 = kani::any();
+    let short_units_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&long_units_raw));
+    kani::assume((1..=5).contains(&short_units_raw));
+    kani::assume(long_units_raw != short_units_raw);
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    let mut asset = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset.oi_eff_long_q = long_units_raw as u128 * POS_SCALE;
+    asset.oi_eff_short_q = short_units_raw as u128 * POS_SCALE;
+    asset.loss_weight_sum_long = long_units_raw as u128 * POS_SCALE;
+    asset.loss_weight_sum_short = short_units_raw as u128 * POS_SCALE;
+    asset.stored_pos_count_long = 1;
+    asset.stored_pos_count_short = 1;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset);
+
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let result = market.validate_shape();
+
+    kani::cover!(
+        long_units_raw > short_units_raw,
+        "OI mismatch proof covers long-heavy invalid state"
+    );
+    kani::cover!(
+        short_units_raw > long_units_raw,
+        "OI mismatch proof covers short-heavy invalid state"
+    );
+    assert_eq!(result, Err(V16Error::InvalidConfig));
+}
+
+#[kani::proof]
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
 fn proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk() {

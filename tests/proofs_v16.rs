@@ -1325,6 +1325,96 @@ fn proof_v16_public_resolved_payout_topup_pays_min_claimable_and_vault() {
 }
 
 #[kani::proof]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn proof_v16_two_resolved_receipts_are_order_independent_when_snapshot_funded() {
+    let a_raw: u8 = kani::any();
+    let b_raw: u8 = kani::any();
+    let residual_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&a_raw));
+    kani::assume((1..=5).contains(&b_raw));
+    kani::assume((1..=10).contains(&residual_raw));
+    let a_claim = a_raw as u128;
+    let b_claim = b_raw as u128;
+    let total_claim = a_claim + b_claim;
+    let snapshot_residual = residual_raw as u128;
+    let total_bound_num = total_claim * BOUND_SCALE;
+    let rate_num = (snapshot_residual * BOUND_SCALE).min(total_bound_num);
+    let ledger = ResolvedPayoutLedgerV16 {
+        snapshot_residual,
+        terminal_claim_exact_receipts_num: total_bound_num,
+        terminal_claim_bound_unreceipted_num: 0,
+        current_payout_rate_num: rate_num,
+        current_payout_rate_den: total_bound_num,
+        snapshot_slot: 1,
+        payout_halted: false,
+        finalized: false,
+    };
+    let a_receipt = ResolvedPayoutReceiptV16 {
+        present: true,
+        prior_bound_contribution_num: a_claim * BOUND_SCALE,
+        live_released_face_at_receipt: 0,
+        terminal_positive_claim_face: a_claim,
+        paid_effective: 0,
+        finalized: false,
+    };
+    let b_receipt = ResolvedPayoutReceiptV16 {
+        present: true,
+        prior_bound_contribution_num: b_claim * BOUND_SCALE,
+        live_released_face_at_receipt: 0,
+        terminal_positive_claim_face: b_claim,
+        paid_effective: 0,
+        finalized: false,
+    };
+
+    let paid_a_first =
+        MarketGroupV16ViewMut::<u64>::kani_resolved_receipt_claimable_against_ledger(
+            a_receipt, ledger,
+        )
+        .unwrap();
+    let paid_b_second =
+        MarketGroupV16ViewMut::<u64>::kani_resolved_receipt_claimable_against_ledger(
+            b_receipt, ledger,
+        )
+        .unwrap();
+    let a_after = kani_apply_resolved_payout_receipt_payment(a_receipt, paid_a_first).unwrap();
+    let b_after = kani_apply_resolved_payout_receipt_payment(b_receipt, paid_b_second).unwrap();
+
+    let paid_b_first =
+        MarketGroupV16ViewMut::<u64>::kani_resolved_receipt_claimable_against_ledger(
+            b_receipt, ledger,
+        )
+        .unwrap();
+    let paid_a_second =
+        MarketGroupV16ViewMut::<u64>::kani_resolved_receipt_claimable_against_ledger(
+            a_receipt, ledger,
+        )
+        .unwrap();
+    let b_after_reversed =
+        kani_apply_resolved_payout_receipt_payment(b_receipt, paid_b_first).unwrap();
+    let a_after_reversed =
+        kani_apply_resolved_payout_receipt_payment(a_receipt, paid_a_second).unwrap();
+
+    kani::cover!(
+        snapshot_residual < total_claim,
+        "two-receipt receipt math covers haircut payout rate"
+    );
+    kani::cover!(
+        snapshot_residual >= total_claim,
+        "two-receipt receipt math covers full payout rate"
+    );
+    kani::cover!(
+        a_claim != b_claim,
+        "two-receipt receipt math covers asymmetric claim sizes"
+    );
+    assert_eq!(paid_a_first, paid_a_second);
+    assert_eq!(paid_b_first, paid_b_second);
+    assert_eq!(a_after.paid_effective, a_after_reversed.paid_effective);
+    assert_eq!(b_after.paid_effective, b_after_reversed.paid_effective);
+    assert!(paid_a_first + paid_b_first <= snapshot_residual);
+}
+
+#[kani::proof]
 #[kani::unwind(96)]
 #[kani::solver(cadical)]
 fn proof_v16_public_resolved_close_flat_account_pays_only_capital_and_vault() {

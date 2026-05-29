@@ -10597,11 +10597,18 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
     }
 
     fn resolved_receipt_claimable_now(&self, receipt: ResolvedPayoutReceiptV16) -> V16Result<u128> {
+        let ledger = self.header.resolved_payout_ledger.try_to_runtime()?;
+        Self::resolved_receipt_claimable_against_ledger(receipt, ledger)
+    }
+
+    fn resolved_receipt_claimable_against_ledger(
+        receipt: ResolvedPayoutReceiptV16,
+        ledger: ResolvedPayoutLedgerV16,
+    ) -> V16Result<u128> {
         PortfolioV16View::validate_resolved_payout_receipt_static(receipt)?;
         if !receipt.present {
             return Ok(0);
         }
-        let ledger = self.header.resolved_payout_ledger.try_to_runtime()?;
         if ledger.payout_halted {
             return Err(V16Error::RecoveryRequired);
         }
@@ -10613,6 +10620,14 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         gross
             .checked_sub(receipt.paid_effective)
             .ok_or(V16Error::InvalidLeg)
+    }
+
+    #[cfg(kani)]
+    pub fn kani_resolved_receipt_claimable_against_ledger(
+        receipt: ResolvedPayoutReceiptV16,
+        ledger: ResolvedPayoutLedgerV16,
+    ) -> V16Result<u128> {
+        Self::resolved_receipt_claimable_against_ledger(receipt, ledger)
     }
 
     fn preflight_convert_released_pnl_to_capital(

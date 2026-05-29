@@ -4,12 +4,12 @@ use percolator::v16::{
     active_bitmap_set, kani_add_open_interest_for_new_position,
     kani_apply_resolved_payout_receipt_payment, kani_expected_source_credit_rate_num_for_state,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
-    kani_validate_positive_pnl_source_attribution, AssetStateV16, BackingBucketStatusV16,
-    BackingBucketV16, CloseProgressLedgerV16, EngineAssetSlotV16Account,
-    InsuranceCreditReservationV16, Market, MarketGroupV16HeaderAccount, MarketGroupV16ViewMut,
-    PermissionlessCrankActionV16, PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
-    PermissionlessRecoveryReasonV16, PortfolioAccountV16Account, PortfolioLegV16,
-    PortfolioSourceDomainV16Account, PortfolioV16ViewMut, ProvenanceHeaderV16,
+    kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
+    AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, CloseProgressLedgerV16,
+    EngineAssetSlotV16Account, InsuranceCreditReservationV16, Market, MarketGroupV16HeaderAccount,
+    MarketGroupV16ViewMut, PermissionlessCrankActionV16, PermissionlessCrankRequestV16,
+    PermissionlessProgressOutcomeV16, PermissionlessRecoveryReasonV16, PortfolioAccountV16Account,
+    PortfolioLegV16, PortfolioSourceDomainV16Account, PortfolioV16ViewMut, ProvenanceHeaderV16,
     ProvenanceHeaderV16Account, ResolvedPayoutReceiptV16, SideV16, SourceCreditStateV16,
     TokenValueClassV16, TokenValueFlowProofV16, V16Config, V16Error, V16PodI128, V16PodU128,
     V16PodU64, V16_EMPTY_ACTIVE_BITMAP,
@@ -130,6 +130,34 @@ fn proof_v16_view_withdraw_reduces_vault_ctot_and_capital_equally() {
     assert_eq!(market.header.insurance.get(), insurance_before);
     assert_eq!(market.validate_shape(), Ok(()));
     assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_recovery_mode_blocks_withdraw_before_value_mutation() {
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    header.mode = 2;
+    header.vault = V16PodU128::new(10);
+    header.c_tot = V16PodU128::new(10);
+    account_header.capital = V16PodU128::new(10);
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let capital_before = account_header.capital;
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let result = market.withdraw_not_atomic(&mut account, 1);
+
+    kani::cover!(
+        result == Err(V16Error::LockActive),
+        "recovery mode blocks ordinary withdraw"
+    );
+    assert_eq!(result, Err(V16Error::LockActive));
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(account.header.capital, capital_before);
 }
 
 #[kani::proof]
@@ -397,6 +425,108 @@ fn proof_v16_duplicate_asset_legs_reject_before_double_counting_support() {
         "duplicate active asset legs are rejected"
     );
     assert_eq!(result, Err(V16Error::HiddenLeg));
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_mark_asset_drain_only_is_value_neutral_and_epoch_scoped() {
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    header.vault = V16PodU128::new(10);
+    header.c_tot = V16PodU128::new(7);
+    header.insurance = V16PodU128::new(3);
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let insurance_before = header.insurance;
+    let asset_set_epoch_before = header.asset_set_epoch.get();
+    let risk_epoch_before = header.risk_epoch.get();
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    market.mark_asset_drain_only_not_atomic(0).unwrap();
+    let asset = market.markets[0].engine.asset.try_to_runtime().unwrap();
+
+    kani::cover!(
+        asset.lifecycle == AssetLifecycleV16::DrainOnly,
+        "active asset can enter drain-only without value movement"
+    );
+    assert_eq!(asset.lifecycle, AssetLifecycleV16::DrainOnly);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.insurance, insurance_before);
+    assert_eq!(
+        market.header.asset_set_epoch.get(),
+        asset_set_epoch_before + 1
+    );
+    assert_eq!(market.header.risk_epoch.get(), risk_epoch_before + 1);
+    assert_eq!(market.validate_shape(), Ok(()));
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_retire_nonempty_asset_rejects_before_lifecycle_mutation() {
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    let mut asset = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset.oi_eff_long_q = POS_SCALE;
+    asset.stored_pos_count_long = 1;
+    asset.loss_weight_sum_long = POS_SCALE;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset);
+    let lifecycle_before = asset.lifecycle;
+    let current_slot_before = header.current_slot;
+    let asset_set_epoch_before = header.asset_set_epoch;
+    let risk_epoch_before = header.risk_epoch;
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let result = market.retire_empty_asset_not_atomic(0, 10);
+    let after = market.markets[0].engine.asset.try_to_runtime().unwrap();
+
+    kani::cover!(
+        result == Err(V16Error::LockActive),
+        "nonempty asset retirement reaches fail-closed guard"
+    );
+    assert_eq!(result, Err(V16Error::LockActive));
+    assert_eq!(after.lifecycle, lifecycle_before);
+    assert_eq!(after.oi_eff_long_q, POS_SCALE);
+    assert_eq!(after.stored_pos_count_long, 1);
+    assert_eq!(market.header.current_slot, current_slot_before);
+    assert_eq!(market.header.asset_set_epoch, asset_set_epoch_before);
+    assert_eq!(market.header.risk_epoch, risk_epoch_before);
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_retire_empty_asset_is_value_neutral_and_epoch_scoped() {
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    header.vault = V16PodU128::new(10);
+    header.c_tot = V16PodU128::new(7);
+    header.insurance = V16PodU128::new(3);
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let insurance_before = header.insurance;
+    let asset_set_epoch_before = header.asset_set_epoch.get();
+    let risk_epoch_before = header.risk_epoch.get();
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    market.retire_empty_asset_not_atomic(0, 10).unwrap();
+    let asset = market.markets[0].engine.asset.try_to_runtime().unwrap();
+
+    kani::cover!(
+        asset.lifecycle == AssetLifecycleV16::Retired,
+        "empty asset can retire without moving value"
+    );
+    assert_eq!(asset.lifecycle, AssetLifecycleV16::Retired);
+    assert_eq!(asset.retired_slot, 10);
+    assert_eq!(market.header.current_slot.get(), 10);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.insurance, insurance_before);
+    assert_eq!(
+        market.header.asset_set_epoch.get(),
+        asset_set_epoch_before + 1
+    );
+    assert_eq!(market.header.risk_epoch.get(), risk_epoch_before + 1);
+    assert_eq!(market.validate_shape(), Ok(()));
 }
 
 #[kani::proof]

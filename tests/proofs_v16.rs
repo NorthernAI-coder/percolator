@@ -241,6 +241,53 @@ fn proof_v16_recovery_mode_blocks_withdraw() {
 }
 
 #[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_recovery_mode_blocks_fee_sync_and_pnl_conversion_before_mutation() {
+    let capital_raw: u8 = kani::any();
+    let pnl_raw: u8 = kani::any();
+    let fee_rate_raw: u8 = kani::any();
+    kani::assume(capital_raw <= 10);
+    kani::assume(pnl_raw <= 10);
+    kani::assume(fee_rate_raw <= 10);
+    let capital = capital_raw as u128;
+    let pnl = pnl_raw as i128;
+    let (mut header, mut markets, mut account_header, mut source_domains) =
+        one_market_view_fixture();
+    header.mode = 2;
+    header.vault = V16PodU128::new(capital);
+    header.c_tot = V16PodU128::new(capital);
+    account_header.capital = V16PodU128::new(capital);
+    account_header.pnl = V16PodI128::new(pnl);
+    account_header.last_fee_slot = V16PodU64::new(0);
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let insurance_before = header.insurance;
+    let capital_before = account_header.capital;
+    let pnl_before = account_header.pnl;
+    let last_fee_slot_before = account_header.last_fee_slot;
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header, &mut source_domains);
+    let fee_result =
+        market.sync_account_fee_to_slot_not_atomic(&mut account, 1, fee_rate_raw as u128);
+    let convert_result = market.convert_released_pnl_to_capital_not_atomic(&mut account);
+
+    kani::cover!(
+        capital > 0 && fee_rate_raw > 0 && pnl > 0,
+        "recovery mode blocks fee sync and positive PnL conversion inputs"
+    );
+    assert_eq!(fee_result, Err(V16Error::LockActive));
+    assert_eq!(convert_result, Err(V16Error::LockActive));
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.insurance, insurance_before);
+    assert_eq!(account.header.capital, capital_before);
+    assert_eq!(account.header.pnl, pnl_before);
+    assert_eq!(account.header.last_fee_slot, last_fee_slot_before);
+}
+
+#[kani::proof]
 #[kani::unwind(32)]
 #[kani::solver(cadical)]
 fn proof_v16_public_resolve_market_is_value_neutral_and_clears_loss_stale() {

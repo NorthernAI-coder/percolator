@@ -6,14 +6,15 @@ use percolator::v16::{
     kani_apply_resolved_payout_receipt_payment, kani_expected_source_credit_rate_num_for_state,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
     kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
-    AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, CloseProgressLedgerV16,
-    EngineAssetSlotV16Account, InsuranceCreditReservationV16, Market, MarketGroupV16HeaderAccount,
+    AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, BackingBucketV16Account,
+    CloseProgressLedgerV16, EngineAssetSlotV16Account, InsuranceCreditReservationV16,
+    InsuranceCreditReservationV16Account, Market, MarketGroupV16HeaderAccount,
     MarketGroupV16ViewMut, PermissionlessCrankActionV16, PermissionlessCrankRequestV16,
     PermissionlessProgressOutcomeV16, PermissionlessRecoveryReasonV16, PortfolioAccountV16Account,
     PortfolioLegV16, PortfolioSourceDomainV16Account, PortfolioV16ViewMut, ProvenanceHeaderV16,
     ProvenanceHeaderV16Account, ResolvedPayoutReceiptV16, SideV16, SourceCreditStateV16,
-    TokenValueClassV16, TokenValueFlowProofV16, V16Config, V16Error, V16PodI128, V16PodU128,
-    V16PodU64, V16_EMPTY_ACTIVE_BITMAP,
+    SourceCreditStateV16Account, TokenValueClassV16, TokenValueFlowProofV16, V16Config, V16Error,
+    V16PodI128, V16PodU128, V16PodU64, V16_EMPTY_ACTIVE_BITMAP,
 };
 use percolator::{ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, POS_SCALE};
 
@@ -1148,6 +1149,183 @@ fn proof_v16_view_initial_margin_source_lien_creation_is_backed() {
         backing_num
     );
     assert_eq!(source_domain.source_lien_fee_last_slot.get(), current_slot);
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_public_counterparty_lien_release_restores_unliened_backing_without_value_movement() {
+    let amount_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&amount_raw));
+    let amount = amount_raw as u128 * BOUND_SCALE;
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    let market_id = markets[0].engine.asset.market_id.get();
+    markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+        market_id,
+        fresh_unliened_backing_num: amount,
+        valid_liened_backing_num: amount,
+        expiry_slot: 10,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    });
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            fresh_reserved_backing_num: amount * 2,
+            valid_liened_backing_num: amount,
+            credit_rate_num: CREDIT_RATE_SCALE,
+            ..SourceCreditStateV16::EMPTY
+        });
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let insurance_before = header.insurance;
+    let risk_epoch_before = header.risk_epoch.get();
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    market
+        .release_source_credit_lien_from_counterparty_not_atomic(0, amount)
+        .unwrap();
+    let after_release_bucket = market.markets[0]
+        .engine
+        .backing_long
+        .try_to_runtime()
+        .unwrap();
+    let after_release_source = market.markets[0]
+        .engine
+        .source_credit_long
+        .try_to_runtime()
+        .unwrap();
+
+    kani::cover!(
+        amount_raw > 1,
+        "public counterparty lien release is nontrivial"
+    );
+    assert_eq!(after_release_bucket.status, BackingBucketStatusV16::Fresh);
+    assert_eq!(after_release_bucket.fresh_unliened_backing_num, amount * 2);
+    assert_eq!(after_release_bucket.valid_liened_backing_num, 0);
+    assert_eq!(after_release_source.fresh_reserved_backing_num, amount * 2);
+    assert_eq!(after_release_source.valid_liened_backing_num, 0);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.insurance, insurance_before);
+    assert!(market.header.risk_epoch.get() > risk_epoch_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_public_counterparty_lien_consume_creates_receivable_without_value_movement() {
+    let amount_raw: u8 = kani::any();
+    kani::assume((1..=5).contains(&amount_raw));
+    let amount = amount_raw as u128 * BOUND_SCALE;
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    let market_id = markets[0].engine.asset.market_id.get();
+    markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+        market_id,
+        valid_liened_backing_num: amount,
+        expiry_slot: 10,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    });
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            fresh_reserved_backing_num: amount,
+            valid_liened_backing_num: amount,
+            credit_rate_num: CREDIT_RATE_SCALE,
+            ..SourceCreditStateV16::EMPTY
+        });
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let insurance_before = header.insurance;
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    market
+        .consume_source_credit_lien_from_counterparty_not_atomic(0, amount)
+        .unwrap();
+    let bucket = market.markets[0]
+        .engine
+        .backing_long
+        .try_to_runtime()
+        .unwrap();
+    let source = market.markets[0]
+        .engine
+        .source_credit_long
+        .try_to_runtime()
+        .unwrap();
+
+    kani::cover!(
+        amount_raw > 1,
+        "public counterparty lien consume is nontrivial"
+    );
+    assert_eq!(bucket.status, BackingBucketStatusV16::Expired);
+    assert_eq!(bucket.fresh_unliened_backing_num, 0);
+    assert_eq!(bucket.valid_liened_backing_num, 0);
+    assert_eq!(bucket.consumed_liened_backing_num, amount);
+    assert_eq!(source.fresh_reserved_backing_num, 0);
+    assert_eq!(source.valid_liened_backing_num, 0);
+    assert_eq!(source.spent_backing_num, amount);
+    assert_eq!(source.provider_receivable_num, amount);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.insurance, insurance_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_public_insurance_lien_consume_spends_only_its_domain_budget() {
+    let atoms = 3u128;
+    let amount = atoms * BOUND_SCALE;
+    let (mut header, mut markets, _, _) = one_market_view_fixture();
+    header.vault = V16PodU128::new(atoms);
+    header.insurance = V16PodU128::new(atoms);
+    markets[0].engine.insurance_domain_budget_long = V16PodU128::new(atoms);
+    markets[0].engine.insurance_reservation_long =
+        InsuranceCreditReservationV16Account::from_runtime(&InsuranceCreditReservationV16 {
+            insurance_credit_reserved_num: amount,
+            valid_liened_insurance_num: amount,
+            ..InsuranceCreditReservationV16::EMPTY
+        });
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            insurance_credit_reserved_num: amount,
+            valid_liened_insurance_num: amount,
+            credit_rate_num: CREDIT_RATE_SCALE,
+            ..SourceCreditStateV16::EMPTY
+        });
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    market
+        .consume_source_credit_lien_from_insurance_not_atomic(0, amount)
+        .unwrap();
+    let reservation = market.markets[0]
+        .engine
+        .insurance_reservation_long
+        .try_to_runtime()
+        .unwrap();
+    let source = market.markets[0]
+        .engine
+        .source_credit_long
+        .try_to_runtime()
+        .unwrap();
+
+    kani::cover!(atoms > 1, "public insurance lien consume is nontrivial");
+    assert_eq!(reservation.insurance_credit_reserved_num, 0);
+    assert_eq!(reservation.valid_liened_insurance_num, 0);
+    assert_eq!(reservation.consumed_insurance_num, amount);
+    assert_eq!(source.insurance_credit_reserved_num, 0);
+    assert_eq!(source.valid_liened_insurance_num, 0);
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_spent_long.get(),
+        atoms
+    );
+    assert_eq!(market.header.insurance.get(), 0);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.validate_shape(), Ok(()));
 }
 
 #[kani::proof]

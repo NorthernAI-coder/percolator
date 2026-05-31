@@ -4751,13 +4751,38 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         v16_domain_count_for_market_slots(self.header.config.max_market_slots.get())
     }
 
+    // Senior backing-provider earnings (LP utilization fees) summed across every
+    // domain — the same quantity validate_shape's senior stack includes.
+    fn backing_provider_earnings_total(&self) -> u128 {
+        let mut total = 0u128;
+        let mut i = 0usize;
+        while i < self.markets.len() {
+            let slot = self.markets[i].engine_slot();
+            total = total
+                .saturating_add(slot.backing_long.utilization_fee_earnings.get())
+                .saturating_add(slot.backing_short.utilization_fee_earnings.get());
+            i += 1;
+        }
+        total
+    }
+
+    // Junior (positive-PnL) payout pool = vault minus ALL senior claims: capital
+    // (c_tot), insurance, AND backing-provider earnings. Omitting earnings here
+    // over-states the pool and lets a haircut resolved-close over-pay, which the
+    // final validate_shape then rejects (permanent fund-stuck deadlock).
     fn residual(&self) -> u128 {
         self.header.vault.get().saturating_sub(
             self.header
                 .c_tot
                 .get()
-                .saturating_add(self.header.insurance.get()),
+                .saturating_add(self.header.insurance.get())
+                .saturating_add(self.backing_provider_earnings_total()),
         )
+    }
+
+    #[cfg(kani)]
+    pub fn kani_residual(&self) -> u128 {
+        self.residual()
     }
 
     fn junior_claim_bound(&self) -> u128 {

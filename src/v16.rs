@@ -11389,6 +11389,35 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.validate_shape()
     }
 
+    // A resolved-payout receipt that has been paid its full entitlement at the TERMINAL
+    // payout rate (no unreceipted bound remains, so the rate can no longer rise) holds
+    // only unrecoverable insolvency bad debt: the haircut shortfall (face - paid) is not
+    // an open obligation. The only finalize site requires paid_effective == FULL face,
+    // which is unreachable under a haircut, so the receipt would otherwise stay
+    // `present && !finalized` forever and permanently block the portfolio from
+    // dematerializing (stranding insurance + backing earnings + residual vault + rent).
+    // Clear such a fully-diluted receipt so the account can close.
+    fn clear_fully_diluted_resolved_receipt_if_terminal(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+    ) -> V16Result<()> {
+        let receipt = account.header.resolved_payout_receipt.try_to_runtime()?;
+        if !receipt.present || receipt.finalized {
+            return Ok(());
+        }
+        let ledger = self.header.resolved_payout_ledger.try_to_runtime()?;
+        // Rate is terminal only once all junior bound has been receipted/refined.
+        if ledger.terminal_claim_bound_unreceipted_num != 0 {
+            return Ok(());
+        }
+        if self.resolved_receipt_claimable_now(receipt)? != 0 {
+            return Ok(());
+        }
+        account.header.resolved_payout_receipt =
+            ResolvedPayoutReceiptV16Account::from_runtime(&ResolvedPayoutReceiptV16::EMPTY);
+        Ok(())
+    }
+
     pub fn claim_resolved_payout_topup_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,
@@ -11402,6 +11431,11 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         let mut receipt = account.header.resolved_payout_receipt.try_to_runtime()?;
         let claimable = self.resolved_receipt_claimable_now(receipt)?;
         if claimable == 0 {
+            // Fully paid at the current rate; if that rate is terminal the receipt is
+            // fully diluted -- clear it so the portfolio can dematerialize.
+            self.clear_fully_diluted_resolved_receipt_if_terminal(account)?;
+            account.validate_with_market(&self.as_view())?;
+            self.validate_shape()?;
             return Ok(0);
         }
         let payout = claimable.min(self.header.vault.get());
@@ -11532,6 +11566,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             account.header.resolved_payout_receipt =
                 ResolvedPayoutReceiptV16Account::from_runtime(&receipt);
         }
+        // If the receipt is now fully paid at the terminal payout rate, dematerialize it
+        // (insolvency bad-debt shortfall is not an open obligation) so this close fully
+        // settles instead of leaving the portfolio stuck present-but-unfinalized.
+        self.clear_fully_diluted_resolved_receipt_if_terminal(account)?;
         let vault_before = self.header.vault.get();
         self.header.vault = V16PodU128::new(
             self.header

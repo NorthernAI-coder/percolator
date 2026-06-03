@@ -2839,6 +2839,25 @@ pub struct TradeOutcomeV16 {
     pub notional: u128,
 }
 
+#[repr(C)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct BatchTradeOutcomeV16 {
+    pub fill_count: u32,
+    pub fee_a: u128,
+    pub fee_b: u128,
+    pub notional: u128,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+struct TradeApplyOutcomeV16 {
+    fee_a: u128,
+    fee_b: u128,
+    notional: u128,
+    risk_increasing: bool,
+    long_has_source_claims: bool,
+    short_has_source_claims: bool,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 struct TradePositionPreflightV16 {
     risk_increasing: bool,
@@ -11135,27 +11154,18 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(cert)
     }
 
-    pub fn execute_trade_with_fee_in_place_not_atomic(
+    fn apply_trade_after_refresh_not_atomic(
         &mut self,
         long_account: &mut PortfolioV16ViewMut<'_>,
         short_account: &mut PortfolioV16ViewMut<'_>,
         request: TradeRequestV16,
-    ) -> V16Result<TradeOutcomeV16> {
+    ) -> V16Result<TradeApplyOutcomeV16> {
         self.validate_trade_request(request)?;
-        self.validate_unconfigured_market_tail()?;
-        if decode_market_mode(self.header.mode)? != MarketModeV16::Live {
-            return Err(V16Error::LockActive);
-        }
-        self.settle_account_for_position_action_and_refresh_not_atomic(long_account)?;
-        self.settle_account_for_position_action_and_refresh_not_atomic(short_account)?;
-
         let long_delta =
             i128::try_from(request.size_q).map_err(|_| V16Error::ArithmeticOverflow)?;
         let short_delta = long_delta
             .checked_neg()
             .ok_or(V16Error::ArithmeticOverflow)?;
-        let locked = self.h_lock_lane(Some(&long_account.as_view()), false)? == HLockLaneV16::HMax
-            || self.h_lock_lane(Some(&short_account.as_view()), false)? == HLockLaneV16::HMax;
         let trade_preflight = self.validate_trade_position_preflight(
             &long_account.as_view(),
             &short_account.as_view(),
@@ -11196,12 +11206,30 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             trade_preflight.short_new_abs_q,
             price,
         )?;
+        Ok(TradeApplyOutcomeV16 {
+            fee_a,
+            fee_b,
+            notional,
+            risk_increasing,
+            long_has_source_claims: trade_preflight.long_has_source_claims,
+            short_has_source_claims: trade_preflight.short_has_source_claims,
+        })
+    }
 
+    fn finish_trade_checks_not_atomic(
+        &mut self,
+        long_account: &mut PortfolioV16ViewMut<'_>,
+        short_account: &mut PortfolioV16ViewMut<'_>,
+        locked: bool,
+        risk_increasing: bool,
+        long_has_source_claims: bool,
+        short_has_source_claims: bool,
+    ) -> V16Result<()> {
         if risk_increasing && !locked {
-            if trade_preflight.long_has_source_claims {
+            if long_has_source_claims {
                 self.create_initial_margin_source_lien_if_needed(long_account)?;
             }
-            if trade_preflight.short_has_source_claims {
+            if short_has_source_claims {
                 self.create_initial_margin_source_lien_if_needed(short_account)?;
             }
         }
@@ -11214,11 +11242,110 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.validate_shape_audit_scan()?;
         self.validate_account_audit_scan(&long_account.as_view())?;
         self.validate_account_audit_scan(&short_account.as_view())?;
+        Ok(())
+    }
+
+    pub fn execute_trade_with_fee_in_place_not_atomic(
+        &mut self,
+        long_account: &mut PortfolioV16ViewMut<'_>,
+        short_account: &mut PortfolioV16ViewMut<'_>,
+        request: TradeRequestV16,
+    ) -> V16Result<TradeOutcomeV16> {
+        self.validate_trade_request(request)?;
+        self.validate_unconfigured_market_tail()?;
+        if decode_market_mode(self.header.mode)? != MarketModeV16::Live {
+            return Err(V16Error::LockActive);
+        }
+        self.settle_account_for_position_action_and_refresh_not_atomic(long_account)?;
+        self.settle_account_for_position_action_and_refresh_not_atomic(short_account)?;
+
+        let locked = self.h_lock_lane(Some(&long_account.as_view()), false)? == HLockLaneV16::HMax
+            || self.h_lock_lane(Some(&short_account.as_view()), false)? == HLockLaneV16::HMax;
+        let applied =
+            self.apply_trade_after_refresh_not_atomic(long_account, short_account, request)?;
+        self.finish_trade_checks_not_atomic(
+            long_account,
+            short_account,
+            locked,
+            applied.risk_increasing,
+            applied.long_has_source_claims,
+            applied.short_has_source_claims,
+        )?;
         Ok(TradeOutcomeV16 {
-            fee_a,
-            fee_b,
-            notional,
+            fee_a: applied.fee_a,
+            fee_b: applied.fee_b,
+            notional: applied.notional,
         })
+    }
+
+    pub fn execute_batch_with_fee_in_place_not_atomic(
+        &mut self,
+        long_account: &mut PortfolioV16ViewMut<'_>,
+        short_account: &mut PortfolioV16ViewMut<'_>,
+        requests: &[TradeRequestV16],
+    ) -> V16Result<BatchTradeOutcomeV16> {
+        self.validate_unconfigured_market_tail()?;
+        if decode_market_mode(self.header.mode)? != MarketModeV16::Live {
+            return Err(V16Error::LockActive);
+        }
+        let config = self.header.config.try_to_runtime_shape()?;
+        if requests.is_empty() {
+            return Err(V16Error::NonProgress);
+        }
+        if requests.len() > config.max_portfolio_assets as usize {
+            return Err(V16Error::InvalidConfig);
+        }
+        self.settle_account_for_position_action_and_refresh_not_atomic(long_account)?;
+        self.settle_account_for_position_action_and_refresh_not_atomic(short_account)?;
+
+        let locked = self.h_lock_lane(Some(&long_account.as_view()), false)? == HLockLaneV16::HMax
+            || self.h_lock_lane(Some(&short_account.as_view()), false)? == HLockLaneV16::HMax;
+        let mut outcome = BatchTradeOutcomeV16 {
+            fill_count: 0,
+            fee_a: 0,
+            fee_b: 0,
+            notional: 0,
+        };
+        let mut risk_increasing = false;
+        let mut long_has_source_claims = false;
+        let mut short_has_source_claims = false;
+        let mut i = 0usize;
+        while i < requests.len() {
+            let applied = self.apply_trade_after_refresh_not_atomic(
+                long_account,
+                short_account,
+                requests[i],
+            )?;
+            outcome.fill_count = outcome
+                .fill_count
+                .checked_add(1)
+                .ok_or(V16Error::CounterOverflow)?;
+            outcome.fee_a = outcome
+                .fee_a
+                .checked_add(applied.fee_a)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            outcome.fee_b = outcome
+                .fee_b
+                .checked_add(applied.fee_b)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            outcome.notional = outcome
+                .notional
+                .checked_add(applied.notional)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            risk_increasing |= applied.risk_increasing;
+            long_has_source_claims |= applied.long_has_source_claims;
+            short_has_source_claims |= applied.short_has_source_claims;
+            i += 1;
+        }
+        self.finish_trade_checks_not_atomic(
+            long_account,
+            short_account,
+            locked,
+            risk_increasing,
+            long_has_source_claims,
+            short_has_source_claims,
+        )?;
+        Ok(outcome)
     }
 
     fn set_account_pnl_after_principal_settlement(

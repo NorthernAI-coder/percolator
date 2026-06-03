@@ -167,6 +167,193 @@ fn v16_fee_sync_on_nonflat_account_settles_hidden_k_loss_before_fee() {
 }
 
 #[test]
+fn v16_batch_trade_applies_multiple_fills_after_inline_refresh() {
+    let (mut header, mut markets) = market_fixture(2, 100);
+    let mut long_header = account_fixture(2, 201);
+    let mut short_header = account_fixture(2, 202);
+    let requests = [
+        TradeRequestV16 {
+            asset_index: 0,
+            size_q: POS_SCALE,
+            exec_price: 100,
+            fee_bps: 0,
+        },
+        TradeRequestV16 {
+            asset_index: 1,
+            size_q: 2 * POS_SCALE,
+            exec_price: 100,
+            fee_bps: 0,
+        },
+    ];
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut long = PortfolioV16ViewMut::new(&mut long_header);
+    let mut short = PortfolioV16ViewMut::new(&mut short_header);
+    market.deposit_not_atomic(&mut long, 1_000).unwrap();
+    market.deposit_not_atomic(&mut short, 1_000).unwrap();
+
+    let outcome = market
+        .execute_batch_with_fee_in_place_not_atomic(&mut long, &mut short, &requests)
+        .unwrap();
+
+    assert_eq!(outcome.fill_count, 2);
+    assert_eq!(outcome.notional, 300);
+    assert_eq!(outcome.fee_a, 0);
+    assert_eq!(outcome.fee_b, 0);
+    assert_ne!(long.header.active_bitmap[0].get(), 0);
+    assert_ne!(short.header.active_bitmap[0].get(), 0);
+    assert_eq!(
+        market.markets[0].engine.asset.oi_eff_long_q.get(),
+        POS_SCALE
+    );
+    assert_eq!(
+        market.markets[0].engine.asset.oi_eff_short_q.get(),
+        POS_SCALE
+    );
+    assert_eq!(
+        market.markets[1].engine.asset.oi_eff_long_q.get(),
+        2 * POS_SCALE
+    );
+    assert_eq!(
+        market.markets[1].engine.asset.oi_eff_short_q.get(),
+        2 * POS_SCALE
+    );
+    market.validate_shape().unwrap();
+    long.validate_with_market(&market.as_view()).unwrap();
+    short.validate_with_market(&market.as_view()).unwrap();
+}
+
+#[test]
+fn v16_batch_trade_self_settles_stale_certificates_once_before_fills() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut long_header = account_fixture(1, 203);
+    let mut short_header = account_fixture(1, 204);
+    {
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut long = PortfolioV16ViewMut::new(&mut long_header);
+        let mut short = PortfolioV16ViewMut::new(&mut short_header);
+        market.deposit_not_atomic(&mut long, 1_000).unwrap();
+        market.deposit_not_atomic(&mut short, 1_000).unwrap();
+        market
+            .execute_trade_with_fee_in_place_not_atomic(
+                &mut long,
+                &mut short,
+                TradeRequestV16 {
+                    asset_index: 0,
+                    size_q: POS_SCALE,
+                    exec_price: 100,
+                    fee_bps: 0,
+                },
+            )
+            .unwrap();
+        market
+            .accrue_asset_to_not_atomic(0, 2, 101, 0, true)
+            .unwrap();
+        market.markets[0].engine.asset.raw_oracle_target_price = V16PodU64::new(101);
+    }
+    assert_eq!(long_header.pnl.get(), 0);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut long = PortfolioV16ViewMut::new(&mut long_header);
+    let mut short = PortfolioV16ViewMut::new(&mut short_header);
+    let outcome = market
+        .execute_batch_with_fee_in_place_not_atomic(
+            &mut long,
+            &mut short,
+            &[TradeRequestV16 {
+                asset_index: 0,
+                size_q: POS_SCALE,
+                exec_price: 101,
+                fee_bps: 0,
+            }],
+        )
+        .unwrap();
+
+    assert_eq!(outcome.fill_count, 1);
+    assert_eq!(outcome.notional, 101);
+    assert!(long.header.pnl.get() > 0);
+    market.validate_shape().unwrap();
+    long.validate_with_market(&market.as_view()).unwrap();
+    short.validate_with_market(&market.as_view()).unwrap();
+}
+
+#[test]
+fn v16_batch_trade_rejects_loss_stale_risk_increase_after_inline_settlement() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut long_header = account_fixture(1, 207);
+    let mut short_header = account_fixture(1, 208);
+    {
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut long = PortfolioV16ViewMut::new(&mut long_header);
+        let mut short = PortfolioV16ViewMut::new(&mut short_header);
+        market.deposit_not_atomic(&mut long, 1_000).unwrap();
+        market.deposit_not_atomic(&mut short, 1_000).unwrap();
+        market
+            .execute_trade_with_fee_in_place_not_atomic(
+                &mut long,
+                &mut short,
+                TradeRequestV16 {
+                    asset_index: 0,
+                    size_q: POS_SCALE,
+                    exec_price: 100,
+                    fee_bps: 0,
+                },
+            )
+            .unwrap();
+        market
+            .accrue_asset_to_not_atomic(0, 3, 101, 0, true)
+            .unwrap();
+        market.markets[0].engine.asset.raw_oracle_target_price = V16PodU64::new(101);
+    }
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut long = PortfolioV16ViewMut::new(&mut long_header);
+    let mut short = PortfolioV16ViewMut::new(&mut short_header);
+    let res = market.execute_batch_with_fee_in_place_not_atomic(
+        &mut long,
+        &mut short,
+        &[TradeRequestV16 {
+            asset_index: 0,
+            size_q: POS_SCALE,
+            exec_price: 101,
+            fee_bps: 0,
+        }],
+    );
+
+    assert_eq!(res, Err(V16Error::LockActive));
+}
+
+#[test]
+fn v16_batch_trade_is_bounded_by_configured_portfolio_asset_cap() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut long_header = account_fixture(1, 205);
+    let mut short_header = account_fixture(1, 206);
+    let requests = [
+        TradeRequestV16 {
+            asset_index: 0,
+            size_q: POS_SCALE,
+            exec_price: 100,
+            fee_bps: 0,
+        },
+        TradeRequestV16 {
+            asset_index: 0,
+            size_q: POS_SCALE,
+            exec_price: 100,
+            fee_bps: 0,
+        },
+    ];
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut long = PortfolioV16ViewMut::new(&mut long_header);
+    let mut short = PortfolioV16ViewMut::new(&mut short_header);
+    market.deposit_not_atomic(&mut long, 1_000).unwrap();
+    market.deposit_not_atomic(&mut short, 1_000).unwrap();
+
+    let res = market.execute_batch_with_fee_in_place_not_atomic(&mut long, &mut short, &requests);
+
+    assert_eq!(res, Err(V16Error::InvalidConfig));
+}
+
+#[test]
 fn v16_view_dynamic_market_slots_can_be_activated_without_runtime_vec_engine() {
     let (mut header, mut markets) = market_fixture(3, 100);
     let view = MarketGroupV16ViewMut::new(&mut header, &mut markets);

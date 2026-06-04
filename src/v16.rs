@@ -7020,6 +7020,45 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
     /// Pays an account from unbudgeted insurance surplus, e.g. a crank reward.
     ///
     /// Budgeted domain insurance remains isolated and cannot be consumed by this path.
+    fn credit_account_from_insurance_delta(
+        insurance: u128,
+        budget_remaining: u128,
+        c_tot: u128,
+        capital: u128,
+        amount: u128,
+    ) -> V16Result<(u128, u128, u128)> {
+        let next_insurance = insurance
+            .checked_sub(amount)
+            .ok_or(V16Error::CounterUnderflow)?;
+        if budget_remaining > next_insurance {
+            return Err(V16Error::LockActive);
+        }
+        let next_c_tot = c_tot
+            .checked_add(amount)
+            .ok_or(V16Error::ArithmeticOverflow)?;
+        let next_capital = capital
+            .checked_add(amount)
+            .ok_or(V16Error::ArithmeticOverflow)?;
+        Ok((next_insurance, next_c_tot, next_capital))
+    }
+
+    #[cfg(kani)]
+    pub fn kani_credit_account_from_insurance_delta(
+        insurance: u128,
+        budget_remaining: u128,
+        c_tot: u128,
+        capital: u128,
+        amount: u128,
+    ) -> V16Result<(u128, u128, u128)> {
+        Self::credit_account_from_insurance_delta(
+            insurance,
+            budget_remaining,
+            c_tot,
+            capital,
+            amount,
+        )
+    }
+
     pub fn credit_account_from_insurance_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,
@@ -7029,27 +7068,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             return Ok(());
         }
         account.validate_with_market(&self.as_view())?;
-        let next_insurance = self
-            .header
-            .insurance
-            .get()
-            .checked_sub(amount)
-            .ok_or(V16Error::CounterUnderflow)?;
-        if self.header.insurance_domain_budget_remaining_total.get() > next_insurance {
-            return Err(V16Error::LockActive);
-        }
-        let next_c_tot = self
-            .header
-            .c_tot
-            .get()
-            .checked_add(amount)
-            .ok_or(V16Error::ArithmeticOverflow)?;
-        let next_capital = account
-            .header
-            .capital
-            .get()
-            .checked_add(amount)
-            .ok_or(V16Error::ArithmeticOverflow)?;
+        let (next_insurance, next_c_tot, next_capital) = Self::credit_account_from_insurance_delta(
+            self.header.insurance.get(),
+            self.header.insurance_domain_budget_remaining_total.get(),
+            self.header.c_tot.get(),
+            account.header.capital.get(),
+            amount,
+        )?;
         let vault = self.header.vault.get();
 
         self.header.insurance = V16PodU128::new(next_insurance);

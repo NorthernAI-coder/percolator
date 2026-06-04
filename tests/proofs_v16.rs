@@ -3906,6 +3906,53 @@ fn proof_v16_new_unfunded_domain_cannot_consume_shared_insurance() {
     assert_eq!(account.header.pnl.get(), -(residual_loss as i128));
 }
 
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_credit_account_from_insurance_uses_only_unbudgeted_surplus() {
+    let insurance_raw: u8 = kani::any();
+    let budget_raw: u8 = kani::any();
+    let c_tot_raw: u8 = kani::any();
+    let capital_raw: u8 = kani::any();
+    let amount_raw: u8 = kani::any();
+    kani::assume(insurance_raw <= 10);
+    kani::assume(budget_raw <= insurance_raw);
+    kani::assume(c_tot_raw <= 10);
+    kani::assume(capital_raw <= 10);
+    kani::assume(amount_raw <= 10);
+    let insurance = insurance_raw as u128;
+    let budgeted = budget_raw as u128;
+    let c_tot = c_tot_raw as u128;
+    let capital = capital_raw as u128;
+    let amount = amount_raw as u128;
+
+    let result = MarketGroupV16ViewMut::<u64>::kani_credit_account_from_insurance_delta(
+        insurance, budgeted, c_tot, capital, amount,
+    );
+    let expected_ok = amount <= insurance && budgeted <= insurance - amount;
+
+    kani::cover!(
+        amount > 0 && expected_ok && budgeted < insurance,
+        "credit-account-from-insurance delta covers nonzero unbudgeted surplus reward"
+    );
+    kani::cover!(
+        amount > 0 && !expected_ok && budgeted == insurance,
+        "credit-account-from-insurance delta covers rejecting fully budgeted insurance"
+    );
+    assert_eq!(result.is_ok(), expected_ok);
+    if let Ok((next_insurance, next_c_tot, next_capital)) = result {
+        assert_eq!(next_insurance, insurance - amount);
+        assert_eq!(next_c_tot, c_tot + amount);
+        assert_eq!(next_capital, capital + amount);
+        assert!(budgeted <= next_insurance);
+        assert_eq!(
+            next_insurance + next_c_tot,
+            insurance + c_tot,
+            "insurance-to-account credit preserves senior stock"
+        );
+    }
+}
+
 fn run_funding_target_sign_case(positive_funding: bool, units: i128) -> (i128, i128, i128) {
     let (mut header, mut markets, _) = one_market_view_fixture();
     if positive_funding {

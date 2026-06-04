@@ -6899,19 +6899,49 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         })
     }
 
+    fn set_domain_insurance_spent_delta(
+        total_remaining: u128,
+        insurance: u128,
+        budget: u128,
+        old_spent: u128,
+        new_spent: u128,
+    ) -> V16Result<u128> {
+        let old_remaining = Self::domain_budget_remaining_parts(budget, old_spent)?;
+        let new_remaining = Self::domain_budget_remaining_parts(budget, new_spent)?;
+        let next_total = Self::apply_total_delta(total_remaining, old_remaining, new_remaining)?;
+        if next_total > insurance {
+            return Err(V16Error::LockActive);
+        }
+        Ok(next_total)
+    }
+
+    #[cfg(kani)]
+    pub fn kani_set_domain_insurance_spent_delta(
+        total_remaining: u128,
+        insurance: u128,
+        budget: u128,
+        old_spent: u128,
+        new_spent: u128,
+    ) -> V16Result<u128> {
+        Self::set_domain_insurance_spent_delta(
+            total_remaining,
+            insurance,
+            budget,
+            old_spent,
+            new_spent,
+        )
+    }
+
     fn set_domain_insurance_spent_core(&mut self, domain: usize, spent: u128) -> V16Result<()> {
         let (asset_index, side) = self.domain_asset_side(domain)?;
         let (old_budget, old_spent) = self.domain_insurance_budget_spent(domain)?;
-        let old_remaining = Self::domain_budget_remaining_parts(old_budget, old_spent)?;
-        let new_remaining = Self::domain_budget_remaining_parts(old_budget, spent)?;
-        let next_total = Self::apply_total_delta(
+        let next_total = Self::set_domain_insurance_spent_delta(
             self.header.insurance_domain_budget_remaining_total.get(),
-            old_remaining,
-            new_remaining,
+            self.header.insurance.get(),
+            old_budget,
+            old_spent,
+            spent,
         )?;
-        if next_total > self.header.insurance.get() {
-            return Err(V16Error::LockActive);
-        }
         self.header.insurance_domain_budget_remaining_total = V16PodU128::new(next_total);
         let slot = self.markets[asset_index].engine_slot_mut();
         match side {

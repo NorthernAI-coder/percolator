@@ -4450,6 +4450,53 @@ fn proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conservi
 }
 
 #[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_domain_insurance_spent_delta_cannot_create_unbacked_budget() {
+    let budget_raw: u8 = kani::any();
+    let old_spent_raw: u8 = kani::any();
+    let new_spent_raw: u8 = kani::any();
+    let other_remaining_raw: u8 = kani::any();
+    let extra_insurance_raw: u8 = kani::any();
+    kani::assume((1..=12).contains(&budget_raw));
+    kani::assume(old_spent_raw <= budget_raw);
+    kani::assume(new_spent_raw <= budget_raw);
+    kani::assume(other_remaining_raw <= 12);
+    kani::assume(extra_insurance_raw <= 3);
+    let budget = budget_raw as u128;
+    let old_spent = old_spent_raw as u128;
+    let new_spent = new_spent_raw as u128;
+    let other_remaining = other_remaining_raw as u128;
+    let old_remaining = budget - old_spent;
+    let new_remaining = budget - new_spent;
+    let total_remaining = old_remaining + other_remaining;
+    let insurance = total_remaining + extra_insurance_raw as u128;
+    let result = MarketGroupV16ViewMut::<u64>::kani_set_domain_insurance_spent_delta(
+        total_remaining,
+        insurance,
+        budget,
+        old_spent,
+        new_spent,
+    );
+    let expected_total = other_remaining + new_remaining;
+    let expected_ok = expected_total <= insurance;
+
+    kani::cover!(
+        expected_ok && new_spent < old_spent && old_spent > 1,
+        "domain spent delta covers backed spent clearing"
+    );
+    kani::cover!(
+        !expected_ok && new_spent < old_spent,
+        "domain spent delta rejects unbacked spent clearing"
+    );
+    assert_eq!(result.is_ok(), expected_ok);
+    if let Ok(next_total) = result {
+        assert_eq!(next_total, expected_total);
+        assert!(next_total <= insurance);
+    }
+}
+
+#[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_public_insurance_reserve_encumbers_budget_without_value_movement() {

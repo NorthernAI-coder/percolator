@@ -4497,6 +4497,54 @@ fn proof_v16_domain_insurance_spent_delta_cannot_create_unbacked_budget() {
 }
 
 #[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_domain_insurance_budget_delta_cannot_overallocate_pooled_insurance() {
+    let old_budget_raw: u8 = kani::any();
+    let spent_raw: u8 = kani::any();
+    let add_raw: u8 = kani::any();
+    let other_remaining_raw: u8 = kani::any();
+    let extra_insurance_raw: u8 = kani::any();
+    kani::assume((1..=12).contains(&old_budget_raw));
+    kani::assume(spent_raw <= old_budget_raw);
+    kani::assume(add_raw <= 12);
+    kani::assume(other_remaining_raw <= 12);
+    kani::assume(extra_insurance_raw <= 3);
+    let old_budget = old_budget_raw as u128;
+    let spent = spent_raw as u128;
+    let add = add_raw as u128;
+    let new_budget = old_budget + add;
+    let other_remaining = other_remaining_raw as u128;
+    let old_remaining = old_budget - spent;
+    let new_remaining = new_budget - spent;
+    let total_remaining = old_remaining + other_remaining;
+    let insurance = total_remaining + extra_insurance_raw as u128;
+    let result = MarketGroupV16ViewMut::<u64>::kani_set_domain_insurance_budget_delta(
+        total_remaining,
+        insurance,
+        old_budget,
+        spent,
+        new_budget,
+    );
+    let expected_total = other_remaining + new_remaining;
+    let expected_ok = expected_total <= insurance;
+
+    kani::cover!(
+        expected_ok && add > 0 && extra_insurance_raw > 0,
+        "domain budget delta covers backed budget credit"
+    );
+    kani::cover!(
+        !expected_ok && add > 0,
+        "domain budget delta rejects over-allocation of pooled insurance"
+    );
+    assert_eq!(result.is_ok(), expected_ok);
+    if let Ok(next_total) = result {
+        assert_eq!(next_total, expected_total);
+        assert!(next_total <= insurance);
+    }
+}
+
+#[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_public_insurance_reserve_encumbers_budget_without_value_movement() {

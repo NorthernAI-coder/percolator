@@ -6967,16 +6967,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
     ) -> V16Result<()> {
         let (asset_index, side) = self.domain_asset_side(domain)?;
         let (old_budget, spent) = self.domain_insurance_budget_spent(domain)?;
-        let old_remaining = Self::domain_budget_remaining_parts(old_budget, spent)?;
-        let new_remaining = Self::domain_budget_remaining_parts(budget, spent)?;
-        let next_total = Self::apply_total_delta(
+        let next_total = Self::set_domain_insurance_budget_delta(
             self.header.insurance_domain_budget_remaining_total.get(),
-            old_remaining,
-            new_remaining,
+            insurance_limit,
+            old_budget,
+            spent,
+            budget,
         )?;
-        if next_total > insurance_limit {
-            return Err(V16Error::LockActive);
-        }
         self.header.insurance_domain_budget_remaining_total = V16PodU128::new(next_total);
         let slot = self.markets[asset_index].engine_slot_mut();
         match side {
@@ -6984,6 +6981,39 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             SideV16::Short => slot.insurance_domain_budget_short = V16PodU128::new(budget),
         }
         Ok(())
+    }
+
+    fn set_domain_insurance_budget_delta(
+        total_remaining: u128,
+        insurance_limit: u128,
+        old_budget: u128,
+        spent: u128,
+        new_budget: u128,
+    ) -> V16Result<u128> {
+        let old_remaining = Self::domain_budget_remaining_parts(old_budget, spent)?;
+        let new_remaining = Self::domain_budget_remaining_parts(new_budget, spent)?;
+        let next_total = Self::apply_total_delta(total_remaining, old_remaining, new_remaining)?;
+        if next_total > insurance_limit {
+            return Err(V16Error::LockActive);
+        }
+        Ok(next_total)
+    }
+
+    #[cfg(kani)]
+    pub fn kani_set_domain_insurance_budget_delta(
+        total_remaining: u128,
+        insurance_limit: u128,
+        old_budget: u128,
+        spent: u128,
+        new_budget: u128,
+    ) -> V16Result<u128> {
+        Self::set_domain_insurance_budget_delta(
+            total_remaining,
+            insurance_limit,
+            old_budget,
+            spent,
+            new_budget,
+        )
     }
 
     fn set_domain_insurance_budget_not_atomic(

@@ -889,6 +889,41 @@ impl V16Core {
         Ok((reservation, source))
     }
 
+    fn prepare_insurance_lien_terminal_release_delta(
+        mut reservation: InsuranceCreditReservationV16,
+        mut source: SourceCreditStateV16,
+        amount: u128,
+    ) -> V16Result<(InsuranceCreditReservationV16, SourceCreditStateV16)> {
+        if amount == 0 {
+            return Ok((reservation, source));
+        }
+        Self::validate_bound_num_atom_aligned(amount)?;
+        if reservation.insurance_credit_reserved_num < amount
+            || source.insurance_credit_reserved_num < amount
+        {
+            return Err(V16Error::CounterUnderflow);
+        }
+        let valid_release = amount.min(reservation.valid_liened_insurance_num);
+        if source.valid_liened_insurance_num < valid_release {
+            return Err(V16Error::CounterUnderflow);
+        }
+        let impaired_release = amount
+            .checked_sub(valid_release)
+            .ok_or(V16Error::CounterUnderflow)?;
+        if reservation.impaired_liened_insurance_num < impaired_release
+            || source.impaired_liened_insurance_num < impaired_release
+        {
+            return Err(V16Error::CounterUnderflow);
+        }
+        reservation.valid_liened_insurance_num -= valid_release;
+        source.valid_liened_insurance_num -= valid_release;
+        reservation.impaired_liened_insurance_num -= impaired_release;
+        source.impaired_liened_insurance_num -= impaired_release;
+        reservation.insurance_credit_reserved_num -= amount;
+        source.insurance_credit_reserved_num -= amount;
+        Ok((reservation, source))
+    }
+
     fn prepare_insurance_lien_impair_delta(
         mut reservation: InsuranceCreditReservationV16,
         mut source: SourceCreditStateV16,
@@ -5860,6 +5895,37 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.validate_shape()
     }
 
+    fn release_source_credit_lien_from_insurance_terminal_not_atomic(
+        &mut self,
+        domain: usize,
+        amount: u128,
+    ) -> V16Result<()> {
+        self.domain_asset_side(domain)?;
+        if amount == 0 {
+            return Ok(());
+        }
+        let (reservation, source) = V16Core::prepare_insurance_lien_terminal_release_delta(
+            self.insurance_reservation_for_domain(domain)?,
+            self.source_credit_for_domain(domain)?,
+            amount,
+        )?;
+        let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
+            source,
+            self.header.risk_epoch.get(),
+        )?;
+        self.reservation_encumbrance_proof_for_domain_parts(
+            domain,
+            source,
+            self.backing_bucket_for_domain(domain)?,
+            reservation,
+        )?
+        .validate()?;
+        self.set_insurance_reservation_for_domain(domain, reservation)?;
+        self.set_source_credit_for_domain(domain, source)?;
+        self.header.risk_epoch = V16PodU64::new(next_risk_epoch);
+        self.validate_shape()
+    }
+
     pub fn consume_source_credit_lien_from_insurance_not_atomic(
         &mut self,
         domain: usize,
@@ -6144,7 +6210,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             )?;
         }
         if insurance_backing != 0 {
-            self.release_source_credit_lien_from_insurance_not_atomic(d, insurance_backing)?;
+            self.release_source_credit_lien_from_insurance_terminal_not_atomic(
+                d,
+                insurance_backing,
+            )?;
         }
         let source = &mut account.header.source_domains[slot];
         source.source_claim_liened_num = V16PodU128::new(0);
@@ -6261,6 +6330,16 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                                 .checked_sub(impaired_effective_burn)
                                 .ok_or(V16Error::CounterUnderflow)?,
                         );
+                    if decode_market_mode(self.header.mode)? == MarketModeV16::Resolved
+                        && impaired_effective_burn != 0
+                    {
+                        let impaired_insurance_backing =
+                            V16Core::bound_num_from_amount(impaired_effective_burn)?;
+                        self.release_source_credit_lien_from_insurance_terminal_not_atomic(
+                            d,
+                            impaired_insurance_backing,
+                        )?;
+                    }
                     let mut source_credit = self.source_credit_for_domain(d)?;
                     source_credit.positive_claim_bound_num = source_credit
                         .positive_claim_bound_num
@@ -7214,6 +7293,15 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             insurance,
             amount,
         )
+    }
+
+    #[cfg(kani)]
+    pub fn kani_prepare_insurance_lien_terminal_release_delta(
+        reservation: InsuranceCreditReservationV16,
+        source: SourceCreditStateV16,
+        amount: u128,
+    ) -> V16Result<(InsuranceCreditReservationV16, SourceCreditStateV16)> {
+        V16Core::prepare_insurance_lien_terminal_release_delta(reservation, source, amount)
     }
 
     #[cfg(kani)]

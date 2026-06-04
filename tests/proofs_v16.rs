@@ -2213,6 +2213,59 @@ fn proof_v16_resolved_winddown_releases_expired_liened_source_claim() {
     assert_eq!(source_after.fresh_reserved_backing_num, amount);
 }
 
+// Terminal wind-down must also clear insurance-backed liens that were impaired
+// before resolution. The Live release helper intentionally only releases valid
+// liens; terminal cleanup needs to remove the impaired counter and the reserved
+// insurance backing, otherwise the source domain/asset slot can never become
+// empty again.
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_resolved_winddown_releases_impaired_insurance_lien() {
+    let units_raw: u8 = kani::any();
+    let impaired_case: bool = kani::any();
+    kani::assume((1..=4).contains(&units_raw));
+    let amount = (units_raw as u128) * BOUND_SCALE;
+    let valid = if impaired_case { 0 } else { amount };
+    let impaired = amount - valid;
+    let reservation = InsuranceCreditReservationV16 {
+        insurance_credit_reserved_num: amount,
+        valid_liened_insurance_num: valid,
+        impaired_liened_insurance_num: impaired,
+        ..InsuranceCreditReservationV16::EMPTY
+    };
+    let source = SourceCreditStateV16 {
+        insurance_credit_reserved_num: amount,
+        valid_liened_insurance_num: valid,
+        impaired_liened_insurance_num: impaired,
+        credit_rate_num: CREDIT_RATE_SCALE,
+        ..SourceCreditStateV16::EMPTY
+    };
+
+    let (reservation_after, source_after) =
+        MarketGroupV16ViewMut::<u64>::kani_prepare_insurance_lien_terminal_release_delta(
+            reservation,
+            source,
+            amount,
+        )
+        .unwrap();
+
+    kani::cover!(
+        impaired_case && units_raw > 1,
+        "terminal wind-down releases nontrivial impaired insurance lien"
+    );
+    kani::cover!(
+        !impaired_case && units_raw > 1,
+        "terminal wind-down still releases nontrivial valid insurance lien"
+    );
+    assert_eq!(reservation_after.insurance_credit_reserved_num, 0);
+    assert_eq!(reservation_after.valid_liened_insurance_num, 0);
+    assert_eq!(reservation_after.impaired_liened_insurance_num, 0);
+    assert_eq!(source_after.insurance_credit_reserved_num, 0);
+    assert_eq!(source_after.valid_liened_insurance_num, 0);
+    assert_eq!(source_after.impaired_liened_insurance_num, 0);
+}
+
 // General guard for the Finding-B class ("junior payout pool must exclude ALL
 // senior funds"): residual() must be exactly the junior surplus that makes the
 // full stock reconciliation balance — vault = senior_capital + insurance +

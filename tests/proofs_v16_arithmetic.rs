@@ -216,8 +216,8 @@ fn proof_v16_scaled_adl_delta_fast_matches_aligned_reference_and_fails_closed() 
     let delta_units_raw: i8 = kani::any();
     let a_basis_is_adl_one: bool = kani::any();
     let unaligned_extra_raw: u8 = kani::any();
-    kani::assume(abs_units_raw <= 10);
-    kani::assume((-10..=10).contains(&delta_units_raw));
+    kani::assume(abs_units_raw <= 32);
+    kani::assume((-32..=32).contains(&delta_units_raw));
     kani::assume(unaligned_extra_raw <= 1);
 
     let abs_basis_q = abs_units_raw as u128 * POS_SCALE;
@@ -256,10 +256,6 @@ fn proof_v16_adjust_u128_applies_exact_delta_or_fails_closed() {
     let current_raw: u8 = kani::any();
     let old_raw: u8 = kani::any();
     let new_raw: u8 = kani::any();
-    kani::assume(current_raw <= 100);
-    kani::assume(old_raw <= 100);
-    kani::assume(new_raw <= 100);
-
     let current = current_raw as u128;
     let old = old_raw as u128;
     let new = new_raw as u128;

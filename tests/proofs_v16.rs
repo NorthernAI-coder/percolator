@@ -4028,9 +4028,7 @@ fn proof_v16_loss_senior_fee_ordering_consumes_kf_loss_before_fee() {
     let capital_raw: u8 = kani::any();
     let hidden_loss_raw: u8 = kani::any();
     let requested_fee_raw: u8 = kani::any();
-    kani::assume(capital_raw <= 10);
-    kani::assume((1..=10).contains(&hidden_loss_raw));
-    kani::assume(requested_fee_raw <= 10);
+    kani::assume(hidden_loss_raw > 0);
 
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     let capital = capital_raw as u128;
@@ -4064,12 +4062,12 @@ fn proof_v16_loss_senior_fee_ordering_consumes_kf_loss_before_fee() {
         requested_fee.min(capital - expected_paid)
     };
     kani::cover!(
-        capital > 0 && hidden_loss < capital && requested_fee > capital - hidden_loss,
-        "loss-senior fee ordering covers fee capped after K/F loss"
+        capital > 10 && hidden_loss < capital && requested_fee > capital - hidden_loss,
+        "loss-senior fee ordering covers wide fee capped after K/F loss"
     );
     kani::cover!(
-        capital > 0 && hidden_loss > capital && requested_fee > 0,
-        "loss-senior fee ordering covers no fee after bankrupt K/F loss"
+        capital > 10 && hidden_loss > capital && requested_fee > 10,
+        "loss-senior fee ordering covers wide no-fee bankrupt K/F loss"
     );
     assert_eq!(paid, expected_paid);
     assert_eq!(charged, expected_fee);

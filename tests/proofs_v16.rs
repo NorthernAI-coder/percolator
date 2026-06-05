@@ -1122,8 +1122,8 @@ fn proof_v16_withdraw_settles_flat_negative_pnl_before_value_exit() {
 fn proof_v16_recovery_mode_blocks_withdraw() {
     let capital_raw: u8 = kani::any();
     let amount_raw: u8 = kani::any();
-    kani::assume((1..=10).contains(&capital_raw));
-    kani::assume((1..=10).contains(&amount_raw));
+    kani::assume(capital_raw > 0);
+    kani::assume(amount_raw > 0);
     let capital = capital_raw as u128;
     let amount = amount_raw as u128;
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
@@ -1140,8 +1140,8 @@ fn proof_v16_recovery_mode_blocks_withdraw() {
     let result = market.withdraw_not_atomic(&mut account, amount);
 
     kani::cover!(
-        amount > 1 && capital > 1,
-        "recovery mode blocks ordinary withdraw over symbolic balances"
+        amount > 10 && capital > 10,
+        "recovery mode blocks ordinary withdraw over wide symbolic balances"
     );
     assert_eq!(result, Err(V16Error::LockActive));
     assert_eq!(market.header.vault, vault_before);
@@ -1156,9 +1156,6 @@ fn proof_v16_recovery_mode_blocks_fee_sync_and_pnl_conversion_before_mutation() 
     let capital_raw: u8 = kani::any();
     let pnl_raw: u8 = kani::any();
     let fee_rate_raw: u8 = kani::any();
-    kani::assume(capital_raw <= 10);
-    kani::assume(pnl_raw <= 10);
-    kani::assume(fee_rate_raw <= 10);
     let capital = capital_raw as u128;
     let pnl = pnl_raw as i128;
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
@@ -1182,8 +1179,8 @@ fn proof_v16_recovery_mode_blocks_fee_sync_and_pnl_conversion_before_mutation() 
     let convert_result = market.convert_released_pnl_to_capital_not_atomic(&mut account);
 
     kani::cover!(
-        capital > 0 && fee_rate_raw > 0 && pnl > 0,
-        "recovery mode blocks fee sync and positive PnL conversion inputs"
+        capital > 10 && fee_rate_raw > 10 && pnl > 10,
+        "recovery mode blocks fee sync and wide positive PnL conversion inputs"
     );
     assert_eq!(fee_result, Err(V16Error::LockActive));
     assert_eq!(convert_result, Err(V16Error::LockActive));

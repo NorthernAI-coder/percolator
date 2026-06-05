@@ -2488,12 +2488,11 @@ fn proof_v16_positive_pnl_requires_full_source_claim_attribution() {
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
 fn proof_v16_source_credit_rate_never_exceeds_available_backing_ratio() {
-    let claim_atoms_raw: u8 = kani::any();
-    let backing_atoms_raw: u8 = kani::any();
-    kani::assume((1..=10).contains(&claim_atoms_raw));
-    kani::assume(backing_atoms_raw <= 20);
-    let claim_num = claim_atoms_raw as u128 * BOUND_SCALE;
-    let backing_num = backing_atoms_raw as u128 * BOUND_SCALE;
+    let claim_atoms = kani::any::<u8>() as u128;
+    let backing_atoms = kani::any::<u8>() as u128;
+    kani::assume(claim_atoms > 0);
+    let claim_num = claim_atoms * BOUND_SCALE;
+    let backing_num = backing_atoms * BOUND_SCALE;
     let state = SourceCreditStateV16 {
         positive_claim_bound_num: claim_num,
         exact_positive_claim_num: claim_num,
@@ -2502,7 +2501,7 @@ fn proof_v16_source_credit_rate_never_exceeds_available_backing_ratio() {
     };
 
     let rate = kani_expected_source_credit_rate_num_for_state(state).unwrap();
-    let usable_num = claim_num * rate / CREDIT_RATE_SCALE;
+    let support = kani_source_credit_state_realizable_support_for_face(state, claim_atoms).unwrap();
 
     kani::cover!(
         backing_num < claim_num,
@@ -2513,9 +2512,13 @@ fn proof_v16_source_credit_rate_never_exceeds_available_backing_ratio() {
         "source credit rate proof covers full-credit branch"
     );
     assert!(rate <= CREDIT_RATE_SCALE);
-    assert!(usable_num <= backing_num);
+    assert!(support <= backing_atoms);
+    assert!(support <= claim_atoms);
     if backing_num >= claim_num {
         assert_eq!(rate, CREDIT_RATE_SCALE);
+        assert_eq!(support, claim_atoms);
+    } else {
+        assert!(rate < CREDIT_RATE_SCALE);
     }
 }
 

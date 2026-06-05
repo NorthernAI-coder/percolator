@@ -4185,8 +4185,7 @@ fn proof_v16_reserved_domain_insurance_cannot_be_double_spent_by_bankruptcy() {
 fn proof_v16_new_unfunded_domain_cannot_consume_shared_insurance() {
     let shared_insurance_raw: u8 = kani::any();
     let residual_loss_raw: u8 = kani::any();
-    kani::assume(shared_insurance_raw <= 10);
-    kani::assume((1..=10).contains(&residual_loss_raw));
+    kani::assume(residual_loss_raw > 0);
     let shared_insurance = shared_insurance_raw as u128;
     let residual_loss = residual_loss_raw as u128;
 
@@ -4204,8 +4203,8 @@ fn proof_v16_new_unfunded_domain_cannot_consume_shared_insurance() {
         .unwrap();
 
     kani::cover!(
-        shared_insurance >= residual_loss,
-        "new unfunded domain covers shared insurance larger than residual"
+        shared_insurance > 10 && shared_insurance >= residual_loss,
+        "new unfunded domain covers wide shared insurance larger than residual"
     );
     assert_eq!(used, 0);
     assert_eq!(market.header.insurance.get(), shared_insurance);

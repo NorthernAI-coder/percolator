@@ -548,7 +548,6 @@ fn proof_v16_source_domain_insert_reuses_same_domain_market_id_tag() {
 #[kani::solver(cadical)]
 fn proof_v16_sparse_source_domain_cap_full_rejects_new_domain() {
     let domain_offset: u8 = kani::any();
-    kani::assume(domain_offset < 16);
     let (_, _, mut account_header) = one_market_view_fixture();
     let mut i = 0usize;
     while i < PORTFOLIO_SOURCE_DOMAIN_CAP {
@@ -962,11 +961,11 @@ fn proof_v16_dynamic_market_slot_slice_len_matches_runtime_capacity() {
 #[kani::solver(cadical)]
 fn proof_v16_dynamic_market_extension_slots_must_be_zero_fill() {
     let extension_index_raw: u8 = kani::any();
-    kani::assume((1..=8).contains(&extension_index_raw));
+    kani::assume(extension_index_raw > 0);
     let extension_index = extension_index_raw as usize;
     let (market_id, _, _) = ids();
     let cfg = V16Config::public_user_fund_with_market_slots(1, 1, 0, 10);
-    let header = MarketGroupV16HeaderAccount::new_dynamic(market_id, cfg, 9, 0).unwrap();
+    let header = MarketGroupV16HeaderAccount::new_dynamic(market_id, cfg, 256, 0).unwrap();
     let zero_fill = EngineAssetSlotV16Account::default();
     let mut dirty_extension = EngineAssetSlotV16Account::default();
     dirty_extension.insurance_domain_spent_long = V16PodU128::new(1);

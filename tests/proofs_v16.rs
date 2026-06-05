@@ -481,7 +481,7 @@ fn proof_v16_sparse_source_domain_insert_roundtrips_occupied_domain() {
     let domain_raw: u8 = kani::any();
     let claim_raw: u8 = kani::any();
     kani::assume(domain_raw < 64);
-    kani::assume((1..=8).contains(&claim_raw));
+    kani::assume(claim_raw > 0);
     let domain = domain_raw as usize;
     let claim_num = claim_raw as u128 * BOUND_SCALE;
     let (_, _, mut account_header) = one_market_view_fixture();
@@ -509,7 +509,7 @@ fn proof_v16_sparse_source_domain_insert_roundtrips_occupied_domain() {
 #[kani::solver(cadical)]
 fn proof_v16_source_domain_insert_reuses_same_domain_market_id_tag() {
     let claim_raw: u8 = kani::any();
-    kani::assume((1..=8).contains(&claim_raw));
+    kani::assume(claim_raw > 0);
     let claim_num = claim_raw as u128 * BOUND_SCALE;
     let (_, _, mut account_header) = one_market_view_fixture();
 
@@ -676,7 +676,7 @@ fn proof_v16_sparse_source_domain_validation_accepts_domain_indexed_claim() {
 #[kani::solver(cadical)]
 fn proof_v16_mutable_view_compacts_persisted_source_domain_tail() {
     let claim_raw: u8 = kani::any();
-    kani::assume((1..=8).contains(&claim_raw));
+    kani::assume(claim_raw > 0);
     let claim_num = claim_raw as u128 * BOUND_SCALE;
     let (_, _, mut account_header) = one_market_view_fixture();
     account_header.pnl = V16PodI128::new(claim_raw as i128);

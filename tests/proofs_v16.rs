@@ -2863,8 +2863,7 @@ fn proof_v16_capital_backed_loss_reservation_is_value_neutral_and_capital_capped
 fn proof_v16_residual_excludes_senior_backing_provider_earnings() {
     let earnings_raw: u8 = kani::any();
     let surplus_raw: u8 = kani::any();
-    kani::assume((1..=4).contains(&earnings_raw));
-    kani::assume(surplus_raw <= 4);
+    kani::assume(earnings_raw > 0);
     let earnings = earnings_raw as u128;
     let surplus = surplus_raw as u128;
 
@@ -3055,10 +3054,6 @@ fn proof_v16_residual_reconciles_with_senior_stock() {
     let insurance_raw: u8 = kani::any();
     let earnings_raw: u8 = kani::any();
     let surplus_raw: u8 = kani::any();
-    kani::assume(c_tot_raw <= 16);
-    kani::assume(insurance_raw <= 16);
-    kani::assume(earnings_raw <= 16);
-    kani::assume(surplus_raw <= 16);
     let c_tot = c_tot_raw as u128;
     let insurance = insurance_raw as u128;
     let earnings = earnings_raw as u128;

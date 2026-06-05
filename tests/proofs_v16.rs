@@ -1196,8 +1196,8 @@ fn proof_v16_recovery_mode_blocks_fee_sync_and_pnl_conversion_before_mutation() 
 #[kani::unwind(32)]
 #[kani::solver(cadical)]
 fn proof_v16_public_resolve_market_is_value_neutral_and_clears_loss_stale() {
-    let resolved_slot_raw: u8 = kani::any();
-    kani::assume((1..=10).contains(&resolved_slot_raw));
+    let resolved_slot_raw: u16 = kani::any();
+    kani::assume(resolved_slot_raw > 0);
     let resolved_slot = resolved_slot_raw as u64;
     let (mut header, mut markets, _) = one_market_view_fixture();
     header.vault = V16PodU128::new(7);
@@ -1214,8 +1214,8 @@ fn proof_v16_public_resolve_market_is_value_neutral_and_clears_loss_stale() {
     market.resolve_market_not_atomic(resolved_slot).unwrap();
 
     kani::cover!(
-        resolved_slot > 1,
-        "resolved market transition covers future authenticated slot"
+        resolved_slot > 10,
+        "resolved market transition covers wide future authenticated slot"
     );
     assert_eq!(market.header.mode, 1);
     assert_eq!(market.header.resolved_slot.get(), resolved_slot);
@@ -2401,9 +2401,9 @@ fn proof_v16_mark_asset_drain_only_is_value_neutral_and_epoch_scoped() {
 #[kani::solver(cadical)]
 fn proof_v16_retire_nonempty_asset_rejects() {
     let units_raw: u8 = kani::any();
-    let retire_slot_raw: u8 = kani::any();
-    kani::assume((1..=5).contains(&units_raw));
-    kani::assume((1..=10).contains(&retire_slot_raw));
+    let retire_slot_raw: u16 = kani::any();
+    kani::assume(units_raw > 0);
+    kani::assume(retire_slot_raw > 0);
     let (mut header, mut markets, _) = one_market_view_fixture();
     let mut asset = markets[0].engine.asset.try_to_runtime().unwrap();
     asset.oi_eff_long_q = units_raw as u128 * POS_SCALE;
@@ -2415,8 +2415,8 @@ fn proof_v16_retire_nonempty_asset_rejects() {
     let result = market.retire_empty_asset_not_atomic(0, retire_slot_raw as u64);
 
     kani::cover!(
-        units_raw > 1 && result == Err(V16Error::LockActive),
-        "nonempty asset retirement reaches fail-closed guard for symbolic OI"
+        units_raw > 5 && retire_slot_raw > 10 && result == Err(V16Error::LockActive),
+        "nonempty asset retirement reaches fail-closed guard for wide OI and slot"
     );
     assert_eq!(result, Err(V16Error::LockActive));
 }

@@ -1588,13 +1588,10 @@ fn proof_v16_batch_outcome_accumulator_is_exact_and_overflow_checked() {
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
 fn proof_v16_final_batch_margin_gate_accepts_only_final_certified_im() {
-    let equity_units_raw: i8 = kani::any();
-    let req_units_raw: u8 = kani::any();
+    let equity: i128 = kani::any();
+    let req: u128 = kani::any();
     let cert_valid: bool = kani::any();
-    kani::assume((-1..=4).contains(&equity_units_raw));
-    kani::assume(req_units_raw <= 4);
-    let equity = equity_units_raw as i128 * 100;
-    let req = req_units_raw as u128 * 100;
+    kani::assume(equity != i128::MIN);
     let mut account_header = PortfolioAccountV16Account::default();
     account_header.health_cert = HealthCertV16Account::from_runtime(&HealthCertV16 {
         certified_equity: equity,
@@ -1615,7 +1612,7 @@ fn proof_v16_final_batch_margin_gate_accepts_only_final_certified_im() {
     let expected_ok = cert_valid && equity >= 0 && (equity as u128) >= req;
 
     kani::cover!(
-        expected_ok && equity_units_raw > req_units_raw as i8,
+        expected_ok && (equity as u128) > req,
         "final batch margin gate covers accepting overcollateralized certificates"
     );
     kani::cover!(

@@ -1420,13 +1420,11 @@ fn proof_v16_global_hlock_lane_selects_hmax_only_for_global_stress_or_candidate(
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
 fn proof_v16_view_trade_position_delta_preserves_oi_symmetry() {
-    let size_units_raw: u8 = kani::any();
-    let loss_weight_raw: u8 = kani::any();
+    let size_q: u128 = kani::any();
+    let loss_weight: u128 = kani::any();
     let first_account_long: bool = kani::any();
-    kani::assume((1..=4).contains(&size_units_raw));
-    kani::assume((1..=4).contains(&loss_weight_raw));
-    let size_q = size_units_raw as u128 * POS_SCALE;
-    let loss_weight = loss_weight_raw as u128 * POS_SCALE;
+    kani::assume(size_q > 0);
+    kani::assume(size_q <= MAX_TRADE_SIZE_Q);
     let signed_size_q = if first_account_long {
         size_q as i128
     } else {
@@ -1451,11 +1449,11 @@ fn proof_v16_view_trade_position_delta_preserves_oi_symmetry() {
     kani_add_open_interest_for_new_position(&mut asset, second_side, abs_q, loss_weight).unwrap();
 
     kani::cover!(
-        first_account_long && size_units_raw > 1 && loss_weight_raw > 1,
+        first_account_long && size_q > POS_SCALE && loss_weight > POS_SCALE,
         "trade open-interest accounting covers first-account long with nontrivial size and weight"
     );
     kani::cover!(
-        !first_account_long && size_units_raw > 1 && loss_weight_raw > 1,
+        !first_account_long && size_q > POS_SCALE && loss_weight > POS_SCALE,
         "trade open-interest accounting covers first-account short with nontrivial size and weight"
     );
     assert_eq!(abs_q, size_q);

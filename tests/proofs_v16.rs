@@ -4330,7 +4330,6 @@ fn proof_v16_view_negative_funding_pays_long_side() {
 fn proof_v16_view_initial_margin_source_lien_creation_is_backed() {
     let effective_raw: u16 = kani::any();
     kani::assume(effective_raw > 0);
-    kani::assume(effective_raw <= 1_000);
     let effective = effective_raw as u128;
     let backing_num = effective * BOUND_SCALE;
     let face_num = backing_num;

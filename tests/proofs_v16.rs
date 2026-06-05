@@ -2230,38 +2230,48 @@ fn proof_v16_counterparty_backing_withdraw_cannot_underback_claims() {
 #[kani::unwind(16)]
 #[kani::solver(cadical)]
 fn proof_v16_health_cert_capital_debit_preserves_im_or_rejects() {
-    let equity_raw: u8 = kani::any();
-    let im_raw: u8 = kani::any();
-    let fee_raw: u8 = kani::any();
-    kani::assume(equity_raw <= 20);
-    kani::assume(im_raw <= 20);
-    kani::assume(fee_raw <= 20);
-    let equity = equity_raw as i128;
-    let im = im_raw as u128;
-    let fee = fee_raw as u128;
+    let equity: i128 = kani::any();
+    let im: u128 = kani::any();
+    let maintenance: u128 = kani::any();
+    let fee: u128 = kani::any();
+    kani::assume(equity != i128::MIN);
     let cert = HealthCertV16 {
         certified_equity: equity,
         certified_initial_req: im,
-        certified_maintenance_req: im.saturating_sub(1),
+        certified_maintenance_req: maintenance,
         valid: true,
         ..HealthCertV16::default()
     };
     let result = kani_health_cert_after_capital_debit(cert, fee);
+    let next_equity_expected = i128::try_from(fee)
+        .ok()
+        .and_then(|fee_i128| equity.checked_sub(fee_i128));
+    let expected_ok = next_equity_expected
+        .map(|next_equity| next_equity >= 0 && (next_equity as u128) >= im)
+        .unwrap_or(false);
 
-    if equity >= 0 && (equity as u128) >= fee && (equity as u128 - fee) >= im {
+    assert_eq!(result.is_ok(), expected_ok);
+    if expected_ok {
         let next = result.unwrap();
         kani::cover!(
-            fee > 0 && im > 0,
+            fee > 0 && im > 0 && maintenance > im,
             "health cert fee debit covers positive fee with IM still satisfied"
         );
-        assert_eq!(next.certified_equity, equity - fee as i128);
+        assert_eq!(next.certified_equity, next_equity_expected.unwrap());
         assert!((next.certified_equity as u128) >= next.certified_initial_req);
+        assert_eq!(
+            next.certified_liq_deficit,
+            maintenance.saturating_sub(next.certified_equity as u128)
+        );
     } else {
         kani::cover!(
-            fee > 0 && (equity < 0 || (equity as u128).saturating_sub(fee) < im),
+            fee > 0 && next_equity_expected.is_some(),
             "health cert fee debit rejects insufficient post-fee IM"
         );
-        assert_eq!(result, Err(V16Error::LockActive));
+        kani::cover!(
+            fee > i128::MAX as u128 || next_equity_expected.is_none(),
+            "health cert fee debit covers arithmetic rejection"
+        );
     }
 }
 

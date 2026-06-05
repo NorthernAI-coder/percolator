@@ -3114,7 +3114,7 @@ fn proof_v16_residual_reconciles_with_senior_stock() {
 #[kani::solver(cadical)]
 fn proof_v16_live_positive_kf_delta_without_source_rejects() {
     let delta_raw: u8 = kani::any();
-    kani::assume((1..=10).contains(&delta_raw));
+    kani::assume(delta_raw > 0);
     let delta = delta_raw as i128;
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     account_header.pnl = V16PodI128::new(0);
@@ -3124,8 +3124,8 @@ fn proof_v16_live_positive_kf_delta_without_source_rejects() {
     let result = market.kani_apply_signed_kf_delta_to_pnl(&mut account, delta, None);
 
     kani::cover!(
-        delta > 1,
-        "live positive K/F delta without source reaches fail-closed guard"
+        delta > 10,
+        "live positive K/F delta without source reaches wide fail-closed guard"
     );
     assert_eq!(result, Err(V16Error::InvalidLeg));
 }

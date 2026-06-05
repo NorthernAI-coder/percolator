@@ -3422,12 +3422,6 @@ fn proof_v16_close_progress_ledger_residual_equation_is_enforced() {
     let insurance_raw: u8 = kani::any();
     let b_loss_raw: u8 = kani::any();
     let explicit_raw: u8 = kani::any();
-    kani::assume(gross_raw <= 6);
-    kani::assume(drift_raw <= 3);
-    kani::assume(support_raw <= 4);
-    kani::assume(insurance_raw <= 4);
-    kani::assume(b_loss_raw <= 4);
-    kani::assume(explicit_raw <= 4);
 
     let gross = gross_raw as u128;
     let drift = drift_raw as u128;

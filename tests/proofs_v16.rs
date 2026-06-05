@@ -4516,7 +4516,7 @@ fn proof_v16_public_counterparty_lien_consume_creates_receivable_without_value_m
 #[kani::solver(cadical)]
 fn proof_v16_insurance_lien_consume_spends_only_its_domain_budget() {
     let atom_raw: u8 = kani::any();
-    kani::assume((1..=5).contains(&atom_raw));
+    kani::assume((1..=8).contains(&atom_raw));
     let atoms = atom_raw as u128;
     let amount = atoms * BOUND_SCALE;
     let (market_group_id, _, _) = ids();
@@ -4608,7 +4608,7 @@ fn proof_v16_insurance_lien_consume_spends_only_its_domain_budget() {
 #[kani::solver(cadical)]
 fn proof_v16_public_insurance_reserve_rejects_unfunded_domain() {
     let amount_raw: u8 = kani::any();
-    kani::assume((1..=5).contains(&amount_raw));
+    kani::assume(amount_raw > 0);
     let amount = amount_raw as u128 * BOUND_SCALE;
     let (mut header, mut markets, _) = one_market_view_fixture();
     header.vault = V16PodU128::new(10);

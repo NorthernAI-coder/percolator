@@ -4,17 +4,17 @@ use percolator::v16::{
     active_bitmap_set, kani_add_open_interest_for_new_position,
     kani_apply_backing_provider_earnings_withdraw, kani_apply_backing_utilization_fee_charge,
     kani_apply_resolved_payout_receipt_payment, kani_expected_source_credit_rate_num_for_state,
-    kani_health_cert_after_capital_debit,
+    kani_health_cert_after_capital_debit, kani_health_requirements_from_base_and_target_lag,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
     kani_loss_stale_trade_scope_allowed, kani_pending_domain_loss_barrier_blocks_position_change,
     kani_position_delta_increases_risk, kani_prepare_asset_recovery_transition,
-    kani_source_credit_state_realizable_support_for_face, kani_trade_preflight_risk_gate,
-    kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
-    AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, BackingBucketV16Account,
-    BatchTradeOutcomeV16, CloseProgressLedgerV16, CloseProgressLedgerV16Account,
-    EngineAssetSlotV16Account, HLockLaneV16, HealthCertV16, HealthCertV16Account,
-    InsuranceCreditReservationV16, InsuranceCreditReservationV16Account, Market,
-    MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PermissionlessCrankActionV16,
+    kani_source_credit_state_realizable_support_for_face, kani_target_effective_lag_adverse_delta,
+    kani_trade_preflight_risk_gate, kani_validate_positive_pnl_source_attribution,
+    AssetLifecycleV16, AssetStateV16, AssetStateV16Account, BackingBucketStatusV16,
+    BackingBucketV16, BackingBucketV16Account, BatchTradeOutcomeV16, CloseProgressLedgerV16,
+    CloseProgressLedgerV16Account, EngineAssetSlotV16Account, HLockLaneV16, HealthCertV16,
+    HealthCertV16Account, InsuranceCreditReservationV16, InsuranceCreditReservationV16Account,
+    Market, MarketGroupV16HeaderAccount, MarketGroupV16ViewMut, PermissionlessCrankActionV16,
     PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
     PermissionlessRecoveryReasonV16, PortfolioAccountV16Account, PortfolioLegV16,
     PortfolioLegV16Account, PortfolioSourceDomainV16Account, PortfolioV16View, PortfolioV16ViewMut,
@@ -26,8 +26,9 @@ use percolator::v16::{
     PORTFOLIO_SOURCE_DOMAIN_CAP, V16_EMPTY_ACTIVE_BITMAP,
 };
 use percolator::{
-    ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, MAX_POSITION_ABS_Q,
-    MAX_TRADE_SIZE_Q, MAX_VAULT_TVL, POS_SCALE, SOCIAL_LOSS_DEN, V16_ACTIVE_BITMAP_WORDS,
+    ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, MAX_ORACLE_PRICE,
+    MAX_POSITION_ABS_Q, MAX_TRADE_SIZE_Q, MAX_VAULT_TVL, POS_SCALE, SOCIAL_LOSS_DEN,
+    V16_ACTIVE_BITMAP_WORDS,
 };
 
 fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
@@ -7290,6 +7291,93 @@ fn proof_v16_counterparty_source_credit_support_is_prebacked_by_realized_capital
     assert_eq!(c_tot_after_support, c_tot_before);
     assert_eq!(reserve_proof.vault_after, vault);
     assert_eq!(support_proof.vault_after, vault);
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_target_effective_lag_adverse_delta_is_side_specific() {
+    let is_long: bool = kani::any();
+    let effective_price: u64 = kani::any();
+    let raw_target_price: u64 = kani::any();
+    kani::assume((1..=MAX_ORACLE_PRICE).contains(&effective_price));
+    kani::assume((1..=MAX_ORACLE_PRICE).contains(&raw_target_price));
+    let side = if is_long {
+        SideV16::Long
+    } else {
+        SideV16::Short
+    };
+    let adverse_delta =
+        kani_target_effective_lag_adverse_delta(side, effective_price, raw_target_price);
+    let expected_delta = match side {
+        SideV16::Long if raw_target_price < effective_price => effective_price - raw_target_price,
+        SideV16::Short if raw_target_price > effective_price => raw_target_price - effective_price,
+        _ => 0,
+    };
+
+    kani::cover!(
+        is_long && raw_target_price < effective_price && adverse_delta > 1024,
+        "target/effective lag delta covers adverse long mark"
+    );
+    kani::cover!(
+        !is_long && raw_target_price > effective_price && adverse_delta > 1024,
+        "target/effective lag delta covers adverse short mark"
+    );
+    kani::cover!(
+        ((is_long && raw_target_price >= effective_price)
+            || (!is_long && raw_target_price <= effective_price))
+            && adverse_delta == 0,
+        "target/effective lag delta covers favorable/no-penalty branch"
+    );
+    assert_eq!(adverse_delta, expected_delta);
+    if adverse_delta != 0 {
+        assert!(
+            (side == SideV16::Long && raw_target_price < effective_price)
+                || (side == SideV16::Short && raw_target_price > effective_price)
+        );
+    }
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_target_effective_lag_penalty_enters_all_health_lanes() {
+    let base_initial: u128 = kani::any();
+    let base_maintenance: u128 = kani::any();
+    let risk_notional: u128 = kani::any();
+    let penalty: u128 = kani::any();
+    kani::assume(penalty > 0);
+    kani::assume(base_initial <= u128::MAX - penalty);
+    kani::assume(base_maintenance <= u128::MAX - penalty);
+    kani::assume(risk_notional <= u128::MAX - penalty);
+
+    let (initial_req, maintenance_req, worst_case_loss) =
+        kani_health_requirements_from_base_and_target_lag(
+            base_initial,
+            base_maintenance,
+            risk_notional,
+            penalty,
+        )
+        .unwrap();
+
+    kani::cover!(
+        base_initial > 0 && base_maintenance > 0,
+        "target/effective lag health proof covers nonzero base margin lanes"
+    );
+    kani::cover!(
+        base_initial > base_maintenance && base_maintenance > 0,
+        "target/effective lag health proof covers distinct base IM/MM lanes"
+    );
+    kani::cover!(
+        risk_notional > 1024 && penalty > 1024,
+        "target/effective lag health proof covers wide symbolic notional and penalty"
+    );
+    assert_eq!(initial_req, base_initial + penalty);
+    assert_eq!(maintenance_req, base_maintenance + penalty);
+    assert_eq!(worst_case_loss, risk_notional + penalty);
+    assert!(initial_req >= penalty);
+    assert!(maintenance_req >= penalty);
+    assert!(worst_case_loss >= penalty);
 }
 
 #[kani::proof]

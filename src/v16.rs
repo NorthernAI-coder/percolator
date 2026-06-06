@@ -1092,24 +1092,41 @@ impl V16Core {
         risk_notional: u128,
         target_lag_penalty: u128,
     ) -> V16Result<(u128, u128, u128)> {
-        let initial_req = margin_requirement(
+        let base_initial = margin_requirement(
             risk_notional,
             config.initial_margin_bps,
             config.min_nonzero_im_req,
-        )?
-        .checked_add(target_lag_penalty)
-        .ok_or(V16Error::ArithmeticOverflow)?;
-        let maintenance_req = margin_requirement(
+        )?;
+        let base_maintenance = margin_requirement(
             risk_notional,
             config.maintenance_margin_bps,
             config.min_nonzero_mm_req,
-        )?
-        .checked_add(target_lag_penalty)
-        .ok_or(V16Error::ArithmeticOverflow)?;
-        let worst_case_loss = risk_notional
-            .checked_add(target_lag_penalty)
-            .ok_or(V16Error::ArithmeticOverflow)?;
-        Ok((initial_req, maintenance_req, worst_case_loss))
+        )?;
+        Self::health_requirements_from_base_and_target_lag(
+            base_initial,
+            base_maintenance,
+            risk_notional,
+            target_lag_penalty,
+        )
+    }
+
+    fn health_requirements_from_base_and_target_lag(
+        base_initial: u128,
+        base_maintenance: u128,
+        risk_notional: u128,
+        target_lag_penalty: u128,
+    ) -> V16Result<(u128, u128, u128)> {
+        Ok((
+            base_initial
+                .checked_add(target_lag_penalty)
+                .ok_or(V16Error::ArithmeticOverflow)?,
+            base_maintenance
+                .checked_add(target_lag_penalty)
+                .ok_or(V16Error::ArithmeticOverflow)?,
+            risk_notional
+                .checked_add(target_lag_penalty)
+                .ok_or(V16Error::ArithmeticOverflow)?,
+        ))
     }
 
     fn backing_utilization_rate_e9_for_source_state(
@@ -1234,6 +1251,30 @@ pub fn kani_source_credit_state_realizable_support_for_face(
     face_claim: u128,
 ) -> V16Result<u128> {
     V16Core::source_credit_state_realizable_support_for_face(state, face_claim)
+}
+
+#[cfg(kani)]
+pub fn kani_target_effective_lag_adverse_delta(
+    side: SideV16,
+    effective_price: u64,
+    raw_target_price: u64,
+) -> u64 {
+    V16Core::target_effective_lag_adverse_delta(side, effective_price, raw_target_price)
+}
+
+#[cfg(kani)]
+pub fn kani_health_requirements_from_base_and_target_lag(
+    base_initial: u128,
+    base_maintenance: u128,
+    risk_notional: u128,
+    target_lag_penalty: u128,
+) -> V16Result<(u128, u128, u128)> {
+    V16Core::health_requirements_from_base_and_target_lag(
+        base_initial,
+        base_maintenance,
+        risk_notional,
+        target_lag_penalty,
+    )
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

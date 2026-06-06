@@ -3168,8 +3168,21 @@ fn proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim() {
         paid < terminal && remaining > 0,
         "resolved receipt proof covers non-final receipt topup"
     );
+    kani::cover!(
+        paid == terminal && remaining == 0,
+        "resolved receipt proof covers finalized idempotent zero topup"
+    );
     assert_eq!(ok_payment.paid_effective, terminal);
     assert!(ok_payment.finalized);
+    assert_eq!(
+        ok_payment.prior_bound_contribution_num,
+        receipt.prior_bound_contribution_num
+    );
+    assert_eq!(
+        ok_payment.live_released_face_at_receipt,
+        receipt.live_released_face_at_receipt
+    );
+    assert_eq!(ok_payment.terminal_positive_claim_face, terminal);
     assert_eq!(overpay, Err(V16Error::InvalidLeg));
 }
 

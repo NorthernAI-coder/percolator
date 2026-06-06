@@ -14311,6 +14311,11 @@ fn position_delta_increases_risk(current: i128, delta_q: i128) -> V16Result<bool
     Ok(next.unsigned_abs() > current.unsigned_abs())
 }
 
+#[cfg(kani)]
+pub fn kani_position_delta_increases_risk(current: i128, delta_q: i128) -> V16Result<bool> {
+    position_delta_increases_risk(current, delta_q)
+}
+
 fn margin_requirement(notional: u128, bps: u64, floor: u128) -> V16Result<u128> {
     if notional == 0 {
         return Ok(0);

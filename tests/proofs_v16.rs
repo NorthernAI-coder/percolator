@@ -6,8 +6,8 @@ use percolator::v16::{
     kani_apply_resolved_payout_receipt_payment, kani_expected_source_credit_rate_num_for_state,
     kani_health_cert_after_capital_debit,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
-    kani_loss_stale_trade_scope_allowed, kani_prepare_asset_recovery_transition,
-    kani_source_credit_state_realizable_support_for_face,
+    kani_loss_stale_trade_scope_allowed, kani_position_delta_increases_risk,
+    kani_prepare_asset_recovery_transition, kani_source_credit_state_realizable_support_for_face,
     kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
     AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, BackingBucketV16Account,
     BatchTradeOutcomeV16, CloseProgressLedgerV16, CloseProgressLedgerV16Account,
@@ -25,8 +25,8 @@ use percolator::v16::{
     PORTFOLIO_SOURCE_DOMAIN_CAP, V16_EMPTY_ACTIVE_BITMAP,
 };
 use percolator::{
-    ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, MAX_TRADE_SIZE_Q, MAX_VAULT_TVL,
-    POS_SCALE, SOCIAL_LOSS_DEN, V16_ACTIVE_BITMAP_WORDS,
+    ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, MAX_POSITION_ABS_Q,
+    MAX_TRADE_SIZE_Q, MAX_VAULT_TVL, POS_SCALE, SOCIAL_LOSS_DEN, V16_ACTIVE_BITMAP_WORDS,
 };
 
 fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
@@ -1626,6 +1626,49 @@ fn proof_v16_signed_trade_request_maps_to_opposite_account_deltas() {
         assert_eq!(first_delta.checked_add(second_delta), Some(0));
         assert!(abs_q > 0);
         assert!(abs_q <= MAX_TRADE_SIZE_Q);
+    }
+}
+
+#[kani::proof]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn proof_v16_position_delta_risk_classifier_matches_abs_exposure_change() {
+    let current: i128 = kani::any();
+    let delta_q: i128 = kani::any();
+    kani::assume(current != i128::MIN);
+    kani::assume(current.unsigned_abs() <= MAX_POSITION_ABS_Q);
+    kani::assume(delta_q != i128::MIN);
+    kani::assume(delta_q.unsigned_abs() <= MAX_TRADE_SIZE_Q);
+
+    let next = current.checked_add(delta_q);
+    let expected_ok = match next {
+        Some(next) => next == 0 || (next != i128::MIN && next.unsigned_abs() <= MAX_POSITION_ABS_Q),
+        None => false,
+    };
+    let result = kani_position_delta_increases_risk(current, delta_q);
+
+    kani::cover!(
+        expected_ok && result == Ok(true) && current != 0 && delta_q.signum() == current.signum(),
+        "risk classifier covers same-side exposure increase"
+    );
+    kani::cover!(
+        expected_ok && result == Ok(false) && current != 0 && delta_q.signum() != current.signum(),
+        "risk classifier covers risk reduction or side flip"
+    );
+    kani::cover!(
+        !expected_ok,
+        "risk classifier covers invalid next-position rejection"
+    );
+    assert_eq!(result.is_ok(), expected_ok);
+    if let Ok(increases) = result {
+        let next = next.unwrap();
+        assert_eq!(increases, next.unsigned_abs() > current.unsigned_abs());
+        if current == 0 {
+            assert_eq!(increases, next != 0);
+        }
+        if increases {
+            assert!(next != 0);
+        }
     }
 }
 

@@ -2469,18 +2469,35 @@ fn proof_v16_nonflat_withdraw_rejects_before_value_exit() {
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_withdraw_settles_flat_negative_pnl_before_value_exit() {
+    let start_capital_raw: u8 = kani::any();
+    let other_capital_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
     let loss_raw: u8 = kani::any();
     let amount_raw: u8 = kani::any();
-    kani::assume((1..=3).contains(&loss_raw));
-    kani::assume((1..=3).contains(&amount_raw));
-    kani::assume(amount_raw <= 10 - loss_raw);
+    kani::assume(start_capital_raw <= 16);
+    kani::assume(other_capital_raw <= 16);
+    kani::assume(insurance_raw <= 16);
+    kani::assume(surplus_raw <= 16);
+    kani::assume(loss_raw > 0);
+    kani::assume(amount_raw > 0);
+    let start_capital = start_capital_raw as u128;
+    let other_capital = other_capital_raw as u128;
+    let insurance = insurance_raw as u128;
+    let surplus = surplus_raw as u128;
     let loss = loss_raw as u128;
     let amount = amount_raw as u128;
+    kani::assume(loss <= start_capital);
+    kani::assume(amount <= start_capital - loss);
+
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
-    header.vault = V16PodU128::new(10);
-    header.c_tot = V16PodU128::new(10);
+    let c_tot_before = start_capital + other_capital;
+    let vault_before = c_tot_before + insurance + surplus;
+    header.vault = V16PodU128::new(vault_before);
+    header.c_tot = V16PodU128::new(c_tot_before);
+    header.insurance = V16PodU128::new(insurance);
     header.negative_pnl_account_count = V16PodU64::new(1);
-    account_header.capital = V16PodU128::new(10);
+    account_header.capital = V16PodU128::new(start_capital);
     account_header.pnl = V16PodI128::new(-(loss as i128));
 
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
@@ -2488,15 +2505,25 @@ fn proof_v16_withdraw_settles_flat_negative_pnl_before_value_exit() {
     market.withdraw_not_atomic(&mut account, amount).unwrap();
 
     kani::cover!(
-        amount > 1 && loss > 1,
-        "withdraw loss-seniority proof covers loss settlement plus external exit"
+        start_capital > loss + amount && other_capital > 0 && insurance > 0 && surplus > 0,
+        "withdraw loss-seniority covers target account plus independent aggregate state"
+    );
+    kani::cover!(
+        start_capital == loss + amount,
+        "withdraw loss-seniority covers exact zero-capital target after loss and exit"
     );
     assert_eq!(account.header.pnl.get(), 0);
     assert_eq!(market.header.negative_pnl_account_count.get(), 0);
-    assert_eq!(account.header.capital.get(), 10 - loss - amount);
-    assert_eq!(market.header.c_tot.get(), 10 - loss - amount);
-    assert_eq!(market.header.vault.get(), 10 - amount);
-    assert_eq!(market.header.insurance.get(), 0);
+    assert_eq!(account.header.capital.get(), start_capital - loss - amount);
+    assert_eq!(market.header.c_tot.get(), c_tot_before - loss - amount);
+    assert_eq!(market.header.vault.get(), vault_before - amount);
+    assert_eq!(market.header.insurance.get(), insurance);
+    assert_eq!(
+        market.header.vault.get() - market.header.c_tot.get() - market.header.insurance.get(),
+        surplus + loss
+    );
+    assert_eq!(market.validate_shape(), Ok(()));
+    assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
 }
 
 #[kani::proof]

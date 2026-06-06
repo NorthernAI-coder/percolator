@@ -3189,16 +3189,20 @@ fn proof_v16_retire_empty_asset_is_value_neutral_and_epoch_scoped() {
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
 fn proof_v16_positive_pnl_requires_full_source_claim_attribution() {
-    let pnl_raw: u8 = kani::any();
-    let missing_raw: u8 = kani::any();
+    let pnl_raw: u16 = kani::any();
+    let missing_raw: u16 = kani::any();
+    let extra_raw: u16 = kani::any();
     kani::assume(pnl_raw > 0);
     kani::assume(missing_raw > 0);
+    kani::assume(pnl_raw <= 4096);
     let pnl = pnl_raw as i128;
     let required = pnl_raw as u128 * BOUND_SCALE;
     let missing = (missing_raw as u128).min(required);
     let insufficient = required - missing;
+    let over_attributed = required + extra_raw as u128;
 
     let ok = kani_validate_positive_pnl_source_attribution(pnl, required);
+    let over_ok = kani_validate_positive_pnl_source_attribution(pnl, over_attributed);
     let err = kani_validate_positive_pnl_source_attribution(pnl, insufficient);
     let non_positive = kani_validate_positive_pnl_source_attribution(-pnl, 0);
 
@@ -3206,7 +3210,16 @@ fn proof_v16_positive_pnl_requires_full_source_claim_attribution() {
         insufficient < required,
         "positive PnL source attribution rejects under-attributed claim bounds"
     );
+    kani::cover!(
+        pnl_raw > 255 && missing_raw == 1,
+        "positive PnL source attribution covers widened one-unit source deficit"
+    );
+    kani::cover!(
+        extra_raw > 0,
+        "positive PnL source attribution accepts over-attributed claim bounds"
+    );
     assert_eq!(ok, Ok(()));
+    assert_eq!(over_ok, Ok(()));
     assert_eq!(err, Err(V16Error::InvalidLeg));
     assert_eq!(non_positive, Ok(()));
 }

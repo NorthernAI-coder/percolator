@@ -2061,11 +2061,9 @@ fn proof_v16_backing_utilization_fee_is_capped_by_capital_and_conserves_ctot_to_
     let earnings: u128 = kani::any();
     let group_c_tot = capital;
     let expected = capital.min(fee);
-    kani::assume(capital <= u128::MAX - earnings);
-    kani::assume(expected <= u128::MAX - earnings);
+    let expected_earnings = earnings.checked_add(expected);
 
-    let (charged, next_capital, next_c_tot, next_earnings) =
-        kani_apply_backing_utilization_fee_charge(capital, group_c_tot, earnings, 0, fee).unwrap();
+    let result = kani_apply_backing_utilization_fee_charge(capital, group_c_tot, earnings, 0, fee);
 
     kani::cover!(
         fee > capital && capital > 0,
@@ -2075,14 +2073,23 @@ fn proof_v16_backing_utilization_fee_is_capped_by_capital_and_conserves_ctot_to_
         fee <= capital && fee > 0,
         "backing utilization fee covers full requested collection"
     );
-    assert_eq!(charged, expected);
-    assert_eq!(next_capital, capital - expected);
-    assert_eq!(next_c_tot, group_c_tot - expected);
-    assert_eq!(next_earnings, earnings + expected);
-    assert_eq!(
-        next_c_tot.checked_add(next_earnings).unwrap(),
-        group_c_tot.checked_add(earnings).unwrap()
+    kani::cover!(
+        expected > 0 && expected_earnings.is_none(),
+        "backing utilization fee rejects bucket earnings overflow"
     );
+    assert_eq!(result.is_ok(), expected_earnings.is_some());
+    if let Ok((charged, next_capital, next_c_tot, next_earnings)) = result {
+        assert_eq!(charged, expected);
+        assert_eq!(next_capital, capital - expected);
+        assert_eq!(next_c_tot, group_c_tot - expected);
+        assert_eq!(next_earnings, expected_earnings.unwrap());
+        assert_eq!(
+            next_c_tot.checked_add(next_earnings),
+            group_c_tot.checked_add(earnings)
+        );
+    } else {
+        assert_eq!(result, Err(V16Error::CounterOverflow));
+    }
 }
 
 #[kani::proof]

@@ -4108,11 +4108,14 @@ fn proof_v16_close_progress_ledger_residual_equation_is_enforced() {
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_permissionless_recovery_crank_is_accounting_neutral() {
-    let with_senior_balances: bool = kani::any();
+    let c_tot_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
     let now_slot_raw: u8 = kani::any();
+    kani::assume(c_tot_raw <= 8);
+    kani::assume(insurance_raw <= 8);
     kani::assume(now_slot_raw > 0);
-    let c_tot = if with_senior_balances { 7 } else { 0 };
-    let insurance = if with_senior_balances { 3 } else { 0 };
+    let c_tot = c_tot_raw as u128;
+    let insurance = insurance_raw as u128;
     let now_slot = now_slot_raw as u64;
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     header.vault = V16PodU128::new(c_tot + insurance);
@@ -4149,8 +4152,9 @@ fn proof_v16_permissionless_recovery_crank_is_accounting_neutral() {
                 PermissionlessRecoveryReasonV16::ExplicitLossOrDustAuditOverflow
             )
         ) && now_slot > 1
-            && with_senior_balances,
-        "permissionless recovery crank reaches recovery declaration over nonzero senior balances"
+            && c_tot > 0
+            && insurance > 0,
+        "permissionless recovery crank reaches recovery declaration over symbolic senior balances"
     );
     assert_eq!(
         outcome,

@@ -236,10 +236,16 @@ fn proof_v16_public_resolved_bound_refinement_is_monotone_and_value_neutral() {
     let bound_raw: u8 = kani::any();
     let residual_raw: u8 = kani::any();
     let decrease_raw: u8 = kani::any();
+    let c_tot_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
     kani::assume((1..=32).contains(&exact_raw));
     kani::assume((1..=32).contains(&bound_raw));
     kani::assume((1..=32).contains(&residual_raw));
     kani::assume((1..=32).contains(&decrease_raw));
+    kani::assume(c_tot_raw <= 8);
+    kani::assume(insurance_raw <= 8);
+    kani::assume(surplus_raw <= 8);
     kani::assume(decrease_raw <= bound_raw);
     kani::assume((residual_raw as u128) <= (exact_raw as u128 + bound_raw as u128));
 
@@ -248,12 +254,15 @@ fn proof_v16_public_resolved_bound_refinement_is_monotone_and_value_neutral() {
     let decrease_num = decrease_raw as u128 * BOUND_SCALE;
     let total_before = exact_num + bound_num;
     let numerator_before = residual_raw as u128 * BOUND_SCALE;
+    let c_tot = c_tot_raw as u128;
+    let insurance = insurance_raw as u128;
+    let surplus = surplus_raw as u128;
 
     let (mut header, mut markets) = one_market_persisted_slot_fixture();
     header.mode = 1; // Resolved
-    header.vault = V16PodU128::new(13);
-    header.c_tot = V16PodU128::new(5);
-    header.insurance = V16PodU128::new(3);
+    header.vault = V16PodU128::new(c_tot + insurance + surplus);
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(insurance);
     header.payout_snapshot_captured = 1;
     header.resolved_payout_ledger =
         ResolvedPayoutLedgerV16Account::from_runtime(&ResolvedPayoutLedgerV16 {
@@ -279,8 +288,12 @@ fn proof_v16_public_resolved_bound_refinement_is_monotone_and_value_neutral() {
         .unwrap();
 
     kani::cover!(
-        decrease_raw > 1 && residual_raw < exact_raw + bound_raw,
-        "resolved refinement covers a nontrivial haircut and bound decrease"
+        decrease_raw > 1
+            && residual_raw < exact_raw + bound_raw
+            && c_tot > 0
+            && insurance > 0
+            && surplus > 0,
+        "resolved refinement covers nontrivial haircut over symbolic value state"
     );
     assert_eq!(result, Ok(()));
     assert_eq!(
@@ -1182,17 +1195,25 @@ fn proof_v16_withdraw_settles_flat_negative_pnl_before_value_exit() {
 fn proof_v16_recovery_mode_blocks_withdraw() {
     let capital_raw: u8 = kani::any();
     let amount_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
     kani::assume(capital_raw > 0);
     kani::assume(amount_raw > 0);
+    kani::assume(insurance_raw <= 8);
+    kani::assume(surplus_raw <= 8);
     let capital = capital_raw as u128;
     let amount = amount_raw as u128;
+    let insurance = insurance_raw as u128;
+    let surplus = surplus_raw as u128;
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     header.mode = 2;
-    header.vault = V16PodU128::new(capital);
+    header.vault = V16PodU128::new(capital + insurance + surplus);
     header.c_tot = V16PodU128::new(capital);
+    header.insurance = V16PodU128::new(insurance);
     account_header.capital = V16PodU128::new(capital);
     let vault_before = header.vault;
     let c_tot_before = header.c_tot;
+    let insurance_before = header.insurance;
     let capital_before = account_header.capital;
 
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
@@ -1200,12 +1221,13 @@ fn proof_v16_recovery_mode_blocks_withdraw() {
     let result = market.withdraw_not_atomic(&mut account, amount);
 
     kani::cover!(
-        amount > 10 && capital > 10,
-        "recovery mode blocks ordinary withdraw over wide symbolic balances"
+        amount > 10 && capital > 10 && insurance > 0 && surplus > 0,
+        "recovery mode blocks ordinary withdraw over wide symbolic value state"
     );
     assert_eq!(result, Err(V16Error::LockActive));
     assert_eq!(market.header.vault, vault_before);
     assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(market.header.insurance, insurance_before);
     assert_eq!(account.header.capital, capital_before);
 }
 

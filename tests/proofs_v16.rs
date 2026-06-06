@@ -1866,8 +1866,7 @@ fn proof_v16_trade_fee_helper_moves_capital_to_insurance_only() {
     let capital: u128 = kani::any();
     let insurance: u128 = kani::any();
     let requested_fee: u128 = kani::any();
-    kani::assume(capital <= MAX_VAULT_TVL);
-    kani::assume(insurance <= MAX_VAULT_TVL - capital);
+    kani::assume(insurance <= u128::MAX - capital);
     let expected = capital.min(requested_fee);
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     header.vault = V16PodU128::new(insurance + capital);
@@ -1896,11 +1895,19 @@ fn proof_v16_trade_fee_helper_moves_capital_to_insurance_only() {
         capital > 0 && requested_fee <= capital && requested_fee > 0,
         "trade fee helper covers full requested fee collection"
     );
+    kani::cover!(
+        requested_fee == 0 || capital == 0,
+        "trade fee helper covers zero-charge no-op"
+    );
     assert_eq!(charged, expected);
     assert_eq!(market.header.vault.get(), vault_before);
     assert_eq!(
-        market.header.c_tot.get() + market.header.insurance.get(),
-        senior_before
+        market
+            .header
+            .c_tot
+            .get()
+            .checked_add(market.header.insurance.get()),
+        Some(senior_before)
     );
     assert_eq!(account.header.capital.get(), capital - expected);
     assert_eq!(market.header.c_tot.get(), capital - expected);

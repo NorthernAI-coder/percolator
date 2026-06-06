@@ -6594,6 +6594,123 @@ fn proof_v16_insurance_lien_consume_spends_only_its_domain_budget() {
 }
 
 #[kani::proof]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn proof_v16_insurance_lien_consume_delta_is_aligned_and_atom_exact() {
+    let amount_units_raw: u8 = kani::any();
+    let reservation_reserved_raw: u8 = kani::any();
+    let reservation_valid_raw: u8 = kani::any();
+    let source_reserved_raw: u8 = kani::any();
+    let source_valid_raw: u8 = kani::any();
+    let domain_spent_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let force_unaligned: bool = kani::any();
+    kani::assume(amount_units_raw <= 8);
+    kani::assume(reservation_reserved_raw <= 8);
+    kani::assume(reservation_valid_raw <= 8);
+    kani::assume(source_reserved_raw <= 8);
+    kani::assume(source_valid_raw <= 8);
+    kani::assume(domain_spent_raw <= 8);
+    kani::assume(insurance_raw <= 8);
+
+    let aligned_amount = amount_units_raw as u128 * BOUND_SCALE;
+    let amount = if force_unaligned {
+        aligned_amount + 1
+    } else {
+        aligned_amount
+    };
+    let reservation_reserved = reservation_reserved_raw as u128 * BOUND_SCALE;
+    let reservation_valid = reservation_valid_raw as u128 * BOUND_SCALE;
+    let source_reserved = source_reserved_raw as u128 * BOUND_SCALE;
+    let source_valid = source_valid_raw as u128 * BOUND_SCALE;
+    let domain_spent = domain_spent_raw as u128;
+    let insurance = insurance_raw as u128;
+    let spend_atoms = amount_units_raw as u128;
+    let reservation = InsuranceCreditReservationV16 {
+        insurance_credit_reserved_num: reservation_reserved,
+        valid_liened_insurance_num: reservation_valid,
+        ..InsuranceCreditReservationV16::EMPTY
+    };
+    let source = SourceCreditStateV16 {
+        insurance_credit_reserved_num: source_reserved,
+        valid_liened_insurance_num: source_valid,
+        credit_rate_num: CREDIT_RATE_SCALE,
+        ..SourceCreditStateV16::EMPTY
+    };
+
+    let result = MarketGroupV16ViewMut::<u64>::kani_prepare_insurance_lien_consume_delta(
+        reservation,
+        source,
+        domain_spent,
+        insurance,
+        amount,
+    );
+    let expected_ok = amount == 0
+        || (!force_unaligned
+            && reservation_valid >= amount
+            && reservation_reserved >= amount
+            && source_valid >= amount
+            && source_reserved >= amount
+            && insurance >= spend_atoms);
+
+    kani::cover!(amount == 0, "insurance consume delta covers zero no-op");
+    kani::cover!(
+        amount > 0 && force_unaligned,
+        "insurance consume delta rejects non-atom-aligned bound amount"
+    );
+    kani::cover!(
+        !force_unaligned && amount > 0 && reservation_valid < amount,
+        "insurance consume delta rejects insufficient reservation valid lien"
+    );
+    kani::cover!(
+        !force_unaligned && amount > 0 && source_reserved < amount,
+        "insurance consume delta rejects insufficient source reservation"
+    );
+    kani::cover!(
+        !force_unaligned
+            && amount > 0
+            && reservation_valid >= amount
+            && reservation_reserved >= amount
+            && source_valid >= amount
+            && source_reserved >= amount
+            && insurance < spend_atoms,
+        "insurance consume delta rejects insufficient senior insurance atoms"
+    );
+    kani::cover!(
+        expected_ok && amount > 0 && reservation_reserved > amount && source_valid > amount,
+        "insurance consume delta covers partial aligned consume"
+    );
+
+    assert_eq!(result.is_ok(), expected_ok);
+    if expected_ok {
+        let (next_reservation, next_source, next_domain_spent, next_insurance) = result.unwrap();
+        assert_eq!(
+            next_reservation.valid_liened_insurance_num,
+            reservation_valid - amount
+        );
+        assert_eq!(
+            next_reservation.insurance_credit_reserved_num,
+            reservation_reserved - amount
+        );
+        assert_eq!(next_reservation.consumed_insurance_num, amount);
+        assert_eq!(
+            next_source.valid_liened_insurance_num,
+            source_valid - amount
+        );
+        assert_eq!(
+            next_source.insurance_credit_reserved_num,
+            source_reserved - amount
+        );
+        assert_eq!(next_domain_spent, domain_spent + spend_atoms);
+        assert_eq!(next_insurance, insurance - spend_atoms);
+    } else if force_unaligned && amount > 0 {
+        assert_eq!(result, Err(V16Error::InvalidConfig));
+    } else {
+        assert_eq!(result, Err(V16Error::CounterUnderflow));
+    }
+}
+
+#[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_public_insurance_lien_consume_debits_only_domain_insurance() {

@@ -100,10 +100,19 @@ fn one_market_persisted_slot_fixture() -> (MarketGroupV16HeaderAccount, [Market<
 #[kani::solver(cadical)]
 fn proof_v16_public_finalize_side_reset_success_is_value_neutral() {
     let finalize_long: bool = kani::any();
+    let c_tot_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
+    kani::assume(c_tot_raw <= 8);
+    kani::assume(insurance_raw <= 8);
+    kani::assume(surplus_raw <= 8);
+    let c_tot = c_tot_raw as u128;
+    let insurance = insurance_raw as u128;
+    let surplus = surplus_raw as u128;
     let (mut header, mut markets) = one_market_persisted_slot_fixture();
-    header.vault = V16PodU128::new(11);
-    header.c_tot = V16PodU128::new(5);
-    header.insurance = V16PodU128::new(3);
+    header.vault = V16PodU128::new(c_tot + insurance + surplus);
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(insurance);
     let risk_epoch_before = header.risk_epoch.get();
     let vault_before = header.vault.get();
     let c_tot_before = header.c_tot.get();
@@ -126,12 +135,12 @@ fn proof_v16_public_finalize_side_reset_success_is_value_neutral() {
     let after = market.markets[0].engine.asset.try_to_runtime().unwrap();
 
     kani::cover!(
-        finalize_long,
-        "long ResetPending side finalizes through the public API"
+        finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
+        "long ResetPending side finalizes through the public API over symbolic value state"
     );
     kani::cover!(
-        !finalize_long,
-        "short ResetPending side finalizes through the public API"
+        !finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
+        "short ResetPending side finalizes through the public API over symbolic value state"
     );
     assert_eq!(market.header.vault.get(), vault_before);
     assert_eq!(market.header.c_tot.get(), c_tot_before);
@@ -151,12 +160,21 @@ fn proof_v16_public_finalize_side_reset_success_is_value_neutral() {
 fn proof_v16_public_finalize_side_reset_rejects_each_blocker_without_mutation() {
     let finalize_long: bool = kani::any();
     let blocker_kind: u8 = kani::any();
+    let c_tot_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
     kani::assume(blocker_kind <= 3);
+    kani::assume(c_tot_raw <= 8);
+    kani::assume(insurance_raw <= 8);
+    kani::assume(surplus_raw <= 8);
+    let c_tot = c_tot_raw as u128;
+    let insurance = insurance_raw as u128;
+    let surplus = surplus_raw as u128;
 
     let (mut header, mut markets) = one_market_persisted_slot_fixture();
-    header.vault = V16PodU128::new(11);
-    header.c_tot = V16PodU128::new(5);
-    header.insurance = V16PodU128::new(3);
+    header.vault = V16PodU128::new(c_tot + insurance + surplus);
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(insurance);
     let risk_epoch_before = header.risk_epoch.get();
     let vault_before = header.vault.get();
     let c_tot_before = header.c_tot.get();
@@ -191,12 +209,12 @@ fn proof_v16_public_finalize_side_reset_rejects_each_blocker_without_mutation() 
     let after = market.markets[0].engine.asset.try_to_runtime().unwrap();
 
     kani::cover!(
-        blocker_kind == 0 && finalize_long,
-        "stored-position blocker prevents public reset finalization"
+        blocker_kind == 0 && finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
+        "stored-position blocker prevents public reset finalization over symbolic value state"
     );
     kani::cover!(
-        blocker_kind == 3 && !finalize_long,
-        "pending-barrier blocker prevents public reset finalization"
+        blocker_kind == 3 && !finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
+        "pending-barrier blocker prevents public reset finalization over symbolic value state"
     );
     assert_eq!(result, Err(V16Error::Stale));
     assert_eq!(market.header.vault.get(), vault_before);

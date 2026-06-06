@@ -4564,6 +4564,75 @@ fn proof_v16_public_resolved_payout_topup_pays_min_claimable_and_vault() {
 }
 
 #[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources() {
+    let capital_raw: u8 = kani::any();
+    let resolved_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
+    let mode_raw: u8 = kani::any();
+    kani::assume(mode_raw <= 2);
+    let capital_paid = capital_raw as u128;
+    let resolved_payout_paid = resolved_raw as u128;
+    let source_sum = capital_paid + resolved_payout_paid;
+    let requested_external_out = match mode_raw {
+        0 => source_sum,
+        1 => source_sum + 1,
+        _ => {
+            kani::assume(source_sum > 0);
+            source_sum - 1
+        }
+    };
+    let surplus = surplus_raw as u128;
+    let vault_before = requested_external_out + surplus;
+    let vault_after = surplus;
+
+    let result = TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out(
+        capital_paid,
+        resolved_payout_paid,
+        requested_external_out,
+        vault_before,
+        vault_after,
+    );
+
+    kani::cover!(
+        mode_raw == 0 && capital_paid > 0 && resolved_payout_paid > 0,
+        "resolved external payout supports mixed capital and resolved claim sources"
+    );
+    kani::cover!(
+        mode_raw == 1 && source_sum > 0,
+        "resolved external payout rejects overpay beyond available sources"
+    );
+    kani::cover!(
+        mode_raw == 2 && source_sum > 1,
+        "resolved external payout rejects under-matched source accounting"
+    );
+
+    if mode_raw == 0 {
+        let proof = result.unwrap();
+        assert_eq!(proof.external_quote_in, 0);
+        assert_eq!(proof.external_quote_out, source_sum);
+        assert_eq!(proof.vault_before, vault_before);
+        assert_eq!(proof.vault_after, vault_after);
+        assert_eq!(
+            proof.debits[TokenValueClassV16::AccountCapital as usize],
+            capital_paid
+        );
+        assert_eq!(
+            proof.debits[TokenValueClassV16::ResolvedPayoutPaid as usize],
+            resolved_payout_paid
+        );
+        assert_eq!(
+            proof.credits[TokenValueClassV16::ExternalQuote as usize],
+            source_sum
+        );
+        assert_eq!(proof.validate(), Ok(()));
+    } else {
+        assert_eq!(result, Err(V16Error::InvalidConfig));
+    }
+}
+
+#[kani::proof]
 #[kani::unwind(16)]
 #[kani::solver(cadical)]
 fn proof_v16_two_resolved_receipts_are_order_independent_when_snapshot_funded() {

@@ -100,15 +100,12 @@ fn one_market_persisted_slot_fixture() -> (MarketGroupV16HeaderAccount, [Market<
 #[kani::solver(cadical)]
 fn proof_v16_public_finalize_side_reset_success_is_value_neutral() {
     let finalize_long: bool = kani::any();
-    let c_tot_raw: u8 = kani::any();
-    let insurance_raw: u8 = kani::any();
-    let surplus_raw: u8 = kani::any();
-    kani::assume(c_tot_raw <= 8);
-    kani::assume(insurance_raw <= 8);
-    kani::assume(surplus_raw <= 8);
-    let c_tot = c_tot_raw as u128;
-    let insurance = insurance_raw as u128;
-    let surplus = surplus_raw as u128;
+    let c_tot: u128 = kani::any();
+    let insurance: u128 = kani::any();
+    let surplus: u128 = kani::any();
+    kani::assume(c_tot <= MAX_VAULT_TVL);
+    kani::assume(insurance <= MAX_VAULT_TVL - c_tot);
+    kani::assume(surplus <= MAX_VAULT_TVL - c_tot - insurance);
     let (mut header, mut markets) = one_market_persisted_slot_fixture();
     header.vault = V16PodU128::new(c_tot + insurance + surplus);
     header.c_tot = V16PodU128::new(c_tot);
@@ -135,12 +132,12 @@ fn proof_v16_public_finalize_side_reset_success_is_value_neutral() {
     let after = market.markets[0].engine.asset.try_to_runtime().unwrap();
 
     kani::cover!(
-        finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
-        "long ResetPending side finalizes through the public API over symbolic value state"
+        finalize_long && c_tot > 255 && insurance > 255 && surplus > 255,
+        "long ResetPending side finalizes through the public API over wide symbolic value state"
     );
     kani::cover!(
-        !finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
-        "short ResetPending side finalizes through the public API over symbolic value state"
+        !finalize_long && c_tot > 255 && insurance > 255 && surplus > 255,
+        "short ResetPending side finalizes through the public API over wide symbolic value state"
     );
     assert_eq!(market.header.vault.get(), vault_before);
     assert_eq!(market.header.c_tot.get(), c_tot_before);
@@ -160,16 +157,13 @@ fn proof_v16_public_finalize_side_reset_success_is_value_neutral() {
 fn proof_v16_public_finalize_side_reset_rejects_each_blocker_without_mutation() {
     let finalize_long: bool = kani::any();
     let blocker_kind: u8 = kani::any();
-    let c_tot_raw: u8 = kani::any();
-    let insurance_raw: u8 = kani::any();
-    let surplus_raw: u8 = kani::any();
+    let c_tot: u128 = kani::any();
+    let insurance: u128 = kani::any();
+    let surplus: u128 = kani::any();
     kani::assume(blocker_kind <= 3);
-    kani::assume(c_tot_raw <= 8);
-    kani::assume(insurance_raw <= 8);
-    kani::assume(surplus_raw <= 8);
-    let c_tot = c_tot_raw as u128;
-    let insurance = insurance_raw as u128;
-    let surplus = surplus_raw as u128;
+    kani::assume(c_tot <= MAX_VAULT_TVL);
+    kani::assume(insurance <= MAX_VAULT_TVL - c_tot);
+    kani::assume(surplus <= MAX_VAULT_TVL - c_tot - insurance);
 
     let (mut header, mut markets) = one_market_persisted_slot_fixture();
     header.vault = V16PodU128::new(c_tot + insurance + surplus);
@@ -209,12 +203,12 @@ fn proof_v16_public_finalize_side_reset_rejects_each_blocker_without_mutation() 
     let after = market.markets[0].engine.asset.try_to_runtime().unwrap();
 
     kani::cover!(
-        blocker_kind == 0 && finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
-        "stored-position blocker prevents public reset finalization over symbolic value state"
+        blocker_kind == 0 && finalize_long && c_tot > 255 && insurance > 255 && surplus > 255,
+        "stored-position blocker prevents public reset finalization over wide symbolic value state"
     );
     kani::cover!(
-        blocker_kind == 3 && !finalize_long && c_tot > 0 && insurance > 0 && surplus > 0,
-        "pending-barrier blocker prevents public reset finalization over symbolic value state"
+        blocker_kind == 3 && !finalize_long && c_tot > 255 && insurance > 255 && surplus > 255,
+        "pending-barrier blocker prevents public reset finalization over wide symbolic value state"
     );
     assert_eq!(result, Err(V16Error::Stale));
     assert_eq!(market.header.vault.get(), vault_before);

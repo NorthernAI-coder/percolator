@@ -3660,8 +3660,15 @@ fn proof_v16_trade_fee_helper_does_not_charge_negative_pnl_account() {
     let vault_before = header.vault;
     let c_tot_before = header.c_tot;
     let insurance_before = header.insurance;
+    let pnl_pos_tot_before = header.pnl_pos_tot;
+    let pnl_pos_bound_tot_before = header.pnl_pos_bound_tot;
+    let pnl_pos_bound_tot_num_before = header.pnl_pos_bound_tot_num;
+    let source_claim_bound_total_num_before = header.source_claim_bound_total_num;
+    let negative_pnl_count_before = header.negative_pnl_account_count;
     let capital_before = account_header.capital;
     let health_cert_before = account_header.health_cert;
+    let fee_credits_before = account_header.fee_credits;
+    let source_domains_before = account_header.source_domains;
 
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
@@ -3681,9 +3688,25 @@ fn proof_v16_trade_fee_helper_does_not_charge_negative_pnl_account() {
     assert_eq!(market.header.vault, vault_before);
     assert_eq!(market.header.c_tot, c_tot_before);
     assert_eq!(market.header.insurance, insurance_before);
+    assert_eq!(market.header.pnl_pos_tot, pnl_pos_tot_before);
+    assert_eq!(market.header.pnl_pos_bound_tot, pnl_pos_bound_tot_before);
+    assert_eq!(
+        market.header.pnl_pos_bound_tot_num,
+        pnl_pos_bound_tot_num_before
+    );
+    assert_eq!(
+        market.header.source_claim_bound_total_num,
+        source_claim_bound_total_num_before
+    );
+    assert_eq!(
+        market.header.negative_pnl_account_count,
+        negative_pnl_count_before
+    );
     assert_eq!(account.header.capital, capital_before);
     assert_eq!(account.header.pnl.get(), -loss);
     assert_eq!(account.header.health_cert, health_cert_before);
+    assert_eq!(account.header.fee_credits, fee_credits_before);
+    assert_eq!(account.header.source_domains, source_domains_before);
 }
 
 #[kani::proof]

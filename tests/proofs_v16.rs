@@ -7042,10 +7042,21 @@ fn proof_v16_inductive_settle_negative_pnl_preserves_senior_solvency() {
     // account's capital and the c_tot aggregate (lockstep), leaves vault and insurance
     // untouched, and `paid` is capped at min(capital, loss).
     assert_eq!(paid, capital.min(loss));
+    let expected_pnl = pnl + i128::try_from(paid).unwrap();
+    assert_eq!(account.header.pnl.get(), expected_pnl);
     assert_eq!(vault_after, vault);
     assert_eq!(insurance_after, insurance);
     assert_eq!(c_tot_after, c_tot - paid);
     assert_eq!(account.header.capital.get(), capital - paid);
+    if paid < loss {
+        assert!(expected_pnl < 0);
+        assert_eq!(market.header.bankruptcy_hlock_active, 1);
+        assert_eq!(market.header.negative_pnl_account_count.get(), 1);
+    } else {
+        assert_eq!(expected_pnl, 0);
+        assert_eq!(market.header.bankruptcy_hlock_active, 0);
+        assert_eq!(market.header.negative_pnl_account_count.get(), 0);
+    }
 }
 
 // Finding E: cure_and_cancel_close_not_atomic leaves close_progress in the `canceled`

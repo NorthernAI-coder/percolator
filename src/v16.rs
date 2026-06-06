@@ -11859,6 +11859,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(())
     }
 
+    #[cfg(kani)]
+    pub fn kani_ensure_no_positive_credit_initial_margin(
+        account: &PortfolioV16View<'_>,
+    ) -> V16Result<()> {
+        Self::ensure_no_positive_credit_initial_margin(account)
+    }
+
     fn recertify_account_after_source_lien_change(
         &self,
         account: &mut PortfolioV16ViewMut<'_>,

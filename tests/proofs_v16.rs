@@ -1748,6 +1748,70 @@ fn proof_v16_final_batch_margin_gate_accepts_only_final_certified_im() {
 }
 
 #[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_locked_trade_margin_gate_cannot_use_positive_pnl_credit() {
+    let capital_raw: u16 = kani::any();
+    let pnl_raw: i16 = kani::any();
+    let fee_debt_raw: u16 = kani::any();
+    let req_raw: u16 = kani::any();
+    kani::assume(capital_raw <= 2_000);
+    kani::assume((-2_000..=2_000).contains(&pnl_raw));
+    kani::assume(fee_debt_raw <= 2_000);
+    kani::assume(req_raw <= 4_000);
+
+    let capital = capital_raw as u128;
+    let pnl = pnl_raw as i128;
+    let fee_debt = fee_debt_raw as i128;
+    let req = req_raw as u128;
+    let certified_equity = (capital_raw as i128) + pnl - fee_debt;
+    let no_positive_equity = (capital_raw as i128) + pnl.min(0) - fee_debt;
+
+    let mut account_header = PortfolioAccountV16Account::default();
+    account_header.capital = V16PodU128::new(capital);
+    account_header.pnl = V16PodI128::new(pnl);
+    account_header.fee_credits = V16PodI128::new(-fee_debt);
+    account_header.health_cert = HealthCertV16Account::from_runtime(&HealthCertV16 {
+        certified_equity,
+        certified_initial_req: req,
+        certified_maintenance_req: req,
+        certified_liq_deficit: 0,
+        certified_worst_case_loss: req,
+        cert_oracle_epoch: 0,
+        cert_funding_epoch: 0,
+        cert_risk_epoch: 0,
+        cert_asset_set_epoch: 0,
+        active_bitmap_at_cert: V16_EMPTY_ACTIVE_BITMAP,
+        valid: true,
+    });
+
+    let account = PortfolioV16View::new(&account_header);
+    let certified_result = MarketGroupV16ViewMut::<u64>::kani_ensure_initial_margin(&account);
+    let locked_result =
+        MarketGroupV16ViewMut::<u64>::kani_ensure_no_positive_credit_initial_margin(&account);
+    let expected_certified_ok = certified_equity >= 0 && (certified_equity as u128) >= req;
+    let expected_locked_ok = no_positive_equity >= 0 && (no_positive_equity as u128) >= req;
+
+    kani::cover!(
+        pnl > 0 && expected_certified_ok && !expected_locked_ok,
+        "locked trade final check rejects margin that only passes with positive PnL credit"
+    );
+    kani::cover!(
+        pnl <= 0 && expected_certified_ok && expected_locked_ok && fee_debt_raw > 0,
+        "locked trade final check accepts fee-adjusted principal-only margin"
+    );
+    kani::cover!(
+        fee_debt > capital_raw as i128 && !expected_locked_ok,
+        "locked trade final check rejects fee debt exceeding principal"
+    );
+    assert_eq!(certified_result.is_ok(), expected_certified_ok);
+    assert_eq!(locked_result.is_ok(), expected_locked_ok);
+    if expected_certified_ok && !expected_locked_ok {
+        assert_eq!(locked_result, Err(V16Error::LockActive));
+    }
+}
+
+#[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
 fn proof_v16_live_market_shape_rejects_long_short_oi_mismatch() {

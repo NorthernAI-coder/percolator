@@ -2965,8 +2965,9 @@ fn proof_v16_reused_asset_slot_rejects_stale_market_id_leg() {
 #[kani::unwind(64)]
 #[kani::solver(cadical)]
 fn proof_v16_duplicate_asset_legs_reject_before_double_counting_support() {
-    let large_position: bool = kani::any();
-    let units = if large_position { 2 } else { 1 };
+    let units_raw: u8 = kani::any();
+    kani::assume((1..=8).contains(&units_raw));
+    let units = units_raw as i128;
     let basis = units as i128 * POS_SCALE as i128;
     let (_, _, mut account_header) = one_market_view_fixture();
     let long_leg = PortfolioLegV16 {
@@ -3002,8 +3003,8 @@ fn proof_v16_duplicate_asset_legs_reject_before_double_counting_support() {
     let result = account.as_view().kani_active_leg_slot_for_asset(0);
 
     kani::cover!(
-        large_position && result.is_err(),
-        "duplicate active asset legs are rejected before double-counting symbolic size"
+        units_raw > 4 && result.is_err(),
+        "duplicate active asset legs are rejected before double-counting wide symbolic size"
     );
     assert!(result.is_err());
 }

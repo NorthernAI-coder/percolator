@@ -838,16 +838,13 @@ fn proof_v16_public_market_activation_starts_domains_unfunded_and_value_neutral(
 #[kani::solver(cadical)]
 fn proof_v16_public_market_capacity_growth_is_monotone_and_value_neutral() {
     let growth_raw: u8 = kani::any();
-    let c_tot_raw: u8 = kani::any();
-    let insurance_raw: u8 = kani::any();
-    let surplus_raw: u8 = kani::any();
-    kani::assume(c_tot_raw <= 8);
-    kani::assume(insurance_raw <= 8);
-    kani::assume(surplus_raw <= 8);
+    let c_tot: u128 = kani::any();
+    let insurance: u128 = kani::any();
+    let surplus: u128 = kani::any();
+    kani::assume(c_tot <= MAX_VAULT_TVL);
+    kani::assume(insurance <= MAX_VAULT_TVL - c_tot);
+    kani::assume(surplus <= MAX_VAULT_TVL - c_tot - insurance);
     let new_capacity = 1 + growth_raw as u32;
-    let c_tot = c_tot_raw as u128;
-    let insurance = insurance_raw as u128;
-    let surplus = surplus_raw as u128;
     let (market_id, _, _) = ids();
     let cfg = V16Config::public_user_fund_with_market_slots(1, 1, 0, 10);
     let mut header = MarketGroupV16HeaderAccount::new_dynamic(market_id, cfg, 1, 0).unwrap();
@@ -866,8 +863,8 @@ fn proof_v16_public_market_capacity_growth_is_monotone_and_value_neutral() {
     let config = header.config.try_to_runtime_shape().unwrap();
 
     kani::cover!(
-        new_capacity > 1 && c_tot > 0 && insurance > 0 && surplus > 0,
-        "public market capacity growth covers actual growth over symbolic value state"
+        new_capacity > 1 && c_tot > 255 && insurance > 255 && surplus > 255,
+        "public market capacity growth covers actual growth over wide symbolic value state"
     );
     assert_eq!(header.asset_slot_capacity.get(), new_capacity);
     assert_eq!(config.max_market_slots, new_capacity);

@@ -6625,19 +6625,22 @@ fn proof_v16_underbacked_source_credit_cannot_satisfy_im_lien_requirements() {
 #[kani::solver(cadical)]
 fn proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing() {
     let effective_raw: u8 = kani::any();
+    let divisor_raw: u8 = kani::any();
     kani::assume(effective_raw > 0);
+    kani::assume((1..=16).contains(&divisor_raw));
     let effective = effective_raw as u128;
+    let divisor = divisor_raw as u128;
+    let rate = CREDIT_RATE_SCALE / divisor;
     let (required_face_num, backing_num) =
         MarketGroupV16ViewMut::<u64>::kani_source_credit_lien_amounts_for_effective(
-            effective,
-            CREDIT_RATE_SCALE,
+            effective, rate,
         )
         .unwrap();
     let source_credit = SourceCreditStateV16 {
         positive_claim_bound_num: required_face_num,
         exact_positive_claim_num: required_face_num,
         fresh_reserved_backing_num: backing_num,
-        credit_rate_num: CREDIT_RATE_SCALE,
+        credit_rate_num: rate,
         ..SourceCreditStateV16::EMPTY
     };
     let backing_bucket = BackingBucketV16 {
@@ -6670,7 +6673,7 @@ fn proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing() 
     assert_eq!(source_after_create.valid_liened_backing_num, backing_num);
     assert_eq!(source_after_create.spent_backing_num, 0);
     assert_eq!(source_after_create.provider_receivable_num, 0);
-    assert_eq!(source_after_create.credit_rate_num, CREDIT_RATE_SCALE);
+    assert_eq!(source_after_create.credit_rate_num, rate);
 
     let (backing_after_consume, source_after_consume) =
         MarketGroupV16ViewMut::<u64>::kani_prepare_counterparty_lien_consume_delta(
@@ -6687,7 +6690,11 @@ fn proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing() 
         effective > 1,
         "counterparty source-credit consume uses nontrivial atom value"
     );
-    assert_eq!(required_face_num, backing_num);
+    kani::cover!(
+        divisor > 1 && required_face_num > backing_num,
+        "counterparty source-credit consume covers partial-rate source lien"
+    );
+    assert!(required_face_num >= backing_num);
     assert_eq!(backing_num, effective * BOUND_SCALE);
     assert_eq!(cure_atoms, effective);
     assert_ne!(cure_atoms, backing_num);
@@ -6709,7 +6716,7 @@ fn proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing() 
     assert_eq!(source_after_consume.valid_liened_backing_num, 0);
     assert_eq!(source_after_consume.spent_backing_num, backing_num);
     assert_eq!(source_after_consume.provider_receivable_num, backing_num);
-    assert_eq!(source_after_consume.credit_rate_num, CREDIT_RATE_SCALE);
+    assert_eq!(source_after_consume.credit_rate_num, rate);
 }
 
 #[kani::proof]

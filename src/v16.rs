@@ -12275,24 +12275,6 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(())
     }
 
-    pub fn execute_trade_with_fee_in_place_not_atomic(
-        &mut self,
-        long_account: &mut PortfolioV16ViewMut<'_>,
-        short_account: &mut PortfolioV16ViewMut<'_>,
-        request: TradeRequestV16,
-    ) -> V16Result<TradeOutcomeV16> {
-        let outcome = self.execute_batch_with_fee_in_place_not_atomic(
-            long_account,
-            short_account,
-            core::slice::from_ref(&request),
-        )?;
-        Ok(TradeOutcomeV16 {
-            fee_a: outcome.fee_a,
-            fee_b: outcome.fee_b,
-            notional: outcome.notional,
-        })
-    }
-
     pub fn execute_trade_with_fee_loss_stale_scoped_not_atomic(
         &mut self,
         long_account: &mut PortfolioV16ViewMut<'_>,
@@ -12309,20 +12291,6 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             fee_b: outcome.fee_b,
             notional: outcome.notional,
         })
-    }
-
-    pub fn execute_batch_with_fee_in_place_not_atomic(
-        &mut self,
-        long_account: &mut PortfolioV16ViewMut<'_>,
-        short_account: &mut PortfolioV16ViewMut<'_>,
-        requests: &[TradeRequestV16],
-    ) -> V16Result<BatchTradeOutcomeV16> {
-        self.validate_unconfigured_market_tail()?;
-        self.execute_batch_with_fee_after_tail_validation_not_atomic(
-            long_account,
-            short_account,
-            requests,
-        )
     }
 
     pub fn execute_batch_with_fee_loss_stale_scoped_not_atomic(

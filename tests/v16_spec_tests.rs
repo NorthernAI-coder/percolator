@@ -137,7 +137,7 @@ fn v16_fee_sync_on_nonflat_account_settles_hidden_k_loss_before_fee() {
         market.deposit_not_atomic(&mut long, 100).unwrap();
         market.deposit_not_atomic(&mut short, 1_000).unwrap();
         market
-            .execute_trade_with_fee_in_place_not_atomic(
+            .execute_trade_with_fee_loss_stale_scoped_not_atomic(
                 &mut long,
                 &mut short,
                 TradeRequestV16 {
@@ -297,7 +297,7 @@ fn v16_batch_trade_applies_multiple_fills_after_inline_refresh() {
     market.deposit_not_atomic(&mut short, 1_000).unwrap();
 
     let outcome = market
-        .execute_batch_with_fee_in_place_not_atomic(&mut long, &mut short, &requests)
+        .execute_batch_with_fee_loss_stale_scoped_not_atomic(&mut long, &mut short, &requests)
         .unwrap();
 
     assert_eq!(outcome.fill_count, 2);
@@ -355,7 +355,7 @@ fn v16_batch_trade_supports_mixed_signed_spread_legs() {
     market.deposit_not_atomic(&mut lp, 1_000).unwrap();
 
     let outcome = market
-        .execute_batch_with_fee_in_place_not_atomic(&mut taker, &mut lp, &requests)
+        .execute_batch_with_fee_loss_stale_scoped_not_atomic(&mut taker, &mut lp, &requests)
         .unwrap();
 
     assert_eq!(outcome.fill_count, 2);
@@ -417,7 +417,7 @@ fn v16_single_trade_matches_batch_of_one_state() {
         market.deposit_not_atomic(&mut long, 1_000).unwrap();
         market.deposit_not_atomic(&mut short, 1_000).unwrap();
         market
-            .execute_trade_with_fee_in_place_not_atomic(&mut long, &mut short, request)
+            .execute_trade_with_fee_loss_stale_scoped_not_atomic(&mut long, &mut short, request)
             .unwrap()
     };
     let batch_outcome = {
@@ -427,7 +427,7 @@ fn v16_single_trade_matches_batch_of_one_state() {
         market.deposit_not_atomic(&mut long, 1_000).unwrap();
         market.deposit_not_atomic(&mut short, 1_000).unwrap();
         market
-            .execute_batch_with_fee_in_place_not_atomic(&mut long, &mut short, &[request])
+            .execute_batch_with_fee_loss_stale_scoped_not_atomic(&mut long, &mut short, &[request])
             .unwrap()
     };
 
@@ -453,7 +453,7 @@ fn v16_batch_trade_checks_initial_margin_on_final_portfolio() {
         market.deposit_not_atomic(&mut taker, 1_000).unwrap();
         market.deposit_not_atomic(&mut lp, 1_000).unwrap();
         market
-            .execute_trade_with_fee_in_place_not_atomic(
+            .execute_trade_with_fee_loss_stale_scoped_not_atomic(
                 &mut lp,
                 &mut taker,
                 TradeRequestV16 {
@@ -470,7 +470,7 @@ fn v16_batch_trade_checks_initial_margin_on_final_portfolio() {
     let mut taker = PortfolioV16ViewMut::new(&mut taker_header);
     let mut lp = PortfolioV16ViewMut::new(&mut lp_header);
     let outcome = market
-        .execute_batch_with_fee_in_place_not_atomic(
+        .execute_batch_with_fee_loss_stale_scoped_not_atomic(
             &mut taker,
             &mut lp,
             &[
@@ -536,7 +536,7 @@ fn v16_batch_trade_self_settles_stale_certificates_once_before_fills() {
         market.deposit_not_atomic(&mut long, 1_000).unwrap();
         market.deposit_not_atomic(&mut short, 1_000).unwrap();
         market
-            .execute_trade_with_fee_in_place_not_atomic(
+            .execute_trade_with_fee_loss_stale_scoped_not_atomic(
                 &mut long,
                 &mut short,
                 TradeRequestV16 {
@@ -558,7 +558,7 @@ fn v16_batch_trade_self_settles_stale_certificates_once_before_fills() {
     let mut long = PortfolioV16ViewMut::new(&mut long_header);
     let mut short = PortfolioV16ViewMut::new(&mut short_header);
     let outcome = market
-        .execute_batch_with_fee_in_place_not_atomic(
+        .execute_batch_with_fee_loss_stale_scoped_not_atomic(
             &mut long,
             &mut short,
             &[TradeRequestV16 {
@@ -590,7 +590,7 @@ fn v16_batch_trade_rejects_loss_stale_risk_increase_after_inline_settlement() {
         market.deposit_not_atomic(&mut long, 1_000).unwrap();
         market.deposit_not_atomic(&mut short, 1_000).unwrap();
         market
-            .execute_trade_with_fee_in_place_not_atomic(
+            .execute_trade_with_fee_loss_stale_scoped_not_atomic(
                 &mut long,
                 &mut short,
                 TradeRequestV16 {
@@ -610,7 +610,7 @@ fn v16_batch_trade_rejects_loss_stale_risk_increase_after_inline_settlement() {
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut long = PortfolioV16ViewMut::new(&mut long_header);
     let mut short = PortfolioV16ViewMut::new(&mut short_header);
-    let res = market.execute_batch_with_fee_in_place_not_atomic(
+    let res = market.execute_batch_with_fee_loss_stale_scoped_not_atomic(
         &mut long,
         &mut short,
         &[TradeRequestV16 {
@@ -692,7 +692,8 @@ fn v16_batch_trade_is_bounded_by_configured_portfolio_asset_cap() {
     market.deposit_not_atomic(&mut long, 1_000).unwrap();
     market.deposit_not_atomic(&mut short, 1_000).unwrap();
 
-    let res = market.execute_batch_with_fee_in_place_not_atomic(&mut long, &mut short, &requests);
+    let res = market
+        .execute_batch_with_fee_loss_stale_scoped_not_atomic(&mut long, &mut short, &requests);
 
     assert_eq!(res, Err(V16Error::InvalidConfig));
 }
@@ -1727,7 +1728,7 @@ fn v16_risk_increasing_trade_creates_source_credit_lien_for_im() {
     let mut long = PortfolioV16ViewMut::new(&mut long_header);
     let mut short = PortfolioV16ViewMut::new(&mut short_header);
     market
-        .execute_trade_with_fee_in_place_not_atomic(
+        .execute_trade_with_fee_loss_stale_scoped_not_atomic(
             &mut long,
             &mut short,
             TradeRequestV16 {
@@ -1927,7 +1928,7 @@ fn v16_trade_created_parked_source_claim_survives_later_deposit() {
         market.deposit_not_atomic(&mut long, 1_000).unwrap();
         market.deposit_not_atomic(&mut short, 1_000).unwrap();
         market
-            .execute_trade_with_fee_in_place_not_atomic(
+            .execute_trade_with_fee_loss_stale_scoped_not_atomic(
                 &mut long,
                 &mut short,
                 TradeRequestV16 {

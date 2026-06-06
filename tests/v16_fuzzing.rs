@@ -155,7 +155,7 @@ fn apply_fuzz_action(
             let mut long_account = PortfolioV16ViewMut::new(account_a);
             let mut short_account = PortfolioV16ViewMut::new(account_b);
             market
-                .execute_trade_with_fee_in_place_not_atomic(
+                .execute_trade_with_fee_loss_stale_scoped_not_atomic(
                     &mut long_account,
                     &mut short_account,
                     TradeRequestV16 {

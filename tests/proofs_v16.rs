@@ -1970,6 +1970,105 @@ fn proof_v16_dynamic_market_slot_slice_len_matches_runtime_capacity() {
 }
 
 #[kani::proof]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn proof_v16_dynamic_market_account_len_roundtrips_capacity_and_offsets() {
+    let capacity_raw: u16 = kani::any();
+    let index_raw: u16 = kani::any();
+    let capacity = capacity_raw as usize;
+    let index = index_raw as usize;
+    let header_len = core::mem::size_of::<MarketGroupV16HeaderAccount>();
+    let stride = MarketGroupV16HeaderAccount::dynamic_asset_slot_stride::<u8>();
+    kani::assume(stride > 1);
+
+    let len_result = MarketGroupV16HeaderAccount::dynamic_market_group_account_len::<u8>(capacity);
+    let expected_len = capacity
+        .checked_mul(stride)
+        .and_then(|trailing| header_len.checked_add(trailing));
+
+    kani::cover!(
+        expected_len.is_some() && capacity > 1,
+        "dynamic account length proof covers nontrivial realloc capacity"
+    );
+    kani::cover!(
+        capacity == 0,
+        "dynamic account length proof covers zero capacity"
+    );
+    assert_eq!(len_result.is_ok(), expected_len.is_some());
+
+    let len = expected_len.unwrap();
+    assert_eq!(len_result, Ok(len));
+    assert_eq!(
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len::<u8>(len),
+        Ok(capacity)
+    );
+    assert_eq!(
+        MarketGroupV16HeaderAccount::validate_dynamic_market_group_account_len::<u8>(len, capacity),
+        Ok(())
+    );
+
+    let unaligned_len = len.checked_add(1).unwrap();
+    assert_eq!(
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len::<u8>(
+            unaligned_len
+        ),
+        Err(V16Error::InvalidConfig)
+    );
+    assert_eq!(
+        MarketGroupV16HeaderAccount::validate_dynamic_market_group_account_len::<u8>(
+            unaligned_len,
+            capacity
+        ),
+        Err(V16Error::InvalidConfig)
+    );
+
+    if capacity > 0 && index < capacity {
+        let offset = MarketGroupV16HeaderAccount::dynamic_asset_slot_offset::<u8>(index).unwrap();
+        assert_eq!(offset, header_len + index * stride);
+        assert!(offset >= header_len);
+        assert!(offset.checked_add(stride).unwrap() <= len);
+        kani::cover!(
+            index + 1 == capacity,
+            "dynamic offset proof covers final occupied slot boundary"
+        );
+    }
+
+    assert_eq!(
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_capacity_from_account_len::<u8>(
+            header_len - 1
+        ),
+        Err(V16Error::InvalidConfig)
+    );
+}
+
+#[kani::proof]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn proof_v16_dynamic_market_account_len_fails_closed_on_arithmetic_overflow() {
+    let capacity: usize = kani::any();
+    let index: usize = kani::any();
+    let header_len = core::mem::size_of::<MarketGroupV16HeaderAccount>();
+    let stride = MarketGroupV16HeaderAccount::dynamic_asset_slot_stride::<u8>();
+    kani::assume(stride > 1);
+    let max_capacity_without_len_overflow = (usize::MAX - header_len) / stride;
+    kani::assume(capacity > max_capacity_without_len_overflow);
+    kani::assume(index > max_capacity_without_len_overflow);
+
+    kani::cover!(
+        capacity > max_capacity_without_len_overflow + 1,
+        "dynamic account length overflow proof covers deep overflow region"
+    );
+    assert_eq!(
+        MarketGroupV16HeaderAccount::dynamic_market_group_account_len::<u8>(capacity),
+        Err(V16Error::ArithmeticOverflow)
+    );
+    assert_eq!(
+        MarketGroupV16HeaderAccount::dynamic_asset_slot_offset::<u8>(index),
+        Err(V16Error::ArithmeticOverflow)
+    );
+}
+
+#[kani::proof]
 #[kani::unwind(16)]
 #[kani::solver(cadical)]
 fn proof_v16_dynamic_market_extension_slots_must_be_zero_fill() {

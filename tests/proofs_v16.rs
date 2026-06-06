@@ -5819,12 +5819,11 @@ fn proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conservi
 #[kani::unwind(24)]
 #[kani::solver(cadical)]
 fn proof_v16_public_domain_insurance_withdraw_is_budget_scoped_and_value_conserving() {
-    let budget_raw: u8 = kani::any();
+    let budget_raw: u16 = kani::any();
     let withdraw_raw: u8 = kani::any();
-    let surplus_raw: u8 = kani::any();
-    kani::assume((1..=8).contains(&budget_raw));
-    kani::assume(withdraw_raw > 0 && withdraw_raw <= budget_raw);
-    kani::assume(surplus_raw <= 8);
+    let surplus_raw: u16 = kani::any();
+    kani::assume(budget_raw > 0);
+    kani::assume(withdraw_raw > 0 && (withdraw_raw as u16) <= budget_raw);
     let budget = budget_raw as u128;
     let withdraw = withdraw_raw as u128;
     let surplus = surplus_raw as u128;
@@ -5854,8 +5853,8 @@ fn proof_v16_public_domain_insurance_withdraw_is_budget_scoped_and_value_conserv
         "public domain insurance withdraw covers full selected-domain withdrawal"
     );
     kani::cover!(
-        surplus > 0,
-        "public domain insurance withdraw preserves unrelated unbudgeted surplus"
+        surplus > 255,
+        "public domain insurance withdraw preserves wide unrelated unbudgeted surplus"
     );
     assert_eq!(market.header.vault.get(), vault_before - withdraw);
     assert_eq!(market.header.insurance.get(), insurance_before - withdraw);

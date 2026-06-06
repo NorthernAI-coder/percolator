@@ -2052,8 +2052,10 @@ fn proof_v16_public_backing_provider_earnings_withdraw_debits_only_earned_vault(
     });
     let c_tot_before = header.c_tot;
     let insurance_before = header.insurance;
+    let vault_before = header.vault.get();
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     market.refresh_header_aggregate_totals_for_test().unwrap();
+    let total_before = market.header.backing_provider_earnings_total.get();
 
     market
         .withdraw_backing_provider_earnings_not_atomic(0, withdraw)
@@ -2066,13 +2068,29 @@ fn proof_v16_public_backing_provider_earnings_withdraw_debits_only_earned_vault(
 
     kani::cover!(
         withdraw > 1 && bucket.utilization_fee_earnings > 0,
-        "public backing earnings withdraw is nontrivial and symbolic"
+        "public backing earnings withdraw covers partial earned payout"
+    );
+    kani::cover!(
+        withdraw == earnings,
+        "public backing earnings withdraw covers full earned payout"
     );
     assert_eq!(market.header.vault.get(), earnings - withdraw);
     assert_eq!(bucket.utilization_fee_earnings, earnings - withdraw);
     assert_eq!(
         market.header.backing_provider_earnings_total.get(),
         earnings - withdraw
+    );
+    assert_eq!(vault_before - market.header.vault.get(), withdraw);
+    assert_eq!(
+        total_before - market.header.backing_provider_earnings_total.get(),
+        withdraw
+    );
+    assert_eq!(
+        market.header.vault.get()
+            - market.header.c_tot.get()
+            - market.header.insurance.get()
+            - market.header.backing_provider_earnings_total.get(),
+        0
     );
     assert_eq!(market.header.c_tot, c_tot_before);
     assert_eq!(market.header.insurance, insurance_before);

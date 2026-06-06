@@ -1693,6 +1693,51 @@ fn proof_v16_signed_trade_request_maps_to_opposite_account_deltas() {
 #[kani::proof]
 #[kani::unwind(4)]
 #[kani::solver(cadical)]
+fn proof_v16_adjust_u128_applies_exact_delta_or_fails_closed() {
+    let current: u128 = kani::any();
+    let old: u128 = kani::any();
+    let new: u128 = kani::any();
+    let result = percolator::v16::kani_adjust_u128(current, old, new);
+
+    kani::cover!(
+        new > old && current <= u128::MAX - (new - old),
+        "u128 adjustment covers increasing aggregate without overflow"
+    );
+    kani::cover!(
+        new > old && current > u128::MAX - (new - old),
+        "u128 adjustment covers fail-closed aggregate overflow"
+    );
+    kani::cover!(
+        new < old && current >= old - new,
+        "u128 adjustment covers decreasing aggregate without underflow"
+    );
+    kani::cover!(
+        new < old && current < old - new,
+        "u128 adjustment covers fail-closed aggregate underflow"
+    );
+    kani::cover!(new == old, "u128 adjustment covers identity update");
+    if new >= old {
+        let delta = new - old;
+        if let Some(expected) = current.checked_add(delta) {
+            assert_eq!(result, Ok(expected));
+            assert_eq!(expected - current, delta);
+        } else {
+            assert_eq!(result, Err(V16Error::ArithmeticOverflow));
+        }
+    } else {
+        let delta = old - new;
+        if let Some(expected) = current.checked_sub(delta) {
+            assert_eq!(result, Ok(expected));
+            assert_eq!(current - expected, delta);
+        } else {
+            assert_eq!(result, Err(V16Error::CounterUnderflow));
+        }
+    }
+}
+
+#[kani::proof]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
 fn proof_v16_position_delta_risk_classifier_matches_abs_exposure_change() {
     let current: i128 = kani::any();
     let delta_q: i128 = kani::any();

@@ -4,6 +4,7 @@ use percolator::v16::{
     active_bitmap_count_ones, active_bitmap_get, active_bitmap_is_empty, active_bitmap_set,
     kani_add_open_interest_for_new_position, kani_apply_backing_provider_earnings_withdraw,
     kani_apply_backing_utilization_fee_charge, kani_apply_resolved_payout_receipt_payment,
+    kani_available_backing_num_for_source_credit_state,
     kani_expected_source_credit_rate_num_for_state, kani_health_cert_after_capital_debit,
     kani_health_requirements_from_base_and_target_lag,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
@@ -3756,6 +3757,89 @@ fn proof_v16_source_credit_rate_never_exceeds_available_backing_ratio() {
         assert_eq!(support, claim_atoms);
     } else {
         assert!(rate < CREDIT_RATE_SCALE);
+    }
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_available_source_support_excludes_liened_and_encumbered_amounts() {
+    let fresh_raw: u8 = kani::any();
+    let liened_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let valid_insurance_raw: u8 = kani::any();
+    let impaired_insurance_raw: u8 = kani::any();
+    let force_invalid_backing: bool = kani::any();
+    let force_invalid_insurance: bool = kani::any();
+    kani::assume(fresh_raw <= 7);
+    kani::assume(liened_raw <= 7);
+    kani::assume(insurance_raw <= 7);
+    kani::assume(valid_insurance_raw <= 7);
+    kani::assume(impaired_insurance_raw <= 7);
+    let fresh_atoms = fresh_raw as u128;
+    let insurance_atoms = insurance_raw as u128;
+    let liened_atoms = if force_invalid_backing {
+        fresh_atoms + 1
+    } else {
+        (liened_raw.min(fresh_raw)) as u128
+    };
+    let valid_insurance_atoms = if force_invalid_insurance {
+        insurance_atoms + 1
+    } else {
+        (valid_insurance_raw.min(insurance_raw)) as u128
+    };
+    let impaired_limit = insurance_atoms.saturating_sub(valid_insurance_atoms);
+    let impaired_insurance_atoms = if force_invalid_insurance {
+        impaired_insurance_raw as u128
+    } else {
+        (impaired_insurance_raw as u128).min(impaired_limit)
+    };
+    let expected = if liened_atoms > fresh_atoms
+        || valid_insurance_atoms + impaired_insurance_atoms > insurance_atoms
+    {
+        None
+    } else {
+        Some(
+            (fresh_atoms - liened_atoms)
+                + (insurance_atoms - valid_insurance_atoms - impaired_insurance_atoms),
+        )
+    };
+    let state = SourceCreditStateV16 {
+        fresh_reserved_backing_num: fresh_atoms * BOUND_SCALE,
+        valid_liened_backing_num: liened_atoms * BOUND_SCALE,
+        insurance_credit_reserved_num: insurance_atoms * BOUND_SCALE,
+        valid_liened_insurance_num: valid_insurance_atoms * BOUND_SCALE,
+        impaired_liened_insurance_num: impaired_insurance_atoms * BOUND_SCALE,
+        ..SourceCreditStateV16::EMPTY
+    };
+
+    let result = kani_available_backing_num_for_source_credit_state(state);
+
+    kani::cover!(
+        fresh_atoms > 0 && liened_atoms == fresh_atoms && insurance_atoms == 0,
+        "available source support excludes fully liened counterparty backing"
+    );
+    kani::cover!(
+        insurance_atoms > 0
+            && valid_insurance_atoms + impaired_insurance_atoms == insurance_atoms
+            && fresh_atoms == 0,
+        "available source support excludes fully encumbered insurance support"
+    );
+    kani::cover!(
+        expected.is_some()
+            && expected.unwrap() > 0
+            && liened_atoms > 0
+            && valid_insurance_atoms > 0,
+        "available source support combines unliened backing and unencumbered insurance"
+    );
+    kani::cover!(
+        force_invalid_backing || force_invalid_insurance,
+        "available source support rejects impossible encumbrance state"
+    );
+
+    match expected {
+        Some(expected_atoms) => assert_eq!(result, Ok(expected_atoms * BOUND_SCALE)),
+        None => assert_eq!(result, Err(V16Error::InvalidConfig)),
     }
 }
 

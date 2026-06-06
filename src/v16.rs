@@ -1222,6 +1222,13 @@ pub fn kani_expected_source_credit_rate_num_for_state(
 }
 
 #[cfg(kani)]
+pub fn kani_available_backing_num_for_source_credit_state(
+    state: SourceCreditStateV16,
+) -> V16Result<u128> {
+    V16Core::available_backing_num_for_source_credit_state(state)
+}
+
+#[cfg(kani)]
 pub fn kani_loss_stale_trade_scope_allowed(
     market_loss_stale_active: bool,
     trade_asset_loss_stale: bool,

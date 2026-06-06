@@ -5156,7 +5156,17 @@ fn proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill() {
     assert_eq!(next_bucket.consumed_liened_backing_num, receivable - refill);
     assert_eq!(next_source.provider_receivable_num, receivable - refill);
     assert_eq!(next_bucket.fresh_unliened_backing_num, amount);
+    assert_eq!(next_bucket.valid_liened_backing_num, 0);
+    assert_eq!(next_bucket.impaired_liened_backing_num, 0);
     assert_eq!(next_source.fresh_reserved_backing_num, amount);
+    assert_eq!(next_source.spent_backing_num, receivable);
+    assert_eq!(next_source.valid_liened_backing_num, 0);
+    assert_eq!(next_source.impaired_liened_backing_num, 0);
+    assert_eq!(next_source.credit_rate_num, CREDIT_RATE_SCALE);
+    assert_eq!(
+        next_source.provider_receivable_num + refill,
+        next_source.spent_backing_num
+    );
 }
 
 #[kani::proof]

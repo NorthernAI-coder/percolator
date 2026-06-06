@@ -1184,12 +1184,13 @@ fn proof_v16_recovery_mode_blocks_withdraw() {
     let surplus: u128 = kani::any();
     kani::assume(capital > 0);
     kani::assume(amount > 0);
-    kani::assume(capital <= MAX_VAULT_TVL);
-    kani::assume(insurance <= MAX_VAULT_TVL - capital);
-    kani::assume(surplus <= MAX_VAULT_TVL - capital - insurance);
+    let senior = capital.checked_add(insurance);
+    kani::assume(senior.is_some());
+    let vault = senior.unwrap().checked_add(surplus);
+    kani::assume(vault.is_some());
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     header.mode = 2;
-    header.vault = V16PodU128::new(capital + insurance + surplus);
+    header.vault = V16PodU128::new(vault.unwrap());
     header.c_tot = V16PodU128::new(capital);
     header.insurance = V16PodU128::new(insurance);
     account_header.capital = V16PodU128::new(capital);
@@ -1203,8 +1204,12 @@ fn proof_v16_recovery_mode_blocks_withdraw() {
     let result = market.withdraw_not_atomic(&mut account, amount);
 
     kani::cover!(
-        amount > 255 && capital > 255 && insurance > 255 && surplus > 255,
-        "recovery mode blocks ordinary withdraw over wide symbolic value state"
+        amount > MAX_VAULT_TVL && capital > MAX_VAULT_TVL,
+        "recovery mode blocks ordinary withdraw beyond configured TVL-scale values"
+    );
+    kani::cover!(
+        insurance > 0 && surplus > 0,
+        "recovery mode blocks ordinary withdraw while senior insurance and junior surplus exist"
     );
     assert_eq!(result, Err(V16Error::LockActive));
     assert_eq!(market.header.vault, vault_before);

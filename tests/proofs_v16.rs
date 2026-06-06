@@ -2424,6 +2424,89 @@ fn proof_v16_public_counterparty_backing_deposit_moves_vault_and_scaled_source_s
 #[kani::proof]
 #[kani::unwind(48)]
 #[kani::solver(cadical)]
+fn proof_v16_public_counterparty_backing_deposit_refills_expired_receivable_bucket() {
+    let amount_raw: u8 = kani::any();
+    let receivable_raw: u8 = kani::any();
+    kani::assume((1..=8).contains(&amount_raw));
+    kani::assume((1..=8).contains(&receivable_raw));
+    let amount = amount_raw as u128;
+    let receivable = receivable_raw as u128;
+    let amount_num = amount * BOUND_SCALE;
+    let receivable_num = receivable * BOUND_SCALE;
+    let refill_num = core::cmp::min(amount_num, receivable_num);
+    let (mut header, mut markets) = one_market_only_fixture();
+    let market_id = markets[0].engine.asset.market_id.get();
+    markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+        market_id,
+        consumed_liened_backing_num: receivable_num,
+        expiry_slot: 4,
+        status: BackingBucketStatusV16::Expired,
+        ..BackingBucketV16::EMPTY
+    });
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            spent_backing_num: receivable_num,
+            provider_receivable_num: receivable_num,
+            credit_rate_num: CREDIT_RATE_SCALE,
+            ..SourceCreditStateV16::EMPTY
+        });
+    let vault_before = header.vault.get();
+    let c_tot_before = header.c_tot.get();
+    let insurance_before = header.insurance.get();
+    let risk_epoch_before = header.risk_epoch.get();
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    market
+        .deposit_fresh_counterparty_backing_not_atomic(0, amount, 10)
+        .unwrap();
+    let bucket = market.markets[0]
+        .engine
+        .backing_long
+        .try_to_runtime()
+        .unwrap();
+    let source = market.markets[0]
+        .engine
+        .source_credit_long
+        .try_to_runtime()
+        .unwrap();
+
+    kani::cover!(
+        amount_raw < receivable_raw,
+        "public counterparty backing deposit covers partial expired receivable refill"
+    );
+    kani::cover!(
+        amount_raw >= receivable_raw,
+        "public counterparty backing deposit covers complete expired receivable refill"
+    );
+    assert_eq!(market.header.vault.get(), vault_before + amount);
+    assert_eq!(market.header.c_tot.get(), c_tot_before);
+    assert_eq!(market.header.insurance.get(), insurance_before);
+    assert_eq!(market.header.risk_epoch.get(), risk_epoch_before + 1);
+    assert_eq!(bucket.status, BackingBucketStatusV16::Fresh);
+    assert_eq!(bucket.expiry_slot, 10);
+    assert_eq!(bucket.fresh_unliened_backing_num, amount_num);
+    assert_eq!(
+        bucket.consumed_liened_backing_num,
+        receivable_num - refill_num
+    );
+    assert_eq!(bucket.valid_liened_backing_num, 0);
+    assert_eq!(bucket.impaired_liened_backing_num, 0);
+    assert_eq!(source.fresh_reserved_backing_num, amount_num);
+    assert_eq!(source.provider_receivable_num, receivable_num - refill_num);
+    assert_eq!(source.spent_backing_num, receivable_num);
+    assert_eq!(source.valid_liened_backing_num, 0);
+    assert_eq!(source.impaired_liened_backing_num, 0);
+    assert_eq!(source.credit_rate_num, CREDIT_RATE_SCALE);
+    assert_eq!(source.credit_epoch, 1);
+    assert_eq!(
+        bucket.consumed_liened_backing_num,
+        source.provider_receivable_num
+    );
+}
+
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
 fn proof_v16_public_counterparty_backing_withdraw_debits_vault_and_scaled_source_state() {
     let backing_raw: u8 = kani::any();
     let withdraw_raw: u8 = kani::any();

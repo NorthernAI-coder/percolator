@@ -4911,6 +4911,9 @@ fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
     account_header.pnl = V16PodI128::new(-(loss as i128));
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     market.refresh_header_aggregate_totals_for_test().unwrap();
+    let remaining_before = market.header.insurance_domain_budget_remaining_total.get();
+    let short_budget_before = market.markets[0].engine.insurance_domain_budget_short.get();
+    let long_spent_before = market.markets[0].engine.insurance_domain_spent_long.get();
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
 
     let used = market
@@ -4935,8 +4938,25 @@ fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
         expected_used
     );
     assert_eq!(
+        market.header.insurance_domain_budget_remaining_total.get(),
+        remaining_before - expected_used
+    );
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_budget_short.get(),
+        short_budget_before
+    );
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_spent_long.get(),
+        long_spent_before
+    );
+    assert_eq!(
         account.header.pnl.get(),
         -(loss as i128) + expected_used as i128
+    );
+    assert_eq!(market.header.bankruptcy_hlock_active, 1);
+    assert_eq!(
+        market.header.negative_pnl_account_count.get(),
+        if expected_used == loss { 0 } else { 1 }
     );
 }
 

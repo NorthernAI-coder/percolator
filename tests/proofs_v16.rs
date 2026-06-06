@@ -1,10 +1,11 @@
 #![cfg(kani)]
 
 use percolator::v16::{
-    active_bitmap_set, kani_add_open_interest_for_new_position,
-    kani_apply_backing_provider_earnings_withdraw, kani_apply_backing_utilization_fee_charge,
-    kani_apply_resolved_payout_receipt_payment, kani_expected_source_credit_rate_num_for_state,
-    kani_health_cert_after_capital_debit, kani_health_requirements_from_base_and_target_lag,
+    active_bitmap_count_ones, active_bitmap_get, active_bitmap_is_empty, active_bitmap_set,
+    kani_add_open_interest_for_new_position, kani_apply_backing_provider_earnings_withdraw,
+    kani_apply_backing_utilization_fee_charge, kani_apply_resolved_payout_receipt_payment,
+    kani_expected_source_credit_rate_num_for_state, kani_health_cert_after_capital_debit,
+    kani_health_requirements_from_base_and_target_lag,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
     kani_loss_stale_trade_scope_allowed, kani_pending_domain_loss_barrier_blocks_position_change,
     kani_position_delta_increases_risk, kani_prepare_asset_recovery_transition,
@@ -23,7 +24,7 @@ use percolator::v16::{
     ResolvedPayoutReceiptV16Account, SideModeV16, SideV16, SourceCreditStateV16,
     SourceCreditStateV16Account, StockReconciliationProofV16, TokenValueClassV16,
     TokenValueFlowProofV16, V16Config, V16Error, V16PodI128, V16PodU128, V16PodU32, V16PodU64,
-    PORTFOLIO_SOURCE_DOMAIN_CAP, V16_EMPTY_ACTIVE_BITMAP,
+    PORTFOLIO_SOURCE_DOMAIN_CAP, V16_EMPTY_ACTIVE_BITMAP, V16_MAX_PORTFOLIO_ASSETS_N,
 };
 use percolator::{
     ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, MAX_ORACLE_PRICE,
@@ -95,6 +96,60 @@ fn one_market_persisted_slot_fixture() -> (MarketGroupV16HeaderAccount, [Market<
     asset.slot_last = 1;
     markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset);
     (header, markets)
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_active_bitmap_set_get_count_is_exact_and_bounds_checked() {
+    let slot_raw: u8 = kani::any();
+    let pre_set: bool = kani::any();
+    let cap = V16_MAX_PORTFOLIO_ASSETS_N;
+    kani::assume((slot_raw as usize) <= cap + 2);
+    let slot = slot_raw as usize;
+    let mut bitmap = V16_EMPTY_ACTIVE_BITMAP;
+
+    if pre_set && slot < cap {
+        active_bitmap_set(&mut bitmap, slot).unwrap();
+    }
+
+    let before_word0 = bitmap[0];
+    let before_count = active_bitmap_count_ones(bitmap);
+    let before_get = active_bitmap_get(bitmap, slot);
+    let result = active_bitmap_set(&mut bitmap, slot);
+    let after_count = active_bitmap_count_ones(bitmap);
+
+    kani::cover!(
+        slot < cap && !before_get,
+        "in-bounds unset active leg can be recorded"
+    );
+    kani::cover!(
+        slot < cap && before_get,
+        "in-bounds already-active leg set is idempotent"
+    );
+    kani::cover!(slot >= cap, "out-of-bounds active leg set fails closed");
+
+    // The current v16 account shape has one bitmap word; if that changes, this
+    // proof should be widened rather than silently checking only word zero.
+    assert_eq!(V16_ACTIVE_BITMAP_WORDS, 1);
+    assert!(active_bitmap_is_empty(V16_EMPTY_ACTIVE_BITMAP));
+
+    if slot < cap {
+        assert!(result.is_ok());
+        assert!(active_bitmap_get(bitmap, slot));
+        assert!(!active_bitmap_is_empty(bitmap));
+        assert_eq!(bitmap[0], before_word0 | (1u64 << slot));
+        if before_get {
+            assert_eq!(after_count, before_count);
+        } else {
+            assert_eq!(after_count, before_count + 1);
+        }
+    } else {
+        assert!(matches!(result, Err(V16Error::InvalidConfig)));
+        assert_eq!(bitmap[0], before_word0);
+        assert!(!active_bitmap_get(bitmap, slot));
+        assert_eq!(after_count, before_count);
+    }
 }
 
 #[kani::proof]

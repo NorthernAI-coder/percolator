@@ -3062,9 +3062,11 @@ fn proof_v16_resolved_winddown_releases_impaired_insurance_lien() {
     assert_eq!(reservation_after.insurance_credit_reserved_num, 0);
     assert_eq!(reservation_after.valid_liened_insurance_num, 0);
     assert_eq!(reservation_after.impaired_liened_insurance_num, 0);
+    assert_eq!(reservation_after.consumed_insurance_num, 0);
     assert_eq!(source_after.insurance_credit_reserved_num, 0);
     assert_eq!(source_after.valid_liened_insurance_num, 0);
     assert_eq!(source_after.impaired_liened_insurance_num, 0);
+    assert!(source_after.is_empty_amount_shape());
 }
 
 // General guard for the Finding-B class ("junior payout pool must exclude ALL

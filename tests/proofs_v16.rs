@@ -4677,6 +4677,12 @@ fn proof_v16_domain_insurance_deposit_updates_o1_remaining_total() {
     kani::assume(budget_raw > 0);
     let budget = budget_raw as u128;
     let (mut header, mut markets, _) = one_market_view_fixture();
+    let vault_before = header.vault.get();
+    let c_tot_before = header.c_tot.get();
+    let insurance_before = header.insurance.get();
+    let remaining_before = header.insurance_domain_budget_remaining_total.get();
+    let long_budget_before = markets[0].engine.insurance_domain_budget_long.get();
+    let short_budget_before = markets[0].engine.insurance_domain_budget_short.get();
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
 
     market
@@ -4687,13 +4693,28 @@ fn proof_v16_domain_insurance_deposit_updates_o1_remaining_total() {
         budget > 1,
         "domain insurance deposit covers nontrivial budget"
     );
+    assert_eq!(market.header.vault.get(), vault_before + budget);
+    assert_eq!(market.header.insurance.get(), insurance_before + budget);
+    assert_eq!(market.header.c_tot.get(), c_tot_before);
     assert_eq!(
         market.header.insurance_domain_budget_remaining_total.get(),
-        budget
+        remaining_before + budget
     );
     assert_eq!(
         market.markets[0].engine.insurance_domain_budget_long.get(),
-        budget
+        long_budget_before + budget
+    );
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_budget_short.get(),
+        short_budget_before
+    );
+    assert_eq!(
+        market.header.vault.get() - vault_before,
+        market.header.insurance.get() - insurance_before
+    );
+    assert_eq!(
+        market.header.insurance_domain_budget_remaining_total.get() - remaining_before,
+        market.markets[0].engine.insurance_domain_budget_long.get() - long_budget_before
     );
     assert_eq!(market.validate_shape(), Ok(()));
 }

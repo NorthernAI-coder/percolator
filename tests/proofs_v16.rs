@@ -5090,13 +5090,16 @@ fn proof_v16_loss_senior_fee_ordering_consumes_kf_loss_before_fee() {
 #[kani::solver(cadical)]
 fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
     let budget_raw: u8 = kani::any();
+    let other_budget_raw: u8 = kani::any();
     let insurance_raw: u8 = kani::any();
     let loss_raw: u8 = kani::any();
     kani::assume(budget_raw <= 32);
+    kani::assume(other_budget_raw <= 32);
     kani::assume(insurance_raw <= 32);
     kani::assume((1..=32).contains(&loss_raw));
-    kani::assume(budget_raw <= insurance_raw);
+    kani::assume((budget_raw as u16) + (other_budget_raw as u16) <= insurance_raw as u16);
     let budget = budget_raw as u128;
+    let other_budget = other_budget_raw as u128;
     let insurance = insurance_raw as u128;
     let loss = loss_raw as u128;
     let expected_used = budget.min(loss);
@@ -5105,11 +5108,13 @@ fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
     header.insurance = V16PodU128::new(insurance);
     header.negative_pnl_account_count = V16PodU64::new(1);
     markets[0].engine.insurance_domain_budget_short = V16PodU128::new(budget);
+    markets[0].engine.insurance_domain_budget_long = V16PodU128::new(other_budget);
     account_header.pnl = V16PodI128::new(-(loss as i128));
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     market.refresh_header_aggregate_totals_for_test().unwrap();
     let remaining_before = market.header.insurance_domain_budget_remaining_total.get();
     let short_budget_before = market.markets[0].engine.insurance_domain_budget_short.get();
+    let long_budget_before = market.markets[0].engine.insurance_domain_budget_long.get();
     let long_spent_before = market.markets[0].engine.insurance_domain_spent_long.get();
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
 
@@ -5126,6 +5131,10 @@ fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
         loss < budget && used == loss,
         "domain budget spend proof covers loss-capped branch"
     );
+    kani::cover!(
+        other_budget > 0 && expected_used > 0,
+        "domain budget spend proof covers unrelated funded domain isolation"
+    );
     assert_eq!(used, expected_used);
     assert_eq!(market.header.insurance.get(), insurance - expected_used);
     assert_eq!(market.header.vault.get(), insurance);
@@ -5141,6 +5150,10 @@ fn proof_v16_view_domain_budget_caps_bankruptcy_insurance_spend() {
     assert_eq!(
         market.markets[0].engine.insurance_domain_budget_short.get(),
         short_budget_before
+    );
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_budget_long.get(),
+        long_budget_before
     );
     assert_eq!(
         market.markets[0].engine.insurance_domain_spent_long.get(),

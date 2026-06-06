@@ -3871,15 +3871,19 @@ fn proof_v16_live_positive_kf_delta_without_source_rejects() {
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
 fn proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim() {
-    let terminal_raw: u8 = kani::any();
-    let paid_raw: u8 = kani::any();
+    let terminal_raw: u16 = kani::any();
+    let paid_raw: u16 = kani::any();
+    let bound_slack_raw: u16 = kani::any();
     kani::assume(terminal_raw > 0);
+    kani::assume(terminal_raw <= 4096);
     kani::assume(paid_raw <= terminal_raw);
     let terminal = terminal_raw as u128;
     let paid = paid_raw as u128;
+    let bound_slack_num = bound_slack_raw as u128 * BOUND_SCALE;
+    let prior_bound = terminal * BOUND_SCALE + bound_slack_num;
     let receipt = ResolvedPayoutReceiptV16 {
         present: true,
-        prior_bound_contribution_num: terminal * BOUND_SCALE,
+        prior_bound_contribution_num: prior_bound,
         live_released_face_at_receipt: terminal,
         terminal_positive_claim_face: terminal,
         paid_effective: paid,
@@ -3897,12 +3901,14 @@ fn proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim() {
         paid == terminal && remaining == 0,
         "resolved receipt proof covers finalized idempotent zero topup"
     );
+    kani::cover!(
+        terminal_raw > 255 && bound_slack_raw > 0,
+        "resolved receipt proof covers widened over-bound terminal receipt"
+    );
     assert_eq!(ok_payment.paid_effective, terminal);
     assert!(ok_payment.finalized);
-    assert_eq!(
-        ok_payment.prior_bound_contribution_num,
-        receipt.prior_bound_contribution_num
-    );
+    assert_eq!(ok_payment.prior_bound_contribution_num, prior_bound);
+    assert!(ok_payment.prior_bound_contribution_num >= terminal * BOUND_SCALE);
     assert_eq!(
         ok_payment.live_released_face_at_receipt,
         receipt.live_released_face_at_receipt

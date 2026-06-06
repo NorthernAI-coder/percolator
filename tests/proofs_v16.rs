@@ -10634,6 +10634,75 @@ fn proof_v16_inductive_settle_negative_pnl_preserves_senior_solvency() {
     }
 }
 
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_inductive_fee_core_preserves_senior_solvency_and_never_debits_insurance() {
+    let vault: u128 = kani::any();
+    let c_tot: u128 = kani::any();
+    let insurance: u128 = kani::any();
+    let capital: u128 = kani::any();
+    let requested_fee: u128 = kani::any();
+    let pnl: i128 = kani::any();
+
+    // Decomposed canonical senior-accounting invariant over full symbolic scalars.
+    kani::assume(inv_senior_accounting(vault, c_tot, insurance));
+    kani::assume(capital <= c_tot);
+
+    let (market_id, _, _) = ids();
+    let cfg = V16Config::public_user_fund_with_market_slots(1, 1, 0, 10);
+    let mut header = MarketGroupV16HeaderAccount::new_dynamic(market_id, cfg, 1, 0).unwrap();
+    let mut markets = [Market::new(0u64, EngineAssetSlotV16Account::default())];
+    header.vault = V16PodU128::new(vault);
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(insurance);
+
+    let mut acct_header = PortfolioAccountV16Account::default();
+    acct_header.capital = V16PodU128::new(capital);
+    acct_header.pnl = V16PodI128::new(pnl);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut acct_header);
+
+    kani::cover!(
+        pnl >= 0 && requested_fee > 0 && requested_fee < capital,
+        "fee core covers partial fee charge"
+    );
+    kani::cover!(
+        pnl >= 0 && requested_fee > capital && capital > 0,
+        "fee core covers capital-capped fee charge"
+    );
+    kani::cover!(
+        pnl < 0 && requested_fee > 0 && capital > 0,
+        "fee core covers negative-PnL no-charge branch"
+    );
+
+    let result = market.kani_charge_account_fee_current_not_atomic(&mut account, requested_fee);
+    assert!(result.is_ok());
+    let charged = result.unwrap();
+    let expected = if requested_fee == 0 || pnl < 0 {
+        0
+    } else {
+        requested_fee.min(capital)
+    };
+
+    let vault_after = market.header.vault.get();
+    let c_tot_after = market.header.c_tot.get();
+    let insurance_after = market.header.insurance.get();
+    assert_eq!(charged, expected);
+    assert_eq!(vault_after, vault);
+    assert_eq!(c_tot_after, c_tot - charged);
+    assert_eq!(insurance_after, insurance + charged);
+    assert_eq!(account.header.capital.get(), capital - charged);
+    assert!(insurance_after >= insurance);
+    assert!(inv_senior_accounting(
+        vault_after,
+        c_tot_after,
+        insurance_after
+    ));
+    assert!(account.header.capital.get() <= c_tot_after);
+}
+
 // Finding E: cure_and_cancel_close_not_atomic leaves close_progress in the `canceled`
 // (inert) state, never EMPTY; withdraw_not_atomic rejected any non-EMPTY close_progress,
 // so a flat, solvent user who cured a forced close could never withdraw their capital

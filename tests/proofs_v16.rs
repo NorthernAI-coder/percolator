@@ -1008,7 +1008,21 @@ fn proof_v16_dynamic_market_slot_slice_len_matches_runtime_capacity() {
         supplied < capacity,
         "dynamic market slot length proof covers undersupplied wrapper slice"
     );
+    kani::cover!(
+        supplied > capacity,
+        "dynamic market slot length proof covers oversupplied wrapper slice"
+    );
+    kani::cover!(
+        supplied == capacity && capacity < configured,
+        "dynamic market slot length proof covers capacity below configured markets"
+    );
     assert_eq!(result.is_ok(), expected_ok);
+    if expected_ok {
+        assert_eq!(result, Ok(()));
+    } else {
+        assert!(supplied != capacity || capacity < configured);
+        assert_eq!(result, Err(V16Error::InvalidConfig));
+    }
 }
 
 #[kani::proof]

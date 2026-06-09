@@ -3615,6 +3615,7 @@ pub struct StockReconciliationProofV16 {
     pub senior_capital_total: u128,
     pub insurance_capital: u128,
     pub backing_provider_earnings: u128,
+    pub counterparty_backing_principal: u128,
     pub settlement_rounding_residue_total: u128,
     pub unallocated_protocol_surplus: u128,
 }
@@ -3626,6 +3627,7 @@ impl StockReconciliationProofV16 {
             .senior_capital_total
             .checked_add(self.insurance_capital)
             .and_then(|v| v.checked_add(self.backing_provider_earnings))
+            .and_then(|v| v.checked_add(self.counterparty_backing_principal))
             .and_then(|v| v.checked_add(self.settlement_rounding_residue_total))
             .and_then(|v| v.checked_add(self.unallocated_protocol_surplus))
             .ok_or(V16Error::ArithmeticOverflow)?;
@@ -4669,6 +4671,7 @@ pub struct MarketGroupV16HeaderAccount {
     pub pnl_matured_pos_tot: V16PodU128,
     pub backing_provider_earnings_total: V16PodU128,
     pub source_claim_bound_total_num: V16PodU128,
+    pub source_fresh_backing_total_num: V16PodU128,
     pub source_insurance_credit_reserved_total_atoms: V16PodU128,
     pub insurance_domain_budget_remaining_total: V16PodU128,
     pub resolved_payout_blocker_count: V16PodU64,
@@ -4786,6 +4789,7 @@ impl MarketGroupV16HeaderAccount {
             pnl_matured_pos_tot: V16PodU128::default(),
             backing_provider_earnings_total: V16PodU128::default(),
             source_claim_bound_total_num: V16PodU128::default(),
+            source_fresh_backing_total_num: V16PodU128::default(),
             source_insurance_credit_reserved_total_atoms: V16PodU128::default(),
             insurance_domain_budget_remaining_total: V16PodU128::default(),
             resolved_payout_blocker_count: V16PodU64::default(),
@@ -5079,6 +5083,7 @@ impl MarketGroupV16HeaderAccount {
 struct MarketAggregateTotalsV16 {
     backing_provider_earnings: u128,
     source_claim_bound_num: u128,
+    source_fresh_backing_num: u128,
     source_insurance_credit_reserved_atoms: u128,
     insurance_domain_budget_remaining_atoms: u128,
     resolved_payout_blocker_count: u64,
@@ -5154,6 +5159,18 @@ impl<'a, T> MarketGroupV16View<'a, T> {
         if senior > self.header.vault.get() {
             return Err(V16Error::InvalidConfig);
         }
+        // Recoverable counterparty backing principal is also a vault claim:
+        // every deposit moves vault and backing in lockstep, every consume that
+        // re-credits c_tot debits backing first, so the strengthened stack must
+        // always be covered. A state violating it is double-promising atoms.
+        let senior_with_backing = senior
+            .checked_add(
+                self.header.source_fresh_backing_total_num.get() / BOUND_SCALE,
+            )
+            .ok_or(V16Error::ArithmeticOverflow)?;
+        if senior_with_backing > self.header.vault.get() {
+            return Err(V16Error::InvalidConfig);
+        }
         if self
             .header
             .source_insurance_credit_reserved_total_atoms
@@ -5182,6 +5199,7 @@ impl<'a, T> MarketGroupV16View<'a, T> {
         let totals = self.compute_aggregate_totals_and_validate_slots()?;
         if totals.backing_provider_earnings != self.header.backing_provider_earnings_total.get()
             || totals.source_claim_bound_num != self.header.source_claim_bound_total_num.get()
+            || totals.source_fresh_backing_num != self.header.source_fresh_backing_total_num.get()
             || totals.source_insurance_credit_reserved_atoms
                 != self
                     .header
@@ -5244,6 +5262,10 @@ impl<'a, T> MarketGroupV16View<'a, T> {
                 .source_claim_bound_num
                 .checked_add(source_credit_long.positive_claim_bound_num)
                 .ok_or(V16Error::ArithmeticOverflow)?;
+            totals.source_fresh_backing_num = totals
+                .source_fresh_backing_num
+                .checked_add(source_credit_long.fresh_reserved_backing_num)
+                .ok_or(V16Error::ArithmeticOverflow)?;
             Self::validate_domain_shape_for_view(
                 asset.market_id,
                 source_credit_long,
@@ -5268,6 +5290,10 @@ impl<'a, T> MarketGroupV16View<'a, T> {
             totals.source_claim_bound_num = totals
                 .source_claim_bound_num
                 .checked_add(source_credit_short.positive_claim_bound_num)
+                .ok_or(V16Error::ArithmeticOverflow)?;
+            totals.source_fresh_backing_num = totals
+                .source_fresh_backing_num
+                .checked_add(source_credit_short.fresh_reserved_backing_num)
                 .ok_or(V16Error::ArithmeticOverflow)?;
             Self::validate_domain_shape_for_view(
                 asset.market_id,
@@ -5423,6 +5449,8 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.header.backing_provider_earnings_total =
             V16PodU128::new(totals.backing_provider_earnings);
         self.header.source_claim_bound_total_num = V16PodU128::new(totals.source_claim_bound_num);
+        self.header.source_fresh_backing_total_num =
+            V16PodU128::new(totals.source_fresh_backing_num);
         self.header.source_insurance_credit_reserved_total_atoms =
             V16PodU128::new(totals.source_insurance_credit_reserved_atoms);
         self.header.insurance_domain_budget_remaining_total =
@@ -5539,6 +5567,11 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 old_insurance_atoms,
                 new_insurance_atoms,
             )?);
+        self.header.source_fresh_backing_total_num = V16PodU128::new(Self::apply_total_delta(
+            self.header.source_fresh_backing_total_num.get(),
+            old.fresh_reserved_backing_num,
+            new.fresh_reserved_backing_num,
+        )?);
         Ok(())
     }
 
@@ -5570,17 +5603,28 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.header.backing_provider_earnings_total.get()
     }
 
+    // Recoverable counterparty backing principal (Fresh-bucket unliened+liened
+    // atoms across every domain): provider-withdrawable whenever the domain is
+    // fully backed, with no mode or payout-snapshot gate, so it is a senior-side
+    // claim on the vault — never junior surplus.
+    fn source_fresh_backing_total_atoms(&self) -> u128 {
+        self.header.source_fresh_backing_total_num.get() / BOUND_SCALE
+    }
+
     // Junior (positive-PnL) payout pool = vault minus ALL senior claims: capital
-    // (c_tot), insurance, AND backing-provider earnings. Omitting earnings here
-    // over-states the pool and lets a haircut resolved-close over-pay, which the
-    // final validate_shape then rejects (permanent fund-stuck deadlock).
+    // (c_tot), insurance, backing-provider earnings, AND recoverable counterparty
+    // backing principal. Omitting a senior claim here over-states the pool and
+    // promises the same vault atoms to two parties: a haircut resolved-close
+    // over-pays winners out of value its owner can still withdraw (or, when the
+    // final validate_shape catches it, deadlocks the close permanently).
     fn residual(&self) -> u128 {
         self.header.vault.get().saturating_sub(
             self.header
                 .c_tot
                 .get()
                 .saturating_add(self.header.insurance.get())
-                .saturating_add(self.backing_provider_earnings_total()),
+                .saturating_add(self.backing_provider_earnings_total())
+                .saturating_add(self.source_fresh_backing_total_atoms()),
         )
     }
 

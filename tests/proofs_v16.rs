@@ -4395,9 +4395,10 @@ fn proof_v16_backing_utilization_collection_full_charge_conserves_senior_value()
     header.config.backing_fee_slope_above_kink_e9_per_slot = V16PodU64::new(0);
     header.current_slot = V16PodU64::new(current_slot);
     header.slot_last = V16PodU64::new(current_slot);
-    header.vault = V16PodU128::new(capital + earnings_before);
+    header.vault = V16PodU128::new(capital + earnings_before + lien_atoms);
     header.c_tot = V16PodU128::new(capital);
     header.backing_provider_earnings_total = V16PodU128::new(earnings_before);
+    header.source_fresh_backing_total_num = V16PodU128::new(lien_num);
     account_header.capital = V16PodU128::new(capital);
     account_header.pnl = V16PodI128::new(0);
     account_header.health_cert.valid = 1;
@@ -4470,6 +4471,7 @@ fn proof_v16_backing_utilization_collection_full_charge_conserves_senior_value()
         market.header.c_tot.get()
             + market.header.insurance.get()
             + market.header.backing_provider_earnings_total.get()
+            + market.header.source_fresh_backing_total_num.get() / BOUND_SCALE
     );
     assert_eq!(
         account.header.health_cert.valid,
@@ -4502,9 +4504,10 @@ fn proof_v16_backing_utilization_collection_cap_charge_conserves_senior_value() 
     header.config.backing_fee_slope_above_kink_e9_per_slot = V16PodU64::new(0);
     header.current_slot = V16PodU64::new(current_slot);
     header.slot_last = V16PodU64::new(current_slot);
-    header.vault = V16PodU128::new(capital + earnings_before);
+    header.vault = V16PodU128::new(capital + earnings_before + lien_atoms);
     header.c_tot = V16PodU128::new(capital);
     header.backing_provider_earnings_total = V16PodU128::new(earnings_before);
+    header.source_fresh_backing_total_num = V16PodU128::new(lien_num);
     account_header.capital = V16PodU128::new(capital);
     account_header.pnl = V16PodI128::new(0);
     account_header.health_cert.valid = 1;
@@ -4577,6 +4580,7 @@ fn proof_v16_backing_utilization_collection_cap_charge_conserves_senior_value() 
         market.header.c_tot.get()
             + market.header.insurance.get()
             + market.header.backing_provider_earnings_total.get()
+            + market.header.source_fresh_backing_total_num.get() / BOUND_SCALE
     );
     assert_eq!(account.header.health_cert.valid, 0);
 }
@@ -4605,9 +4609,10 @@ fn proof_v16_backing_utilization_collection_negative_pnl_never_draws_capital() {
     header.config.backing_fee_slope_above_kink_e9_per_slot = V16PodU64::new(0);
     header.current_slot = V16PodU64::new(current_slot);
     header.slot_last = V16PodU64::new(current_slot);
-    header.vault = V16PodU128::new(capital + earnings_before);
+    header.vault = V16PodU128::new(capital + earnings_before + 1);
     header.c_tot = V16PodU128::new(capital);
     header.backing_provider_earnings_total = V16PodU128::new(earnings_before);
+    header.source_fresh_backing_total_num = V16PodU128::new(lien_num);
     account_header.capital = V16PodU128::new(capital);
     account_header.pnl = V16PodI128::new(-1);
     account_header.health_cert.valid = 1;
@@ -4692,8 +4697,9 @@ fn proof_v16_public_account_backing_fee_split_preserves_senior_stock() {
     let capital = total_fee + margin_slack_raw as u128;
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
-    header.vault = V16PodU128::new(capital);
+    header.vault = V16PodU128::new(capital + 1);
     header.c_tot = V16PodU128::new(capital);
+    header.source_fresh_backing_total_num = V16PodU128::new(BOUND_SCALE);
     account_header.capital = V16PodU128::new(capital);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
@@ -4968,10 +4974,13 @@ fn proof_v16_public_backing_provider_earnings_credit_uses_only_vault_slack() {
     let surplus = surplus_raw as u128;
     let (mut header, mut markets) = one_market_only_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
-    header.vault = V16PodU128::new(c_tot + insurance + existing + amount + surplus);
+    // +1 atom funds the hand-built fresh backing below (provider principal is
+    // vault-funded and senior-side, never part of the creditable slack).
+    header.vault = V16PodU128::new(c_tot + insurance + existing + amount + surplus + 1);
     header.c_tot = V16PodU128::new(c_tot);
     header.insurance = V16PodU128::new(insurance);
     header.backing_provider_earnings_total = V16PodU128::new(existing);
+    header.source_fresh_backing_total_num = V16PodU128::new(BOUND_SCALE);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         fresh_unliened_backing_num: BOUND_SCALE,
@@ -5033,7 +5042,8 @@ fn proof_v16_public_backing_provider_earnings_credit_uses_only_vault_slack() {
         market.header.vault.get()
             - market.header.c_tot.get()
             - market.header.insurance.get()
-            - market.header.backing_provider_earnings_total.get(),
+            - market.header.backing_provider_earnings_total.get()
+            - market.header.source_fresh_backing_total_num.get() / BOUND_SCALE,
         surplus
     );
     assert_eq!(market.validate_shape(), Ok(()));
@@ -5068,6 +5078,7 @@ fn proof_v16_public_counterparty_backing_deposit_moves_vault_and_scaled_source_s
                 credit_rate_num: CREDIT_RATE_SCALE,
                 ..SourceCreditStateV16::EMPTY
             });
+        header.source_fresh_backing_total_num = V16PodU128::new(existing_num);
     }
     let vault_before = header.vault.get();
     let c_tot_before = header.c_tot.get();
@@ -5214,6 +5225,7 @@ fn proof_v16_public_counterparty_backing_expiry_is_value_neutral_and_impairs_lie
     let (mut header, mut markets) = one_market_only_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
     header.vault = V16PodU128::new(fresh_atoms + liened_atoms);
+    header.source_fresh_backing_total_num = V16PodU128::new(fresh_num + liened_num);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         fresh_unliened_backing_num: fresh_num,
@@ -5300,6 +5312,7 @@ fn proof_v16_public_counterparty_backing_withdraw_debits_vault_and_scaled_source
     let (mut header, mut markets) = one_market_only_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
     header.vault = V16PodU128::new(backing);
+    header.source_fresh_backing_total_num = V16PodU128::new(backing_num);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         fresh_unliened_backing_num: backing_num,
@@ -5385,6 +5398,7 @@ fn proof_v16_public_counterparty_backing_withdraw_rejects_underbacking_source_cl
     header.vault = V16PodU128::new(backing);
     header.pnl_pos_bound_tot = V16PodU128::new(backing);
     header.pnl_pos_bound_tot_num = V16PodU128::new(backing_num);
+    header.source_fresh_backing_total_num = V16PodU128::new(backing_num);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         fresh_unliened_backing_num: backing_num,
@@ -6344,9 +6358,11 @@ fn proof_v16_validate_shape_rejects_global_junior_bound_below_domain_claims() {
         ..BackingBucketV16::EMPTY
     });
     header.source_claim_bound_total_num = V16PodU128::new(claim_num);
+    header.source_fresh_backing_total_num = V16PodU128::new(claim_num);
+    header.vault = V16PodU128::new(claim);
     // Group-level junior bound left at 0 -> global UNDERSTATES the domain's claims.
-    // Every other facet of the state is valid; the only inconsistency is the
-    // missing aggregation relation.
+    // Every other facet of the state is valid (the backing is vault-funded and
+    // aggregated); the only inconsistency is the missing aggregation relation.
 
     let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
 
@@ -6856,31 +6872,45 @@ fn proof_v16_residual_reconciles_with_senior_stock() {
     let c_tot_raw: u8 = kani::any();
     let insurance_raw: u8 = kani::any();
     let earnings_raw: u8 = kani::any();
+    let backing_raw: u8 = kani::any();
     let surplus_raw: u8 = kani::any();
     let c_tot = c_tot_raw as u128;
     let insurance = insurance_raw as u128;
     let earnings = earnings_raw as u128;
+    let backing = backing_raw as u128;
     let surplus = surplus_raw as u128;
-    let vault = c_tot + insurance + earnings + surplus;
+    let vault = c_tot + insurance + earnings + backing + surplus;
 
     let (mut header, mut markets, _) = one_market_view_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
     header.vault = V16PodU128::new(vault);
     header.c_tot = V16PodU128::new(c_tot);
     header.insurance = V16PodU128::new(insurance);
-    if earnings > 0 {
+    if earnings > 0 || backing > 0 {
         markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
             market_id,
             utilization_fee_earnings: earnings,
-            status: BackingBucketStatusV16::Expired,
+            fresh_unliened_backing_num: backing * BOUND_SCALE,
+            expiry_slot: if backing > 0 { 10 } else { 0 },
+            status: if backing > 0 {
+                BackingBucketStatusV16::Fresh
+            } else {
+                BackingBucketStatusV16::Expired
+            },
             ..BackingBucketV16::EMPTY
         });
+        markets[0].engine.source_credit_long =
+            SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+                fresh_reserved_backing_num: backing * BOUND_SCALE,
+                credit_rate_num: CREDIT_RATE_SCALE,
+                ..SourceCreditStateV16::EMPTY
+            });
     }
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     market.refresh_header_aggregate_totals_for_test().unwrap();
 
     kani::cover!(
-        c_tot > 4 && insurance > 4 && earnings > 4 && surplus > 4,
+        c_tot > 4 && insurance > 4 && earnings > 4 && backing > 4 && surplus > 4,
         "residual reconciliation covers wide senior buckets with junior surplus"
     );
     // Valid, reachable shape (senior stack within vault).
@@ -6890,12 +6920,14 @@ fn proof_v16_residual_reconciles_with_senior_stock() {
     // residual is the true junior surplus...
     assert_eq!(residual, surplus);
     // ...and it reconciles the full senior/junior stock against the vault: omitting
-    // ANY senior bucket from residual would break this balance.
+    // ANY senior bucket from residual (LP earnings, recoverable counterparty
+    // backing principal, ...) would break this balance.
     let recon = StockReconciliationProofV16 {
         token_vault: vault,
         senior_capital_total: c_tot,
         insurance_capital: insurance,
         backing_provider_earnings: earnings,
+        counterparty_backing_principal: backing,
         settlement_rounding_residue_total: 0,
         unallocated_protocol_surplus: residual,
     };
@@ -8706,6 +8738,7 @@ fn proof_v16_public_counterparty_lien_create_moves_fresh_to_valid_without_value_
     let (mut header, mut markets) = one_market_only_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
     header.vault = V16PodU128::new(atoms);
+    header.source_fresh_backing_total_num = V16PodU128::new(amount);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         fresh_unliened_backing_num: amount,
@@ -8855,6 +8888,8 @@ fn proof_v16_public_counterparty_lien_release_restores_unliened_backing_without_
     let amount = amount_raw as u128 * BOUND_SCALE;
     let (mut header, mut markets, _) = one_market_view_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
+    header.vault = V16PodU128::new(amount_raw as u128 * 2);
+    header.source_fresh_backing_total_num = V16PodU128::new(amount * 2);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         fresh_unliened_backing_num: amount,
@@ -8915,6 +8950,8 @@ fn proof_v16_public_counterparty_lien_consume_creates_receivable_without_value_m
     let amount = amount_raw as u128 * BOUND_SCALE;
     let (mut header, mut markets, _) = one_market_view_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
+    header.vault = V16PodU128::new(amount_raw as u128);
+    header.source_fresh_backing_total_num = V16PodU128::new(amount);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         valid_liened_backing_num: amount,
@@ -9102,6 +9139,7 @@ fn proof_v16_public_counterparty_lien_impair_moves_valid_to_impaired_without_val
     let (mut header, mut markets) = one_market_only_fixture();
     let market_id = markets[0].engine.asset.market_id.get();
     header.vault = V16PodU128::new(atoms);
+    header.source_fresh_backing_total_num = V16PodU128::new(amount);
     markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
         market_id,
         valid_liened_backing_num: amount,
@@ -11540,4 +11578,46 @@ fn proof_v16_insolvent_resolved_receipt_clears_at_terminal_rate() {
     assert!(!receipt.present);
     assert_eq!(market.validate_shape(), Ok(()));
     assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
+}
+
+// Recoverable counterparty backing principal is a senior-side claim: the
+// provider can withdraw it whenever the domain is fully backed, with no mode
+// or payout-snapshot gate (withdraw_fresh_counterparty_backing_not_atomic).
+// So it must NOT count in residual(), the junior positive-PnL payout pool —
+// otherwise the resolved payout snapshot promises winners the same vault
+// atoms the provider can still withdraw, and whichever party moves second is
+// robbed or stranded (Finding-B class: residual() omitting a senior claim).
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_residual_excludes_recoverable_counterparty_backing_principal() {
+    let deposit_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
+    kani::assume((1..=8).contains(&deposit_raw));
+    kani::assume(surplus_raw <= 8);
+    let deposit = deposit_raw as u128;
+    let surplus = surplus_raw as u128;
+    let (mut header, mut markets) = one_market_only_fixture();
+    header.vault = V16PodU128::new(7 + surplus);
+    header.c_tot = V16PodU128::new(7);
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    market.validate_shape().unwrap();
+    let residual_before = market.kani_residual();
+    assert_eq!(residual_before, surplus);
+
+    // Engine-built deposit of recoverable provider principal.
+    market
+        .deposit_fresh_counterparty_backing_not_atomic(0, deposit, 10)
+        .unwrap();
+
+    kani::cover!(surplus_raw == 0, "covers zero junior surplus");
+    kani::cover!(surplus_raw > 0, "covers positive junior surplus");
+    // The deposit is withdrawable principal, not junior surplus: the junior
+    // payout pool must be unchanged by it...
+    assert_eq!(market.kani_residual(), residual_before);
+    // ...and stay unchanged after the provider recovers the principal.
+    market
+        .withdraw_fresh_counterparty_backing_not_atomic(0, deposit)
+        .unwrap();
+    assert_eq!(market.kani_residual(), residual_before);
 }

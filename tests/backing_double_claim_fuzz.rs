@@ -402,3 +402,57 @@ fn realization_after_snapshot_refines_unreceipted_bound() {
     assert_eq!(market.header.vault.get(), 0);
     assert_eq!(market.validate_shape(), Ok(()));
 }
+
+/// Expiry-liveness regression (wrapper finding, 2026-06-10): a source-backed
+/// winner whose domain backing went PAST-EXPIRY (bucket still Fresh — nothing
+/// processes expiry in production) must still close at resolution. The realize
+/// step must not propagate the freshness validator's Stale: it expires the
+/// lapsed bucket (forfeiting the unliened principal to the junior pool, the
+/// documented expiry semantics) and falls through to the junior receipt path.
+#[test]
+fn terminal_close_with_expired_backing_does_not_strand() {
+    let pnl = 1_000u128;
+    let backing = 500u128;
+    let (mut header, mut markets, mut account_header) =
+        resolved_market_with_backed_winner(pnl, backing, 0);
+    // Backing lapsed long before resolution.
+    let engine_market_id = markets[0].engine.asset.market_id.get();
+    markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+        market_id: engine_market_id,
+        fresh_unliened_backing_num: backing * BOUND_SCALE,
+        expiry_slot: 5,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    });
+    header.resolved_slot = V16PodU64::new(20);
+    header.current_slot = V16PodU64::new(20);
+    account_header.last_fee_slot = V16PodU64::new(20);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    assert_eq!(market.validate_shape(), Ok(()));
+    assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
+
+    let vault_before = market.header.vault.get();
+    let outcome = market
+        .close_resolved_account_not_atomic(&mut account, 0)
+        .expect("expired-backing winner close must not revert (liveness)");
+    let closed = matches!(outcome, ResolvedCloseOutcomeV16::Closed { payout: _ });
+    assert!(closed, "expired-backing winner did not fully close");
+    let paid = vault_before - market.header.vault.get();
+
+    // Expiry forfeits the lapsed principal to the junior pool: the winner is
+    // paid the haircut share (here the whole forfeited amount, residual < face)
+    // through the receipt path, not via realization.
+    assert_eq!(paid, backing);
+    assert_eq!(account.header.capital.get(), 0);
+    assert_eq!(account.header.pnl.get(), 0);
+    // The bucket is processed (Expired) and the provider cannot recover lapsed
+    // principal afterwards.
+    let bucket = market.markets[0].engine.backing_long.try_to_runtime().unwrap();
+    assert_eq!(bucket.status, BackingBucketStatusV16::Expired);
+    assert!(market
+        .withdraw_fresh_counterparty_backing_not_atomic(0, backing)
+        .is_err());
+    assert_eq!(market.validate_shape(), Ok(()));
+}

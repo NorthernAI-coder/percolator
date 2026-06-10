@@ -5793,6 +5793,11 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(())
     }
 
+    #[cfg(kani)]
+    pub fn kani_validate_source_domain_ledger_current(&self, domain: usize) -> V16Result<()> {
+        self.validate_source_domain_ledger_current(domain)
+    }
+
     fn recompute_source_credit_domain_after_mutation(&mut self, domain: usize) -> V16Result<()> {
         let source = self.source_credit_for_domain_shape(domain)?;
         let (source, next_risk_epoch) = V16Core::prepare_source_credit_domain_recompute_for_epoch(
@@ -5804,7 +5809,6 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(())
     }
 
-    #[cfg(any(kani, feature = "fuzz"))]
     fn refresh_source_credit_domain_after_mutation(&mut self, domain: usize) -> V16Result<()> {
         self.recompute_source_credit_domain_after_mutation(domain)?;
         self.reservation_encumbrance_proof_for_domain(domain)?
@@ -6024,7 +6028,6 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.validate_shape()
     }
 
-    #[cfg(any(kani, feature = "fuzz"))]
     pub fn expire_source_backing_bucket_not_atomic(
         &mut self,
         domain: usize,
@@ -13597,16 +13600,32 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         // Release the account's persisted liens first (the terminal burn would do
         // this anyway): the conversion consumes only UNLIENED claims, so a still-
         // liened claim would make the realizable estimate exceed what consumption
-        // can deliver and dead-lock the close with LockActive.
+        // can deliver and dead-lock the close with LockActive. In the same sweep,
+        // expire any domain whose backing bucket has lapsed (status Fresh but
+        // expiry_slot <= current_slot): realization is best-effort, and querying
+        // realizable support against a past-expiry bucket would otherwise return
+        // Stale and strand the winner's close. Expiry forfeits the lapsed
+        // principal to the junior pool (the documented expiry semantics), drops
+        // the domain's credit rate to zero, and lets this step fall through to
+        // the junior receipt path instead of reverting.
+        let current_slot = self.header.current_slot.get();
         let mut slot = 0usize;
         while slot < PORTFOLIO_SOURCE_DOMAIN_CAP {
             let source = account.header.source_domains[slot];
             if source.has_default_sparse_tag() && !source.is_occupied() {
                 break;
             }
-            if source.is_occupied() && source.source_claim_liened_num.get() != 0 {
+            if source.is_occupied() {
                 let d = source.domain.get() as usize;
-                self.release_account_source_credit_lien_for_domain_not_atomic(account, d)?;
+                if source.source_claim_liened_num.get() != 0 {
+                    self.release_account_source_credit_lien_for_domain_not_atomic(account, d)?;
+                }
+                let bucket = self.backing_bucket_for_domain(d)?;
+                if bucket.status == BackingBucketStatusV16::Fresh
+                    && bucket.expiry_slot <= current_slot
+                {
+                    self.expire_source_backing_bucket_not_atomic(d, current_slot)?;
+                }
             }
             slot += 1;
         }

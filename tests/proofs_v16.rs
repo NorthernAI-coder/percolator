@@ -11759,3 +11759,102 @@ fn proof_v16_terminal_realization_floored_rate_pays_zero_and_moves_nothing() {
     assert_eq!(account.header.pnl.get(), pnl as i128);
 }
 
+
+// Expiry-liveness primitive (wrapper finding 2026-06-10): the resolved-close
+// realize step must not strand a source-backed winner whose backing has lapsed
+// (bucket still Fresh but expiry_slot <= current_slot — nothing processes
+// expiry in production). Querying realizable support against a past-expiry
+// bucket returns Stale. The primitive that avoids the deadlock: expiring the
+// lapsed bucket forfeits its principal (fresh_reserved -> 0), drops the domain
+// credit rate to zero, and makes realizable support exactly zero — so the
+// realize step falls through to the junior receipt path instead of reverting.
+// The full close_resolved path is Kani-intractable; this pins the primitive.
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_expired_backing_yields_zero_realizable_support_after_expiry() {
+    let backing_raw: u8 = kani::any();
+    let claim_raw: u8 = kani::any();
+    kani::assume((1..=6).contains(&backing_raw));
+    kani::assume((1..=6).contains(&claim_raw));
+    let backing = backing_raw as u128;
+    let claim = claim_raw as u128;
+    let backing_num = backing * BOUND_SCALE;
+    let claim_num = claim * BOUND_SCALE;
+    let expiry_slot = 5u64;
+    let current_slot = 20u64; // strictly past expiry
+
+    let (mut header, mut markets, mut account_header) = one_market_view_fixture();
+    let market_id = markets[0].engine.asset.market_id.get();
+    header.current_slot = V16PodU64::new(current_slot);
+    header.slot_last = V16PodU64::new(current_slot);
+    header.vault = V16PodU128::new(backing);
+    header.pnl_pos_tot = V16PodU128::new(claim);
+    header.pnl_matured_pos_tot = V16PodU128::new(claim);
+    header.pnl_pos_bound_tot = V16PodU128::new(claim);
+    header.pnl_pos_bound_tot_num = V16PodU128::new(claim_num);
+    header.source_claim_bound_total_num = V16PodU128::new(claim_num);
+    header.source_fresh_backing_total_num = V16PodU128::new(backing_num);
+    // A lapsed bucket: still Fresh, but expiry_slot is in the past.
+    markets[0].engine.backing_long = BackingBucketV16Account::from_runtime(&BackingBucketV16 {
+        market_id,
+        fresh_unliened_backing_num: backing_num,
+        expiry_slot,
+        status: BackingBucketStatusV16::Fresh,
+        ..BackingBucketV16::EMPTY
+    });
+    markets[0].engine.source_credit_long =
+        SourceCreditStateV16Account::from_runtime(&SourceCreditStateV16 {
+            positive_claim_bound_num: claim_num,
+            exact_positive_claim_num: claim_num,
+            fresh_reserved_backing_num: backing_num,
+            credit_rate_num: (backing_num * CREDIT_RATE_SCALE / claim_num).min(CREDIT_RATE_SCALE),
+            ..SourceCreditStateV16::EMPTY
+        });
+    account_header.pnl = V16PodI128::new(claim as i128);
+    account_header.source_domains[0].domain = V16PodU32::new(0);
+    account_header.source_domains[0].source_claim_market_id = V16PodU64::new(market_id);
+    account_header.source_domains[0].source_claim_bound_num = V16PodU128::new(claim_num);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    kani::assume(market.validate_shape() == Ok(()));
+
+    // Before expiry, the freshness validator rejects the lapsed bucket — this
+    // is the Stale that would strand the close if the realize step queried it.
+    assert_eq!(
+        market.kani_validate_source_domain_ledger_current(0),
+        Err(V16Error::Stale)
+    );
+
+    // Expire the lapsed bucket (the realize step's deadlock-avoidance move).
+    market.expire_source_backing_bucket_not_atomic(0, current_slot).unwrap();
+
+    let source = market.markets[0]
+        .engine
+        .source_credit_long
+        .try_to_runtime()
+        .unwrap();
+    let bucket = market.markets[0].engine.backing_long.try_to_runtime().unwrap();
+
+    kani::cover!(backing_raw < claim_raw, "expiry covers under-backed claim");
+    kani::cover!(backing_raw == claim_raw, "expiry covers fully-backed claim");
+    // The principal is forfeited (bucket emptied, status Expired) ...
+    assert_eq!(bucket.status, BackingBucketStatusV16::Expired);
+    assert_eq!(bucket.fresh_unliened_backing_num, 0);
+    assert_eq!(source.fresh_reserved_backing_num, 0);
+    // ... the credit rate collapses to zero (no backing underwrites the claim) ...
+    assert_eq!(source.credit_rate_num, 0);
+    // ... the bucket is now current (no Stale) so the close can proceed ...
+    assert_eq!(market.kani_validate_source_domain_ledger_current(0), Ok(()));
+    // ... and realizable support is exactly zero -> realize falls through to the
+    // junior receipt path (forfeited principal is now junior residual).
+    assert_eq!(
+        market
+            .kani_account_unliened_source_realizable_support(
+                &PortfolioV16View::new(&account_header),
+                claim
+            )
+            .unwrap(),
+        0
+    );
+}

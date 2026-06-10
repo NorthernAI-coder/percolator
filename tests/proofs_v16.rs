@@ -12399,12 +12399,16 @@ fn proof_v16_cure_and_cancel_close_rejects_without_active_close() {
 //   (d) BOUND_SCALE/CREDIT_RATE_SCALE shrunk to 8 under
 //       cfg(kani) (arithmetic-width hypothesis)            -> >600s
 //   (e) (b) and (d) combined                               -> >500s
+//   (f) V16_MAX_PORTFOLIO_ASSETS_N shrunk 16 -> 4 under
+//       cfg(kani) (reduced-leg struct profile)            -> TIMEOUT 900s
+//       (and the trade-fill seam ALSO timed out under it)
 // Conclusion: the bulk is the lien create/consume + claim-burn +
 // encumbrance-proof machinery itself — the very subject of the proof — not
-// the validators, not the 1e12 arithmetic width, not the solver. A
-// kani::any() inductive-state formulation does not escape this either: the
-// audit-scan loops are sized by the fixed 16-slot account structs, not by
-// harness cardinality. The realize/cure/convert bodies stay covered by the
+// the validators, not the 1e12 arithmetic width, not the solver, not the
+// leg-array cardinality. A kani::any() inductive-state formulation does not
+// escape this either. Remaining untested: all reductions combined at once
+// (legs=4 + scales=8 + stubbed validators), and kani function contracts
+// (stub_verified) over the leaf deltas — both research-grade. The realize/cure/convert bodies stay covered by the
 // component proofs (consume-delta exactness, support caps, partition
 // equality) and the runtime suites (backing_double_claim_fuzz, spec tests).
 
@@ -12423,3 +12427,4 @@ fn proof_v16_cure_and_cancel_close_rejects_without_active_close() {
 // tests (v16_risk_increasing_trade_*, batch tests) and component proofs
 // (trade_preflight_risk_gate, checked_trade_fee, position-delta and OI
 // proofs).
+

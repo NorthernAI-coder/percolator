@@ -9595,6 +9595,7 @@ fn proof_v16_domain_insurance_deposit_updates_o1_remaining_total() {
     let long_budget_before = markets[0].engine.insurance_domain_budget_long.get();
     let short_budget_before = markets[0].engine.insurance_domain_budget_short.get();
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let residual_before = market.kani_residual();
 
     market
         .deposit_domain_insurance_not_atomic(0, budget)
@@ -9627,6 +9628,9 @@ fn proof_v16_domain_insurance_deposit_updates_o1_remaining_total() {
         market.header.insurance_domain_budget_remaining_total.get() - remaining_before,
         market.markets[0].engine.insurance_domain_budget_long.get() - long_budget_before
     );
+    // Junior-pool isolation: insurance deposits move vault and insurance in
+    // lockstep, so the junior residual pool cannot be inflated through them.
+    assert_eq!(market.kani_residual(), residual_before);
     assert_eq!(market.validate_shape(), Ok(()));
 }
 
@@ -9847,6 +9851,7 @@ fn proof_v16_public_domain_insurance_withdraw_is_budget_scoped_and_value_conserv
     let long_budget_before = markets[0].engine.insurance_domain_budget_long.get();
     let short_budget_before = markets[0].engine.insurance_domain_budget_short.get();
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let residual_before = market.kani_residual();
 
     market
         .withdraw_domain_insurance_not_atomic(0, withdraw)
@@ -9887,6 +9892,10 @@ fn proof_v16_public_domain_insurance_withdraw_is_budget_scoped_and_value_conserv
         long_budget_before - market.markets[0].engine.insurance_domain_budget_long.get(),
         vault_before - market.header.vault.get()
     );
+    // Junior-pool isolation: insurance withdrawals exit only insurance stock
+    // (vault and insurance fall in lockstep); the junior residual pool cannot
+    // be drained through them.
+    assert_eq!(market.kani_residual(), residual_before);
     assert_eq!(market.validate_shape(), Ok(()));
 }
 
@@ -11675,7 +11684,6 @@ fn proof_v16_residual_excludes_recoverable_counterparty_backing_principal() {
 // liveness) are asserted at runtime by tests/backing_double_claim_fuzz.rs
 // (5 randomized properties, 300 cases each) and the spec tests.
 
-
 // Expiry-liveness primitive (wrapper finding 2026-06-10): the resolved-close
 // realize step must not strand a source-backed winner whose backing has lapsed
 // (bucket still Fresh but expiry_slot <= current_slot — nothing processes
@@ -11744,14 +11752,20 @@ fn proof_v16_expired_backing_yields_zero_realizable_support_after_expiry() {
     );
 
     // Expire the lapsed bucket (the realize step's deadlock-avoidance move).
-    market.expire_source_backing_bucket_not_atomic(0, current_slot).unwrap();
+    market
+        .expire_source_backing_bucket_not_atomic(0, current_slot)
+        .unwrap();
 
     let source = market.markets[0]
         .engine
         .source_credit_long
         .try_to_runtime()
         .unwrap();
-    let bucket = market.markets[0].engine.backing_long.try_to_runtime().unwrap();
+    let bucket = market.markets[0]
+        .engine
+        .backing_long
+        .try_to_runtime()
+        .unwrap();
 
     kani::cover!(backing < claim, "expiry covers under-backed claim");
     kani::cover!(backing == claim, "expiry covers fully-backed claim");
@@ -11794,10 +11808,9 @@ fn proof_v16_grant_source_positive_pnl_rejects_non_live() {
     header.mode = if resolved { 1 } else { 2 }; // Resolved | Recovery
     header.resolved_slot = V16PodU64::new(1);
     if !resolved {
-        header.recovery_reason =
-            V16OptionalRecoveryReasonAccount::from_runtime(Some(
-                PermissionlessRecoveryReasonV16::BelowProgressFloor,
-            ));
+        header.recovery_reason = V16OptionalRecoveryReasonAccount::from_runtime(Some(
+            PermissionlessRecoveryReasonV16::BelowProgressFloor,
+        ));
     }
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
@@ -11810,4 +11823,177 @@ fn proof_v16_grant_source_positive_pnl_rejects_non_live() {
     assert_eq!(account.header.pnl.get(), 0);
     assert_eq!(market.header.pnl_pos_tot.get(), 0);
     assert_eq!(market.header.source_claim_bound_total_num.get(), 0);
+}
+
+// Conservation core for credit_account_from_insurance: the public entrypoint
+// wraps this delta with full account/market validation, which is covered by
+// the API itself and is too expensive for a focused 300s proof. This harness
+// pins the LoF-relevant invariant directly: spending only UNBUDGETED insurance
+// moves insurance -> account capital/c_tot with vault flat, the senior stack
+// c_tot + insurance unchanged, and the junior residual pool untouched.
+#[kani::proof]
+#[kani::unwind(18)]
+#[kani::solver(cadical)]
+fn proof_v16_credit_account_from_insurance_is_value_neutral_and_pool_isolated() {
+    let amount_raw: u8 = kani::any();
+    let budget_raw: u8 = kani::any();
+    let unbudgeted_raw: u8 = kani::any();
+    let c_tot_raw: u8 = kani::any();
+    let capital_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
+    kani::assume((1..=8).contains(&amount_raw));
+    kani::assume(budget_raw <= 4);
+    kani::assume(unbudgeted_raw <= 4);
+    kani::assume(c_tot_raw <= 8);
+    kani::assume(capital_raw <= 8);
+    kani::assume(surplus_raw <= 4);
+    let amount = amount_raw as u128;
+    let budget_remaining = budget_raw as u128;
+    let unbudgeted_surplus = unbudgeted_raw as u128;
+    let c_tot = c_tot_raw as u128;
+    let capital = capital_raw as u128;
+    let surplus = surplus_raw as u128;
+    let insurance = budget_remaining + unbudgeted_surplus + amount;
+    let vault = c_tot + insurance + surplus;
+    let senior_before = c_tot + insurance;
+    let residual_before = vault - senior_before;
+
+    let (next_insurance, next_c_tot, next_capital) =
+        MarketGroupV16ViewMut::<u64>::kani_credit_account_from_insurance_delta(
+            insurance,
+            budget_remaining,
+            c_tot,
+            capital,
+            amount,
+        )
+        .unwrap();
+
+    let mut flow = TokenValueFlowProofV16::empty(vault, vault);
+    flow.debit(TokenValueClassV16::InsuranceCapital, amount)
+        .unwrap();
+    flow.credit(TokenValueClassV16::AccountCapital, amount)
+        .unwrap();
+    assert_eq!(flow.validate(), Ok(()));
+
+    kani::cover!(
+        budget_remaining > 0,
+        "insurance credit preserves budgeted insurance"
+    );
+    kani::cover!(
+        surplus > 0,
+        "insurance credit covers nonzero junior surplus present"
+    );
+    kani::cover!(amount > 1, "insurance credit covers nontrivial amount");
+    assert_eq!(next_insurance, insurance - amount);
+    assert_eq!(next_c_tot, c_tot + amount);
+    assert_eq!(next_capital, capital + amount);
+    assert!(next_insurance >= budget_remaining);
+    assert_eq!(next_c_tot + next_insurance, senior_before);
+    assert_eq!(vault - (next_c_tot + next_insurance), residual_before);
+}
+
+// reset_empty_asset_oracle_anchor re-anchors an EMPTY Active asset's oracle
+// price triple. It is gated on the whole group having NO position or loss
+// state (pnl_pos_tot, stale/negative counters, hlock/stress/loss flags,
+// recovery, per-asset OI/loss all zero), so re-anchoring can reprice nothing.
+// The transition must move NO quote value (vault/c_tot/insurance/residual all
+// flat) and touch ONLY the asset price triple + the slot clocks: an oracle
+// re-anchor on an idle market can neither mint nor move funds and cannot
+// affect any account's PnL (there is none).
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_reset_empty_asset_oracle_anchor_is_value_neutral_and_idle_gated() {
+    let new_price_raw: u16 = kani::any();
+    let c_tot_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
+    kani::assume((1..=10_000).contains(&new_price_raw));
+    let new_price = new_price_raw as u64;
+    let c_tot = c_tot_raw as u128;
+    let insurance = insurance_raw as u128;
+    let surplus = surplus_raw as u128;
+    let now_slot = 7u64;
+
+    let (mut header, mut markets, _) = one_market_direct_view_fixture();
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(insurance);
+    header.vault = V16PodU128::new(c_tot + insurance + surplus);
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    kani::assume(market.validate_shape() == Ok(()));
+    let vault_before = market.header.vault.get();
+    let c_tot_before = market.header.c_tot.get();
+    let insurance_before = market.header.insurance.get();
+    let residual_before = market.kani_residual();
+
+    market
+        .reset_empty_asset_oracle_anchor_not_atomic(0, new_price, now_slot)
+        .unwrap();
+    let asset = market.markets[0].engine.asset.try_to_runtime().unwrap();
+
+    kani::cover!(
+        surplus > 0,
+        "oracle re-anchor covers nonzero junior surplus present"
+    );
+    kani::cover!(
+        new_price_raw > 1,
+        "oracle re-anchor covers nontrivial price"
+    );
+    // The price triple is re-anchored to the authenticated price; clocks advance.
+    assert_eq!(asset.raw_oracle_target_price, new_price);
+    assert_eq!(asset.effective_price, new_price);
+    assert_eq!(asset.fund_px_last, new_price);
+    assert_eq!(asset.slot_last, now_slot);
+    assert_eq!(market.header.current_slot.get(), now_slot);
+    // No quote value moves; junior pool untouched.
+    assert_eq!(market.header.vault.get(), vault_before);
+    assert_eq!(market.header.c_tot.get(), c_tot_before);
+    assert_eq!(market.header.insurance.get(), insurance_before);
+    assert_eq!(market.kani_residual(), residual_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+}
+
+// The idle gate is load-bearing: re-anchoring is rejected the moment ANY
+// junior PnL exists in the group (the canonical "positions exist" signal),
+// before any mutation — so an oracle re-anchor can never reprice live PnL.
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_reset_empty_asset_oracle_anchor_rejects_when_pnl_present() {
+    let pnl_raw: u8 = kani::any();
+    kani::assume(pnl_raw > 0);
+    let pnl = pnl_raw as u128;
+
+    let (mut header, mut markets, _) = one_market_direct_view_fixture();
+    // A live positive-PnL claim makes the group non-idle.
+    header.vault = V16PodU128::new(pnl);
+    header.pnl_pos_tot = V16PodU128::new(pnl);
+    header.pnl_matured_pos_tot = V16PodU128::new(pnl);
+    header.pnl_pos_bound_tot = V16PodU128::new(pnl);
+    header.pnl_pos_bound_tot_num = V16PodU128::new(pnl * BOUND_SCALE);
+    let raw_before = markets[0]
+        .engine
+        .asset
+        .try_to_runtime()
+        .unwrap()
+        .raw_oracle_target_price;
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    let result = market.reset_empty_asset_oracle_anchor_not_atomic(0, 123, 7);
+
+    kani::cover!(
+        pnl_raw > 1,
+        "oracle re-anchor rejection covers nontrivial live pnl"
+    );
+    assert_eq!(result, Err(V16Error::LockActive));
+    // Rejected before mutation: price unchanged.
+    assert_eq!(
+        market.markets[0]
+            .engine
+            .asset
+            .try_to_runtime()
+            .unwrap()
+            .raw_oracle_target_price,
+        raw_before
+    );
 }

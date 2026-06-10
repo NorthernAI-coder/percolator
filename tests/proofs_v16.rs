@@ -1049,6 +1049,7 @@ fn proof_v16_view_deposit_preserves_c_tot_vault_capital_sum() {
     account_header.capital = V16PodU128::new(start_capital);
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    let residual_before = market.kani_residual();
 
     market.deposit_not_atomic(&mut account, amount).unwrap();
 
@@ -1068,6 +1069,10 @@ fn proof_v16_view_deposit_preserves_c_tot_vault_capital_sum() {
         market.header.vault.get() - market.header.c_tot.get() - market.header.insurance.get(),
         surplus
     );
+    // Junior-pool isolation: deposits move vault and c_tot in lockstep, so a
+    // user can never inflate the junior residual pool (haircut/payout funding)
+    // by depositing.
+    assert_eq!(market.kani_residual(), residual_before);
     assert_eq!(market.validate_shape(), Ok(()));
     assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
 }
@@ -2368,6 +2373,7 @@ fn proof_v16_view_withdraw_reduces_vault_ctot_and_capital_equally() {
     account_header.capital = V16PodU128::new(start_capital);
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    let residual_before = market.kani_residual();
 
     market.withdraw_not_atomic(&mut account, amount).unwrap();
 
@@ -2391,6 +2397,10 @@ fn proof_v16_view_withdraw_reduces_vault_ctot_and_capital_equally() {
         market.header.vault.get() - market.header.c_tot.get() - market.header.insurance.get(),
         surplus
     );
+    // Junior-pool isolation: withdrawals exit only the user's own senior
+    // capital; the junior residual pool (haircut/payout funding) cannot be
+    // drained through withdraw.
+    assert_eq!(market.kani_residual(), residual_before);
     assert_eq!(market.validate_shape(), Ok(()));
     assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
 }
@@ -5297,11 +5307,18 @@ fn proof_v16_public_counterparty_backing_expiry_is_value_neutral_and_impairs_lie
     // Stock destination of the expired atoms (review finding): expiry forfeits
     // the WHOLE bucket (unliened and liened alike) out of
     // counterparty_backing_principal into the JUNIOR RESIDUAL pool, vault flat.
-    // No class disappears; the junior pool rises by exactly the forfeit.
+    // No class disappears; the junior pool rises by EXACTLY the forfeit — this
+    // exact equality is also the LoF-horn falsifier (no atoms split off into
+    // movable surplus or anywhere else).
     assert_eq!(
         market.kani_residual(),
         residual_before + fresh_atoms + liened_atoms
     );
+    // DoS-horn falsifier (review): the mandatory stock reconciliation MUST hold
+    // on the post-expiry impaired state, or the next insurance/close/recovery
+    // checkpoint would revert (frozen vault). expire runs validate_shape
+    // internally via refresh; assert it explicitly so the property is pinned.
+    assert_eq!(market.validate_shape(), Ok(()));
 }
 
 #[kani::proof]
@@ -11757,4 +11774,40 @@ fn proof_v16_expired_backing_yields_zero_realizable_support_after_expiry() {
             .unwrap(),
         0
     );
+}
+
+// First-class engine API for granting source-attributed positive PnL (the
+// wrapper previously shadow-implemented this op host-side). The value-neutral
+// + aggregate-lockstep property is covered concretely by the unit test
+// v16_grant_source_positive_pnl_attributes_claims_and_aggregates_in_lockstep:
+// the symbolic Kani witness exceeds the 900s budget even fully concrete (the
+// grant runs validate_with_market + a claim-bound-denominated rate recompute +
+// validate_shape + validate_with_market — three heavy sweeps). The mode gate
+// IS proven below (it errors before the heavy path).
+// Mode gate: granting source PnL outside Live is rejected before mutation.
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_grant_source_positive_pnl_rejects_non_live() {
+    let resolved: bool = kani::any();
+    let (mut header, mut markets, mut account_header) = one_market_view_fixture();
+    header.mode = if resolved { 1 } else { 2 }; // Resolved | Recovery
+    header.resolved_slot = V16PodU64::new(1);
+    if !resolved {
+        header.recovery_reason =
+            V16OptionalRecoveryReasonAccount::from_runtime(Some(
+                PermissionlessRecoveryReasonV16::BelowProgressFloor,
+            ));
+    }
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+
+    let result = market.add_account_source_positive_pnl_not_atomic(&mut account, 0, 1);
+
+    kani::cover!(resolved, "non-live grant rejection covers Resolved");
+    kani::cover!(!resolved, "non-live grant rejection covers Recovery");
+    assert_eq!(result, Err(V16Error::LockActive));
+    assert_eq!(account.header.pnl.get(), 0);
+    assert_eq!(market.header.pnl_pos_tot.get(), 0);
+    assert_eq!(market.header.source_claim_bound_total_num.get(), 0);
 }

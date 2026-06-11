@@ -523,3 +523,142 @@ proptest! {
         prop_assert!(market.header.vault.get() <= vault_before);
     }
 }
+
+// ============ P3: SEQUENCE DIFFERENTIALS ============
+
+/// Live single-asset market holding only junior surplus.
+fn live_market_with_pool(pool: u128) -> (MarketGroupV16HeaderAccount, [Market<u64>; 1]) {
+    let cfg = V16Config::public_user_fund_with_market_slots(1, 1, 0, 10);
+    let mut header = MarketGroupV16HeaderAccount::new_dynamic(market_id(), cfg, 1, 0).unwrap();
+    let mut markets = [Market::new(0u64, EngineAssetSlotV16Account::default())];
+    header
+        .activate_empty_asset_slot_not_atomic(0, &mut markets[0].engine, 100, 1)
+        .unwrap();
+    header.current_slot = V16PodU64::new(1);
+    header.vault = V16PodU128::new(pool);
+    (header, markets)
+}
+
+proptest! {
+    #![proptest_config(ProptestConfig::with_cases(300))]
+
+    /// P3-1 (spec req 27, order independence): closing two resolved winners
+    /// in either order pays each the same amount and leaves the same vault —
+    /// caller ordering must not redistribute value.
+    #[test]
+    fn close_order_does_not_redistribute(
+        pnl_a in 1u128..=100_000u128,
+        pnl_b in 1u128..=100_000u128,
+        backing_frac in 0u128..=1000u128,
+        pool in 0u128..=100_000u128,
+    ) {
+        let capital = 1_000u128;
+        let claim = pnl_a + pnl_b;
+        let backing = claim.saturating_mul(backing_frac) / 1000;
+        let run = |a_first: bool| -> (u128, u128, u128) {
+            let (mut header, mut markets) =
+                resolved_market_with_backing(capital * 2, claim, pool, backing);
+            let mut ha = winner_account(capital, pnl_a);
+            let mut hb = winner_account(capital, pnl_b);
+            let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+            let mut aa = PortfolioV16ViewMut::new(&mut ha);
+            let mut ab = PortfolioV16ViewMut::new(&mut hb);
+            assert_eq!(market.validate_shape(), Ok(()));
+            if a_first {
+                market.close_resolved_account_not_atomic(&mut aa, 0).expect("close A");
+                market.close_resolved_account_not_atomic(&mut ab, 0).expect("close B");
+            } else {
+                market.close_resolved_account_not_atomic(&mut ab, 0).expect("close B");
+                market.close_resolved_account_not_atomic(&mut aa, 0).expect("close A");
+            }
+            assert_eq!(market.validate_shape(), Ok(()));
+            (
+                aa.header.capital.get(),
+                ab.header.capital.get(),
+                market.header.vault.get(),
+            )
+        };
+        let (ca1, cb1, v1) = run(true);
+        let (ca2, cb2, v2) = run(false);
+        prop_assert_eq!(v1, v2, "vault differs by close order");
+        prop_assert_eq!(ca1, ca2, "winner A payout differs by close order");
+        prop_assert_eq!(cb1, cb2, "winner B payout differs by close order");
+    }
+
+    /// P3-2 (idempotence, matrix #24-adjacent): re-closing an already-closed
+    /// resolved account never moves value, whatever the second call returns.
+    #[test]
+    fn second_resolved_close_is_value_neutral(
+        pnl in 1u128..=100_000u128,
+        backing_frac in 0u128..=1000u128,
+        pool in 0u128..=100_000u128,
+    ) {
+        let capital = 1_000u128;
+        let backing = pnl.saturating_mul(backing_frac) / 1000;
+        let (mut header, mut markets) =
+            resolved_market_with_backing(capital, pnl, pool, backing);
+        let mut account_header = winner_account(capital, pnl);
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut account = PortfolioV16ViewMut::new(&mut account_header);
+        market
+            .close_resolved_account_not_atomic(&mut account, 0)
+            .expect("first close must not revert");
+        let vault_mid = market.header.vault.get();
+        let capital_mid = account.header.capital.get();
+        let c_tot_mid = market.header.c_tot.get();
+        let _ = market.close_resolved_account_not_atomic(&mut account, 0);
+        prop_assert_eq!(market.header.vault.get(), vault_mid);
+        prop_assert_eq!(account.header.capital.get(), capital_mid);
+        prop_assert_eq!(market.header.c_tot.get(), c_tot_mid);
+        prop_assert_eq!(market.validate_shape(), Ok(()));
+    }
+
+    /// P3-3 (net-extraction bound over random sequences; matrix #19/#24):
+    /// for any sequence of user deposits/withdrawals and domain-insurance
+    /// deposits/withdrawals, no actor class extracts more than it put in,
+    /// and the senior stack stays vault-covered at every prefix.
+    #[test]
+    fn random_flat_sequence_never_extracts_excess(
+        ops in proptest::collection::vec((0u8..4u8, 1u128..=1_000u128), 1..14),
+        start_pool in 0u128..=1_000u128,
+    ) {
+        let (mut header, mut markets) = live_market_with_pool(start_pool);
+        let mut account_header = empty_account();
+        account_header.last_fee_slot = V16PodU64::new(1);
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut account = PortfolioV16ViewMut::new(&mut account_header);
+        let (mut udep, mut uwd, mut idep, mut iwd) = (0u128, 0u128, 0u128, 0u128);
+        for (op, amount) in ops {
+            match op {
+                0 => {
+                    if market.deposit_not_atomic(&mut account, amount).is_ok() {
+                        udep += amount;
+                    }
+                }
+                1 => {
+                    if market.withdraw_not_atomic(&mut account, amount).is_ok() {
+                        uwd += amount;
+                    }
+                }
+                2 => {
+                    if market.deposit_domain_insurance_not_atomic(0, amount).is_ok() {
+                        idep += amount;
+                    }
+                }
+                _ => {
+                    if market.withdraw_domain_insurance_not_atomic(0, amount).is_ok() {
+                        iwd += amount;
+                    }
+                }
+            }
+            prop_assert!(uwd <= udep, "user extracted more than deposited");
+            prop_assert!(iwd <= idep, "insurance funder extracted more than deposited");
+            prop_assert_eq!(market.validate_shape(), Ok(()));
+            prop_assert!(
+                market.header.c_tot.get() + market.header.insurance.get()
+                    <= market.header.vault.get(),
+                "senior stack exceeded vault"
+            );
+        }
+    }
+}

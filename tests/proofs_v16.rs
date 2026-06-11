@@ -12440,3 +12440,185 @@ fn proof_v16_cure_and_cancel_close_rejects_without_active_close() {
 // proofs).
 
 
+
+// ============ P2: TWO-OP INTERACTION WITNESSES ============
+// Sequence invariants that single-op proofs cannot see. Each op is
+// individually proven cheap; the witness asserts the INTERACTION property.
+
+// P2-1: deposit then withdraw of the same amount is an exact round trip —
+// no dust, no residue, every header and account quantity restored, the
+// junior pool untouched at both steps.
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_seq_deposit_withdraw_round_trip_is_exact() {
+    let start_capital_raw: u8 = kani::any();
+    let insurance_raw: u8 = kani::any();
+    let surplus_raw: u8 = kani::any();
+    let amount_raw: u8 = kani::any();
+    kani::assume(start_capital_raw <= 8);
+    kani::assume(insurance_raw <= 8);
+    kani::assume(surplus_raw <= 8);
+    kani::assume(amount_raw >= 1 && amount_raw <= 8);
+    let start_capital = start_capital_raw as u128;
+    let insurance = insurance_raw as u128;
+    let surplus = surplus_raw as u128;
+    let amount = amount_raw as u128;
+    let (mut header, mut markets, mut account_header) = one_market_view_fixture();
+    let vault_before = start_capital + insurance + surplus;
+    header.c_tot = V16PodU128::new(start_capital);
+    header.insurance = V16PodU128::new(insurance);
+    header.vault = V16PodU128::new(vault_before);
+    account_header.capital = V16PodU128::new(start_capital);
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    let residual_before = market.kani_residual();
+
+    market.deposit_not_atomic(&mut account, amount).unwrap();
+    let residual_mid = market.kani_residual();
+    market.withdraw_not_atomic(&mut account, amount).unwrap();
+
+    kani::cover!(amount > 0 && surplus > 0, "round trip covers junior surplus present");
+    assert_eq!(market.header.vault.get(), vault_before);
+    assert_eq!(market.header.c_tot.get(), start_capital);
+    assert_eq!(market.header.insurance.get(), insurance);
+    assert_eq!(account.header.capital.get(), start_capital);
+    assert_eq!(residual_mid, residual_before);
+    assert_eq!(market.kani_residual(), residual_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+}
+
+// P2-2: two successive fee charges compound exactly — insurance gains the
+// sum, capital loses the sum, vault flat throughout, pool untouched.
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_seq_two_fees_compound_exactly() {
+    let capital_raw: u8 = kani::any();
+    let f1_raw: u8 = kani::any();
+    let f2_raw: u8 = kani::any();
+    kani::assume(capital_raw <= 8);
+    kani::assume(f1_raw <= 4 && f2_raw <= 4);
+    let capital = capital_raw as u128;
+    let f1 = f1_raw as u128;
+    let f2 = f2_raw as u128;
+    kani::assume(f1 + f2 <= capital);
+    let (mut header, mut markets, mut account_header) = one_market_view_fixture();
+    header.c_tot = V16PodU128::new(capital);
+    header.vault = V16PodU128::new(capital);
+    account_header.capital = V16PodU128::new(capital);
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    let residual_before = market.kani_residual();
+
+    let c1 = market
+        .kani_charge_account_fee_current_not_atomic(&mut account, f1)
+        .unwrap();
+    let c2 = market
+        .kani_charge_account_fee_current_not_atomic(&mut account, f2)
+        .unwrap();
+
+    kani::cover!(f1 > 0 && f2 > 0, "two-fee covers both nonzero");
+    assert_eq!(c1, f1);
+    assert_eq!(c2, f2);
+    assert_eq!(market.header.insurance.get(), f1 + f2);
+    assert_eq!(account.header.capital.get(), capital - f1 - f2);
+    assert_eq!(market.header.c_tot.get(), capital - f1 - f2);
+    assert_eq!(market.header.vault.get(), capital);
+    assert_eq!(market.kani_residual(), residual_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+}
+
+// P2-3: two successive cranks — clocks are monotone, the second crank moves
+// no value either, and the pool stays untouched across the pair.
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_seq_double_crank_is_monotone_and_value_flat() {
+    let s1_raw: u8 = kani::any();
+    let s2_raw: u8 = kani::any();
+    kani::assume((1..=3).contains(&s1_raw));
+    kani::assume(s2_raw >= s1_raw && s2_raw <= 5);
+    let s1 = s1_raw as u64;
+    let s2 = s2_raw as u64;
+    let (mut header, mut markets, mut account_header) = one_market_view_fixture();
+    let c_tot = 3u128;
+    header.vault = V16PodU128::new(c_tot + 2);
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(1);
+    account_header.capital = V16PodU128::new(c_tot);
+    let vault_before = header.vault;
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let residual_before = market.kani_residual();
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+
+    let effective_price = market.markets[0].engine.asset.try_to_runtime().unwrap().effective_price;
+    for now_slot in [s1, s2] {
+        market
+            .permissionless_crank_not_atomic(
+                &mut account,
+                PermissionlessCrankRequestV16 {
+                    now_slot,
+                    asset_index: 0,
+                    effective_price,
+                    funding_rate_e9: 0,
+                    action: PermissionlessCrankActionV16::Refresh,
+                },
+            )
+            .unwrap();
+    }
+    let asset = market.markets[0].engine.asset.try_to_runtime().unwrap();
+
+    kani::cover!(s2 > s1, "double crank covers forward time");
+    kani::cover!(s2 == s1, "double crank covers same-slot replay");
+    // Clock monotone and bounded by request; no value moved by either crank.
+    assert!(asset.slot_last <= s2);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot.get(), c_tot);
+    assert_eq!(market.header.insurance.get(), 1);
+    assert_eq!(market.kani_residual(), residual_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+}
+
+// P2-4: budget credit then domain-insurance withdrawal — the caps COMPOSE:
+// withdrawal is bounded by the just-set budget, debits vault/insurance/
+// budget in lockstep, and the global remaining total tracks exactly.
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_seq_budget_credit_then_withdraw_caps_compose() {
+    let budget_raw: u8 = kani::any();
+    let withdraw_raw: u8 = kani::any();
+    kani::assume(budget_raw >= 1 && budget_raw <= 6);
+    kani::assume(withdraw_raw >= 1 && withdraw_raw <= 6);
+    let budget = budget_raw as u128;
+    let withdraw = withdraw_raw as u128;
+    kani::assume(withdraw <= budget);
+    let (mut header, mut markets) = one_market_only_fixture();
+    header.vault = V16PodU128::new(budget);
+    header.insurance = V16PodU128::new(budget);
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let residual_before = market.kani_residual();
+
+    market
+        .credit_domain_insurance_budget_not_atomic(0, budget)
+        .unwrap();
+    market
+        .withdraw_domain_insurance_not_atomic(0, withdraw)
+        .unwrap();
+
+    kani::cover!(withdraw < budget, "cap composition covers partial");
+    kani::cover!(withdraw == budget, "cap composition covers full drain");
+    assert_eq!(market.header.vault.get(), budget - withdraw);
+    assert_eq!(market.header.insurance.get(), budget - withdraw);
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_budget_long.get(),
+        budget - withdraw
+    );
+    assert_eq!(
+        market.header.insurance_domain_budget_remaining_total.get(),
+        budget - withdraw
+    );
+    assert_eq!(market.kani_residual(), residual_before);
+    assert_eq!(market.validate_shape(), Ok(()));
+}

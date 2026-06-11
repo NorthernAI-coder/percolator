@@ -12406,9 +12406,20 @@ fn proof_v16_cure_and_cancel_close_rejects_without_active_close() {
 // encumbrance-proof machinery itself — the very subject of the proof — not
 // the validators, not the 1e12 arithmetic width, not the solver, not the
 // leg-array cardinality. A kani::any() inductive-state formulation does not
-// escape this either. Remaining untested: all reductions combined at once
-// (legs=4 + scales=8 + stubbed validators), and kani function contracts
-// (stub_verified) over the leaf deltas — both research-grade. The realize/cure/convert bodies stay covered by the
+// escape this either.
+//   (g) kani function contracts (-Z function-contracts, proof_for_contract +
+//       stub_verified): the MECHANISM works end-to-end — a leaf contract on
+//       the lien-sizing fn checked in 11 VCCs with sub-second solves — but the
+//       route fails twice over: (i) the flag slows kani-compiler ~5x crate-
+//       wide (13-24 min compile per invocation), incompatible with per-proof
+//       isolated runs; (ii) stub_verified HAVOCS the contracted returns
+//       (ensures-constrained symbolic values), re-introducing symbolic flows
+//       through the rate-division killers downstream — the composed realize
+//       witness still exceeded 37 min of solver time with both leaves
+//       contracted and the validator stubbed. Composition trades away the
+//       concreteness that makes witnesses tractable. Route closed.
+// Remaining untested: all reductions combined at once (legs=4 + scales=8 +
+// stubbed validators) — research-grade. The realize/cure/convert bodies stay covered by the
 // component proofs (consume-delta exactness, support caps, partition
 // equality) and the runtime suites (backing_double_claim_fuzz, spec tests).
 
@@ -12427,4 +12438,5 @@ fn proof_v16_cure_and_cancel_close_rejects_without_active_close() {
 // tests (v16_risk_increasing_trade_*, batch tests) and component proofs
 // (trade_preflight_risk_gate, checked_trade_fee, position-delta and OI
 // proofs).
+
 

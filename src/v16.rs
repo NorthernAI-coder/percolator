@@ -14704,8 +14704,8 @@ mod v16_proofs;
 // Non-production cfg(kani) test wrapper API (kani_* shims) lives in
 // src/v16_kani_api.rs to keep this file's audit surface minimal. Re-exported
 // so existing percolator::v16::kani_* paths resolve unchanged.
-#[cfg(kani)]
+#[cfg(any(kani, feature = "fuzz"))]
 #[path = "v16_kani_api.rs"]
 mod v16_kani_api;
-#[cfg(kani)]
+#[cfg(any(kani, feature = "fuzz"))]
 pub use v16_kani_api::*;

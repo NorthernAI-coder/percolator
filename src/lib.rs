@@ -37,9 +37,9 @@ pub const MAX_WARMUP_SLOTS: u64 = u64::MAX;
 pub const MAX_RESOLVE_PRICE_DEVIATION_BPS: u64 = 10_000;
 pub const MAX_RECOVERY_FALLBACK_DEVIATION_BPS: u64 = MAX_RESOLVE_PRICE_DEVIATION_BPS;
 
-#[cfg(kani)]
+#[cfg(any(kani, feature = "fuzz"))]
 pub mod v16;
-#[cfg(not(kani))]
+#[cfg(not(any(kani, feature = "fuzz")))]
 mod v16;
 #[cfg(kani)]
 pub mod wide_math;

@@ -24,7 +24,7 @@ Generated 2026-06-11 (engine @ spec v16.8.11). Artifact classes:
 | 11 | Insurance lien lifecycle exactly-once | STRONG | contracts ins create/release/impair/terminal; closure ins family | — |
 | 12 | Cures counted once | STRONG | flow support_to_account_capital (credit == exactly 3 sources); suite partition-equation + cure-count proofs | — |
 | 13 | Flow-proof conservation mandatory | STRONG | all 11 flow transit witnesses + runtime validate() every execution | — |
-| 14 | Rounding residue explicit sink | **GAP** | residue classes exist in the flow enum; no per-site sink proof | enumerate floor-allocation sites → Kani where div-free, else fuzz sum-conservation |
+| 14 | Rounding residue explicit sink | STRONG | direction fuzz (rounding_residue_fuzz: fee CEILS against user, margin exact-floor with ceiled-notional composition, notional floor≤exact≤ceil, ADL rounds toward zero, support floors against claimant); exact-split Kani proofs (fee_split, utilization exact-floor); end-to-end residue via close/sequence conservation fuzz | — |
 | 15 | No open unbacked loss curing | STRONG | suite realize/consume gates (cure requires lien consume + face burn) | — |
 | 16 | Stale backing fails closed | STRONG | suite expiry proofs + expiry-liveness regression | — |
 | 17 | Claim bounds never understate | STRONG | suite bound-refine proofs; contract claim-bound grant | — |
@@ -37,7 +37,7 @@ Generated 2026-06-11 (engine @ spec v16.8.11). Artifact classes:
 | 24 | Residual durability before clear | PARTIAL | close gates; terminal realization proofs | P2 sequence: clear-before-book rejected |
 | 25 | ADL/finalization atomicity | **GAP (Kani)** | structural single-instruction paths; runtime tests | integration-level only |
 | 26 | No fee seniority | STRONG | suite inductive fee proof (never debits insurance); fee contracts | — |
-| 27 | Deterministic residual attribution | PARTIAL | per-op determinism structural | P3 fuzz order-differential |
+| 27 | Deterministic residual attribution | STRONG | close_order_does_not_redistribute fuzz (full backing range); per-op determinism structural | — |
 | 28 | No arbitrary correlation trust | N/A | hedge credit not implemented | — |
 | 29 | Asset lifecycle fail-closed | STRONG | suite activation/retire/restart/reactivation proofs | — |
 | 30 | Dead-leg exit | STRONG | suite forfeit proofs (typed flow, v16.8.10) | — |
@@ -50,11 +50,9 @@ Generated 2026-06-11 (engine @ spec v16.8.11). Artifact classes:
 | 37 | Maker exemption bounded | PARTIAL | trade-cert component proofs; full path intractable tier | gates + runtime; accept with note |
 
 ## Gap queue (ordered)
-1. **#14 rounding-residue sink** — per-site witnesses or fuzz sum-conservation.
 2. **#21 preemption total order** — P4 state-machine closure.
 3. **#19/#24 close-lifecycle sequences** — P2 two-op rejection witnesses.
 4. **#23/#31 numeric envelopes** — P3 fuzz (drift bound, fallback deviation cap).
-5. **#27 order independence** — P3 fuzz differential.
 
-Bottom line: 21 STRONG, 9 PARTIAL (each with a named accept-reason or queue item),
-3 GAP (queued), 3 STRUCTURAL (argued), 1 N/A.
+Bottom line: 23 STRONG, 8 PARTIAL (each with a named accept-reason or queue item),
+2 GAP (queued: #21 preemption order, #25 ADL atomicity), 3 STRUCTURAL (argued), 1 N/A.

@@ -3432,6 +3432,7 @@ pub const V16_TOKEN_VALUE_CLASS_COUNT: usize = 17;
 const V16_TOKEN_VALUE_CLASS_COUNT: usize = 17;
 
 #[repr(u8)]
+#[cfg_attr(all(kani, feature = "contracts"), derive(kani::Arbitrary))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 #[cfg(kani)]
 pub enum TokenValueClassV16 {
@@ -3692,6 +3693,17 @@ impl TokenValueFlowProofV16 {
         Ok(proof)
     }
 
+    // P5 probe (timeboxed): the minimal &mut-self contract experiment — flat
+    // Copy struct, single-array-field mutation. PASS opens the &mut-self
+    // stratum for contracts; FAIL/timeout closes it and finalizes the
+    // exclusion map.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(amount < 1u128 << 96))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::modifies(self))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<()>| match result {
+        Ok(()) => self.debits[class as usize]
+            == old(self.debits[class as usize]).wrapping_add(amount),
+        Err(_) => true,
+    }))]
     pub fn debit(&mut self, class: TokenValueClassV16, amount: u128) -> V16Result<()> {
         let idx = class as usize;
         self.debits[idx] = self.debits[idx]
@@ -16882,5 +16894,15 @@ fn closure_bucket_status_machine_prepare_counterparty_lien_impair_delta() {
     }
 }
 
-
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(TokenValueFlowProofV16::debit)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_flow_proof_debit_modifies() {
+    let mut p = TokenValueFlowProofV16::empty(kani::any(), kani::any());
+    let class: TokenValueClassV16 = kani::any();
+    let amount: u128 = kani::any();
+    kani::assume(amount < 1u128 << 96);
+    let _ = p.debit(class, amount);
+}
 

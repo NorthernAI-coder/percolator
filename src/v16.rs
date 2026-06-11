@@ -15638,7 +15638,23 @@ pub fn kani_scaled_adl_delta_fast(
 // into ensures-constrained symbolic values (see the elimination table in
 // tests/proofs_v16.rs, row (g)). The layer therefore holds LEAF contract
 // checks only — machine-checked interface documentation that future kani
-// versions may compose. NOTE: a contract on source_credit_lien_amounts_for_
+// versions may compose.
+//
+// PUBLIC-OP CONTRACT BOUNDARY (probe verdict, 2026-06-11): a contract on a
+// public value-mover (deposit_not_atomic: requires + modifies(self.header,
+// account.header) + old()-lockstep ensures) times out at 1800s when checked
+// over SYMBOLIC value fields (2^64 range) with real account validation — the
+// scale at which a contract would add power beyond the suite. At suite scale
+// (u8-range constructed states) it would pass but adds no evidentiary weight
+// over the existing suite proofs asserting identical postconditions. The
+// review-proposed compositional public-contract program (frame contracts on
+// every public op over arbitrary valid states) is therefore closed at this
+// kani generation: the contract layer's power is leaf deltas + &mut-self
+// in-place mutators (P5) + flow transits; public-op envelopes stay with the
+// suite (constructed symbolic), closure layer (any-state deltas), fuzz
+// (sequences), and runtime validation (every execution).
+//
+// NOTE: a contract on source_credit_lien_amounts_for_
 // effective was dropped — combining proof_for_contract with a kani::stub of
 // its U256 division helper is pathologically slow at the solver level (1800s+
 // warm) while sibling checks take seconds; its full-rate property is covered

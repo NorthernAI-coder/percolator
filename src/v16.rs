@@ -849,6 +849,20 @@ impl V16Core {
     }
 
     #[cfg(any(kani, feature = "fuzz"))]
+    // Contract layer: lien release is the un-pledge relabel — valid liened
+    // returns to fresh unliened atom-for-atom, fresh_reserved and all stock
+    // quantities untouched; zero-amount is the identity.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(BackingBucketV16, SourceCreditStateV16)>| match result {
+        Ok((b, s)) => (amount == 0 && *b == bucket && *s == source)
+            || (b.valid_liened_backing_num == bucket.valid_liened_backing_num - amount
+                && b.fresh_unliened_backing_num == bucket.fresh_unliened_backing_num + amount
+                && b.consumed_liened_backing_num == bucket.consumed_liened_backing_num
+                && s.valid_liened_backing_num == source.valid_liened_backing_num - amount
+                && s.fresh_reserved_backing_num == source.fresh_reserved_backing_num
+                && s.spent_backing_num == source.spent_backing_num
+                && s.provider_receivable_num == source.provider_receivable_num),
+        Err(_) => true,
+    }))]
     fn prepare_counterparty_lien_release_delta(
         mut bucket: BackingBucketV16,
         mut source: SourceCreditStateV16,
@@ -880,6 +894,19 @@ impl V16Core {
     // liened backing to the provider's unliened pool, it is not re-lending, so a
     // time-expired bucket must not block it. Without this, a market that resolves past a
     // backing bucket's expiry re-introduces the Finding-A close deadlock.
+    // Contract layer: the TERMINAL release performs the identical relabel as
+    // the Live release but is expiry/status-agnostic (Finding-C semantics).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(BackingBucketV16, SourceCreditStateV16)>| match result {
+        Ok((b, s)) => (amount == 0 && *b == bucket && *s == source)
+            || (b.valid_liened_backing_num == bucket.valid_liened_backing_num - amount
+                && b.fresh_unliened_backing_num == bucket.fresh_unliened_backing_num + amount
+                && b.consumed_liened_backing_num == bucket.consumed_liened_backing_num
+                && s.valid_liened_backing_num == source.valid_liened_backing_num - amount
+                && s.fresh_reserved_backing_num == source.fresh_reserved_backing_num
+                && s.spent_backing_num == source.spent_backing_num
+                && s.provider_receivable_num == source.provider_receivable_num),
+        Err(_) => true,
+    }))]
     fn prepare_counterparty_lien_terminal_release_delta(
         mut bucket: BackingBucketV16,
         mut source: SourceCreditStateV16,
@@ -952,6 +979,21 @@ impl V16Core {
     }
 
     #[cfg(any(kani, feature = "fuzz"))]
+    // Contract layer: impairment forfeits the liened principal out of the
+    // backing class entirely — valid liened AND fresh_reserved fall by X while
+    // the impaired audit counters rise by X (the stock-side destination is the
+    // junior residual pool, enforced at the aggregate layer).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(BackingBucketV16, SourceCreditStateV16)>| match result {
+        Ok((b, s)) => (amount == 0 && *b == bucket && *s == source)
+            || (b.valid_liened_backing_num == bucket.valid_liened_backing_num - amount
+                && b.impaired_liened_backing_num == bucket.impaired_liened_backing_num + amount
+                && b.fresh_unliened_backing_num == bucket.fresh_unliened_backing_num
+                && s.valid_liened_backing_num == source.valid_liened_backing_num - amount
+                && s.fresh_reserved_backing_num == source.fresh_reserved_backing_num - amount
+                && s.impaired_liened_backing_num == source.impaired_liened_backing_num + amount
+                && s.spent_backing_num == source.spent_backing_num),
+        Err(_) => true,
+    }))]
     fn prepare_counterparty_lien_impair_delta(
         mut bucket: BackingBucketV16,
         mut source: SourceCreditStateV16,
@@ -15510,4 +15552,111 @@ fn contract_check_apply_backing_provider_earnings_withdraw() {
     let earnings: u128 = kani::any();
     let amount: u128 = kani::any();
     let _ = apply_backing_provider_earnings_withdraw(vault, earnings, amount);
+}
+
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::prepare_counterparty_lien_release_delta)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_prepare_counterparty_lien_release_delta() {
+    let bucket = BackingBucketV16 {
+        market_id: kani::any(),
+        fresh_unliened_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        consumed_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        expiry_slot: kani::any(),
+        status: BackingBucketStatusV16::Fresh,
+        utilization_fee_earnings: kani::any(),
+    };
+    let source = SourceCreditStateV16 {
+        positive_claim_bound_num: kani::any(),
+        exact_positive_claim_num: kani::any(),
+        fresh_reserved_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        spent_backing_num: kani::any(),
+        provider_receivable_num: kani::any(),
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        credit_rate_num: kani::any(),
+        credit_epoch: kani::any(),
+    };
+    let current_slot: u64 = kani::any();
+    let amount: u128 = kani::any();
+    kani::assume(amount < 1u128 << 96);
+    kani::assume(bucket.fresh_unliened_backing_num < 1u128 << 96);
+    let _ = V16Core::prepare_counterparty_lien_release_delta(bucket, source, current_slot, amount);
+}
+
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::prepare_counterparty_lien_terminal_release_delta)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_prepare_counterparty_lien_terminal_release_delta() {
+    let bucket = BackingBucketV16 {
+        market_id: kani::any(),
+        fresh_unliened_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        consumed_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        expiry_slot: kani::any(),
+        status: BackingBucketStatusV16::Fresh,
+        utilization_fee_earnings: kani::any(),
+    };
+    let source = SourceCreditStateV16 {
+        positive_claim_bound_num: kani::any(),
+        exact_positive_claim_num: kani::any(),
+        fresh_reserved_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        spent_backing_num: kani::any(),
+        provider_receivable_num: kani::any(),
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        credit_rate_num: kani::any(),
+        credit_epoch: kani::any(),
+    };
+    let amount: u128 = kani::any();
+    kani::assume(amount < 1u128 << 96);
+    kani::assume(bucket.fresh_unliened_backing_num < 1u128 << 96);
+    let _ = V16Core::prepare_counterparty_lien_terminal_release_delta(bucket, source, amount);
+}
+
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::prepare_counterparty_lien_impair_delta)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_prepare_counterparty_lien_impair_delta() {
+    let bucket = BackingBucketV16 {
+        market_id: kani::any(),
+        fresh_unliened_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        consumed_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        expiry_slot: kani::any(),
+        status: BackingBucketStatusV16::Fresh,
+        utilization_fee_earnings: kani::any(),
+    };
+    let source = SourceCreditStateV16 {
+        positive_claim_bound_num: kani::any(),
+        exact_positive_claim_num: kani::any(),
+        fresh_reserved_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        spent_backing_num: kani::any(),
+        provider_receivable_num: kani::any(),
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        credit_rate_num: kani::any(),
+        credit_epoch: kani::any(),
+    };
+    let amount: u128 = kani::any();
+    kani::assume(amount < 1u128 << 96);
+    kani::assume(bucket.impaired_liened_backing_num < 1u128 << 96);
+    kani::assume(source.impaired_liened_backing_num < 1u128 << 96);
+    let _ = V16Core::prepare_counterparty_lien_impair_delta(bucket, source, amount);
 }

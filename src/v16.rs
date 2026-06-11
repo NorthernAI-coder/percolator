@@ -1130,6 +1130,18 @@ impl V16Core {
     }
 
     #[cfg(any(kani, feature = "fuzz"))]
+    // Contract layer: insurance lien release un-encumbers reserved credit —
+    // exact mirror of creation; reservation total and backing-side untouched.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(InsuranceCreditReservationV16, SourceCreditStateV16)>| match result {
+        Ok((r, s)) => (amount == 0 && *r == reservation && *s == source)
+            || (r.valid_liened_insurance_num == reservation.valid_liened_insurance_num - amount
+                && r.insurance_credit_reserved_num == reservation.insurance_credit_reserved_num
+                && r.impaired_liened_insurance_num == reservation.impaired_liened_insurance_num
+                && s.valid_liened_insurance_num == source.valid_liened_insurance_num - amount
+                && s.insurance_credit_reserved_num == source.insurance_credit_reserved_num
+                && s.fresh_reserved_backing_num == source.fresh_reserved_backing_num),
+        Err(_) => true,
+    }))]
     fn prepare_insurance_lien_release_delta(
         mut reservation: InsuranceCreditReservationV16,
         mut source: SourceCreditStateV16,
@@ -1149,6 +1161,29 @@ impl V16Core {
         Ok((reservation, source))
     }
 
+    // Contract layer: the TERMINAL insurance release un-RESERVES the full
+    // amount (unlike the Live release, which keeps the reservation), splitting
+    // the lien release valid-first-then-impaired on both ledgers in lockstep.
+    // (First contract draft claimed Live semantics; the contract check's
+    // counterexample exposed the wind-down difference.)
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(InsuranceCreditReservationV16, SourceCreditStateV16)>| match result {
+        Ok((r, s)) => (amount == 0 && *r == reservation && *s == source)
+            || {
+                let vr = if reservation.valid_liened_insurance_num < amount {
+                    reservation.valid_liened_insurance_num
+                } else {
+                    amount
+                };
+                let ir = amount - vr;
+                r.valid_liened_insurance_num == reservation.valid_liened_insurance_num - vr
+                    && r.impaired_liened_insurance_num == reservation.impaired_liened_insurance_num - ir
+                    && r.insurance_credit_reserved_num == reservation.insurance_credit_reserved_num - amount
+                    && s.valid_liened_insurance_num == source.valid_liened_insurance_num - vr
+                    && s.impaired_liened_insurance_num == source.impaired_liened_insurance_num - ir
+                    && s.insurance_credit_reserved_num == source.insurance_credit_reserved_num - amount
+            },
+        Err(_) => true,
+    }))]
     fn prepare_insurance_lien_terminal_release_delta(
         mut reservation: InsuranceCreditReservationV16,
         mut source: SourceCreditStateV16,
@@ -1185,6 +1220,17 @@ impl V16Core {
     }
 
     #[cfg(any(kani, feature = "fuzz"))]
+    // Contract layer: insurance impairment relabels valid liened to impaired
+    // inside the reservation (audit trail), reserved totals untouched.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(InsuranceCreditReservationV16, SourceCreditStateV16)>| match result {
+        Ok((r, s)) => (amount == 0 && *r == reservation && *s == source)
+            || (r.valid_liened_insurance_num == reservation.valid_liened_insurance_num - amount
+                && r.impaired_liened_insurance_num == reservation.impaired_liened_insurance_num + amount
+                && r.insurance_credit_reserved_num == reservation.insurance_credit_reserved_num
+                && s.valid_liened_insurance_num == source.valid_liened_insurance_num - amount
+                && s.impaired_liened_insurance_num == source.impaired_liened_insurance_num + amount),
+        Err(_) => true,
+    }))]
     fn prepare_insurance_lien_impair_delta(
         mut reservation: InsuranceCreditReservationV16,
         mut source: SourceCreditStateV16,
@@ -15463,7 +15509,11 @@ pub fn kani_scaled_adl_delta_fast(
 // effective was dropped — combining proof_for_contract with a kani::stub of
 // its U256 division helper is pathologically slow at the solver level (1800s+
 // warm) while sibling checks take seconds; its full-rate property is covered
-// by the standalone suite proofs.
+// by the standalone suite proofs. CONFIRMED PATTERN (second instance:
+// prepare_insurance_lien_consume_delta, 1800s+ even with division-free
+// ensures): leaves whose BODY divides by BOUND_SCALE with a symbolic operand
+// are not contract-checkable in this toolchain — their delta semantics stay
+// with the standalone suite proofs, which fix the operands concretely.
 
 #[cfg(all(kani, feature = "contracts"))]
 #[kani::proof_for_contract(V16Core::prepare_counterparty_lien_consume_delta)]
@@ -15763,3 +15813,99 @@ fn contract_check_prepare_insurance_lien_create_delta() {
     kani::assume(source.valid_liened_insurance_num < 1u128 << 96);
     let _ = V16Core::prepare_insurance_lien_create_delta(reservation, source, amount);
 }
+
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::prepare_insurance_lien_release_delta)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_prepare_insurance_lien_release_delta() {
+    let reservation = InsuranceCreditReservationV16 {
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        consumed_insurance_num: kani::any(),
+        source_credit_epoch: kani::any(),
+    };
+    let source = SourceCreditStateV16 {
+        positive_claim_bound_num: kani::any(),
+        exact_positive_claim_num: kani::any(),
+        fresh_reserved_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        spent_backing_num: kani::any(),
+        provider_receivable_num: kani::any(),
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        credit_rate_num: kani::any(),
+        credit_epoch: kani::any(),
+    };
+    let amount: u128 = kani::any();
+    kani::assume(amount < 1u128 << 96);
+    let _ = V16Core::prepare_insurance_lien_release_delta(reservation, source, amount);
+}
+
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::prepare_insurance_lien_impair_delta)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_prepare_insurance_lien_impair_delta() {
+    let reservation = InsuranceCreditReservationV16 {
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        consumed_insurance_num: kani::any(),
+        source_credit_epoch: kani::any(),
+    };
+    let source = SourceCreditStateV16 {
+        positive_claim_bound_num: kani::any(),
+        exact_positive_claim_num: kani::any(),
+        fresh_reserved_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        spent_backing_num: kani::any(),
+        provider_receivable_num: kani::any(),
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        credit_rate_num: kani::any(),
+        credit_epoch: kani::any(),
+    };
+    let amount: u128 = kani::any();
+    kani::assume(amount < 1u128 << 96);
+    kani::assume(reservation.impaired_liened_insurance_num < 1u128 << 96);
+    kani::assume(source.impaired_liened_insurance_num < 1u128 << 96);
+    let _ = V16Core::prepare_insurance_lien_impair_delta(reservation, source, amount);
+}
+
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::prepare_insurance_lien_terminal_release_delta)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_prepare_insurance_lien_terminal_release_delta() {
+    let reservation = InsuranceCreditReservationV16 {
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        consumed_insurance_num: kani::any(),
+        source_credit_epoch: kani::any(),
+    };
+    let source = SourceCreditStateV16 {
+        positive_claim_bound_num: kani::any(),
+        exact_positive_claim_num: kani::any(),
+        fresh_reserved_backing_num: kani::any(),
+        valid_liened_backing_num: kani::any(),
+        impaired_liened_backing_num: kani::any(),
+        spent_backing_num: kani::any(),
+        provider_receivable_num: kani::any(),
+        insurance_credit_reserved_num: kani::any(),
+        valid_liened_insurance_num: kani::any(),
+        impaired_liened_insurance_num: kani::any(),
+        credit_rate_num: kani::any(),
+        credit_epoch: kani::any(),
+    };
+    let amount: u128 = kani::any();
+    kani::assume(amount < 1u128 << 96);
+    let _ = V16Core::prepare_insurance_lien_terminal_release_delta(reservation, source, amount);
+}
+

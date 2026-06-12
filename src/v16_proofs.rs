@@ -1437,3 +1437,72 @@ fn contract_check_kernel_attach_leg() {
     let _ = V16Core::kernel_attach_leg(assetstatev16, side, basis_pos_q, loss_weight, asset_index_u32);
 }
 
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_clear_leg)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_clear_leg() {
+    let leg = PortfolioLegV16 {
+        active: true,
+        asset_index: kani::any(),
+        market_id: kani::any(),
+        side: if kani::any() { SideV16::Long } else { SideV16::Short },
+        basis_pos_q: kani::any(),
+        a_basis: kani::any(),
+        k_snap: kani::any(),
+        f_snap: kani::any(),
+        epoch_snap: kani::any(),
+        loss_weight: kani::any(),
+        b_snap: kani::any(),
+        b_rem: kani::any(),
+        b_epoch_snap: kani::any(),
+        b_stale: false,
+        stale: false,
+    };
+    let asset = AssetStateV16 {
+        market_id: kani::any(),
+        retired_slot: kani::any(),
+        lifecycle: AssetLifecycleV16::Active,
+        raw_oracle_target_price: kani::any(),
+        effective_price: kani::any(),
+        fund_px_last: kani::any(),
+        slot_last: kani::any(),
+        a_long: kani::any(),
+        a_short: kani::any(),
+        k_long: kani::any(),
+        k_short: kani::any(),
+        f_long_num: kani::any(),
+        f_short_num: kani::any(),
+        k_epoch_start_long: kani::any(),
+        k_epoch_start_short: kani::any(),
+        f_epoch_start_long_num: kani::any(),
+        f_epoch_start_short_num: kani::any(),
+        b_long_num: kani::any(),
+        b_short_num: kani::any(),
+        b_epoch_start_long_num: kani::any(),
+        b_epoch_start_short_num: kani::any(),
+        oi_eff_long_q: kani::any(),
+        oi_eff_short_q: kani::any(),
+        stored_pos_count_long: kani::any(),
+        stored_pos_count_short: kani::any(),
+        stale_account_count_long: kani::any(),
+        stale_account_count_short: kani::any(),
+        pending_obligation_count_long: kani::any(),
+        pending_obligation_count_short: kani::any(),
+        loss_weight_sum_long: kani::any(),
+        loss_weight_sum_short: kani::any(),
+        social_loss_remainder_long_num: kani::any(),
+        social_loss_remainder_short_num: kani::any(),
+        social_loss_dust_long_num: kani::any(),
+        social_loss_dust_short_num: kani::any(),
+        explicit_unallocated_loss_long: kani::any(),
+        explicit_unallocated_loss_short: kani::any(),
+        epoch_long: kani::any(),
+        epoch_short: kani::any(),
+        mode_long: if kani::any() { SideModeV16::Normal } else { SideModeV16::ResetPending },
+        mode_short: if kani::any() { SideModeV16::Normal } else { SideModeV16::ResetPending },
+    };
+    kani::assume(leg.basis_pos_q > i128::MIN);
+    let _ = V16Core::kernel_clear_leg(leg, asset);
+}
+

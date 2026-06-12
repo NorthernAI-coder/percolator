@@ -5,11 +5,13 @@ Generated: 2026-06-12 (full certification re-run; supersedes the 2026-06-10
 invocation, pkill-clean between runs, 900s suite budget / 1800s
 compile-inclusive layer budget).
 
-## Certified inventory: 250/250 PASS, zero failures
+## Certified inventory: 266/266 PASS, zero failures
+
+(250 base certified 2026-06-12 at 8da7343; +16 exact-frame suite proofs verified in isolation across waves F1-F6 with retained PASS logs, commits 7ac57f6..bfd29a5; src/v16.rs unchanged since the base certification — frame waves touched only tests/ and the cfg(kani) helper modules.)
 
 | layer | artifacts | result | notes |
 |---|---|---|---|
-| suite (tests/proofs_v16.rs) | 199 | 199/199 PASS | constructed-state Kani proofs over the public surface: junior-pool conservation lattice (pool-isolated or exact-delta for every public op), gates/rejections-before-mutation, two-op sequence witnesses, close-ownership exclusion, spec #19/#24 witnesses |
+| suite (tests/proofs_v16.rs) | 215 | 215/215 PASS (199 base + 16 exact-frame) | constructed-state Kani proofs over the public surface: junior-pool conservation lattice (pool-isolated or exact-delta for every public op), gates/rejections-before-mutation, two-op sequence witnesses, close-ownership exclusion, spec #19/#24 witnesses, and the EXACT-FRAME lattice (16 ops: whole-state equality vs pre-state-except-declared-deltas, incl. the Err-atomicity template and the crank clock/cert-only frame) |
 | contracts (src/v16_proofs.rs, -Z function-contracts) | 34 | 34/34 PASS | full-input-domain leaf contracts: complete counterparty lien lifecycle, insurance lien family, domain-insurance moves, aggregate maintenance, flow-typing transit witnesses (all 11 incl. the cure/support/resolved-exit skeletons of the intractable bodies), &mut-self debit (modifies/old) |
 | closure (src/v16_proofs.rs, plain) | 17 | 17/17 PASS | inductive: genesis + encumbrance-ledger closure under all 12 deltas (any state satisfying inv), bucket status-machine closure (4 delta-level) |
 

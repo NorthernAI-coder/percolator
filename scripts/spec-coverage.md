@@ -31,9 +31,9 @@ Generated 2026-06-11 (engine @ spec v16.8.11). Artifact classes:
 | 18 | Deterministic credit rates | PARTIAL | suite recompute proofs (epoch); rate core div-bearing (excluded) → concrete witnesses + fuzz | accept |
 | 19 | Pending obligations survive exit | STRONG | suite withdraw-rejects-while-close-active witness; close-ledger validation; cancel/cure gates | — |
 | 20 | Single-sided penalty accounting | PARTIAL | contract lag-penalty (uniform add); suite health proofs | per-check audit item |
-| 21 | Preemptible close total order | STRONG (mechanism) + SPEC-DIVERGENCE | suite close-exclusion proofs: occupied-domain begin rejects pre-mutation, one close per account, monotone close_id identity, bounded lifetime. FINDING: the spec's ClosePriority preemption tuple is NOT implemented — the engine uses exclusive per-domain barriers + bounded lifetime, which forecloses hold-and-wait and livelock by construction (each close holds exactly one domain; contention rejects, never compares). Spec text needs reconciling. | spec edit (user decision) |
+| 21 | Exclusive close ownership (v16.9.0) | STRONG | suite close-exclusion proofs: occupied-domain begin rejects pre-mutation, one close per account, monotone close_id identity, bounded lifetime. FINDING: the spec's ClosePriority preemption tuple is NOT implemented — the engine uses exclusive per-domain barriers + bounded lifetime, which forecloses hold-and-wait and livelock by construction (each close holds exactly one domain; contention rejects, never compares). Spec reconciled in v16.9.0 (req 21 rewritten to the proven exclusive-barrier mechanism). | — |
 | 22 | Immutable close lifecycle | STRONG | suite residual-equation + ledger validation proofs | — |
-| 23 | Bounded close drift | SPEC-AHEAD-OF-ENGINE | drift_consumed is a validated partition category with NO writer — the drift-reserve mechanism is not implemented; close lifetime is bounded via max_close_slot (proven in the close-identity proof) | spec/engine reconciliation (user decision) |
+| 23 | Bounded close lifetime (v16.9.0) | STRONG | drift_consumed is a validated partition category with NO writer — the drift-reserve mechanism is not implemented; close lifetime bounded via max_close_slot (proven); spec reconciled in v16.9.0 — drift_consumed is a reserved always-zero partition category | — |
 | 24 | Residual durability before clear | STRONG | suite dropped-residual cancel-shape rejection; residual-equation proof; close gates; terminal realization proofs | — |
 | 25 | ADL/finalization atomicity | **GAP (Kani)** | structural single-instruction paths; runtime tests | integration-level only |
 | 26 | No fee seniority | STRONG | suite inductive fee proof (never debits insurance); fee contracts | — |
@@ -41,7 +41,7 @@ Generated 2026-06-11 (engine @ spec v16.8.11). Artifact classes:
 | 28 | No arbitrary correlation trust | N/A | hedge credit not implemented | — |
 | 29 | Asset lifecycle fail-closed | STRONG | suite activation/retire/restart/reactivation proofs | — |
 | 30 | Dead-leg exit | STRONG | suite forfeit proofs (typed flow, v16.8.10) | — |
-| 31 | Recovery fallback numeric envelope | SPEC-AHEAD-OF-ENGINE | config knobs (deviation bps, enable flags) exist and are bound-validated, but NO fallback price computation uses them — the mechanism is not implemented; recovery-crank accounting-neutrality is proven | spec/engine reconciliation (user decision) |
+| 31 | Recovery fallback pricing reserved (v16.9.0) | STRONG (as specified) | config knobs (deviation bps, enable flags) exist and are bound-validated, but NO fallback price computation uses them — spec reconciled in v16.9.0: mechanism RESERVED, knobs validated-unused, recovery accounting-neutrality proven; the envelope text is retained as the normative bar for any future implementation | — |
 | 32 | Hints discovery-only | STRONG | suite account-validation proofs (full-bitmap equality) | — |
 | 33 | Refresh bounded by N | STRUCTURAL | loop bounds are struct constants | — |
 | 34 | No full-market atomic work | STRUCTURAL | per-account instruction shape | code-review item |
@@ -51,11 +51,10 @@ Generated 2026-06-11 (engine @ spec v16.8.11). Artifact classes:
 
 ## Outstanding items
 - **#25 ADL/finalization atomicity** — not Kani-expressible; integration/runtime only (permanent).
-- **Spec/engine reconciliation (user decision)**: #21 ClosePriority preemption, #23 drift
-  reserve, #31 recovery fallback price — all three are spec-described mechanisms with no
-  engine implementation; the engine's simpler designs (exclusive barriers + bounded
-  lifetime; no drift writer; no fallback pricing) are proven where they exist.
 
-Bottom line: 26 STRONG (incl. #21 mechanism-as-built), 5 PARTIAL (named accept-reasons),
-1 GAP (#25, permanent integration-level), 3 SPEC-AHEAD-OF-ENGINE findings flagged,
-3 STRUCTURAL, 1 N/A.
+Spec v16.9.0 reconciled the three former spec-ahead-of-engine items (#21, #23, #31) to
+the proven implementation; no open spec/engine divergences remain.
+
+Bottom line: 29 STRONG, 5 PARTIAL (named accept-reasons), 1 GAP (#25, permanent
+integration-level), 3 STRUCTURAL, 1 N/A. Exact-frame lattice: 16 ops (see
+scripts/no-steal-theorem.md Lemma 4).

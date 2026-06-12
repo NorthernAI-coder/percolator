@@ -680,6 +680,118 @@ impl V16Core {
         Ok(source)
     }
 
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(new_signed != 0))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(PortfolioLegV16, AssetStateV16)>| match result {
+        Ok((l, a)) => {
+            let old_abs = leg.basis_pos_q.unsigned_abs();
+            let new_abs = new_signed.unsigned_abs();
+            l.basis_pos_q == new_signed
+                && l.loss_weight == (if preserve_pending_obligation_weight { leg.loss_weight } else { new_weight })
+                && l.active == leg.active
+                && l.asset_index == leg.asset_index
+                && l.market_id == leg.market_id
+                && l.side == leg.side
+                && l.a_basis == leg.a_basis
+                && l.k_snap == leg.k_snap
+                && l.f_snap == leg.f_snap
+                && l.epoch_snap == leg.epoch_snap
+                && l.b_snap == leg.b_snap
+                && l.b_rem == leg.b_rem
+                && l.b_epoch_snap == leg.b_epoch_snap
+                && l.b_stale == leg.b_stale
+                && l.stale == leg.stale
+                && (match leg.side {
+                    SideV16::Long => a.oi_eff_long_q
+                            == asset.oi_eff_long_q.wrapping_sub(old_abs).wrapping_add(new_abs)
+                        && a.oi_eff_short_q == asset.oi_eff_short_q
+                        && a.loss_weight_sum_short == asset.loss_weight_sum_short
+                        && a.loss_weight_sum_long == (if preserve_pending_obligation_weight {
+                            asset.loss_weight_sum_long
+                        } else {
+                            asset.loss_weight_sum_long.wrapping_sub(leg.loss_weight).wrapping_add(new_weight)
+                        }),
+                    SideV16::Short => a.oi_eff_short_q
+                            == asset.oi_eff_short_q.wrapping_sub(old_abs).wrapping_add(new_abs)
+                        && a.oi_eff_long_q == asset.oi_eff_long_q
+                        && a.loss_weight_sum_long == asset.loss_weight_sum_long
+                        && a.loss_weight_sum_short == (if preserve_pending_obligation_weight {
+                            asset.loss_weight_sum_short
+                        } else {
+                            asset.loss_weight_sum_short.wrapping_sub(leg.loss_weight).wrapping_add(new_weight)
+                        }),
+                })
+                && a.market_id == asset.market_id
+                && a.retired_slot == asset.retired_slot
+                && a.lifecycle == asset.lifecycle
+                && a.raw_oracle_target_price == asset.raw_oracle_target_price
+                && a.effective_price == asset.effective_price
+                && a.fund_px_last == asset.fund_px_last
+                && a.slot_last == asset.slot_last
+                && a.a_long == asset.a_long
+                && a.a_short == asset.a_short
+                && a.k_long == asset.k_long
+                && a.k_short == asset.k_short
+                && a.f_long_num == asset.f_long_num
+                && a.f_short_num == asset.f_short_num
+                && a.k_epoch_start_long == asset.k_epoch_start_long
+                && a.k_epoch_start_short == asset.k_epoch_start_short
+                && a.f_epoch_start_long_num == asset.f_epoch_start_long_num
+                && a.f_epoch_start_short_num == asset.f_epoch_start_short_num
+                && a.b_long_num == asset.b_long_num
+                && a.b_short_num == asset.b_short_num
+                && a.b_epoch_start_long_num == asset.b_epoch_start_long_num
+                && a.b_epoch_start_short_num == asset.b_epoch_start_short_num
+                && a.stored_pos_count_long == asset.stored_pos_count_long
+                && a.stored_pos_count_short == asset.stored_pos_count_short
+                && a.stale_account_count_long == asset.stale_account_count_long
+                && a.stale_account_count_short == asset.stale_account_count_short
+                && a.pending_obligation_count_long == asset.pending_obligation_count_long
+                && a.pending_obligation_count_short == asset.pending_obligation_count_short
+                && a.social_loss_remainder_long_num == asset.social_loss_remainder_long_num
+                && a.social_loss_remainder_short_num == asset.social_loss_remainder_short_num
+                && a.social_loss_dust_long_num == asset.social_loss_dust_long_num
+                && a.social_loss_dust_short_num == asset.social_loss_dust_short_num
+                && a.explicit_unallocated_loss_long == asset.explicit_unallocated_loss_long
+                && a.explicit_unallocated_loss_short == asset.explicit_unallocated_loss_short
+                && a.epoch_long == asset.epoch_long
+                && a.epoch_short == asset.epoch_short
+                && a.mode_long == asset.mode_long
+                && a.mode_short == asset.mode_short
+        },
+        Err(_) => true,
+    }))]
+    pub(crate) fn kernel_resize_leg_same_side(
+        mut leg: PortfolioLegV16,
+        mut asset: AssetStateV16,
+        new_signed: i128,
+        new_weight: u128,
+        preserve_pending_obligation_weight: bool,
+    ) -> V16Result<(PortfolioLegV16, AssetStateV16)> {
+        let old_abs = leg.basis_pos_q.unsigned_abs();
+        let new_abs = new_signed.unsigned_abs();
+        match leg.side {
+            SideV16::Long => {
+                asset.oi_eff_long_q = adjust_u128(asset.oi_eff_long_q, old_abs, new_abs)?;
+                if !preserve_pending_obligation_weight {
+                    asset.loss_weight_sum_long =
+                        adjust_u128(asset.loss_weight_sum_long, leg.loss_weight, new_weight)?;
+                }
+            }
+            SideV16::Short => {
+                asset.oi_eff_short_q = adjust_u128(asset.oi_eff_short_q, old_abs, new_abs)?;
+                if !preserve_pending_obligation_weight {
+                    asset.loss_weight_sum_short =
+                        adjust_u128(asset.loss_weight_sum_short, leg.loss_weight, new_weight)?;
+                }
+            }
+        }
+        leg.basis_pos_q = new_signed;
+        if !preserve_pending_obligation_weight {
+            leg.loss_weight = new_weight;
+        }
+        Ok((leg, asset))
+    }
+
     // Contract layer: lien creation is a pure encumbrance relabel — fresh
     // unliened moves to valid liened atom-for-atom, fresh_reserved (and every
     // stock-relevant quantity) is untouched, and zero-amount is the identity.
@@ -693,6 +805,10 @@ impl V16Core {
                 && s.spent_backing_num == source.spent_backing_num),
         Err(_) => true,
     }))]
+    /// PRODUCTION KERNEL (kernel-proofs restructure): the same-side leg
+    /// resize state transform. Pure on small Copy structs so the contract
+    /// layer can verify it over its full input domain; the position-delta
+    /// glue in MarketGroupV16ViewMut calls exactly this.
     fn prepare_counterparty_lien_create_delta(
         mut bucket: BackingBucketV16,
         mut source: SourceCreditStateV16,
@@ -10889,37 +11005,22 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if new.unsigned_abs() > current.unsigned_abs() {
             self.require_asset_active_for_risk_increase(asset_index)?;
         }
-        let mut old_leg = account.header.legs[leg_slot].try_to_runtime()?;
-        let old_abs = old_leg.basis_pos_q.unsigned_abs();
-        let new_abs = new.unsigned_abs();
-        let new_weight = loss_weight_for_basis(new_abs, old_leg.a_basis)?;
+        let old_leg = account.header.legs[leg_slot].try_to_runtime()?;
+        let new_weight = loss_weight_for_basis(new.unsigned_abs(), old_leg.a_basis)?;
         let preserve_pending_obligation_weight =
             same_side_risk_reduction_or_flat_obligation(current, new)
                 && self.has_pending_domain_loss_barrier(asset_index, old_leg.side)?;
-        let mut asset = self.asset_state(asset_index)?;
-        match old_leg.side {
-            SideV16::Long => {
-                asset.oi_eff_long_q = adjust_u128(asset.oi_eff_long_q, old_abs, new_abs)?;
-                if !preserve_pending_obligation_weight {
-                    asset.loss_weight_sum_long =
-                        adjust_u128(asset.loss_weight_sum_long, old_leg.loss_weight, new_weight)?;
-                }
-            }
-            SideV16::Short => {
-                asset.oi_eff_short_q = adjust_u128(asset.oi_eff_short_q, old_abs, new_abs)?;
-                if !preserve_pending_obligation_weight {
-                    asset.loss_weight_sum_short =
-                        adjust_u128(asset.loss_weight_sum_short, old_leg.loss_weight, new_weight)?;
-                }
-            }
-        }
-        old_leg.basis_pos_q = new;
-        if !preserve_pending_obligation_weight {
-            old_leg.loss_weight = new_weight;
-        }
-        account.header.legs[leg_slot] = PortfolioLegV16Account::from_runtime(&old_leg);
+        let asset = self.asset_state(asset_index)?;
+        let (new_leg, new_asset) = V16Core::kernel_resize_leg_same_side(
+            old_leg,
+            asset,
+            new,
+            new_weight,
+            preserve_pending_obligation_weight,
+        )?;
+        account.header.legs[leg_slot] = PortfolioLegV16Account::from_runtime(&new_leg);
         account.header.health_cert.valid = 0;
-        self.set_asset_state(asset_index, asset)?;
+        self.set_asset_state(asset_index, new_asset)?;
         Ok(())
     }
 

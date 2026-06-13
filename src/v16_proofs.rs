@@ -1642,3 +1642,27 @@ fn contract_check_kernel_locked_margin_gate() {
     let _ = V16Core::kernel_locked_margin_gate(capital, pnl, fee_credits, req);
 }
 
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_accumulate_batch_trade)]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_accumulate_batch_trade() {
+    let outcome = BatchTradeOutcomeV16 {
+        fill_count: kani::any(),
+        fee_a: kani::any(),
+        fee_b: kani::any(),
+        notional: kani::any(),
+    };
+    let applied = TradeApplyOutcomeV16 {
+        fee_a: kani::any(),
+        fee_b: kani::any(),
+        notional: kani::any(),
+        risk_increasing: kani::any(),
+        long_has_source_claims: kani::any(),
+        short_has_source_claims: kani::any(),
+    };
+    let _ = V16Core::kernel_accumulate_batch_trade(
+        outcome, kani::any(), kani::any(), kani::any(), applied,
+    );
+}
+

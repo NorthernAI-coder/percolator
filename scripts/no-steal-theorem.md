@@ -219,6 +219,23 @@ CBMC's u128 div/mul circuits are structurally 128-bit and do not collapse under
 operand-magnitude bounds. The route's whole point is to NOT ask Kani to compute
 it; the corrected axiom does exactly that.
 
+WHICH BODIES THE RECIPE REACHES — a SECOND wall, distinct from arithmetic. The
+value-conservation recipe composed for attach (60s) and clear (151s): bodies
+with a thin interior between the leg-scan-free seam and the kernel. It does NOT
+compose for the RESIZE body (apply_position_delta_with_lookup_inner), which
+TIMED OUT at 1800s under THREE independent reductions: (i) stub_verified on both
+kernels, (ii) real kernels with only the division stubbed opaque, (iii) the
+read-only 16-leg lookup SCAN bypassed via a supplied lookup. The blocker there
+is neither arithmetic (stubbed) nor the scan (bypassed) but the LARGE-STRUCT
+symbolic (de)serialization of the full EngineAssetSlotV16Account across the
+bigger mutation interior (extra branches, barrier checks, asset_state round-
+trips). So resize's VALUE-EXACTNESS stays proven at the KERNEL contract
+(contract_check_kernel_resize_leg_same_side, 24s) — the whole-body composition
+is intractable for a state-SIZE reason, the documented tier the review names as
+"complex state/gate shape rather than arithmetic" (/tmp/proofs.md). Don't
+re-attempt resize/trade/batch WHOLE-BODY value composition; their value
+semantics live at the kernel contracts.
+
 THE SOUND REALIZATION: the trusted base moves to "ArithmeticAxiom + differential
 fuzz" exactly as the review specifies. Under that named axiom, BOTH the frame
 AND the value-conservation composition of the real attach body are now SINGLE

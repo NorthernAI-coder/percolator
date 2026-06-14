@@ -1975,3 +1975,70 @@ fn division_axiom_is_self_consistent() {
     assert!(w.wrapping_mul(a) >= num);
     assert!(w == 0 || (w - 1).wrapping_mul(a) < num);
 }
+
+// VALUE-CONSERVATION composition under the CORRECTED arithmetic axiom: the
+// division helper is stubbed to an opaque NONZERO value (NO wide-arithmetic
+// circuit in the axiom — the review's key refinement), and the proof asserts
+// the conservation DELTAS that don't need the weight's exact value:
+// oi_eff_long += abs and loss_weight_sum_long += the helper's (opaque) weight.
+// The weight's EXACT value (== ceil(abs*S/a)) is the fuzz obligation
+// (loss_weight_helper_matches_division_axiom), NOT asserted here. Composition:
+// (this: weight_sum += w) + (fuzz: w == ceil) => weight_sum += ceil — sound,
+// and tractable because Kani never touches the wide arithmetic.
+#[cfg(all(kani, feature = "contracts"))]
+fn axiom_loss_weight_nonzero(_abs: u128, a: u128) -> V16Result<u128> {
+    if a == 0 {
+        return Err(V16Error::InvalidLeg);
+    }
+    let w: u128 = kani::any();
+    kani::assume(w != 0); // the only property attach's logic branches on
+    Ok(w)
+}
+
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+#[kani::stub(crate::v16::loss_weight_for_basis, axiom_loss_weight_nonzero)]
+#[kani::stub_verified(V16Core::kernel_attach_leg)]
+fn composition_attach_value_conservation_under_axiom() {
+    let cfg = V16Config::public_user_fund_with_market_slots(1, 1, 0, 10);
+    let mut header = MarketGroupV16HeaderAccount::new_dynamic([1u8; 32], cfg, 1, 0).unwrap();
+    let mut markets = [Market::new(0u64, EngineAssetSlotV16Account::default())];
+    {
+        let mut v = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        v.activate_empty_market_not_atomic(0, 100, 1).unwrap();
+    }
+    let prov = ProvenanceHeaderV16Account::from_runtime(&ProvenanceHeaderV16::new(
+        [1u8; 32], [2u8; 32], [2u8; 32],
+    ));
+    let mut account_header = PortfolioAccountV16Account::default();
+    account_header.init_empty_in_place(prov).unwrap();
+    account_header.last_fee_slot = V16PodU64::new(1);
+    let basis: i128 = kani::any();
+    kani::assume(basis > 0 && basis <= MAX_POSITION_ABS_Q as i128);
+    let abs = basis.unsigned_abs();
+    let oi0 = markets[0].engine.asset.try_to_runtime().unwrap().oi_eff_long_q;
+    let ws0 = markets[0].engine.asset.try_to_runtime().unwrap().loss_weight_sum_long;
+    {
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut account = PortfolioV16ViewMut::new(&mut account_header);
+        if market.kani_attach_leg_at_slot(&mut account, 0, SideV16::Long, basis, 0).is_err() {
+            return;
+        }
+    }
+    kani::cover!(true, "value-conservation under axiom reached");
+    // Read POST-state fields RAW (.get()) — NOT try_to_runtime(): the kernel
+    // contract havocs the asset/leg to satisfy its ensures and does not promise
+    // the havoc'd POD re-passes full validation, but the specific u128/i128
+    // fields the ensures pins round-trip losslessly.
+    let oi1 = markets[0].engine.asset.oi_eff_long_q.get();
+    let ws1 = markets[0].engine.asset.loss_weight_sum_long.get();
+    let leg_weight = account_header.legs[0].loss_weight.get();
+    let leg_basis = account_header.legs[0].basis_pos_q.get();
+    // CONSERVATION (no wide arithmetic): OI rises by exactly abs; the side
+    // weight sum rises by exactly the weight written to the leg.
+    assert_eq!(oi1, oi0.wrapping_add(abs));
+    assert_eq!(ws1, ws0.wrapping_add(leg_weight));
+    assert_eq!(leg_basis, basis);
+}

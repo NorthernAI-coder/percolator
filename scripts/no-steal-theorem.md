@@ -191,26 +191,43 @@ WHAT WORKS (sound, machine-checked):
   full real input ranges. The narrow empirical obligation the review specifies
   is real and green.
 - FRAME composition under the route (attach, clear): machine-checked.
+- VALUE-CONSERVATION composition under the route (attach): machine-checked —
+  composition_attach_value_conservation_under_axiom, 60s PASS. This proves the
+  whole attach body conserves value: oi_eff_long += exactly abs and
+  loss_weight_sum_long += exactly the weight written to the leg.
 
-THE PRECISE LIMIT (why the VALUE composition is not a single Kani query):
-- Under the spec-EXACT axiom, the ceil relation is a wide MULTIPLICATION
-  (q*a_basis with both ~2^50 -> ~2^100 product). Even the axiom's own
-  self-consistency at engine ranges ran 28 min (effectively intractable), and
-  a bounded-width version with a symbolic u128 division ran 8+ min — because
-  CBMC's u128 division/multiplication circuits are structurally 128-bit and do
-  NOT collapse under operand-magnitude bounds.
-- DEEPEST FINDING: the intractable wall is bit-precise WIDE ARITHMETIC (division
-  AND multiplication) at 2^50+ operand widths, essentially independent of value
-  bounds — not division alone, and not account-state size.
+THE CORRECTED AXIOM (the review's refinement, /tmp/proofs.md line 358 — the
+axiom predicate must NOT reintroduce the SAT-hard wide-arithmetic circuit):
+- EARLIER MISTAKE (now retracted): I first wrote the axiom as kani::any() result
+  + assume(q*a_basis >= num && (q-1)*a_basis < num) — the EXACT ceil relation.
+  That assume IS a wide MULTIPLICATION (q*a_basis, both ~2^50 -> ~2^100); it
+  reintroduced the very circuit the route exists to avoid, so every value
+  composition under it ran 8-28 min and I wrongly concluded value composition
+  was not a single Kani query.
+- THE FIX: the axiom returns an OPAQUE nonzero weight (axiom_loss_weight_nonzero:
+  kani::any() + assume(w != 0) — nothing else; NO wide arithmetic). The Kani
+  proof then asserts only the CONSERVATION DELTAS, which need w as an opaque
+  value, not its exact magnitude (the attach logic branches only on w != 0). The
+  EXACT ceil value w == ceil(abs*S/a) is the FUZZ obligation above, never
+  asserted inside Kani. Composition: (Kani: weight_sum += w) AND (fuzz: w ==
+  ceil) => weight_sum += ceil. Sound, and tractable because Kani never touches
+  wide arithmetic.
 
-THE SOUND REALIZATION: the trusted base DOES move to "DivisionAxiom +
-differential fuzz" exactly as the review specifies. The "engine under the
-axiom" step is the LOGICAL composition of the separately-proven per-stage
-kernel contracts (in the 273 cert) with the fuzz-discharged axiom — a sound
-transitive argument, NOT one mechanized query. No single Kani query over wide
-symbolic arithmetic fits; that is a prover limit, not a soundness gap. The
-boundary is materially better than before (small, named, fuzz-validated
-arithmetic assumption) and is the most this prover generation supports.
+THE REMAINING PROVER LIMIT (unchanged, and orthogonal): a SINGLE Kani query that
+itself COMPUTES the wide ceil (rather than abstracting it) is intractable —
+CBMC's u128 div/mul circuits are structurally 128-bit and do not collapse under
+operand-magnitude bounds. The route's whole point is to NOT ask Kani to compute
+it; the corrected axiom does exactly that.
+
+THE SOUND REALIZATION: the trusted base moves to "ArithmeticAxiom + differential
+fuzz" exactly as the review specifies. Under that named axiom, BOTH the frame
+AND the value-conservation composition of the real attach body are now SINGLE
+machine-checked Kani queries (not merely logical composition of kernel
+contracts). The recipe generalizes to any division-bearing body with a clean
+seam: stub the helper to its frame-irrelevant/opaque property, assert the
+conservation deltas, discharge the exact arithmetic by fuzz. The boundary is
+small, named, and fuzz-validated — the strongest this prover generation
+supports, with no residual wide-arithmetic obligation left to Kani.
 
 ## Division contracts and reduced-leg profiles — both conclusively negative
 

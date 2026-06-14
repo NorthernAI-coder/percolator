@@ -85,6 +85,13 @@ routes an actionable state into its kernel without rejecting for an unrelated
 reason — covered by the per-op gate proofs + 55/55 Ok-exit validators + close
 sequence fuzz.
 
+CLASS COVERAGE is now ENFORCED statically: scripts/actionable_class_coverage.py
+asserts every one of the 7 ActionableState classes maps to a present, named
+machine-checked witness (the two kernel-backed classes to their existentials,
+the five terminal-route classes to their suite witnesses). The roster fails the
+build if any class loses its witness — the review's step-6 "every class covered
+by exactly one class theorem" check, as an invariant rather than prose.
+
 ASSUMED (named, outside the engine — the review's own caveat): an external
 actor SUBMITS the successful continuation. The engine proves a successful
 bounded continuation EXISTS; it cannot prove a cranker will call it without a

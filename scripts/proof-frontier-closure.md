@@ -12,7 +12,7 @@ harness).
 |---|---|---|---|
 | 1 | public-entrypoint / transition-class contracts callable by external proofs | PARTIAL→DONE for the contractable surface | 40 leaf/flow contracts + 11 production kernels + the Lemma-0 boundary audit (every public Ok-exit reaches a validator). A single importable per-entrypoint contract over a *monolithic* body is not expressible as one Kani query; the boundary audit + kernels are its decomposition. |
 | 2 | machine-checked global no-LoF transition composition theorem | DONE (decomposed) | GlobalValidState named (validate_shape ∧ per-account validate_with_market); boundary_audit.py proves it holds at every committed Ok-exit (55/55); validator semantics Kani-proven. The "exact frame ∧ value flow" layer is the per-op frames (16 direct + composition frames below). |
-| 3 | exact-frame coverage / narrowed theorem for intractable bodies | DONE-BY-COMPOSITION (recipe) + NARROWED | composition_attach_body_frame and composition_clear_leg_body_frame prove whole-body frames for intractable-tier bodies via stub_verified(kernel)+stub(division). The recipe generalizes to any gates+kernel+division-input body with a clean seam; bodies without a clean seam stay in the narrowed intractable tier (validator+fuzz backstopped). |
+| 3 | exact-frame coverage / narrowed theorem for intractable bodies | DONE-BY-COMPOSITION (recipe) + VALUE LAYER + NARROWED | composition_attach_body_frame and composition_clear_leg_body_frame prove whole-body FRAMES for intractable-tier bodies via stub_verified(kernel)+stub(division). composition_attach_value_conservation_under_axiom (60s PASS) adds the VALUE-conservation layer: the whole attach body's oi/weight deltas are a single machine-checked Kani query under the corrected opaque-weight arithmetic axiom (no wide arithmetic in Kani; exact ceil discharged by fuzz). The recipe generalizes to any gates+kernel+division-input body with a clean seam; bodies without a clean seam stay in the narrowed intractable tier (validator+fuzz backstopped). |
 | 4 | formal ActionableState + composed successful-continuation theorem | DONE (composition) | scripts/no-dos-liveness.md: ActionableState 7-class disjunction → bounded successful continuation, each with its machine-proven rank step or terminal-route witness. |
 | 5 | global / lexicographic liveness rank | DONE (stated + proven steps) | the lexicographic measure (pending closes, Σ residual, Σ b-distance, stale count) in no-dos-liveness.md; the two decreasing steps (B-advance, close-advance) are machine-proven kernels. |
 | 6 | proof each actionable class reaches its rank kernel (gate-reachability) | INTRACTABLE | reaching the kernel through a monolithic body interior is the seven-way-eliminated tier; backstopped by per-op gate proofs + Ok-exit validators + sequence fuzz. Documented, not pretended closed. |
@@ -23,7 +23,10 @@ harness).
 
 1. A SINGLE Kani theorem quantifying over ALL public transitions in one query —
    impossible at this generation (the monolithic bodies). The composition
-   decomposes it into proven pieces; it cannot collapse to one query.
+   decomposes it into proven pieces; it cannot collapse to one query. (Note: per
+   BODY, frame AND value-conservation composition ARE single Kani queries under
+   the named arithmetic axiom — the residue is only the all-transitions-at-once
+   quantifier, not any individual body's value flow.)
 2. Whole-body frames for bodies with NO clean kernel seam or multiple
    interacting division sites — composition needs a seam.
 3. Gate-reachability through intractable body interiors (no-DoS existential

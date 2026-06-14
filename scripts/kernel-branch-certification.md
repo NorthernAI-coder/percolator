@@ -14,7 +14,7 @@ Branch HEAD at certification: see git log (kernel-proofs).
 | closure (src/v16_proofs.rs, plain) | 17 | 17/17 PASS | inductive ledger/status closure |
 | close-rank witness | 1 | PASS (389s) | kernel_advance_close_ledger rank, plain-witness form |
 
-Total: 273/273 base + 4 added kernels (batch-projection, restart counters/slot) all PASS; the changed trade-batch/restart/leg production paths are re-verified by a targeted suite re-run: 47/47 PASS (kani_recert), so the batch + restart kernel extractions preserved suite-level semantics. Plus 2 whole-body composition frames (attach 117s, clear_leg 227s) reached via stub_verified(kernel)+stub(division).
+Total: 273/273 base + 4 added kernels (batch-projection, restart counters/slot) all PASS; the changed trade-batch/restart/leg production paths are re-verified by a targeted suite re-run: 47/47 PASS (kani_recert), so the batch + restart kernel extractions preserved suite-level semantics. Plus 2 whole-body composition frames (attach 117s, clear_leg 227s) reached via stub_verified(kernel)+stub(division), and 1 whole-body VALUE-conservation composition (composition_attach_value_conservation_under_axiom, 60s PASS — attach oi/weight deltas under the opaque-weight arithmetic axiom, exact ceil discharged by differential fuzz).
 
 ## The 11 production kernels (extracted from the intractable bodies, production calls them)
 | kernel | property proven | solver |
@@ -36,8 +36,21 @@ production code; the kernel refactor preserved all proof-level semantics
 (not merely runtime-test parity); the boundary theorem (scripts/boundary_audit.py,
 55/55) and both liveness-rank components are production-proven.
 
-DOES NOT close (documented boundary, scripts/no-steal-theorem.md): the
-universal GlobalValidState contract theorem over every public transition,
-monolithic-body exact frames (intractable tier), and the composed global
-no-DoS rank theorem. The kernels are the contractable stages those would
-compose from; the composition itself remains future work.
+PARTIALLY CLOSED SINCE (see scripts/proof-frontier-closure.md): monolithic-body
+exact frames are now DEMONSTRATED by composition for the attach and clear bodies
+(composition_attach_body_frame, composition_clear_leg_body_frame —
+stub_verified(kernel)+stub(division)); the VALUE-conservation layer of the same
+recipe is shown by composition_attach_value_conservation_under_axiom (OI/weight
+deltas under the opaque-weight arithmetic axiom, exact ceil discharged by
+differential fuzz); and the no-DoS gate-reachability EXISTENTIALS for the two
+kernel-backed classes are machine-checked
+(liveness_b_stale_leg_has_advancing_chunk,
+liveness_pending_close_has_rank_decreasing_advance).
+
+DOES NOT close (documented boundary, scripts/no-steal-theorem.md): a SINGLE Kani
+query quantifying over EVERY public transition (the monolithic bodies are the
+intractable tier — decomposed into proven pieces instead, not collapsed to one
+query), whole-body frames for bodies with no clean kernel seam, and
+gate-reachability through a monolithic body interior for the terminal-route
+classes. These are tool-generation limits (SAT-hardness of bit-precise wide
+arithmetic), not missing harnesses.

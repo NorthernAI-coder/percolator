@@ -13679,3 +13679,35 @@ fn proof_v16_validator_sound_pnl_aggregates() {
     assert!(h.pnl_matured_pos_tot.get() <= h.pnl_pos_tot.get());   // U6
     assert!(h.pnl_pos_bound_tot.get() >= h.pnl_pos_tot.get());     // U7
 }
+
+// ROADMAP Phase 1 (Pillar F soundness, U1/U10): validate_shape's Ok-exit implies
+// vault within the TVL cap (U1) and a nonzero market-id counter (U10). Only the
+// non-division-coupled fields are made symbolic.
+//
+// U8 (pnl_pos_bound_tot_num >= pnl_pos*BOUND_SCALE) is INTRACTABLE as a Kani
+// soundness lemma: making pnl_pos_bound_tot_num symbolic forces validate_shape's
+// internal amount_from_bound_num (u128 division by BOUND_SCALE) to bit-blast the
+// division circuit (timed out at 900s — the same wide-arithmetic wall the
+// complex bodies hit). U8 is deferred to reference-model fuzz (Phase 6):
+// bound_num/amount conformance over a stated domain, NOT a Kani lemma.
+#[kani::proof]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn proof_v16_validator_sound_bound_and_config() {
+    let vault: u128 = kani::any();
+    let next_mid: u64 = kani::any();
+    let (mut header, mut markets) = one_market_only_fixture();
+    header.vault = V16PodU128::new(vault);
+    header.next_market_id = V16PodU64::new(next_mid);
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    kani::assume(market.validate_shape() == Ok(()));
+    kani::cover!(
+        vault > 0 && next_mid > 1,
+        "config soundness lemma reachable with nontrivial vault + market-id"
+    );
+
+    let h = &market.header;
+    assert!(h.vault.get() <= MAX_VAULT_TVL); // U1
+    assert!(h.next_market_id.get() != 0);    // U10
+}

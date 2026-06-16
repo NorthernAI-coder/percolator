@@ -11,16 +11,16 @@ state-shape invariants, NOT liveness (Pillar L) or per-op value flow (Pillar S).
 
 | id | invariant (predicate over committed state) | enforcing validator clause | spec req | status |
 |----|---------------------------------------------|----------------------------|----------|--------|
-| U1 | `vault <= MAX_VAULT_TVL` | validate_shape (vault bound) | config | CLAUSE-PRESENT |
-| U2 | `c_tot <= vault && insurance <= vault` (junior never exceeds vault) | validate_shape | 6 | CLAUSE-PRESENT |
-| U3 | senior stack covered: `c_tot + insurance + backing_provider_earnings <= vault` | validate_header_aggregate_totals (senior) | 6 | CLAUSE-PRESENT |
+| U1 | `vault <= MAX_VAULT_TVL` | validate_shape (vault bound) | config | PROVEN-SOUND (validator_sound_bound_and_config) |
+| U2 | `c_tot <= vault && insurance <= vault` (junior never exceeds vault) | validate_shape | 6 | PROVEN-SOUND (validator_sound_scalar_invariants) |
+| U3 | senior stack covered: `c_tot + insurance + backing_provider_earnings <= vault` | validate_header_aggregate_totals (senior) | 6 | PROVEN-SOUND (validator_sound_senior_stack_within_vault) |
 | U4 | senior + fresh backing covered: `c_tot + insurance + earnings + source_fresh_backing/BOUND_SCALE <= vault` | validate_header_aggregate_totals (senior_with_backing) | 6 | CLAUSE-PRESENT |
 | U5 | insurance reservations within pool: `source_insurance_credit_reserved_total_atoms <= insurance && insurance_domain_budget_remaining_total <= insurance` | validate_header_aggregate_totals | 6/11 | CLAUSE-PRESENT |
 | U6 | matured PnL <= positive PnL: `pnl_matured_pos_tot <= pnl_pos_tot` | validate_shape | 14 | PROVEN-SOUND (proof_v16_validator_sound_pnl_aggregates) |
 | U7 | bound >= positive PnL: `pnl_pos_bound_tot >= pnl_pos_tot` and `== derived_bound` | validate_shape (derived_bound) | 17 | PROVEN-SOUND (proof_v16_validator_sound_pnl_aggregates) |
-| U8 | bound-num never understates exact: `pnl_pos_bound_tot_num >= exact_bound_num` and `>= source_claim_bound_total_num` | validate_shape / aggregate | 17 | CLAUSE-PRESENT |
-| U9 | clock monotone: `slot_last <= current_slot`, `last_asset_activation_slot <= current_slot` | validate_shape | 29/33 | CLAUSE-PRESENT |
-| U10 | market-id nonzero / next_market_id != 0 | validate_shape | 4 | CLAUSE-PRESENT |
+| U8 | bound-num never understates exact: `pnl_pos_bound_tot_num >= exact_bound_num` and `>= source_claim_bound_total_num` | validate_shape / aggregate | 17 | FUZZ-DEFERRED (Kani-intractable: symbolic bound_num forces validate_shape's amount_from_bound_num u128-division to bit-blast → P6) |
+| U9 | clock monotone: `slot_last <= current_slot`, `last_asset_activation_slot <= current_slot` | validate_shape | 29/33 | PROVEN-SOUND (validator_sound_scalar_invariants) |
+| U10 | market-id nonzero / next_market_id != 0 | validate_shape | 4 | PROVEN-SOUND (validator_sound_bound_and_config) |
 | U11 | payout-snapshot gate: resolved ledger non-EMPTY only if snapshot captured | validate_shape | 22 | CLAUSE-PRESENT |
 | U12 | aggregate totals == recomputed slot sums (earnings, claim-bound, fresh-backing, insurance-reserved, budget-remaining, blocker-count) | validate_shape_full_audit_scan / compute_aggregate_totals_and_validate_slots | 6/17/11 | CLAUSE-PRESENT (audit-scan feature) |
 | U13 | global junior bound >= Σ per-domain source claims | aggregate totals (junior-bound vs claims) | 6 | VERIFY-SOUNDNESS (see proof_v16_validate_shape_rejects_global_junior_bound_below_domain_claims) |

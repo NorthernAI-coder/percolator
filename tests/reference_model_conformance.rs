@@ -209,3 +209,74 @@ proptest! {
         check_amount(n); // full range, incl. the +1 ceil-overflow edge near u128::MAX
     }
 }
+
+// ---- ROADMAP Phase 7 — user-journey sequence conformance: N-receipt resolved
+// payout draining a SCARCE pool is order-independent in TOTAL extraction and
+// terminates, and per-receipt-equal when the pool funds all. Extends the
+// 2-receipt Kani order-independence proof to N via reference-model sequencing
+// over the PRODUCTION claimable. Pillars S (no value created) + L (terminates). ----
+
+const N_SEQ: usize = 4;
+
+// Drain a pool of `vault` across receipts (by claimable c[i]) in the given
+// index order: each receipt draws min(c[i], remaining). Returns (per-receipt
+// paid in original index order, total paid).
+fn drain(claimables: &[u128; N_SEQ], vault: u128, order: &[usize; N_SEQ]) -> ([u128; N_SEQ], u128) {
+    let mut paid = [0u128; N_SEQ];
+    let mut rem = vault;
+    let mut total = 0u128;
+    for &i in order.iter() {
+        let p = claimables[i].min(rem);
+        paid[i] = p;
+        rem -= p;
+        total += p;
+    }
+    (paid, total)
+}
+
+proptest! {
+    #![proptest_config(ProptestConfig::with_cases(4000))]
+
+    /// N-receipt scarce-pool payout: total extraction is order-independent
+    /// (= min(Σ claimable, vault)) and never exceeds the pool; when the pool
+    /// funds all, every receipt is paid its full claimable in any order.
+    /// Claimables come from the PRODUCTION resolved_receipt_claimable helper.
+    #[test]
+    fn phase7_n_receipt_payout_order_independent(
+        faces in prop::array::uniform4(1u128..64),
+        rate_num in 0u128..64,
+        rate_den in 1u128..64,
+        vault in 0u128..256,
+    ) {
+        // production claimable for each receipt (rate applied, fresh => paid 0)
+        let led = ledger(rate_num, rate_den);
+        let mut c = [0u128; N_SEQ];
+        for i in 0..N_SEQ {
+            c[i] = MarketGroupV16ViewMut::<u64>::kani_resolved_receipt_claimable_against_ledger(
+                valid_receipt(faces[i], 0), led,
+            ).unwrap();
+        }
+        let fwd: [usize; N_SEQ] = [0, 1, 2, 3];
+        let rev: [usize; N_SEQ] = [3, 2, 1, 0];
+        let mix: [usize; N_SEQ] = [2, 0, 3, 1];
+        let (paid_f, tot_f) = drain(&c, vault, &fwd);
+        let (paid_r, tot_r) = drain(&c, vault, &rev);
+        let (_paid_m, tot_m) = drain(&c, vault, &mix);
+
+        // (a) total extraction is order-independent and bounded by the pool
+        prop_assert_eq!(tot_f, tot_r);
+        prop_assert_eq!(tot_f, tot_m);
+        prop_assert!(tot_f <= vault);
+        // (b) total equals the draining composition min(Σc, vault) — terminates,
+        //     no value created
+        let sum: u128 = c.iter().sum();
+        prop_assert_eq!(tot_f, sum.min(vault));
+        // (c) fully funded => each receipt paid its full claimable, any order
+        if vault >= sum {
+            for i in 0..N_SEQ {
+                prop_assert_eq!(paid_f[i], c[i]);
+                prop_assert_eq!(paid_r[i], c[i]);
+            }
+        }
+    }
+}

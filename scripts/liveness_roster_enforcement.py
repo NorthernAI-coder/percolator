@@ -28,6 +28,7 @@ HARNESS = "src/v16_proofs.rs"
 
 PROVEN = "PROVEN"
 PROVEN_AT_KERNEL = "PROVEN-AT-KERNEL"
+PARTIAL = "PARTIAL"
 BACKSTOPPED = "BACKSTOPPED"
 
 # class -> {sel:(status, file, [fns]), dec:(status, file, [fns])}
@@ -64,10 +65,18 @@ ROSTER = {
     },
 }
 
-# "not blocked" obligations
+# "not blocked" obligations. PARTIAL (per /tmp/proofs.md 3B.0): the final gate is
+# proven, but NB1/NB2 stay PARTIAL until the FULL guard stack is covered — NB1
+# cannot be PROVEN on the margin gate alone (it also needs request validation,
+# refresh/currentness, loss-stale scope, target/effective lag, pending-domain
+# barrier, fee-affordability, and oracle/funding-envelope guard proofs); NB2
+# needs a bounded-work AND a rank/terminal artifact for EVERY selected crank
+# continuation, not just clock advance.
 NB = {
-    "NB1 valid trade admitted": (PROVEN, HARNESS, ["contract_check_kernel_initial_margin_gate"]),
-    "NB2 finite crank progress": (PROVEN, PROOFS, ["proof_v16_public_permissionless_empty_market_crank_advances_clock_without_value_movement"]),
+    "NB1 valid trade admitted (margin gate; full guard stack pending)":
+        (PARTIAL, HARNESS, ["contract_check_kernel_initial_margin_gate"]),
+    "NB2 finite crank progress (clock+rank steps; per-continuation bounded-work pending)":
+        (PARTIAL, PROOFS, ["proof_v16_public_permissionless_empty_market_crank_advances_clock_without_value_movement"]),
 }
 
 _cache = {}

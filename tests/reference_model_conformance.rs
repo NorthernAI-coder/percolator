@@ -280,3 +280,94 @@ proptest! {
         }
     }
 }
+
+// ---- ROADMAP Phase 6 — trade-execution arithmetic conformance (Pillar S; the
+// wide multiply/ceil-divide the engine computes via U256). Independent native
+// references over the stated u128-product domain (realistic inputs: the U256
+// path is only for products > u128, out of this reference's bound). ----
+const POS_SCALE_REF: u128 = 1_000_000;        // POS_SCALE
+const MAX_MARGIN_BPS_REF: u128 = 10_000;      // MAX_MARGIN_BPS
+
+// fee = ceil(notional*fee_bps / MAX_MARGIN_BPS), 0 if either operand 0
+fn ref_fee(notional: u128, fee_bps: u64) -> Result<u128, ()> {
+    if notional == 0 || fee_bps == 0 {
+        return Ok(0);
+    }
+    let p = notional.checked_mul(fee_bps as u128).ok_or(())?;
+    let q = p / MAX_MARGIN_BPS_REF;
+    Ok(if p % MAX_MARGIN_BPS_REF != 0 { q + 1 } else { q })
+}
+// notional_floor = floor(size*price / POS_SCALE), 0 if size 0
+fn ref_notional_floor(size: u128, price: u64) -> Result<u128, ()> {
+    if size == 0 {
+        return Ok(0);
+    }
+    let p = size.checked_mul(price as u128).ok_or(())?;
+    Ok(p / POS_SCALE_REF)
+}
+// risk_ceil = ceil(abs*price / POS_SCALE), 0 if abs 0
+fn ref_risk_ceil(abs: u128, price: u64) -> Result<u128, ()> {
+    if abs == 0 {
+        return Ok(0);
+    }
+    let p = abs.checked_mul(price as u128).ok_or(())?;
+    let q = p / POS_SCALE_REF;
+    Ok(if p % POS_SCALE_REF != 0 { q + 1 } else { q })
+}
+
+fn check_fee(n: u128, bps: u64) {
+    if let Ok(e) = ref_fee(n, bps) {
+        assert_eq!(kani_checked_fee_bps(n, bps), Ok(e), "fee {n} {bps}");
+        // S-T3: fee CEILs (charged against the user) — never understates exact
+        assert!(e * MAX_MARGIN_BPS_REF >= n.saturating_mul(bps as u128) || n == 0 || bps == 0);
+    }
+}
+fn check_notional(s: u128, px: u64) {
+    if let Ok(e) = ref_notional_floor(s, px) {
+        assert_eq!(kani_trade_notional_floor(s, px), Ok(e), "notional {s} {px}");
+    }
+}
+fn check_risk(a: u128, px: u64) {
+    if let Ok(e) = ref_risk_ceil(a, px) {
+        assert_eq!(kani_risk_notional_ceil(a, px), Ok(e), "risk {a} {px}");
+    }
+}
+
+#[test]
+fn trade_arith_tier_a_exhaustive() {
+    for n in 0u128..=40 {
+        for bps in 0u64..=40 {
+            check_fee(n, bps);
+        }
+    }
+    for s in 0u128..=40 {
+        for px in 0u64..=40 {
+            check_notional(s, px);
+            check_risk(s, px);
+        }
+    }
+    // ceil/floor boundaries around the scale denominators
+    for d in 0u128..=2 {
+        for off in 0u128..=2 {
+            check_fee(d * MAX_MARGIN_BPS_REF + off, 1);
+            check_notional(d * POS_SCALE_REF + off, 1);
+            check_risk(d * POS_SCALE_REF + off, 1);
+        }
+    }
+}
+
+proptest! {
+    #![proptest_config(ProptestConfig::with_cases(4000))]
+    #[test]
+    fn trade_fee_conformance(n in 0u128..(1u128 << 80), bps in 0u64..=10_000) {
+        check_fee(n, bps);
+    }
+    #[test]
+    fn trade_notional_floor_conformance(s in 0u128..(1u128 << 80), px in 0u64..1_000_000_000_000) {
+        check_notional(s, px);
+    }
+    #[test]
+    fn trade_risk_ceil_conformance(a in 0u128..(1u128 << 80), px in 0u64..1_000_000_000_000) {
+        check_risk(a, px);
+    }
+}

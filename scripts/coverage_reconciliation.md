@@ -12,8 +12,8 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | catalog | existing artifact(s) | status | gap → phase |
 |---------|----------------------|--------|-------------|
 | S-T1 position delta | proof_v16_view_trade_position_delta_preserves_oi_symmetry; kernel_attach/clear/resize (PROVEN) | PARTIAL | extract `kernel_apply_fill` exact signed delta → P3 |
-| S-T2 realized PnL on close | proof_v16_negative_pnl_settlement_consumes_principal_before_residual | PARTIAL | wide mark arithmetic → P3 kernel + P6 FUZZ-B |
-| S-T3 fee exact+ceil | proof_v16_trade_fee_helper_* (2); kani_checked_fee_bps; rounding_residue_fuzz | PROVEN (gate-clean) | — |
+| S-T2 realized PnL on close | negative_pnl_settlement_consumes_principal; **trade-arith conformance (notional_floor/risk_ceil vs native ref, Tier-A+B)** | PARTIAL→strengthened | full mark close PnL still P6 FUZZ-B |
+| S-T3 fee exact+ceil | trade_fee_helper_* (2); rounding_residue_fuzz; **trade_fee_conformance (ceil vs native ref, Tier-A exhaustive + Tier-B 4k)** | PROVEN + CONFORMANT | — |
 | S-T4 OI/weight conservation | kernel_attach/clear/resize contracts; composition_attach/clear value (PROVEN) | PROVEN (gate-clean) | extend AXIOM whole-body to trade body → P5 |
 | S-T5 trader value conserved mod fee | TokenValueFlowProofV16 (runtime) + flow contracts | PARTIAL | whole-op AXIOM composition → P5; FUZZ-B → P6 |
 | S-T6 batch == fold | contract_check_kernel_accumulate_batch_trade; proof_v16_batch_outcome_accumulator_is_exact… | PROVEN (gate-clean) | — |

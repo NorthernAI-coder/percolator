@@ -46,6 +46,16 @@ guards (trade_preflight_risk_gate is proven to block only unsafe increases).
 NB2 — finite crank progress: every permissionless crank step does bounded work
 (req 33/34 unwind bounds) AND advances R or is a no-op only when not actionable.
 
+
+## Composed L.sel selector (3A.4 — overlap-safe gate-reachability)
+select_progress_witness(ActionableSummaryV16) -> Option<ProgressContinuationV16>
+is a PROVEN total/deterministic selector (contract_check_select_progress_witness):
+for any actionable summary it returns Some continuation whose class is ACTUALLY
+active (non-blocked), with a fixed priority resolving overlaps — so one active
+class cannot invalidate the witness chosen for another (the per-class-witness
+weakness the roadmap flagged). This composes the per-class L.dec rank kernels
+into one overlap-safe L.sel.
+
 ## External assumption (named, out of engine scope)
 SCHED — an external actor SUBMITS the continuation. The engine proves a
 successful bounded continuation EXISTS and is callable by ANY actor

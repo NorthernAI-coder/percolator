@@ -1121,6 +1121,62 @@ impl V16Core {
         Ok((reduce_q, delta))
     }
 
+    /// PRODUCTION KERNEL (roadmap Phase 4 / 3A.4 liveness selector): the
+    /// gate-reachability oracle. Given the ActionableState summary, deterministi-
+    /// cally select a public continuation that makes progress, by a fixed
+    /// priority that resolves OVERLAPPING active classes (terminal/safety first):
+    /// expired-close/recovery -> resolved -> pending-close -> b-stale ->
+    /// liquidate -> refresh. Proves the no-DoS existential robustly: an actionable
+    /// state ALWAYS selects Some continuation (totality), the selected
+    /// continuation's class is ACTUALLY active (non-blocked — never picks a
+    /// continuation for an inactive class, so one active class cannot invalidate
+    /// the witness chosen for another), and the selection is deterministic. Pure;
+    /// composes the per-class L.dec rank kernels into one overlap-safe L.sel.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &Option<ProgressContinuationV16>| {
+        match result {
+            None => !summary.is_actionable(),
+            Some(k) => {
+                summary.is_actionable()
+                    && match k {
+                        // the selected continuation's class is live (non-blocked)
+                        ProgressContinuationV16::DeclareRecovery => summary.expired_close || summary.recovery_eligible,
+                        ProgressContinuationV16::CloseResolved => summary.resolved_winner,
+                        ProgressContinuationV16::AdvanceClose => summary.pending_close,
+                        ProgressContinuationV16::SettleBChunk => summary.b_stale,
+                        ProgressContinuationV16::Liquidate => summary.liquidatable,
+                        ProgressContinuationV16::RefreshAccount => summary.stale,
+                    }
+                    // deterministic priority: terminal recovery (expired/recovery)
+                    // is top; otherwise resolved-winner is next — higher-priority
+                    // active classes are never bypassed.
+                    && (!(summary.expired_close || summary.recovery_eligible)
+                        || *k == ProgressContinuationV16::DeclareRecovery)
+                    && ((summary.expired_close || summary.recovery_eligible)
+                        || !summary.resolved_winner
+                        || *k == ProgressContinuationV16::CloseResolved)
+            }
+        }
+    }))]
+    pub(crate) fn select_progress_witness(
+        summary: ActionableSummaryV16,
+    ) -> Option<ProgressContinuationV16> {
+        if summary.expired_close || summary.recovery_eligible {
+            Some(ProgressContinuationV16::DeclareRecovery)
+        } else if summary.resolved_winner {
+            Some(ProgressContinuationV16::CloseResolved)
+        } else if summary.pending_close {
+            Some(ProgressContinuationV16::AdvanceClose)
+        } else if summary.b_stale {
+            Some(ProgressContinuationV16::SettleBChunk)
+        } else if summary.liquidatable {
+            Some(ProgressContinuationV16::Liquidate)
+        } else if summary.stale {
+            Some(ProgressContinuationV16::RefreshAccount)
+        } else {
+            None
+        }
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -3963,6 +4019,46 @@ pub enum PositionRouteV16 {
     Clear,
     Flip,
     Resize,
+}
+
+/// Compact ActionableState summary (roadmap Phase 4 / 3A.4): which of the seven
+/// ActionableState classes are live for an account/market. The liveness
+/// selector reads only this — never per-class witnesses that another active
+/// class could invalidate.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ActionableSummaryV16 {
+    pub stale: bool,            // A1
+    pub b_stale: bool,          // A2
+    pub pending_close: bool,    // A3
+    pub expired_close: bool,    // A4
+    pub liquidatable: bool,     // A5
+    pub recovery_eligible: bool, // A6
+    pub resolved_winner: bool,  // A7
+}
+
+impl ActionableSummaryV16 {
+    pub fn is_actionable(self) -> bool {
+        self.stale
+            || self.b_stale
+            || self.pending_close
+            || self.expired_close
+            || self.liquidatable
+            || self.recovery_eligible
+            || self.resolved_winner
+    }
+}
+
+/// A public continuation kind the engine can make progress with (roadmap 3A.4).
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ProgressContinuationV16 {
+    DeclareRecovery, // A4 expired close / A6 recovery-eligible: terminal recovery
+    CloseResolved,   // A7 resolved winner: terminal realization
+    AdvanceClose,    // A3 pending close residual: close-ledger rank step
+    SettleBChunk,    // A2 b-stale leg: B-advance rank step
+    Liquidate,       // A5 liquidatable: risk-reduction
+    RefreshAccount,  // A1 stale account: protective accrual segment
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

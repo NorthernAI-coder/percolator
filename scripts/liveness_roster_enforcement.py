@@ -33,7 +33,7 @@ BACKSTOPPED = "BACKSTOPPED"
 # class -> {sel:(status, file, [fns]), dec:(status, file, [fns])}
 ROSTER = {
     "A1 stale account": {
-        "sel": (BACKSTOPPED, None, []),  # route-reachability through refresh monolith
+        "sel": (PROVEN_AT_KERNEL, HARNESS, ["contract_check_select_progress_witness"]),  # overlap-safe selection (route through refresh monolith remains backstopped)
         "dec": (PROVEN, PROOFS, ["proof_v16_equity_active_accrual_with_progress_commits_one_bounded_segment"]),
     },
     "A2 b-stale leg": {
@@ -76,6 +76,11 @@ def fns_in(path):
         _cache[path] = set(re.findall(r"\bfn\s+([A-Za-z0-9_]+)\s*\(", open(path).read()))
     return _cache[path]
 
+# Composed L.sel oracle (3A.4): select_progress_witness proves that for ANY
+# actionable summary a non-blocked continuation is deterministically selected,
+# resolving overlapping classes — the overlap-safe gate-reachability existential.
+COMPOSED_SELECTOR = ("src/v16_proofs.rs", "contract_check_select_progress_witness")
+
 missing = []
 def check(label, status, path, fns):
     if status == BACKSTOPPED:
@@ -90,6 +95,7 @@ for cls, halves in ROSTER.items():
         check(f"{cls} L.{half}", st, path, fns)
 for label, (st, path, fns) in NB.items():
     check(label, st, path, fns)
+check("composed L.sel selector", PROVEN, COMPOSED_SELECTOR[0], [COMPOSED_SELECTOR[1]])
 
 if missing:
     print("LIVENESS ROSTER GAP(S):")

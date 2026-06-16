@@ -2157,3 +2157,17 @@ fn contract_check_kernel_reduce_position_delta() {
     let requested: u128 = kani::any();
     let _ = V16Core::kernel_reduce_position_delta(pre, side, requested);
 }
+
+// ROADMAP Phase 4 / 3A.4 (Pillar L, gate-reachability): full-domain contract
+// check of the liveness selector — for ANY ActionableState summary it returns
+// Some continuation iff actionable (totality), the selected continuation's class
+// is actually active (non-blocked — overlap-safe), and the priority is
+// deterministic. Composes the per-class rank kernels into one L.sel.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::select_progress_witness)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_select_progress_witness() {
+    let summary: ActionableSummaryV16 = kani::any();
+    let _ = V16Core::select_progress_witness(summary);
+}

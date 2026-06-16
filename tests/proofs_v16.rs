@@ -13573,3 +13573,41 @@ fn proof_v16_frame_crank_touches_only_clock_and_cert_state() {
     ea.last_fee_slot = account_header.last_fee_slot;
     assert!(kani_eq_portfolio_account_v16_account(&ea, &account_header));
 }
+
+// ROADMAP Phase 1 (Pillar F soundness lemma U3): validate_shape's Ok-exit
+// IMPLIES the senior stack is covered by the vault — c_tot + insurance +
+// backing_provider_earnings_total <= vault. An importable safety-floor lemma
+// (a wrapper proof can consume it): "any state the engine commits has its
+// protected-principal senior layers fully vault-backed" (spec req 6). The
+// cover keeps it non-vacuous (the Ok branch is reachable for symbolic senior
+// fields), so the cover-vacuity gate guards against an unsatisfiable assume.
+#[kani::proof]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn proof_v16_validator_sound_senior_stack_within_vault() {
+    let vault: u128 = kani::any();
+    let c_tot: u128 = kani::any();
+    let insurance: u128 = kani::any();
+    let (mut header, mut markets) = one_market_only_fixture();
+    header.vault = V16PodU128::new(vault);
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(insurance);
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    // Premise: the engine considers this a committable state.
+    kani::assume(market.validate_shape() == Ok(()));
+    kani::cover!(
+        c_tot > 0 && insurance > 0 && vault > c_tot,
+        "senior-stack soundness lemma is reachable with nontrivial junior + insurance"
+    );
+
+    // Conclusion (the importable floor lemma): senior layers are vault-covered.
+    let senior = market
+        .header
+        .c_tot
+        .get()
+        .checked_add(market.header.insurance.get())
+        .and_then(|v| v.checked_add(market.header.backing_provider_earnings_total.get()))
+        .expect("senior stack sum cannot overflow a validated state");
+    assert!(senior <= market.header.vault.get());
+}

@@ -1204,6 +1204,80 @@ impl V16Core {
         }
     }
 
+    /// PRODUCTION KERNEL (roadmap 3B.4, Pillar L NB1 composition): the trade guard
+    /// stack as one decision. Admits IFF EVERY guard passes (an economically-valid
+    /// trade is NOT blocked — the no-DoS NB1 property at the full guard stack, not
+    /// just the margin gate), and every rejection is attributed to the FIRST
+    /// failing guard in production order (deterministic, no spurious rejection of
+    /// a valid trade). Pure boolean. NOTE: this proves the COMPOSITION + totality
+    /// + first-failure attribution; full NB1 additionally requires each summary
+    /// flag to reflect its real production guard (the per-guard discharge — fee
+    /// affordability and oracle/funding envelope guard proofs are the remaining
+    /// rows, so NB1 stays PARTIAL until those land).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &Result<(), TradeRejectReasonV16>| {
+        match result {
+            // admitted IFF the whole guard stack passes
+            Ok(()) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap
+                && g.accounts_current && g.fee_affordable && g.no_loss_stale_block
+                && g.no_adverse_lag && g.no_barrier_touch && g.margin_ok && g.locked_lane_ok,
+            // each rejection: that guard failed AND all earlier guards passed
+            Err(TradeRejectReasonV16::InvalidRequest) => !g.request_valid,
+            Err(TradeRejectReasonV16::ZeroSize) => g.request_valid && !g.size_nonzero,
+            Err(TradeRejectReasonV16::PriceOutOfRange) => g.request_valid && g.size_nonzero && !g.price_in_range,
+            Err(TradeRejectReasonV16::FeeBpsOverCap) => g.request_valid && g.size_nonzero && g.price_in_range && !g.fee_bps_in_cap,
+            Err(TradeRejectReasonV16::AccountsStale) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && !g.accounts_current,
+            Err(TradeRejectReasonV16::FeeUnaffordable) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && !g.fee_affordable,
+            Err(TradeRejectReasonV16::LossStaleBlocked) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && !g.no_loss_stale_block,
+            Err(TradeRejectReasonV16::AdverseLag) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && !g.no_adverse_lag,
+            Err(TradeRejectReasonV16::BarrierTouch) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && g.no_adverse_lag && !g.no_barrier_touch,
+            Err(TradeRejectReasonV16::MarginFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && !g.margin_ok,
+            Err(TradeRejectReasonV16::LockedLaneFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && g.margin_ok && !g.locked_lane_ok,
+        }
+    }))]
+    pub(crate) fn kernel_trade_admit(g: TradeGuardSummaryV16) -> Result<(), TradeRejectReasonV16> {
+        if !g.request_valid {
+            Err(TradeRejectReasonV16::InvalidRequest)
+        } else if !g.size_nonzero {
+            Err(TradeRejectReasonV16::ZeroSize)
+        } else if !g.price_in_range {
+            Err(TradeRejectReasonV16::PriceOutOfRange)
+        } else if !g.fee_bps_in_cap {
+            Err(TradeRejectReasonV16::FeeBpsOverCap)
+        } else if !g.accounts_current {
+            Err(TradeRejectReasonV16::AccountsStale)
+        } else if !g.fee_affordable {
+            Err(TradeRejectReasonV16::FeeUnaffordable)
+        } else if !g.no_loss_stale_block {
+            Err(TradeRejectReasonV16::LossStaleBlocked)
+        } else if !g.no_adverse_lag {
+            Err(TradeRejectReasonV16::AdverseLag)
+        } else if !g.no_barrier_touch {
+            Err(TradeRejectReasonV16::BarrierTouch)
+        } else if !g.margin_ok {
+            Err(TradeRejectReasonV16::MarginFail)
+        } else if !g.locked_lane_ok {
+            Err(TradeRejectReasonV16::LockedLaneFail)
+        } else {
+            Ok(())
+        }
+    }
+
+    /// PRODUCTION KERNEL (roadmap 3B.6, Pillar S/L S-A1 cap): the social-loss
+    /// chunk cap — the bookable chunk is `min(residual_remaining, public chunk
+    /// cap)`, so a single step books NO MORE than the outstanding residual and
+    /// NO MORE than the per-call public cap. Pure scalar (the delta_b/remainder
+    /// SPLIT divides by weight_sum and is discharged by reference-model fuzz —
+    /// social_loss_book_split conformance — since the symbolic u128 division
+    /// resists Kani). The capacity glue calls exactly this for the cap.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &u128| {
+        *result == if residual_remaining < public_chunk_cap { residual_remaining } else { public_chunk_cap }
+            && *result <= residual_remaining   // never books beyond the residual
+            && *result <= public_chunk_cap      // never books beyond the per-call cap
+    }))]
+    pub(crate) fn kernel_social_loss_chunk_cap(residual_remaining: u128, public_chunk_cap: u128) -> u128 {
+        residual_remaining.min(public_chunk_cap)
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -4074,6 +4148,42 @@ impl ActionableSummaryV16 {
             || self.recovery_eligible
             || self.resolved_winner
     }
+}
+
+/// Compact summary of the trade guard stack (roadmap 3B.4): each field is the
+/// result of one production guard an economically-valid trade must satisfy, in
+/// the order the public trade path applies them.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TradeGuardSummaryV16 {
+    pub request_valid: bool,     // request shape / asset configured
+    pub size_nonzero: bool,      // nonzero trade size
+    pub price_in_range: bool,    // exec price within the oracle envelope
+    pub fee_bps_in_cap: bool,    // fee_bps <= MAX_MARGIN_BPS
+    pub accounts_current: bool,  // both accounts refreshed/certifiable
+    pub fee_affordable: bool,    // account can pay the fee
+    pub no_loss_stale_block: bool, // no unrelated loss-stale blocker
+    pub no_adverse_lag: bool,    // no target/effective lag for a risk increase
+    pub no_barrier_touch: bool,  // no pending-domain loss-barrier touch
+    pub margin_ok: bool,         // final IM gate
+    pub locked_lane_ok: bool,    // locked-lane gate
+}
+
+/// Why a trade was rejected (the FIRST failing guard, roadmap 3B.4).
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TradeRejectReasonV16 {
+    InvalidRequest,
+    ZeroSize,
+    PriceOutOfRange,
+    FeeBpsOverCap,
+    AccountsStale,
+    FeeUnaffordable,
+    LossStaleBlocked,
+    AdverseLag,
+    BarrierTouch,
+    MarginFail,
+    LockedLaneFail,
 }
 
 /// Compact rank summary for a resolved-close call (roadmap 3B.8): which pending
@@ -12004,7 +12114,11 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if weight_sum == 0 {
             return Ok(0);
         }
-        let candidate = residual_remaining.min(self.header.config.public_b_chunk_atoms.get());
+        // PRODUCTION KERNEL: cap the chunk by residual AND the per-call public cap.
+        let candidate = V16Core::kernel_social_loss_chunk_cap(
+            residual_remaining,
+            self.header.config.public_b_chunk_atoms.get(),
+        );
         if candidate != 0 {
             if let Some(delta_b) = candidate
                 .checked_mul(SOCIAL_LOSS_DEN)
@@ -12144,12 +12258,8 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if weight_sum == 0 {
             return Ok(None);
         }
-        let numerator = engine_chunk
-            .checked_mul(SOCIAL_LOSS_DEN)
-            .and_then(|v| v.checked_add(rem))
-            .ok_or(V16Error::ArithmeticOverflow)?;
-        let delta_b = numerator / weight_sum;
-        let new_rem = numerator % weight_sum;
+        // PRODUCTION HELPER: the booking division (delta_b, new_rem).
+        let (delta_b, new_rem) = social_loss_book_split(engine_chunk, rem, weight_sum)?;
         if delta_b == 0 || b_now.checked_add(delta_b).is_none() {
             return Ok(None);
         }
@@ -15503,6 +15613,27 @@ fn pending_domain_loss_barrier_blocks_position_change(
     next: i128,
 ) -> bool {
     touches_barrier && !same_side_risk_reduction_or_flat_obligation(current, next)
+}
+
+/// PRODUCTION HELPER (roadmap 3B.6 split): the social-loss booking division —
+/// `numerator = engine_chunk*SOCIAL_LOSS_DEN + carried_rem`, then
+/// `delta_b = numerator / weight_sum`, `new_rem = numerator % weight_sum`.
+/// The exact integer identity (`delta_b*weight_sum + new_rem == numerator` and
+/// `new_rem < weight_sum`) is discharged by reference-model conformance fuzz
+/// (social_loss_book_split_*) since the symbolic u128 division resists Kani.
+fn social_loss_book_split(
+    engine_chunk: u128,
+    carried_rem: u128,
+    weight_sum: u128,
+) -> V16Result<(u128, u128)> {
+    if weight_sum == 0 {
+        return Err(V16Error::InvalidConfig);
+    }
+    let numerator = engine_chunk
+        .checked_mul(SOCIAL_LOSS_DEN)
+        .and_then(|v| v.checked_add(carried_rem))
+        .ok_or(V16Error::ArithmeticOverflow)?;
+    Ok((numerator / weight_sum, numerator % weight_sum))
 }
 
 fn loss_weight_for_basis(abs_basis_q: u128, a_basis: u128) -> V16Result<u128> {

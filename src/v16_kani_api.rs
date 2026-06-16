@@ -1201,3 +1201,13 @@ pub fn kani_loss_weight_for_basis(abs_basis_q: u128, a_basis: u128) -> V16Result
     loss_weight_for_basis(abs_basis_q, a_basis)
 }
 
+
+// Social-loss booking division split (roadmap 3B.6) — exposed for reference-model
+// conformance (the symbolic u128 division by weight_sum resists Kani).
+pub fn kani_social_loss_book_split(
+    engine_chunk: u128,
+    carried_rem: u128,
+    weight_sum: u128,
+) -> V16Result<(u128, u128)> {
+    social_loss_book_split(engine_chunk, carried_rem, weight_sum)
+}

@@ -2184,3 +2184,27 @@ fn contract_check_kernel_resolved_close_progress() {
     let rank: ResolvedCloseRankV16 = kani::any();
     let _ = V16Core::kernel_resolved_close_progress(rank);
 }
+
+// ROADMAP Phase 3B.4 (Pillar L, NB1 composition): full-domain contract check of
+// the trade guard-stack admitter — Ok iff EVERY guard passes (valid trade not
+// blocked), each rejection attributed to the first failing guard.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_trade_admit)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_trade_admit() {
+    let g: TradeGuardSummaryV16 = kani::any();
+    let _ = V16Core::kernel_trade_admit(g);
+}
+
+// ROADMAP Phase 3B.6 (Pillar S/L, S-A1 cap): full-domain contract check of the
+// social-loss chunk cap — booked == min(residual, public_cap) <= both.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_social_loss_chunk_cap)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_social_loss_chunk_cap() {
+    let residual: u128 = kani::any();
+    let cap: u128 = kani::any();
+    let _ = V16Core::kernel_social_loss_chunk_cap(residual, cap);
+}

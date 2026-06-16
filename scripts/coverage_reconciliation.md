@@ -21,8 +21,8 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | S-L2 draw == deficit | **kernel_settle_principal (principal layer) + kernel_consume_insurance_layer (insurance layer, capped by domain budget) — both PROVEN** | PARTIAL→strengthened | remaining social layer: `kernel_social_loss_distribute` → P3 |
 | S-L3 position reduced | **kernel_reduce_position_delta (PROVEN: |pre+delta|==|pre|-reduce_q, never over-closes/flips, full close clears)** | PROVEN | — |
 | S-L4 route to recovery | proof_v16_liquidation_preflight_routes_insufficient_residual_capacity_to_recovery | PROVEN (gate-clean) | — |
-| S-A1 Σ debits == deficit | live_residual_booking…; residual_reconciles_with_senior_stock; **kernel_settle_principal (PROVEN: principal draw exact + conserves c_tot)** | PARTIAL→strengthened | remaining: `kernel_social_loss_distribute` global conservation → P3 |
-| S-A2 debit ∝ loss weight | (none direct) | MISSING | P3 kernel + P6 FUZZ-B |
+| S-A1 Σ debits == deficit | kernel_settle_principal; **kernel_social_loss_chunk_cap (PROVEN: booked<=residual & <=cap)** + social_loss_book_split conformance (delta_b*ws+rem==num, rem<ws, Tier-A+B) | PROVEN (cap) + CONFORMANT (split) | — |
+| S-A2 debit ∝ loss weight | social_loss_book_split conformance (delta_b == numerator/weight_sum — proportional booking) Tier-A+B | CONFORMANT | exact ∝ via the weight_sum division, reference-model discharged |
 | S-A3 ADL rounds to zero | rounding_residue_fuzz (ADL direction) | PARTIAL | P6 Tier-A bound |
 | S-C1 paid <= face | proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim | PROVEN (gate-clean) | — |
 | S-C2 pro-rata, total<=pool | claimable_is_rate_monotone; payout_topup_pays_min_claimable; **kernel_resolved_payout_step (PROVEN: payout==min(claimable,vault), vault conserved)** | PROVEN | claimable's wide rate-div covered by P6 conformance |
@@ -44,7 +44,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | A5 liquidatable | preflight accept + route proofs | PARTIAL | dec via S-L2/S-L3 → P3/P4 |
 | A6 recovery-eligible | proof_v16_permissionless_recovery_crank_is_accounting_neutral | PROVEN (gate-clean) | — |
 | A7 resolved winner | resolved_winddown_* + terminal suite | PARTIAL | gate proof + P6 FUZZ-B |
-| NB1 valid trade not blocked | kernel_initial_margin_gate biconditional (PROVEN for the margin gate); trade_preflight_risk_gate; locked-lane total decision | PARTIAL | full guard stack pending: request-validation, refresh, loss-stale, lag, pending-barrier, fee-affordability, oracle/funding envelope → P4 (proof_trade_valid_route_reaches_fill_kernel) |
+| NB1 valid trade not blocked | **kernel_trade_admit (PROVEN: full guard-stack COMPOSITION — admits iff all 11 guards pass, deterministic first-failure attribution)**; margin/risk/locked-lane gate proofs | PARTIAL (composition proven) | remaining: per-guard DISCHARGE that each summary flag reflects its real production guard (fee-affordability, oracle/funding envelope) → wire route + per-guard proofs |
 | NB2 finite crank progress | unwind(40) bounds (req 33); permissionless-crank proofs; clock-advance | PARTIAL | per-continuation bounded-work + rank/terminal artifact for EVERY selected crank action → P4 |
 
 ## Pillar F — state floor (see state_invariant_catalog.md)

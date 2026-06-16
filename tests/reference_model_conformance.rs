@@ -21,7 +21,7 @@
 //! here. This is fuzz, not proof, outside Tier A.
 
 use percolator::v16::*;
-use percolator::BOUND_SCALE;
+use percolator::{BOUND_SCALE, SOCIAL_LOSS_DEN};
 use proptest::prelude::*;
 
 /// Independent reference: native u128, no shared code with the engine helper.
@@ -369,5 +369,54 @@ proptest! {
     #[test]
     fn trade_risk_ceil_conformance(a in 0u128..(1u128 << 80), px in 0u64..1_000_000_000_000) {
         check_risk(a, px);
+    }
+}
+
+// ---- ROADMAP Phase 3B.6 — social-loss booking division split conformance.
+// social_loss_book_split(chunk, rem, ws) = (numerator/ws, numerator%ws) where
+// numerator = chunk*SOCIAL_LOSS_DEN + rem. The exact integer identity
+// (delta_b*ws + new_rem == numerator, new_rem < ws) is the property Kani cannot
+// prove (symbolic u128 division by ws); discharged here over a stated domain. ----
+fn ref_split(chunk: u128, rem: u128, ws: u128) -> Result<(u128, u128), ()> {
+    if ws == 0 { return Err(()); }
+    let num = chunk.checked_mul(SOCIAL_LOSS_DEN).and_then(|v| v.checked_add(rem)).ok_or(())?;
+    Ok((num / ws, num % ws))
+}
+fn check_split(chunk: u128, rem: u128, ws: u128) {
+    let engine = kani_social_loss_book_split(chunk, rem, ws);
+    match ref_split(chunk, rem, ws) {
+        Ok((db, nr)) => {
+            assert_eq!(engine, Ok((db, nr)), "split {chunk} {rem} {ws}");
+            assert!(nr < ws, "remainder >= weight_sum");
+            // exact integer identity: delta_b*ws + new_rem == numerator
+            let num = chunk * SOCIAL_LOSS_DEN + rem;
+            assert_eq!(db.checked_mul(ws).and_then(|v| v.checked_add(nr)), Some(num));
+        }
+        Err(()) => assert!(engine.is_err()),
+    }
+}
+
+#[test]
+fn social_loss_split_tier_a_exhaustive() {
+    for chunk in 0u128..=8 {
+        for rem in 0u128..=8 {
+            for ws in 1u128..=8 {
+                check_split(chunk, rem, ws);
+            }
+        }
+    }
+    // weight_sum == 0 must fail-closed
+    assert!(kani_social_loss_book_split(1, 0, 0).is_err());
+}
+
+proptest! {
+    #![proptest_config(ProptestConfig::with_cases(5000))]
+    #[test]
+    fn social_loss_split_sampled(
+        chunk in 0u128..(1u128 << 55),  // SOCIAL_LOSS_DEN ~ 2^70, so chunk*DEN < 2^125 fits u128
+        rem in 0u128..(1u128 << 50),
+        ws in 1u128..(1u128 << 60),
+    ) {
+        check_split(chunk, rem, ws);
     }
 }

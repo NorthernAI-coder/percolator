@@ -1002,6 +1002,44 @@ impl V16Core {
         Ok((paid, new_capital, new_c_tot, new_pnl))
     }
 
+    /// PRODUCTION KERNEL (value safety, roadmap S-L2 insurance layer): the
+    /// insurance-draw core of negative-PnL liquidation. Draw is capped by BOTH
+    /// the remaining deficit and the DOMAIN's own available insurance —
+    /// `used = min(residual, domain_available)` — so it never exceeds the
+    /// deficit and never spends beyond this domain's budget (domain isolation).
+    /// Conservation: the insurance pool drops by exactly `used` and the domain
+    /// spent ledger rises by exactly `used`. Pure scalar; the consume glue calls
+    /// exactly this for the arithmetic.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(pnl < 0 && pnl > i128::MIN))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(u128, u128, u128, i128)>| match result {
+        Ok((used, new_insurance, new_spent, new_pnl)) => {
+            let residual = pnl.unsigned_abs();
+            *used == if residual < domain_available { residual } else { domain_available }
+                && *used <= domain_available   // never spends beyond the domain budget (S-L2 cap)
+                && *used <= residual            // never exceeds the deficit
+                && *new_insurance == insurance - *used   // pool drops by exactly used
+                && *new_spent == spent + *used           // spent rises by exactly used
+                && new_insurance.wrapping_add(*used) == insurance
+                && *new_pnl == pnl + (*used as i128)     // loss reduced by exactly used
+                && *new_pnl <= 0                          // cannot overshoot positive (used <= residual)
+        }
+        Err(_) => true,
+    }))]
+    pub(crate) fn kernel_consume_insurance_layer(
+        domain_available: u128,
+        insurance: u128,
+        spent: u128,
+        pnl: i128,
+    ) -> V16Result<(u128, u128, u128, i128)> {
+        let residual = pnl.unsigned_abs();
+        let used = residual.min(domain_available);
+        let new_insurance = insurance.checked_sub(used).ok_or(V16Error::CounterUnderflow)?;
+        let new_spent = spent.checked_add(used).ok_or(V16Error::ArithmeticOverflow)?;
+        let used_i128 = i128::try_from(used).map_err(|_| V16Error::ArithmeticOverflow)?;
+        let new_pnl = pnl.checked_add(used_i128).ok_or(V16Error::ArithmeticOverflow)?;
+        Ok((used, new_insurance, new_spent, new_pnl))
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -8153,34 +8191,22 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             return Ok(0);
         }
         self.header.bankruptcy_hlock_active = 1;
-        let residual = account.header.pnl.get().unsigned_abs();
         let domain_available = self.available_domain_insurance(domain)?;
-        let used = residual.min(domain_available);
+        let (_, spent_before) = self.domain_insurance_budget_spent(domain)?;
+        // PRODUCTION KERNEL: insurance-draw core (capped by deficit AND domain
+        // budget; conserves pool -> spent).
+        let (used, next_insurance, next_spent, new_pnl) = V16Core::kernel_consume_insurance_layer(
+            domain_available,
+            self.header.insurance.get(),
+            spent_before,
+            account.header.pnl.get(),
+        )?;
         if used == 0 {
             return Ok(0);
         }
         let vault_before = self.header.vault.get();
-        self.header.insurance = V16PodU128::new(
-            self.header
-                .insurance
-                .get()
-                .checked_sub(used)
-                .ok_or(V16Error::CounterUnderflow)?,
-        );
-        let (_, spent_before) = self.domain_insurance_budget_spent(domain)?;
-        self.set_domain_insurance_spent_core(
-            domain,
-            spent_before
-                .checked_add(used)
-                .ok_or(V16Error::ArithmeticOverflow)?,
-        )?;
-        let used_i128 = i128::try_from(used).map_err(|_| V16Error::ArithmeticOverflow)?;
-        let new_pnl = account
-            .header
-            .pnl
-            .get()
-            .checked_add(used_i128)
-            .ok_or(V16Error::ArithmeticOverflow)?;
+        self.header.insurance = V16PodU128::new(next_insurance);
+        self.set_domain_insurance_spent_core(domain, next_spent)?;
         self.set_account_pnl(account, new_pnl)?;
         TokenValueFlowProofV16::validate_insurance_to_close_insurance_spent(
             used,

@@ -2098,3 +2098,19 @@ fn contract_check_kernel_settle_principal() {
     let pnl: i128 = kani::any();
     let _ = V16Core::kernel_settle_principal(capital, c_tot, pnl);
 }
+
+// ROADMAP Phase 3 (Pillar S, S-L2 insurance layer): full-domain contract check
+// of the insurance-draw kernel — used==min(|pnl|, domain_available), capped by
+// the domain budget (isolation), pool->spent conservation. Production
+// (consume_domain_insurance_for_negative_pnl) calls this for the arithmetic.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_consume_insurance_layer)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_consume_insurance_layer() {
+    let domain_available: u128 = kani::any();
+    let insurance: u128 = kani::any();
+    let spent: u128 = kani::any();
+    let pnl: i128 = kani::any();
+    let _ = V16Core::kernel_consume_insurance_layer(domain_available, insurance, spent, pnl);
+}

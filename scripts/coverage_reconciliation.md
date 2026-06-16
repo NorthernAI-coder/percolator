@@ -18,7 +18,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | S-T5 trader value conserved mod fee | TokenValueFlowProofV16 (runtime) + flow contracts | PARTIAL | whole-op AXIOM composition → P5; FUZZ-B → P6 |
 | S-T6 batch == fold | contract_check_kernel_accumulate_batch_trade; proof_v16_batch_outcome_accumulator_is_exact… | PROVEN (gate-clean) | — |
 | S-L1 no stranded loss | proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk | PROVEN (gate-clean) | — |
-| S-L2 draw == deficit | **kernel_settle_principal (PROVEN: principal layer exact, contract_check_kernel_settle_principal)** | PARTIAL | remaining insurance/social layers: `kernel_liquidation_loss_split` → P3 |
+| S-L2 draw == deficit | **kernel_settle_principal (principal layer) + kernel_consume_insurance_layer (insurance layer, capped by domain budget) — both PROVEN** | PARTIAL→strengthened | remaining social layer: `kernel_social_loss_distribute` → P3 |
 | S-L3 position reduced | (none direct) | MISSING | risk-reduction kernel/lemma → P3/P4 |
 | S-L4 route to recovery | proof_v16_liquidation_preflight_routes_insufficient_residual_capacity_to_recovery | PROVEN (gate-clean) | — |
 | S-A1 Σ debits == deficit | live_residual_booking…; residual_reconciles_with_senior_stock; **kernel_settle_principal (PROVEN: principal draw exact + conserves c_tot)** | PARTIAL→strengthened | remaining: `kernel_social_loss_distribute` global conservation → P3 |

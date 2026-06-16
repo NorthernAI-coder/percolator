@@ -44,7 +44,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | A5 liquidatable | preflight accept + route proofs | PARTIAL | dec via S-L2/S-L3 → P3/P4 |
 | A6 recovery-eligible | proof_v16_permissionless_recovery_crank_is_accounting_neutral | PROVEN (gate-clean) | — |
 | A7 resolved winner | resolved_winddown_* + terminal suite | PARTIAL | gate proof + P6 FUZZ-B |
-| NB1 valid trade not blocked | kernel_initial_margin_gate (admits exactly valid); proof_v16_trade_preflight_risk_gate_blocks_only_unsafe_risk_increase; proof_v16_locked_trade_margin_gate_cannot_use_positive_pnl_credit | PARTIAL | "valid trade admitted" direction → P4 |
+| NB1 valid trade not blocked | **kernel_initial_margin_gate BICONDITIONAL contract (Err==>!admit ⇒ valid==>admitted) — PROVEN**; trade_preflight_risk_gate blocks only unsafe increases; locked-lane total decision | PROVEN (margin gate) | remaining: oracle/funding-envelope + fee-affordability guards → P4 |
 | NB2 finite crank progress | unwind(40) bounds (req 33); permissionless-crank proofs | PARTIAL | bounded-work + advance lemma → P4 |
 
 ## Pillar F — state floor (see state_invariant_catalog.md)

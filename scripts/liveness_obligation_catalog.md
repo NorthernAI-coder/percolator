@@ -35,12 +35,14 @@ shared "not blocked" obligation:
    per Phase 6, and prove the GATE (mode==Resolved admits close_resolved).
 
 ## The "not blocked" obligation (finding 6 — distinct from value safety)
-NB1 — an economically-valid trade (within IM, within the oracle/funding
-envelope, fee-affordable) is NOT rejected by internal mark/fee/guard logic.
-Prove at the gate kernels: `kernel_initial_margin_gate` admits exactly the
-states with valid cert + equity>=IM (PROVEN); extend with a "valid trade is
-admitted" direction — i.e. the gate rejects ONLY genuinely-invalid trades, so
-the guards cannot be used to deny service to valid users.
+NB1 — an economically-valid trade (within IM) is NOT rejected by the margin
+gate. PROVEN: kernel_initial_margin_gate's contract is a BICONDITIONAL
+(Ok==>admit AND Err==>!admit); the Err==>!admit clause's contrapositive is
+exactly "valid cert + equity>=IM ==> admitted", so the gate rejects ONLY
+genuinely-invalid trades and cannot deny service to valid users. The
+locked-lane gate (kernel_locked_margin_gate) is likewise a total decision.
+Remaining for full NB1: the oracle/funding-envelope and fee-affordability
+guards (trade_preflight_risk_gate is proven to block only unsafe increases).
 NB2 — finite crank progress: every permissionless crank step does bounded work
 (req 33/34 unwind bounds) AND advances R or is a no-op only when not actionable.
 

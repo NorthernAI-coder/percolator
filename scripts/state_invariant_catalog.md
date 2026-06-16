@@ -29,7 +29,7 @@ state-shape invariants, NOT liveness (Pillar L) or per-op value flow (Pillar S).
 | U16 | active-bitmap matches leg.active; inactive slots are EMPTY | validate_with_market (bit!=leg.active, is_empty) | 32/34 | CLAUSE-PRESENT |
 | U17 | leg shape valid: a_basis in range, loss_weight >= loss_weight_for_basis, <= SOCIAL_LOSS_DEN, b_rem < DEN | validate_active_leg | 1/14 | CLAUSE-PRESENT |
 | U18 | account provenance/version/layout bound to this market group | validate_with_market (provenance) | 4 | CLAUSE-PRESENT |
-| U19 | reserved_pnl <= positive PnL; residual_spent <= residual_crystallized | validate_with_market | 19/24 | CLAUSE-PRESENT |
+| U19 | reserved_pnl <= positive PnL; residual_spent <= residual_crystallized | validate_with_market | 19/24 | PROVEN-SOUND (validator_sound_account_reserves) |
 | U20 | source-credit domains well-shaped (occupied/tagged, configured, deduped) | validate_source_credit_shape_with_market | 9/36 | CLAUSE-PRESENT |
 | U21 | resolved payout receipt static-valid (present/face/paid shape) | validate_resolved_payout_receipt_static | 22 | CLAUSE-PRESENT |
 | U22 | close-progress ledger residual equation holds (gross+drift == progress+residual) | validate_close_progress_ledger_with_market | 22/24 | CLAUSE-PRESENT |

@@ -13711,3 +13711,40 @@ fn proof_v16_validator_sound_bound_and_config() {
     assert!(h.vault.get() <= MAX_VAULT_TVL); // U1
     assert!(h.next_market_id.get() != 0);    // U10
 }
+
+// ROADMAP Phase 1 (Pillar F soundness, U19): validate_with_market's Ok-exit
+// implies the account-reserve invariants — reserved PnL never exceeds positive
+// PnL, and residual principal spent never exceeds residual crystallized loss.
+// Account-header scalars symbolic so the lemma tests the validator. (These
+// clauses run before the leg loop; an empty account keeps it tractable.)
+#[kani::proof]
+#[kani::unwind(64)]
+#[kani::solver(cadical)]
+fn proof_v16_validator_sound_account_reserves() {
+    let pnl: i128 = kani::any();
+    let reserved_pnl: u128 = kani::any();
+    let residual_spent: u128 = kani::any();
+    let residual_crystallized: u128 = kani::any();
+    kani::assume(pnl > i128::MIN);
+    let (header, markets, mut account_header) = one_market_view_fixture();
+    account_header.pnl = V16PodI128::new(pnl);
+    account_header.reserved_pnl = V16PodU128::new(reserved_pnl);
+    account_header.residual_spent_principal_atoms_total = V16PodU128::new(residual_spent);
+    account_header.residual_crystallized_loss_atoms_total = V16PodU128::new(residual_crystallized);
+    let mut header = header;
+    let mut markets = markets;
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let account = PortfolioV16ViewMut::new(&mut account_header);
+
+    kani::assume(account.as_view().validate_with_market(&market.as_view()) == Ok(()));
+    kani::cover!(
+        pnl > 0 && reserved_pnl > 0 && residual_crystallized > 0 && residual_spent > 0,
+        "account-reserve soundness lemma reachable with nontrivial reserves"
+    );
+
+    let h = &account.header;
+    let pos_pnl = if h.pnl.get() > 0 { h.pnl.get() as u128 } else { 0 };
+    assert!(h.reserved_pnl.get() <= pos_pnl);                                              // U19a
+    assert!(h.residual_spent_principal_atoms_total.get()
+            <= h.residual_crystallized_loss_atoms_total.get());                            // U19b
+}

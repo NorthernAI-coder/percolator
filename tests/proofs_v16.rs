@@ -13611,3 +13611,40 @@ fn proof_v16_validator_sound_senior_stack_within_vault() {
         .expect("senior stack sum cannot overflow a validated state");
     assert!(senior <= market.header.vault.get());
 }
+
+// ROADMAP Phase 1 (Pillar F soundness lemmas, batched): validate_shape's Ok-exit
+// implies the header-scalar invariants that DON'T depend on account aggregates —
+// junior layers within vault (U2) and a monotone clock (U9). The PnL-aggregate
+// invariants (U6/U7) are deferred to an account-bearing fixture: on this
+// no-account fixture the audit-scan recomputes pnl_pos_tot to 0, so a "pnl_pos>0"
+// witness is UNSATISFIABLE (a dead cover) — caught by the cover-vacuity
+// discipline, so this lemma stays within the non-vacuous set. Importable floor
+// lemmas; the cover keeps it non-vacuous.
+#[kani::proof]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn proof_v16_validator_sound_scalar_invariants() {
+    let vault: u128 = kani::any();
+    let c_tot: u128 = kani::any();
+    let insurance: u128 = kani::any();
+    let current_slot: u64 = kani::any();
+    let slot_last: u64 = kani::any();
+    let (mut header, mut markets) = one_market_only_fixture();
+    header.vault = V16PodU128::new(vault);
+    header.c_tot = V16PodU128::new(c_tot);
+    header.insurance = V16PodU128::new(insurance);
+    header.current_slot = V16PodU64::new(current_slot);
+    header.slot_last = V16PodU64::new(slot_last);
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    kani::assume(market.validate_shape() == Ok(()));
+    kani::cover!(
+        c_tot > 0 && insurance > 0 && vault > c_tot && slot_last < current_slot,
+        "scalar-invariant soundness lemma reachable with nontrivial junior + clock gap"
+    );
+
+    let h = &market.header;
+    assert!(h.c_tot.get() <= h.vault.get());            // U2
+    assert!(h.insurance.get() <= h.vault.get());        // U2
+    assert!(h.slot_last.get() <= h.current_slot.get()); // U9
+}

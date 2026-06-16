@@ -55,7 +55,16 @@ liveness.
   Phase-1 engine-change (add the clause, TDD-first).
 
 ## Status
-First soundness lemma landed: see tests/proofs_v16.rs
-`proof_v16_validator_sound_senior_stack_within_vault` (U3) — verified.
-Remaining scalar lemmas batched as backlog; leg-loop (U14-U17) and audit-scan
-(U12) lemmas are MEDIUM/HEAVY and scheduled after the Phase 3 kernels.
+Landed + VERIFIED (gate-clean, non-vacuous):
+- proof_v16_validator_sound_senior_stack_within_vault (U3, 1/1 cover).
+- proof_v16_validator_sound_scalar_invariants (U2 + U9, 1/1 cover).
+
+LESSON (vacuity discipline): a first batched attempt also asserted U6/U7 (PnL
+aggregates) and PASSED but with 0-of-1 covers — DEAD: on a no-account fixture the
+audit-scan recomputes pnl_pos_tot to 0, so any pnl_pos>0 witness is unsatisfiable
+under validate_shape==Ok. U6/U7 are therefore DEFERRED to an account-bearing
+fixture (a later phase). The cover-count caught the vacuity before commit.
+
+Remaining: leg-loop (U14-U17) and audit-scan (U12) lemmas are MEDIUM/HEAVY,
+scheduled after the Phase 3 kernels; PnL-aggregate U6/U7/U8 need the account
+fixture.

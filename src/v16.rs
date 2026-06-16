@@ -1177,6 +1177,33 @@ impl V16Core {
         }
     }
 
+    /// PRODUCTION KERNEL (roadmap 3B.8, Pillar L A7.dec): resolved-close progress
+    /// classification — the no-DoS close property. Each call to the resolved
+    /// close-out is `Closed` (no pending component remains), `ProgressOnly` (a
+    /// rank component is still nonzero, so a strictly-smaller-rank step exists),
+    /// or `RecoveryRequired` (only when the explicit recovery predicate holds).
+    /// Proves: Closed IFF nothing pending and no recovery; ProgressOnly IMPLIES a
+    /// pending component exists (a real rank decrease is available — no spurious
+    /// non-progress); RecoveryRequired IFF the recovery flag. Pure; composes the
+    /// per-component rank kernels (b-advance, settle-principal, clear-leg,
+    /// payout-step) into the close termination argument.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &ResolvedCloseStepV16| {
+        match result {
+            ResolvedCloseStepV16::RecoveryRequired => rank.recovery_required,
+            ResolvedCloseStepV16::Closed => !rank.recovery_required && !rank.has_pending(),
+            ResolvedCloseStepV16::ProgressOnly => !rank.recovery_required && rank.has_pending(),
+        }
+    }))]
+    pub(crate) fn kernel_resolved_close_progress(rank: ResolvedCloseRankV16) -> ResolvedCloseStepV16 {
+        if rank.recovery_required {
+            ResolvedCloseStepV16::RecoveryRequired
+        } else if rank.has_pending() {
+            ResolvedCloseStepV16::ProgressOnly
+        } else {
+            ResolvedCloseStepV16::Closed
+        }
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -4047,6 +4074,34 @@ impl ActionableSummaryV16 {
             || self.recovery_eligible
             || self.resolved_winner
     }
+}
+
+/// Compact rank summary for a resolved-close call (roadmap 3B.8): which pending
+/// components remain (each a rank component), plus the explicit recovery flag.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ResolvedCloseRankV16 {
+    pub b_stale: bool,        // outstanding B settlement
+    pub negative_pnl: bool,   // unsettled negative PnL
+    pub active_leg: bool,     // an open leg remains
+    pub receipt_claim: bool,  // an unpaid resolved receipt claim
+    pub capital: bool,        // residual capital to disburse
+    pub recovery_required: bool, // the explicit recovery predicate holds
+}
+
+impl ResolvedCloseRankV16 {
+    pub fn has_pending(self) -> bool {
+        self.b_stale || self.negative_pnl || self.active_leg || self.receipt_claim || self.capital
+    }
+}
+
+/// Outcome of one resolved-close step (roadmap 3B.8).
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ResolvedCloseStepV16 {
+    Closed,
+    ProgressOnly,
+    RecoveryRequired,
 }
 
 /// A public continuation kind the engine can make progress with (roadmap 3A.4).

@@ -61,7 +61,7 @@ ROSTER = {
     },
     "A7 resolved winner": {
         "sel": (PROVEN, PROOFS, ["proof_v16_public_resolved_close_flat_account_pays_only_capital_and_vault"]),
-        "dec": (BACKSTOPPED, None, []),  # terminal realization whole-body Kani-intractable -> fuzz
+        "dec": (PROVEN_AT_KERNEL, HARNESS, ["contract_check_kernel_resolved_close_progress"]),  # close-step progress proven; terminal realization arithmetic -> P6 fuzz
     },
 }
 

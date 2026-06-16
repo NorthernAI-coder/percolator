@@ -2171,3 +2171,16 @@ fn contract_check_select_progress_witness() {
     let summary: ActionableSummaryV16 = kani::any();
     let _ = V16Core::select_progress_witness(summary);
 }
+
+// ROADMAP Phase 3B.8 (Pillar L, A7.dec): full-domain contract check of the
+// resolved-close progress classifier — Closed iff nothing pending & no recovery,
+// ProgressOnly implies a pending rank component exists (real decrease available,
+// no spurious non-progress), RecoveryRequired iff the recovery predicate.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_resolved_close_progress)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_resolved_close_progress() {
+    let rank: ResolvedCloseRankV16 = kani::any();
+    let _ = V16Core::kernel_resolved_close_progress(rank);
+}

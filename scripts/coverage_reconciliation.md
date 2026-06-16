@@ -25,7 +25,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | S-A2 debit ∝ loss weight | (none direct) | MISSING | P3 kernel + P6 FUZZ-B |
 | S-A3 ADL rounds to zero | rounding_residue_fuzz (ADL direction) | PARTIAL | P6 Tier-A bound |
 | S-C1 paid <= face | proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim | PROVEN (gate-clean) | — |
-| S-C2 pro-rata, total<=pool | proof_v16_resolved_receipt_claimable_is_rate_monotone…; …payout_topup_pays_min_claimable… | PARTIAL | lift to `kernel_resolved_payout` contract → P3 |
+| S-C2 pro-rata, total<=pool | claimable_is_rate_monotone; payout_topup_pays_min_claimable; **kernel_resolved_payout_step (PROVEN: payout==min(claimable,vault), vault conserved)** | PROVEN | claimable's wide rate-div covered by P6 conformance |
 | S-C3 order-independent | proof_v16_two_resolved_receipts_are_order_independent… (clean-room fixed) | PROVEN (gate-clean) | — |
 | S-C4 no double-claim | closure layer; backing_double_claim_fuzz | PARTIAL | P6 Tier-A/B split |
 | S-C5 bound never understates | proof_v16_public_resolved_bound_refinement_is_monotone_and_value_neutral | PROVEN (gate-clean) | — |

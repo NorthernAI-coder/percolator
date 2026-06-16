@@ -2114,3 +2114,17 @@ fn contract_check_kernel_consume_insurance_layer() {
     let pnl: i128 = kani::any();
     let _ = V16Core::kernel_consume_insurance_layer(domain_available, insurance, spent, pnl);
 }
+
+// ROADMAP Phase 3A.3 (Pillar S, S-C2): full-domain contract check of the
+// resolved-payout draining step — payout==min(claimable,vault), vault drops by
+// exactly payout (never overdrawn, never leaked). Production
+// (claim_resolved_payout_topup_core) calls this for the draining arithmetic.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_resolved_payout_step)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_resolved_payout_step() {
+    let claimable: u128 = kani::any();
+    let vault: u128 = kani::any();
+    let _ = V16Core::kernel_resolved_payout_step(claimable, vault);
+}

@@ -1040,6 +1040,27 @@ impl V16Core {
         Ok((used, new_insurance, new_spent, new_pnl))
     }
 
+    /// PRODUCTION KERNEL (value safety, roadmap S-C2 / 3A.3): the resolved-payout
+    /// draining step. Given the (already-computed) claimable and the vault,
+    /// `payout = min(claimable, vault)` and the vault drops by EXACTLY payout —
+    /// the pool is never overdrawn (payout <= vault) and never leaks (new_vault +
+    /// payout == vault). Pure scalar; the topup glue calls exactly this for the
+    /// draining arithmetic (claimable's wide rate-division stays upstream and is
+    /// covered by reference-model conformance fuzz).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &(u128, u128)| {
+        let (payout, new_vault) = *result;
+        payout == if claimable < vault { claimable } else { vault }
+            && payout <= claimable
+            && payout <= vault
+            && new_vault == vault - payout
+            && new_vault.wrapping_add(payout) == vault   // conservation: no leak
+    }))]
+    pub(crate) fn kernel_resolved_payout_step(claimable: u128, vault: u128) -> (u128, u128) {
+        let payout = claimable.min(vault);
+        let new_vault = vault - payout; // payout <= vault by construction
+        (payout, new_vault)
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -13752,16 +13773,12 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.clear_fully_diluted_resolved_receipt_if_terminal(account)?;
             return Ok(0);
         }
-        let payout = claimable.min(self.header.vault.get());
-        receipt = apply_resolved_payout_receipt_payment(receipt, payout)?;
         let vault_before = self.header.vault.get();
-        self.header.vault = V16PodU128::new(
-            self.header
-                .vault
-                .get()
-                .checked_sub(payout)
-                .ok_or(V16Error::CounterUnderflow)?,
-        );
+        // PRODUCTION KERNEL: draining step (payout = min(claimable, vault); vault
+        // drops by exactly payout, never overdrawn, never leaked).
+        let (payout, new_vault) = V16Core::kernel_resolved_payout_step(claimable, vault_before);
+        receipt = apply_resolved_payout_receipt_payment(receipt, payout)?;
+        self.header.vault = V16PodU128::new(new_vault);
         account.header.resolved_payout_receipt =
             ResolvedPayoutReceiptV16Account::from_runtime(&receipt);
         TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out(

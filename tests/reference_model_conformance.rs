@@ -144,3 +144,68 @@ proptest! {
         check(face, rate_num, rate_den, paid);
     }
 }
+
+// ---- U8 bound-num conversion conformance (roadmap Phase 6; deferred from the
+// Kani U8 soundness lemma, which is intractable — symbolic bound_num bit-blasts
+// validate_shape's u128 ceil-division). Independent native reference. ----
+
+// reference: bound_num_from_amount(a) == a * BOUND_SCALE (Err on overflow)
+fn ref_bound_num_from_amount(a: u128) -> Result<u128, ()> {
+    a.checked_mul(BOUND_SCALE).ok_or(())
+}
+// reference: amount_from_bound_num(n) == ceil(n / BOUND_SCALE)
+fn ref_amount_from_bound_num(n: u128) -> Result<u128, ()> {
+    let whole = n / BOUND_SCALE;
+    if n % BOUND_SCALE == 0 {
+        Ok(whole)
+    } else {
+        whole.checked_add(1).ok_or(())
+    }
+}
+
+fn check_bound_num(a: u128) {
+    let engine = kani_bound_num_from_amount(a);
+    match ref_bound_num_from_amount(a) {
+        Ok(e) => {
+            assert_eq!(engine, Ok(e), "bound_num_from_amount({a})");
+            // U8 property: the exact bound never understates the amount it scales
+            assert!(e >= a, "bound_num understates amount at {a}");
+        }
+        Err(()) => assert!(engine.is_err()),
+    }
+}
+fn check_amount(n: u128) {
+    let engine = kani_amount_from_bound_num(n);
+    match ref_amount_from_bound_num(n) {
+        Ok(e) => assert_eq!(engine, Ok(e), "amount_from_bound_num({n})"),
+        Err(()) => assert!(engine.is_err()),
+    }
+}
+
+#[test]
+fn u8_bound_num_tier_a_exhaustive() {
+    // small exhaustive + around the BOUND_SCALE boundary (ceil edges)
+    for a in 0u128..=64 {
+        check_bound_num(a);
+    }
+    for n in 0u128..=64 {
+        check_amount(n);
+    }
+    for d in 0u128..=3 {
+        for off in 0u128..=3 {
+            check_amount(d * BOUND_SCALE + off); // ceil boundary: rem 0 vs nonzero
+        }
+    }
+}
+
+proptest! {
+    #![proptest_config(ProptestConfig::with_cases(5000))]
+    #[test]
+    fn u8_bound_num_from_amount_sampled(a in 0u128..(1u128 << 70)) {
+        check_bound_num(a); // crosses the overflow boundary of a*BOUND_SCALE
+    }
+    #[test]
+    fn u8_amount_from_bound_num_sampled(n in 0u128..u128::MAX) {
+        check_amount(n); // full range, incl. the +1 ceil-overflow edge near u128::MAX
+    }
+}

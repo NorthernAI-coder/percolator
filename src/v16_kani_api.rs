@@ -178,6 +178,17 @@ pub fn kani_risk_notional_ceil(abs_pos_q: u128, price: u64) -> V16Result<u128> {
     risk_notional_ceil(abs_pos_q, price)
 }
 
+// Bound-num conversion helpers (roadmap Phase 6, U8 fuzz): the wide
+// multiply/ceil-divide validate_shape uses for the positive-PnL bound. Exposed
+// for reference-model conformance (the U8 soundness lemma is Kani-intractable —
+// symbolic bound_num bit-blasts the u128 division).
+pub fn kani_bound_num_from_amount(amount: u128) -> V16Result<u128> {
+    V16Core::bound_num_from_amount(amount)
+}
+pub fn kani_amount_from_bound_num(bound_num: u128) -> V16Result<u128> {
+    V16Core::amount_from_bound_num(bound_num)
+}
+
 pub fn kani_position_delta_increases_risk(current: i128, delta_q: i128) -> V16Result<bool> {
     position_delta_increases_risk(current, delta_q)
 }

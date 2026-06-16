@@ -1061,6 +1061,30 @@ impl V16Core {
         (payout, new_vault)
     }
 
+    /// PRODUCTION KERNEL (roadmap 3A.1 trade spine): classify a position change
+    /// from (current signed, new signed) into its leg route — the EXACT total
+    /// decision the position-delta body dispatches on. `delta != 0` is enforced
+    /// upstream, so `current == 0 => new != 0`. Pure scalar.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &PositionRouteV16| {
+        match r {
+            PositionRouteV16::Attach => current == 0,
+            PositionRouteV16::Clear => current != 0 && new == 0,
+            PositionRouteV16::Flip => current != 0 && new != 0 && current.signum() != new.signum(),
+            PositionRouteV16::Resize => current != 0 && new != 0 && current.signum() == new.signum(),
+        }
+    }))]
+    pub(crate) fn kernel_classify_position_delta(current: i128, new: i128) -> PositionRouteV16 {
+        if current == 0 {
+            PositionRouteV16::Attach
+        } else if new == 0 {
+            PositionRouteV16::Clear
+        } else if current.signum() != new.signum() {
+            PositionRouteV16::Flip
+        } else {
+            PositionRouteV16::Resize
+        }
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -3893,6 +3917,16 @@ struct TradePositionPreflightV16 {
     short_new_abs_q: u128,
     long_has_source_claims: bool,
     short_has_source_claims: bool,
+}
+
+/// The leg route a position change dispatches to (roadmap 3A.1).
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum PositionRouteV16 {
+    Attach,
+    Clear,
+    Flip,
+    Resize,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -11509,7 +11543,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         ) {
             return Err(V16Error::LockActive);
         }
-        if current == 0 {
+        // PRODUCTION KERNEL: classify the route (Attach/Clear/Flip/Resize) — the
+        // exact decision this body dispatches on, factored out and contracted.
+        let route = V16Core::kernel_classify_position_delta(current, new);
+        if route == PositionRouteV16::Attach {
             let side = if new > 0 {
                 SideV16::Long
             } else {
@@ -11519,7 +11556,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             return self.attach_leg_at_slot(account, asset_index, side, new, leg_slot);
         }
         let leg_slot = existing_slot.ok_or(V16Error::InvalidLeg)?;
-        if new == 0 {
+        if route == PositionRouteV16::Clear {
             let leg = current_leg;
             if leg.active && self.has_pending_domain_loss_barrier(asset_index, leg.side)? {
                 let old_abs = leg.basis_pos_q.unsigned_abs();
@@ -11556,7 +11593,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             }
             return self.clear_leg(account, asset_index);
         }
-        if current.signum() != new.signum() {
+        if route == PositionRouteV16::Flip {
             self.require_asset_active_for_risk_increase(asset_index)?;
             self.clear_leg(account, asset_index)?;
             let side = if new > 0 {

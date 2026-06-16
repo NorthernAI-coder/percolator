@@ -11,7 +11,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 ## Pillar S — value safety
 | catalog | existing artifact(s) | status | gap → phase |
 |---------|----------------------|--------|-------------|
-| S-T1 position delta | proof_v16_view_trade_position_delta_preserves_oi_symmetry; kernel_attach/clear/resize (PROVEN) | PARTIAL | extract `kernel_apply_fill` exact signed delta → P3 |
+| S-T1 position delta | trade_position_delta_preserves_oi_symmetry; attach/clear/resize kernels; **kernel_classify_position_delta (PROVEN: exact Attach/Clear/Flip/Resize route, production dispatches on it)** | PROVEN | exact signed-delta-per-route via the leg kernels |
 | S-T2 realized PnL on close | negative_pnl_settlement_consumes_principal; **trade-arith conformance (notional_floor/risk_ceil vs native ref, Tier-A+B)** | PARTIAL→strengthened | full mark close PnL still P6 FUZZ-B |
 | S-T3 fee exact+ceil | trade_fee_helper_* (2); rounding_residue_fuzz; **trade_fee_conformance (ceil vs native ref, Tier-A exhaustive + Tier-B 4k)** | PROVEN + CONFORMANT | — |
 | S-T4 OI/weight conservation | kernel_attach/clear/resize contracts; composition_attach/clear value (PROVEN) | PROVEN (gate-clean) | extend AXIOM whole-body to trade body → P5 |

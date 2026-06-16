@@ -2128,3 +2128,17 @@ fn contract_check_kernel_resolved_payout_step() {
     let vault: u128 = kani::any();
     let _ = V16Core::kernel_resolved_payout_step(claimable, vault);
 }
+
+// ROADMAP Phase 3A.1 (Pillar S, trade spine): full-domain contract check of the
+// position-route classifier — the exact (Attach/Clear/Flip/Resize) decision the
+// position-delta body dispatches on. Production (apply_position_delta_with_lookup
+// _inner) calls this for the route decision.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_classify_position_delta)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_classify_position_delta() {
+    let current: i128 = kani::any();
+    let new: i128 = kani::any();
+    let _ = V16Core::kernel_classify_position_delta(current, new);
+}

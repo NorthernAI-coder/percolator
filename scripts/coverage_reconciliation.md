@@ -1,0 +1,63 @@
+# Phase 2 — Coverage reconciliation matrix
+
+Maps every Phase-0 catalog entry to EXISTING artifacts so later phases work only
+the gaps. Status: PROVEN (machine-checked, non-vacuous) | PARTIAL (some coverage,
+gap noted) | MISSING | SUPERSEDED. PARTIAL/MISSING rows are the Phase 3-7 backlog.
+
+Re-derivation note: every "PROVEN" row inherited from before the vacuity audit
+must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
+(gate-clean) were swept 2026-06-16.
+
+## Pillar S — value safety
+| catalog | existing artifact(s) | status | gap → phase |
+|---------|----------------------|--------|-------------|
+| S-T1 position delta | proof_v16_view_trade_position_delta_preserves_oi_symmetry; kernel_attach/clear/resize (PROVEN) | PARTIAL | extract `kernel_apply_fill` exact signed delta → P3 |
+| S-T2 realized PnL on close | proof_v16_negative_pnl_settlement_consumes_principal_before_residual | PARTIAL | wide mark arithmetic → P3 kernel + P6 FUZZ-B |
+| S-T3 fee exact+ceil | proof_v16_trade_fee_helper_* (2); kani_checked_fee_bps; rounding_residue_fuzz | PROVEN (gate-clean) | — |
+| S-T4 OI/weight conservation | kernel_attach/clear/resize contracts; composition_attach/clear value (PROVEN) | PROVEN (gate-clean) | extend AXIOM whole-body to trade body → P5 |
+| S-T5 trader value conserved mod fee | TokenValueFlowProofV16 (runtime) + flow contracts | PARTIAL | whole-op AXIOM composition → P5; FUZZ-B → P6 |
+| S-T6 batch == fold | contract_check_kernel_accumulate_batch_trade; proof_v16_batch_outcome_accumulator_is_exact… | PROVEN (gate-clean) | — |
+| S-L1 no stranded loss | proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk | PROVEN (gate-clean) | — |
+| S-L2 draw == deficit | (none) | MISSING | `kernel_liquidation_loss_split` → P3 |
+| S-L3 position reduced | (none direct) | MISSING | risk-reduction kernel/lemma → P3/P4 |
+| S-L4 route to recovery | proof_v16_liquidation_preflight_routes_insufficient_residual_capacity_to_recovery | PROVEN (gate-clean) | — |
+| S-A1 Σ debits == deficit | proof_v16_live_residual_booking_to_loss_bearing_side_is_bounded_and_exact; …residual_reconciles_with_senior_stock | PARTIAL | `kernel_social_loss_distribute` global conservation → P3 |
+| S-A2 debit ∝ loss weight | (none direct) | MISSING | P3 kernel + P6 FUZZ-B |
+| S-A3 ADL rounds to zero | rounding_residue_fuzz (ADL direction) | PARTIAL | P6 Tier-A bound |
+| S-C1 paid <= face | proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim | PROVEN (gate-clean) | — |
+| S-C2 pro-rata, total<=pool | proof_v16_resolved_receipt_claimable_is_rate_monotone…; …payout_topup_pays_min_claimable… | PARTIAL | lift to `kernel_resolved_payout` contract → P3 |
+| S-C3 order-independent | proof_v16_two_resolved_receipts_are_order_independent… (clean-room fixed) | PROVEN (gate-clean) | — |
+| S-C4 no double-claim | closure layer; backing_double_claim_fuzz | PARTIAL | P6 Tier-A/B split |
+| S-C5 bound never understates | proof_v16_public_resolved_bound_refinement_is_monotone_and_value_neutral | PROVEN (gate-clean) | — |
+| S-C6 terminal realization | proof_v16_insolvent_resolved_receipt_clears_at_terminal_rate; resolved_winddown_* (3) | PARTIAL (Kani-intractable whole-body) | P6 FUZZ-B |
+| S-U1 cures counted once | flow support_to_account_capital (==3 sources) | PROVEN (gate-clean) | — |
+| S-U2 cure needs consume+burn | realize/consume gate proofs | PARTIAL | gate kernel → P3 |
+| S-U3 cure rejects no-close | proof_v16_cure_and_cancel_close_rejects_without_active_close | PROVEN (gate-clean) | — |
+
+## Pillar L — liveness / rank progress
+| catalog | existing artifact(s) | status | gap → phase |
+|---------|----------------------|--------|-------------|
+| A1 stale (sel/dec) | proof_v16_equity_active_accrual_with_progress_commits_one_bounded_segment | PARTIAL | route-reachability `select_progress_witness_stale` → P3/P4 |
+| A2 b-stale (sel/dec) | liveness_b_stale_leg_has_advancing_chunk; kernel_advance_leg_b_snap | PROVEN-AT-KERNEL | route through body → P4 |
+| A3 pending close (sel/dec) | liveness_pending_close_has_rank_decreasing_advance; kernel_advance_close_ledger | PROVEN-AT-KERNEL | route through body → P4 |
+| A4 expired close | proof_v16_expired_close_progress_declares_recovery… (PUBLIC ROUTE) | PROVEN (gate-clean) | — |
+| A5 liquidatable | preflight accept + route proofs | PARTIAL | dec via S-L2/S-L3 → P3/P4 |
+| A6 recovery-eligible | proof_v16_permissionless_recovery_crank_is_accounting_neutral | PROVEN (gate-clean) | — |
+| A7 resolved winner | resolved_winddown_* + terminal suite | PARTIAL | gate proof + P6 FUZZ-B |
+| NB1 valid trade not blocked | kernel_initial_margin_gate (admits exactly valid); proof_v16_trade_preflight_risk_gate_blocks_only_unsafe_risk_increase; proof_v16_locked_trade_margin_gate_cannot_use_positive_pnl_credit | PARTIAL | "valid trade admitted" direction → P4 |
+| NB2 finite crank progress | unwind(40) bounds (req 33); permissionless-crank proofs | PARTIAL | bounded-work + advance lemma → P4 |
+
+## Pillar F — state floor (see state_invariant_catalog.md)
+| catalog | existing artifact(s) | status | gap → phase |
+|---------|----------------------|--------|-------------|
+| U1-U12,U14-U24 clauses | validate_shape / validate_with_market clauses; boundary_audit 55/55 | PARTIAL (clause present, soundness lemma pending) | soundness lemmas → P1 |
+| U13 junior bound | proof_v16_validate_shape_rejects_global_junior_bound_below_domain_claims | PROVEN (gate-clean, rejection direction) | soundness direction → P1 |
+
+## Backlog after reconciliation (what Phases 3-7 actually build)
+MISSING: S-L2, S-L3, S-A2 (kernels); the route-reachability `select_progress_witness_*`
+kernels for A1/A2/A3/A5; NB1 "valid-admitted" direction.
+PARTIAL→strengthen: S-T1/S-T2 (kernel_apply_fill), S-C2 (kernel_resolved_payout),
+S-A1 (global conservation), Pillar-F soundness lemmas (P1), the FUZZ rows → P6
+Tier-A/Tier-B.
+PROVEN (no new work, keep gate-clean): S-T3,S-T4,S-T6,S-L1,S-L4,S-C1,S-C3,S-C5,
+S-U1,S-U3,A4,A6,U13(reject).

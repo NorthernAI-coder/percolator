@@ -2142,3 +2142,18 @@ fn contract_check_kernel_classify_position_delta() {
     let new: i128 = kani::any();
     let _ = V16Core::kernel_classify_position_delta(current, new);
 }
+
+// ROADMAP Phase 3A.2 (Pillar S/L, S-L3 + A5.dec rank): full-domain contract check
+// of the position-reduction kernel — reduce_q==min(requested,|pre|), |pre+delta|
+// == |pre|-reduce_q (rank strictly decreases, never over-closes/flips), full
+// close clears. Production (rebalance_reduce_position) calls this.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_reduce_position_delta)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_reduce_position_delta() {
+    let pre: i128 = kani::any();
+    let side = if kani::any() { SideV16::Long } else { SideV16::Short };
+    let requested: u128 = kani::any();
+    let _ = V16Core::kernel_reduce_position_delta(pre, side, requested);
+}

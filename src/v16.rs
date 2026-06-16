@@ -1085,6 +1085,42 @@ impl V16Core {
         }
     }
 
+    /// PRODUCTION KERNEL (roadmap 3A.2 risk-reduction / S-L3, A5.dec rank): the
+    /// position-reduction core of liquidation/rebalance. Clamps the requested
+    /// close to the leg and produces the toward-zero signed delta:
+    /// `reduce_q = min(requested, |pre|)`, `delta = -reduce_q` (long) / `+reduce_q`
+    /// (short). Proves the rank component STRICTLY decreases: |pre + delta| ==
+    /// |pre| - reduce_q (never over-closes, never flips), and a full close clears
+    /// the position to zero. Pure scalar; the reduce glue calls exactly this.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(pre_basis_signed > i128::MIN
+        && match side { SideV16::Long => pre_basis_signed >= 0, SideV16::Short => pre_basis_signed <= 0 }))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(u128, i128)>| match result {
+        Ok((reduce_q, delta)) => {
+            let pre_abs = pre_basis_signed.unsigned_abs();
+            let new_signed = pre_basis_signed.wrapping_add(*delta);
+            *reduce_q == if requested < pre_abs { requested } else { pre_abs }
+                && *reduce_q <= pre_abs                              // never over-closes
+                && new_signed.unsigned_abs() == pre_abs - *reduce_q  // reduced by EXACTLY reduce_q
+                && new_signed.unsigned_abs() <= pre_abs              // rank non-increase
+                && (*reduce_q != pre_abs || new_signed == 0)         // full close clears
+        }
+        Err(_) => true,
+    }))]
+    pub(crate) fn kernel_reduce_position_delta(
+        pre_basis_signed: i128,
+        side: SideV16,
+        requested: u128,
+    ) -> V16Result<(u128, i128)> {
+        let pre_abs = pre_basis_signed.unsigned_abs();
+        let reduce_q = requested.min(pre_abs);
+        let reduce_i128 = i128::try_from(reduce_q).map_err(|_| V16Error::ArithmeticOverflow)?;
+        let delta = match side {
+            SideV16::Long => reduce_i128.checked_neg().ok_or(V16Error::ArithmeticOverflow)?,
+            SideV16::Short => reduce_i128,
+        };
+        Ok((reduce_q, delta))
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -12360,17 +12396,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if !leg.active {
             return Err(V16Error::InvalidLeg);
         }
-        let reduce_q = request.reduce_q.min(leg.basis_pos_q.unsigned_abs());
+        // PRODUCTION KERNEL: clamp + toward-zero reduction delta (rank decrease,
+        // never over-closes, full close clears).
+        let (reduce_q, reduce_delta) =
+            V16Core::kernel_reduce_position_delta(leg.basis_pos_q, leg.side, request.reduce_q)?;
         if reduce_q == 0 {
             return Err(V16Error::NonProgress);
         }
-        let reduce_i128 = i128::try_from(reduce_q).map_err(|_| V16Error::ArithmeticOverflow)?;
-        let reduce_delta = match leg.side {
-            SideV16::Long => reduce_i128
-                .checked_neg()
-                .ok_or(V16Error::ArithmeticOverflow)?,
-            SideV16::Short => reduce_i128,
-        };
         if self.position_delta_blocked_by_pending_domain_loss_barrier(
             &account.as_view(),
             request.asset_index,

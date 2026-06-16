@@ -52,7 +52,7 @@ ROSTER = {
         "sel": (PROVEN, PROOFS, ["proof_v16_liquidation_preflight_accepts_only_fully_durable_residual",
                                  "proof_v16_liquidation_preflight_routes_insufficient_residual_capacity_to_recovery"]),
         # dec: insurance-draw layer kernel-proven; risk-reduction (S-L3) remains
-        "dec": (PROVEN_AT_KERNEL, HARNESS, ["contract_check_kernel_consume_insurance_layer"]),
+        "dec": (PROVEN_AT_KERNEL, HARNESS, ["contract_check_kernel_consume_insurance_layer", "contract_check_kernel_reduce_position_delta"]),
     },
     "A6 recovery-eligible": {
         "sel": (PROVEN, PROOFS, ["proof_v16_permissionless_recovery_crank_is_accounting_neutral"]),

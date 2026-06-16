@@ -13648,3 +13648,34 @@ fn proof_v16_validator_sound_scalar_invariants() {
     assert!(h.insurance.get() <= h.vault.get());        // U2
     assert!(h.slot_last.get() <= h.current_slot.get()); // U9
 }
+
+// ROADMAP Phase 1 (Pillar F soundness, U6/U7 — the PnL aggregates deferred from
+// the scalar batch): validate_shape's Ok-exit implies matured <= positive PnL
+// (U6) and the positive-PnL bound >= positive PnL (U7). PnL fields fully
+// symbolic so the lemma tests the VALIDATOR (not the fixture). The cover proves
+// pnl_pos>0 is genuinely reachable under validate_shape==Ok (non-vacuous).
+#[kani::proof]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn proof_v16_validator_sound_pnl_aggregates() {
+    let pnl_pos: u128 = kani::any();
+    let pnl_matured: u128 = kani::any();
+    let pnl_bound: u128 = kani::any();
+    let pnl_bound_num: u128 = kani::any();
+    let (mut header, mut markets) = one_market_only_fixture();
+    header.pnl_pos_tot = V16PodU128::new(pnl_pos);
+    header.pnl_matured_pos_tot = V16PodU128::new(pnl_matured);
+    header.pnl_pos_bound_tot = V16PodU128::new(pnl_bound);
+    header.pnl_pos_bound_tot_num = V16PodU128::new(pnl_bound_num);
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+
+    kani::assume(market.validate_shape() == Ok(()));
+    kani::cover!(
+        pnl_pos > 0 && pnl_matured > 0 && pnl_matured < pnl_pos,
+        "pnl-aggregate soundness lemma reachable with nontrivial positive + matured PnL"
+    );
+
+    let h = &market.header;
+    assert!(h.pnl_matured_pos_tot.get() <= h.pnl_pos_tot.get());   // U6
+    assert!(h.pnl_pos_bound_tot.get() >= h.pnl_pos_tot.get());     // U7
+}

@@ -50,7 +50,8 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 ## Pillar F — state floor (see state_invariant_catalog.md)
 | catalog | existing artifact(s) | status | gap → phase |
 |---------|----------------------|--------|-------------|
-| U1-U12,U14-U24 clauses | validate_shape / validate_with_market clauses; boundary_audit 55/55 | PARTIAL (clause present, soundness lemma pending) | soundness lemmas → P1 |
+| U2,U3,U6,U7,U9 | validator_sound_senior_stack / _scalar_invariants / _pnl_aggregates (PROVEN-SOUND) | PROVEN | — |
+| U1,U8,U10-U12,U14-U24 clauses | validate_shape/validate_with_market clauses; boundary_audit 55/55 | PARTIAL (clause present, soundness lemma pending) | remaining soundness lemmas → P1 |
 | U13 junior bound | proof_v16_validate_shape_rejects_global_junior_bound_below_domain_claims | PROVEN (gate-clean, rejection direction) | soundness direction → P1 |
 
 ## Backlog after reconciliation (what Phases 3-7 actually build)

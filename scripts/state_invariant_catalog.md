@@ -16,8 +16,8 @@ state-shape invariants, NOT liveness (Pillar L) or per-op value flow (Pillar S).
 | U3 | senior stack covered: `c_tot + insurance + backing_provider_earnings <= vault` | validate_header_aggregate_totals (senior) | 6 | CLAUSE-PRESENT |
 | U4 | senior + fresh backing covered: `c_tot + insurance + earnings + source_fresh_backing/BOUND_SCALE <= vault` | validate_header_aggregate_totals (senior_with_backing) | 6 | CLAUSE-PRESENT |
 | U5 | insurance reservations within pool: `source_insurance_credit_reserved_total_atoms <= insurance && insurance_domain_budget_remaining_total <= insurance` | validate_header_aggregate_totals | 6/11 | CLAUSE-PRESENT |
-| U6 | matured PnL <= positive PnL: `pnl_matured_pos_tot <= pnl_pos_tot` | validate_shape | 14 | CLAUSE-PRESENT |
-| U7 | bound >= positive PnL: `pnl_pos_bound_tot >= pnl_pos_tot` and `== derived_bound` | validate_shape (derived_bound) | 17 | CLAUSE-PRESENT |
+| U6 | matured PnL <= positive PnL: `pnl_matured_pos_tot <= pnl_pos_tot` | validate_shape | 14 | PROVEN-SOUND (proof_v16_validator_sound_pnl_aggregates) |
+| U7 | bound >= positive PnL: `pnl_pos_bound_tot >= pnl_pos_tot` and `== derived_bound` | validate_shape (derived_bound) | 17 | PROVEN-SOUND (proof_v16_validator_sound_pnl_aggregates) |
 | U8 | bound-num never understates exact: `pnl_pos_bound_tot_num >= exact_bound_num` and `>= source_claim_bound_total_num` | validate_shape / aggregate | 17 | CLAUSE-PRESENT |
 | U9 | clock monotone: `slot_last <= current_slot`, `last_asset_activation_slot <= current_slot` | validate_shape | 29/33 | CLAUSE-PRESENT |
 | U10 | market-id nonzero / next_market_id != 0 | validate_shape | 4 | CLAUSE-PRESENT |

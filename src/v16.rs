@@ -963,6 +963,45 @@ impl V16Core {
         Ok(ledger)
     }
 
+    /// PRODUCTION KERNEL (value safety, roadmap S-A1/S-L2 foundation): the
+    /// principal-settlement core of negative-PnL liquidation/close. Given an
+    /// account's capital, the group junior total c_tot, and a (negative) pnl,
+    /// pay the loss from principal FIRST: `paid = min(capital, |pnl|)`, and drop
+    /// BOTH capital and c_tot by exactly `paid` (conservation — the principal
+    /// debit leaves the junior pool by exactly what the account loses, nothing
+    /// created or stranded). Pure scalar; the settle/close glue calls exactly
+    /// this for the arithmetic.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(pnl <= 0 && pnl > i128::MIN))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &V16Result<(u128, u128, u128, i128)>| match result {
+        Ok((paid, new_capital, new_c_tot, new_pnl)) => {
+            let loss = pnl.unsigned_abs();
+            *paid == if capital < loss { capital } else { loss }
+                // exact debit of capital and the junior total by the SAME paid
+                && *new_capital == capital - *paid
+                && *new_c_tot == c_tot - *paid
+                // conservation: each layer drops by exactly paid (no leak)
+                && new_capital.wrapping_add(*paid) == capital
+                && new_c_tot.wrapping_add(*paid) == c_tot
+                // loss is reduced by exactly the principal paid
+                && *new_pnl == pnl + (*paid as i128)
+                && *new_pnl <= 0
+        }
+        Err(_) => true,
+    }))]
+    pub(crate) fn kernel_settle_principal(
+        capital: u128,
+        c_tot: u128,
+        pnl: i128,
+    ) -> V16Result<(u128, u128, u128, i128)> {
+        let loss = pnl.unsigned_abs();
+        let paid = capital.min(loss);
+        let new_capital = capital.checked_sub(paid).ok_or(V16Error::CounterUnderflow)?;
+        let new_c_tot = c_tot.checked_sub(paid).ok_or(V16Error::CounterUnderflow)?;
+        let paid_i128 = i128::try_from(paid).map_err(|_| V16Error::ArithmeticOverflow)?;
+        let new_pnl = pnl.checked_add(paid_i128).ok_or(V16Error::ArithmeticOverflow)?;
+        Ok((paid, new_capital, new_c_tot, new_pnl))
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -12837,30 +12876,18 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if pnl >= 0 {
             return Ok(0);
         }
-        let loss = pnl.unsigned_abs();
-        let paid = account.header.capital.get().min(loss);
+        // PRODUCTION KERNEL: principal-settlement core (exact paid + conservation).
+        let (paid, capital, c_tot, new_pnl) = V16Core::kernel_settle_principal(
+            account.header.capital.get(),
+            self.header.c_tot.get(),
+            pnl,
+        )?;
         if paid == 0 {
             self.header.bankruptcy_hlock_active = 1;
             return Ok(0);
         }
 
         let vault_before = self.header.vault.get();
-        let capital = account
-            .header
-            .capital
-            .get()
-            .checked_sub(paid)
-            .ok_or(V16Error::CounterUnderflow)?;
-        let c_tot = self
-            .header
-            .c_tot
-            .get()
-            .checked_sub(paid)
-            .ok_or(V16Error::CounterUnderflow)?;
-        let paid_i128 = i128::try_from(paid).map_err(|_| V16Error::ArithmeticOverflow)?;
-        let new_pnl = pnl
-            .checked_add(paid_i128)
-            .ok_or(V16Error::ArithmeticOverflow)?;
         account.header.capital = V16PodU128::new(capital);
         self.header.c_tot = V16PodU128::new(c_tot);
         self.set_account_pnl_after_principal_settlement(account, new_pnl)?;

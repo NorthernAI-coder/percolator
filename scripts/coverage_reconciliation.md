@@ -18,10 +18,10 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | S-T5 trader value conserved mod fee | TokenValueFlowProofV16 (runtime) + flow contracts | PARTIAL | whole-op AXIOM composition → P5; FUZZ-B → P6 |
 | S-T6 batch == fold | contract_check_kernel_accumulate_batch_trade; proof_v16_batch_outcome_accumulator_is_exact… | PROVEN (gate-clean) | — |
 | S-L1 no stranded loss | proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk | PROVEN (gate-clean) | — |
-| S-L2 draw == deficit | (none) | MISSING | `kernel_liquidation_loss_split` → P3 |
+| S-L2 draw == deficit | **kernel_settle_principal (PROVEN: principal layer exact, contract_check_kernel_settle_principal)** | PARTIAL | remaining insurance/social layers: `kernel_liquidation_loss_split` → P3 |
 | S-L3 position reduced | (none direct) | MISSING | risk-reduction kernel/lemma → P3/P4 |
 | S-L4 route to recovery | proof_v16_liquidation_preflight_routes_insufficient_residual_capacity_to_recovery | PROVEN (gate-clean) | — |
-| S-A1 Σ debits == deficit | proof_v16_live_residual_booking_to_loss_bearing_side_is_bounded_and_exact; …residual_reconciles_with_senior_stock | PARTIAL | `kernel_social_loss_distribute` global conservation → P3 |
+| S-A1 Σ debits == deficit | live_residual_booking…; residual_reconciles_with_senior_stock; **kernel_settle_principal (PROVEN: principal draw exact + conserves c_tot)** | PARTIAL→strengthened | remaining: `kernel_social_loss_distribute` global conservation → P3 |
 | S-A2 debit ∝ loss weight | (none direct) | MISSING | P3 kernel + P6 FUZZ-B |
 | S-A3 ADL rounds to zero | rounding_residue_fuzz (ADL direction) | PARTIAL | P6 Tier-A bound |
 | S-C1 paid <= face | proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim | PROVEN (gate-clean) | — |

@@ -2082,3 +2082,19 @@ fn composition_clear_leg_value_conservation() {
     assert_eq!(oi1, oi0);
     assert_eq!(ws1, ws0);
 }
+
+// ROADMAP Phase 3 (Pillar S, S-A1/S-L2 foundation): full-domain contract check
+// of the principal-settlement kernel — paid==min(capital,|pnl|), capital and
+// c_tot each drop by exactly paid (conservation, no value leaked), loss reduced
+// by exactly paid. Production (settle_negative_pnl_from_principal_core) calls
+// this for the arithmetic; the ensures clause is the importable property.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_settle_principal)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_settle_principal() {
+    let capital: u128 = kani::any();
+    let c_tot: u128 = kani::any();
+    let pnl: i128 = kani::any();
+    let _ = V16Core::kernel_settle_principal(capital, c_tot, pnl);
+}

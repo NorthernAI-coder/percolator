@@ -59,3 +59,8 @@ required-features = ["fuzz"]
 name = "rounding_residue_fuzz"
 path = "tests/rounding_residue_fuzz.rs"
 required-features = ["fuzz"]
+
+[[test]]
+name = "reference_model_conformance"
+path = "tests/reference_model_conformance.rs"
+required-features = ["fuzz"]

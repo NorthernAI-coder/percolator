@@ -1542,6 +1542,56 @@ impl V16Core {
         }))
     }
 
+    /// PRODUCTION KERNEL (roadmap workstream B.2, bankruptcy-residual conservation
+    /// COMPOSITION): given residual_remaining>0 and `booked` = the (already
+    /// conservation-proven) result of apply_bankruptcy_residual_chunk_to_loss_side
+    /// (Some when a chunk was booked, None when it could not be — no loss-side
+    /// weight, no B-headroom, or no positive delta), decide the step's terminal
+    /// outcome. A booked chunk's outcome is carried through; an unbookable residual
+    /// is recorded ENTIRELY as explicit loss in a resolved market, else it signals
+    /// DeclareRecovery. PROVES residual conservation for EVERY Outcome path
+    /// (booked_loss+explicit_loss+remaining_after == residual_remaining), composing
+    /// the leaf booking contract into the step decision — no value is created or
+    /// lost regardless of which branch is taken. Pure.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(
+        match booked {
+            Some(o) => o.booked_loss.checked_add(o.explicit_loss)
+                .and_then(|v| v.checked_add(o.remaining_after)) == Some(residual_remaining),
+            None => true,
+        }
+    ))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &BResidualStepV16| {
+        match r {
+            BResidualStepV16::Outcome(o) => {
+                o.booked_loss.checked_add(o.explicit_loss)
+                    .and_then(|v| v.checked_add(o.remaining_after))
+                    == Some(residual_remaining)
+            }
+            BResidualStepV16::DeclareRecovery => true,
+        }
+    }))]
+    pub(crate) fn kernel_bresidual_step(
+        residual_remaining: u128,
+        booked: Option<BResidualBookingOutcomeV16>,
+        resolved: bool,
+    ) -> BResidualStepV16 {
+        match booked {
+            Some(o) => BResidualStepV16::Outcome(o),
+            None => {
+                if resolved {
+                    BResidualStepV16::Outcome(BResidualBookingOutcomeV16 {
+                        booked_loss: 0,
+                        explicit_loss: residual_remaining,
+                        delta_b: 0,
+                        remaining_after: 0,
+                    })
+                } else {
+                    BResidualStepV16::DeclareRecovery
+                }
+            }
+        }
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -5123,6 +5173,16 @@ pub struct BResidualBookingOutcomeV16 {
     pub explicit_loss: u128,
     pub delta_b: u128,
     pub remaining_after: u128,
+}
+
+/// The terminal decision of one bankruptcy-residual booking step (roadmap
+/// workstream B.2): either a conserving outcome to return `Ok`, or a signal that
+/// the caller must declare permissionless recovery and return `Err`. Produced by
+/// the proven `kernel_bresidual_step`.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum BResidualStepV16 {
+    Outcome(BResidualBookingOutcomeV16),
+    DeclareRecovery,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -12691,65 +12751,64 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             SideV16::Long => asset.loss_weight_sum_long,
             SideV16::Short => asset.loss_weight_sum_short,
         };
-        if weight_sum == 0 {
-            if decode_market_mode(self.header.mode)? == MarketModeV16::Resolved {
-                self.header.bankruptcy_hlock_active = 1;
-                return Ok(BResidualBookingOutcomeV16 {
-                    booked_loss: 0,
-                    explicit_loss: residual_remaining,
-                    delta_b: 0,
-                    remaining_after: 0,
-                });
-            }
-            self.declare_permissionless_recovery(
+        let resolved = decode_market_mode(self.header.mode)? == MarketModeV16::Resolved;
+        // Determine whether a chunk can be booked (and the recovery reason if not).
+        // weight_sum==0 -> no loss-side to absorb (ActiveBankruptClose); engine
+        // chunk 0 / apply None -> no B-headroom (BIndexHeadroomExhausted). The
+        // booked asset is written back only when a chunk is actually booked.
+        let (booked, new_asset, recovery_reason) = if weight_sum == 0 {
+            (
+                None,
+                None,
                 PermissionlessRecoveryReasonV16::ActiveBankruptCloseCannotProgress,
+            )
+        } else {
+            let engine_chunk = self.bankruptcy_residual_single_step_capacity(
+                asset_index,
+                bankrupt_side,
+                residual_remaining,
             )?;
-            return Err(V16Error::RecoveryRequired);
-        }
-        let engine_chunk = self.bankruptcy_residual_single_step_capacity(
-            asset_index,
-            bankrupt_side,
-            residual_remaining,
-        )?;
-        if engine_chunk == 0 {
-            if decode_market_mode(self.header.mode)? == MarketModeV16::Resolved {
-                self.header.bankruptcy_hlock_active = 1;
-                return Ok(BResidualBookingOutcomeV16 {
-                    booked_loss: 0,
-                    explicit_loss: residual_remaining,
-                    delta_b: 0,
-                    remaining_after: 0,
-                });
+            if engine_chunk == 0 {
+                (
+                    None,
+                    None,
+                    PermissionlessRecoveryReasonV16::BIndexHeadroomExhausted,
+                )
+            } else {
+                let mut asset_mut = asset;
+                match V16Core::apply_bankruptcy_residual_chunk_to_loss_side(
+                    &mut asset_mut,
+                    opp,
+                    engine_chunk,
+                    residual_remaining,
+                )? {
+                    Some(outcome) => (
+                        Some(outcome),
+                        Some(asset_mut),
+                        PermissionlessRecoveryReasonV16::BIndexHeadroomExhausted,
+                    ),
+                    None => (
+                        None,
+                        None,
+                        PermissionlessRecoveryReasonV16::BIndexHeadroomExhausted,
+                    ),
+                }
             }
-            self.declare_permissionless_recovery(
-                PermissionlessRecoveryReasonV16::BIndexHeadroomExhausted,
-            )?;
-            return Err(V16Error::RecoveryRequired);
+        };
+        // PRODUCTION KERNEL: the conservation-proven step decision.
+        match V16Core::kernel_bresidual_step(residual_remaining, booked, resolved) {
+            BResidualStepV16::Outcome(outcome) => {
+                if let Some(asset_mut) = new_asset {
+                    self.set_asset_state(asset_index, asset_mut)?;
+                }
+                self.header.bankruptcy_hlock_active = 1;
+                Ok(outcome)
+            }
+            BResidualStepV16::DeclareRecovery => {
+                self.declare_permissionless_recovery(recovery_reason)?;
+                Err(V16Error::RecoveryRequired)
+            }
         }
-        let mut asset = asset;
-        if let Some(outcome) = V16Core::apply_bankruptcy_residual_chunk_to_loss_side(
-            &mut asset,
-            opp,
-            engine_chunk,
-            residual_remaining,
-        )? {
-            self.set_asset_state(asset_index, asset)?;
-            self.header.bankruptcy_hlock_active = 1;
-            return Ok(outcome);
-        }
-        if decode_market_mode(self.header.mode)? == MarketModeV16::Resolved {
-            self.header.bankruptcy_hlock_active = 1;
-            return Ok(BResidualBookingOutcomeV16 {
-                booked_loss: 0,
-                explicit_loss: residual_remaining,
-                delta_b: 0,
-                remaining_after: 0,
-            });
-        }
-        self.declare_permissionless_recovery(
-            PermissionlessRecoveryReasonV16::BIndexHeadroomExhausted,
-        )?;
-        Err(V16Error::RecoveryRequired)
     }
 
     fn book_bankruptcy_residual_chunk_for_account_core(

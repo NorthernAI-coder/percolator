@@ -2340,3 +2340,27 @@ fn contract_check_bresidual_chunk_conservation() {
         residual_remaining,
     );
 }
+
+// ROADMAP workstream B.2 (bankruptcy-residual conservation composition): the step
+// decision kernel preserves residual conservation on every Outcome path — a
+// booked chunk (conservation assumed from the proven leaf contract) is carried
+// through, an unbookable residual in a resolved market becomes pure explicit
+// loss, and the non-resolved case signals recovery. No value created or lost.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_bresidual_step)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_bresidual_step() {
+    let residual_remaining: u128 = kani::any();
+    let booked = if kani::any() {
+        Some(BResidualBookingOutcomeV16 {
+            booked_loss: kani::any(),
+            explicit_loss: kani::any(),
+            delta_b: kani::any(),
+            remaining_after: kani::any(),
+        })
+    } else {
+        None
+    };
+    let resolved: bool = kani::any();
+    let _ = V16Core::kernel_bresidual_step(residual_remaining, booked, resolved);
+}

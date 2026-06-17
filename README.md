@@ -163,11 +163,20 @@ No denial of service (no-DoS / liveness):
   economically-valid trade is internally DoSed and every rejection maps to a
   concrete false precondition; the guard summary is proven faithful to production
   (`scripts/route_fidelity_roster.py`).
-- **NB2 (finite crank progress)** is PROVEN-AT-KERNEL: `select_progress_witness`
-  is proven total over actionable summaries, and
-  `scripts/nb2_continuation_matrix.py` pins each of the 6 continuations to a
-  dispatch arm + a present rank/terminal artifact + the static per-account scan
-  bound.
+- **NB2 (finite crank progress)** is PROVEN-AT-KERNEL: the selector is proven
+  total over actionable summaries, and `scripts/nb2_continuation_matrix.py` pins
+  each continuation to a dispatch arm + a present rank/terminal artifact + the
+  static per-account scan bound.
+- The order-insensitive public auto-crank (`permissionless_auto_crank_not_atomic`)
+  is **engine-selected, not caller-directed**: the keeper submits bounded oracle
+  observations + a liquidation budget, and the ENGINE classifies the account,
+  selects the highest-priority step, and self-selects the asset. Two pure kernels
+  carry the proof: `first_actionable_slot` (the bounded leg scan returns an
+  in-range, actionable, first-match slot and is complete) and
+  `select_auto_crank_plan` (totality + priority determinism + the plan carries the
+  engine-selected asset). The liquidation fee is config-derived, never a caller
+  hint; a step whose observation is absent returns a clean `NonProgress` without
+  mutation, so stale keeper transactions are order-insensitive.
 - The **PROVEN-AT-KERNEL vs full-route distinction (explicit):** for NB1/NB2 and
   the A1/A2/A3/A5/A7 classes, the step kernel, the dispatcher route fidelity, and
   the guard/summary fidelity are each machine-checked, but the rank-decrease /

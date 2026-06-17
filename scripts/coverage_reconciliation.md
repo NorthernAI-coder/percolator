@@ -19,7 +19,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | S-T6 batch == fold | contract_check_kernel_accumulate_batch_trade; proof_v16_batch_outcome_accumulator_is_exact… | PROVEN (gate-clean) | — |
 | S-L1 no stranded loss | proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk | PROVEN (gate-clean) | — |
 | S-L2 draw == deficit | **kernel_settle_principal (principal layer) + kernel_consume_insurance_layer (insurance layer, capped by domain budget) — both PROVEN** | PARTIAL→strengthened | remaining social layer: `kernel_social_loss_distribute` → P3 |
-| S-L3 position reduced | **kernel_reduce_position_delta (PROVEN: |pre+delta|==|pre|-reduce_q, never over-closes/flips, full close clears)** | PROVEN | — |
+| S-L3 position reduced | **kernel_reduce_position_delta (PROVEN: STRICT progress — pre>0&&req>0 => closed>0 && post_abs<pre; never over-closes/flips; full close clears)** — now called by BOTH rebalance AND liquidate_account | PROVEN (real liquidation route) | — |
 | S-L4 route to recovery | proof_v16_liquidation_preflight_routes_insufficient_residual_capacity_to_recovery | PROVEN (gate-clean) | — |
 | S-A1 Σ debits == deficit | kernel_settle_principal; **kernel_social_loss_chunk_cap (PROVEN: booked<=residual & <=cap)** + social_loss_book_split conformance (delta_b*ws+rem==num, rem<ws, Tier-A+B) | PROVEN (cap) + CONFORMANT (split) | — |
 | S-A2 debit ∝ loss weight | social_loss_book_split conformance (delta_b == numerator/weight_sum — proportional booking) Tier-A+B | CONFORMANT | exact ∝ via the weight_sum division, reference-model discharged |

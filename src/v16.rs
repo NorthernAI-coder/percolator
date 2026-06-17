@@ -1103,6 +1103,10 @@ impl V16Core {
                 && new_signed.unsigned_abs() == pre_abs - *reduce_q  // reduced by EXACTLY reduce_q
                 && new_signed.unsigned_abs() <= pre_abs              // rank non-increase
                 && (*reduce_q != pre_abs || new_signed == 0)         // full close clears
+                // STRICT progress (3C): a nonzero request on a nonzero position
+                // always closes some and strictly shrinks the risk component.
+                && (!(pre_abs > 0 && requested > 0)
+                    || (*reduce_q > 0 && new_signed.unsigned_abs() < pre_abs))
         }
         Err(_) => true,
     }))]
@@ -12528,14 +12532,11 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if !leg.active {
             return Err(V16Error::InvalidLeg);
         }
-        let close_q = request.close_q.min(leg.basis_pos_q.unsigned_abs());
-        let close_i128 = i128::try_from(close_q).map_err(|_| V16Error::ArithmeticOverflow)?;
-        let close_delta = match leg.side {
-            SideV16::Long => close_i128
-                .checked_neg()
-                .ok_or(V16Error::ArithmeticOverflow)?,
-            SideV16::Short => close_i128,
-        };
+        // PRODUCTION KERNEL: clamp + toward-zero reduction delta — the SAME
+        // risk-reduction kernel rebalance uses, so A5.dec's strict-progress
+        // contract now governs the real liquidation route (3C).
+        let (close_q, close_delta) =
+            V16Core::kernel_reduce_position_delta(leg.basis_pos_q, leg.side, request.close_q)?;
         if self.position_delta_touches_pending_domain_loss_barrier(
             &account.as_view(),
             request.asset_index,

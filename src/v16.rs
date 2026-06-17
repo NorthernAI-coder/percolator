@@ -1226,45 +1226,75 @@ impl V16Core {
     #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &Result<(), TradeRejectReasonV16>| {
         match result {
             // admitted IFF the whole guard stack passes
-            Ok(()) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap
-                && g.accounts_current && g.no_loss_stale_block
-                && g.no_adverse_lag && g.no_barrier_touch && g.margin_ok && g.locked_lane_ok,
+            Ok(()) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap
+                && guards.accounts_current && guards.no_loss_stale_block
+                && guards.no_adverse_lag && guards.no_barrier_touch && guards.margin_ok && guards.locked_lane_ok,
             // each rejection: that guard failed AND all earlier guards passed
-            Err(TradeRejectReasonV16::InvalidRequest) => !g.request_valid,
-            Err(TradeRejectReasonV16::ZeroSize) => g.request_valid && !g.size_nonzero,
-            Err(TradeRejectReasonV16::PriceOutOfRange) => g.request_valid && g.size_nonzero && !g.price_in_range,
-            Err(TradeRejectReasonV16::FeeBpsOverCap) => g.request_valid && g.size_nonzero && g.price_in_range && !g.fee_bps_in_cap,
-            Err(TradeRejectReasonV16::AccountsStale) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && !g.accounts_current,
-            Err(TradeRejectReasonV16::LossStaleBlocked) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && !g.no_loss_stale_block,
-            Err(TradeRejectReasonV16::AdverseLag) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && !g.no_adverse_lag,
-            Err(TradeRejectReasonV16::BarrierTouch) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && g.no_adverse_lag && !g.no_barrier_touch,
-            Err(TradeRejectReasonV16::MarginFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && !g.margin_ok,
-            Err(TradeRejectReasonV16::LockedLaneFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && g.margin_ok && !g.locked_lane_ok,
+            Err(TradeRejectReasonV16::InvalidRequest) => !guards.request_valid,
+            Err(TradeRejectReasonV16::ZeroSize) => guards.request_valid && !guards.size_nonzero,
+            Err(TradeRejectReasonV16::PriceOutOfRange) => guards.request_valid && guards.size_nonzero && !guards.price_in_range,
+            Err(TradeRejectReasonV16::FeeBpsOverCap) => guards.request_valid && guards.size_nonzero && guards.price_in_range && !guards.fee_bps_in_cap,
+            Err(TradeRejectReasonV16::AccountsStale) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && !guards.accounts_current,
+            Err(TradeRejectReasonV16::LossStaleBlocked) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && !guards.no_loss_stale_block,
+            Err(TradeRejectReasonV16::AdverseLag) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && !guards.no_adverse_lag,
+            Err(TradeRejectReasonV16::BarrierTouch) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && guards.no_adverse_lag && !guards.no_barrier_touch,
+            Err(TradeRejectReasonV16::MarginFail) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && guards.no_adverse_lag && guards.no_barrier_touch && !guards.margin_ok,
+            Err(TradeRejectReasonV16::LockedLaneFail) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && guards.no_adverse_lag && guards.no_barrier_touch && guards.margin_ok && !guards.locked_lane_ok,
         }
     }))]
-    pub(crate) fn kernel_trade_admit(g: TradeGuardSummaryV16) -> Result<(), TradeRejectReasonV16> {
-        if !g.request_valid {
+
+    pub(crate) fn kernel_trade_admit(guards: TradeGuardSummaryV16) -> Result<(), TradeRejectReasonV16> {
+        if !guards.request_valid {
             Err(TradeRejectReasonV16::InvalidRequest)
-        } else if !g.size_nonzero {
+        } else if !guards.size_nonzero {
             Err(TradeRejectReasonV16::ZeroSize)
-        } else if !g.price_in_range {
+        } else if !guards.price_in_range {
             Err(TradeRejectReasonV16::PriceOutOfRange)
-        } else if !g.fee_bps_in_cap {
+        } else if !guards.fee_bps_in_cap {
             Err(TradeRejectReasonV16::FeeBpsOverCap)
-        } else if !g.accounts_current {
+        } else if !guards.accounts_current {
             Err(TradeRejectReasonV16::AccountsStale)
-        } else if !g.no_loss_stale_block {
+        } else if !guards.no_loss_stale_block {
             Err(TradeRejectReasonV16::LossStaleBlocked)
-        } else if !g.no_adverse_lag {
+        } else if !guards.no_adverse_lag {
             Err(TradeRejectReasonV16::AdverseLag)
-        } else if !g.no_barrier_touch {
+        } else if !guards.no_barrier_touch {
             Err(TradeRejectReasonV16::BarrierTouch)
-        } else if !g.margin_ok {
+        } else if !guards.margin_ok {
             Err(TradeRejectReasonV16::MarginFail)
-        } else if !g.locked_lane_ok {
+        } else if !guards.locked_lane_ok {
             Err(TradeRejectReasonV16::LockedLaneFail)
         } else {
             Ok(())
+        }
+    }
+
+    /// PRODUCTION FIDELITY BUILDER (roadmap 3C): map a trade request + config to
+    /// the scalar request-guard summary. Each flag is EXACTLY the corresponding
+    /// validate_trade_request leaf, so the public validator's accept/reject
+    /// decision equals `all_pass()` — the summary faithfully represents the real
+    /// guards (no hidden scalar guard outside it). Pure scalar; validate_trade_
+    /// request calls this.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|s: &TradeRequestGuardSummaryV16| {
+        s.asset_configured == ((request.asset_index as u64) < max_market_slots as u64)
+            && s.size_nonzero == (request.size_q != 0)
+            && s.size_in_cap == (request.size_q.unsigned_abs() <= MAX_TRADE_SIZE_Q)
+            && s.price_nonzero == (request.exec_price != 0)
+            && s.price_in_range == (request.exec_price <= MAX_ORACLE_PRICE)
+            && s.fee_bps_in_cap == (request.fee_bps <= max_trading_fee_bps)
+    }))]
+    pub(crate) fn build_trade_request_guard_summary(
+        request: TradeRequestV16,
+        max_market_slots: u32,
+        max_trading_fee_bps: u64,
+    ) -> TradeRequestGuardSummaryV16 {
+        TradeRequestGuardSummaryV16 {
+            asset_configured: (request.asset_index as u64) < max_market_slots as u64,
+            size_nonzero: request.size_q != 0,
+            size_in_cap: request.size_q.unsigned_abs() <= MAX_TRADE_SIZE_Q,
+            price_nonzero: request.exec_price != 0,
+            price_in_range: request.exec_price <= MAX_ORACLE_PRICE,
+            fee_bps_in_cap: request.fee_bps <= max_trading_fee_bps,
         }
     }
 
@@ -4153,6 +4183,32 @@ impl ActionableSummaryV16 {
             || self.liquidatable
             || self.recovery_eligible
             || self.resolved_winner
+    }
+}
+
+/// Scalar request/config guard summary (roadmap 3C fidelity layer): the exact
+/// per-leaf decisions validate_trade_request makes. build_trade_request_guard_
+/// summary computes these from the request + config, and validate_trade_request
+/// admits IFF all pass — so this summary is production-faithful, not a model.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TradeRequestGuardSummaryV16 {
+    pub asset_configured: bool, // asset_index < max_market_slots
+    pub size_nonzero: bool,     // size_q != 0
+    pub size_in_cap: bool,      // |size_q| <= MAX_TRADE_SIZE_Q
+    pub price_nonzero: bool,    // exec_price != 0
+    pub price_in_range: bool,   // exec_price <= MAX_ORACLE_PRICE
+    pub fee_bps_in_cap: bool,   // fee_bps <= max_trading_fee_bps
+}
+
+impl TradeRequestGuardSummaryV16 {
+    pub fn all_pass(self) -> bool {
+        self.asset_configured
+            && self.size_nonzero
+            && self.size_in_cap
+            && self.price_nonzero
+            && self.price_in_range
+            && self.fee_bps_in_cap
     }
 }
 
@@ -11532,12 +11588,14 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
 
     fn validate_trade_request(&self, request: TradeRequestV16) -> V16Result<()> {
         let config = self.header.config.try_to_runtime_shape()?;
-        let size_q = Self::trade_request_abs_size_q(request)?;
-        if request.asset_index >= config.max_market_slots as usize
-            || size_q > MAX_TRADE_SIZE_Q
-            || request.exec_price == 0
-            || request.exec_price > MAX_ORACLE_PRICE
-            || request.fee_bps > config.max_trading_fee_bps
+        // PRODUCTION FIDELITY (3C): the scalar request/config guards as a
+        // contract-proven summary; admit IFF every leaf passes.
+        if !V16Core::build_trade_request_guard_summary(
+            request,
+            config.max_market_slots,
+            config.max_trading_fee_bps,
+        )
+        .all_pass()
         {
             return Err(V16Error::InvalidConfig);
         }

@@ -2208,3 +2208,22 @@ fn contract_check_kernel_social_loss_chunk_cap() {
     let cap: u128 = kani::any();
     let _ = V16Core::kernel_social_loss_chunk_cap(residual, cap);
 }
+
+// ROADMAP 3C fidelity: full-domain contract check of the trade-request guard
+// summary builder — each flag EQUALS its validate_trade_request leaf, so the
+// public validator's decision == all_pass (production-faithful, not a model).
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::build_trade_request_guard_summary)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_build_trade_request_guard_summary() {
+    let request = TradeRequestV16 {
+        asset_index: kani::any(),
+        size_q: kani::any(),
+        exec_price: kani::any(),
+        fee_bps: kani::any(),
+    };
+    let max_market_slots: u32 = kani::any();
+    let max_trading_fee_bps: u64 = kani::any();
+    let _ = V16Core::build_trade_request_guard_summary(request, max_market_slots, max_trading_fee_bps);
+}

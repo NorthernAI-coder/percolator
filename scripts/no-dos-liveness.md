@@ -99,7 +99,7 @@ So public-body ROUTING is machine-checked at the production-fn level for
 A4/A5/A6 (the routing/preflight functions are executed, not modeled). What
 remains BACKSTOPPED is NARROWER than "all routing": only reaching those route
 fns through the FULL monolithic public-entrypoint interior (the state-size wall,
-scripts/no-steal-theorem.md) - covered by the per-op gate proofs + 55/55 Ok-exit
+scripts/no-steal-theorem.md) - covered by the per-op gate proofs + 56/56 Ok-exit
 validators + close sequence fuzz.
 
 CLASS COVERAGE is ENFORCED statically: scripts/actionable_class_coverage.py

@@ -30,7 +30,7 @@ Complementary non-Kani layers (all green at certification):
 See scripts/spec-coverage.md (current): 35 STRONG, 1 PARTIAL-accepted (#37),
 1 STRUCTURAL (#3), 1 N/A, 0 GAP rows at the engine boundary. Spec v16.9.0
 reconciled all former spec-ahead-of-engine items. The boundary theorem
-(scripts/boundary_audit.py: all 55 public entrypoints terminate Ok paths in
+(scripts/boundary_audit.py: all 56 public entrypoints terminate Ok paths in
 state validators) makes the global validity predicate hold at every committed
 state under the Err-non-commit execution assumption.
 

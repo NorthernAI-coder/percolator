@@ -22,7 +22,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | S-L3 position reduced | **kernel_reduce_position_delta (PROVEN: STRICT progress — pre>0&&req>0 => closed>0 && post_abs<pre; never over-closes/flips; full close clears)** — now called by BOTH rebalance AND liquidate_account | PROVEN (real liquidation route) | — |
 | S-L4 route to recovery | proof_v16_liquidation_preflight_routes_insufficient_residual_capacity_to_recovery | PROVEN (gate-clean) | — |
 | S-A1 Σ debits == deficit | kernel_settle_principal; **kernel_social_loss_chunk_cap (PROVEN: booked<=residual & <=cap)** + social_loss_book_split conformance (delta_b*ws+rem==num, rem<ws, Tier-A+B) | PROVEN (cap) + CONFORMANT (split) | — |
-| S-A2 debit ∝ loss weight | social_loss_book_split conformance: delta_b==numerator/weight_sum (proportional), delta_b*ws+rem==num, rem<ws, AND delta_b>0 IFF num>=ws (progress when capacity) — Tier-A+B | CONFORMANT (3C #5 progress) | side-isolation/resolved-mode shell still PARTIAL |
+| S-A2 debit ∝ loss weight | social_loss_book_split conformance (delta_b==numerator/weight_sum, delta_b*ws+rem==num, rem<ws, delta_b>0 IFF num>=ws — Tier-A+B); **contract_check_bresidual_chunk_conservation PROVES the booking shell: booked==engine_chunk, remaining+booked==residual, explicit_loss==0, delta_b>0, SIDE ISOLATION (non-loss side untouched), monotonicity** | CONFORMANT (split) + PROVEN (shell: conservation + side isolation) | resolved-mode explicit-loss path covered by kernel_bresidual_step (B.2 composition) |
 | S-A3 ADL rounds to zero | rounding_residue_fuzz (ADL direction) | PARTIAL | P6 Tier-A bound |
 | S-C1 paid <= face | proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim | PROVEN (gate-clean) | — |
 | S-C2 pro-rata, total<=pool | claimable_is_rate_monotone; payout_topup_pays_min_claimable; **kernel_resolved_payout_step (PROVEN: payout==min(claimable,vault), vault conserved)** | PROVEN | claimable's wide rate-div covered by P6 conformance |
@@ -52,7 +52,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | catalog | existing artifact(s) | status | gap → phase |
 |---------|----------------------|--------|-------------|
 | U2,U3,U6,U7,U9 | validator_sound_senior_stack / _scalar_invariants / _pnl_aggregates (PROVEN-SOUND) | PROVEN | — |
-| U1,U8,U10-U12,U14-U24 clauses | validate_shape/validate_with_market clauses; boundary_audit 55/55 | PARTIAL (clause present, soundness lemma pending) | remaining soundness lemmas → P1 |
+| U1,U8,U10-U12,U14-U24 clauses | validate_shape/validate_with_market clauses; boundary_audit 56/56 | PARTIAL (clause present, soundness lemma pending) | remaining soundness lemmas → P1 |
 | U13 junior bound | proof_v16_validate_shape_rejects_global_junior_bound_below_domain_claims | PROVEN (gate-clean, rejection direction) | soundness direction → P1 |
 
 ## Backlog after reconciliation (what Phases 3-7 actually build)

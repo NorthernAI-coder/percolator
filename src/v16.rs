@@ -1199,6 +1199,10 @@ impl V16Core {
             ResolvedCloseStepV16::ProgressOnly => !rank.recovery_required && rank.has_pending(),
         }
     }))]
+    // PROOF-ONLY FIDELITY MODEL (not production-dispatched; see dead_kernel_check
+    // / route_fidelity_roster): consumed by contract_check_kernel_resolved_close_
+    // progress. Used only under cfg(kani), so allow dead_code in normal builds.
+    #[cfg_attr(not(kani), allow(dead_code))]
     pub(crate) fn kernel_resolved_close_progress(rank: ResolvedCloseRankV16) -> ResolvedCloseStepV16 {
         if rank.recovery_required {
             ResolvedCloseStepV16::RecoveryRequired
@@ -1243,6 +1247,9 @@ impl V16Core {
         }
     }))]
 
+    // PROOF-ONLY FIDELITY MODEL (not production-dispatched): consumed by
+    // contract_check_kernel_trade_admit under cfg(kani).
+    #[cfg_attr(not(kani), allow(dead_code))]
     pub(crate) fn kernel_trade_admit(guards: TradeGuardSummaryV16) -> Result<(), TradeRejectReasonV16> {
         if !guards.request_valid {
             Err(TradeRejectReasonV16::InvalidRequest)
@@ -1316,6 +1323,7 @@ impl V16Core {
             )
             .is_ok()
     }))]
+    #[cfg_attr(not(kani), allow(dead_code))] // PROOF-ONLY FIDELITY MODEL (cfg(kani) harness only)
     pub(crate) fn kernel_trade_preflight_admits(
         risk_increasing: bool,
         asset_loss_stale: bool,
@@ -1375,6 +1383,7 @@ impl V16Core {
             && r.receipt_claim == receipt_present
             && r.recovery_required == recovery_required
     }))]
+    #[cfg_attr(not(kani), allow(dead_code))] // PROOF-ONLY FIDELITY MODEL (cfg(kani) harness only)
     pub(crate) fn build_resolved_close_rank(
         b_stale: bool,
         pnl: i128,
@@ -4583,8 +4592,10 @@ pub struct TradeGuardSummaryV16 {
     pub locked_lane_ok: bool,    // locked-lane gate
 }
 
-/// Why a trade was rejected (the FIRST failing guard, roadmap 3B.4).
+/// Why a trade was rejected (the FIRST failing guard, roadmap 3B.4). PROOF-ONLY:
+/// the kernel_trade_admit fidelity model's reason type; not production-dispatched.
 #[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[cfg_attr(not(kani), allow(dead_code))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum TradeRejectReasonV16 {
     InvalidRequest,
@@ -4613,13 +4624,16 @@ pub struct ResolvedCloseRankV16 {
 }
 
 impl ResolvedCloseRankV16 {
+    #[cfg_attr(not(kani), allow(dead_code))] // PROOF-ONLY: used by kernel_resolved_close_progress (fidelity model)
     pub fn has_pending(self) -> bool {
         self.b_stale || self.negative_pnl || self.active_leg || self.receipt_claim || self.capital
     }
 }
 
-/// Outcome of one resolved-close step (roadmap 3B.8).
+/// Outcome of one resolved-close step (roadmap 3B.8). PROOF-ONLY: the
+/// kernel_resolved_close_progress fidelity model's output; not production-dispatched.
 #[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[cfg_attr(not(kani), allow(dead_code))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum ResolvedCloseStepV16 {
     Closed,
@@ -12154,11 +12168,6 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             return Err(V16Error::InvalidConfig);
         }
         Ok(())
-    }
-
-    fn trade_request_abs_size_q(request: TradeRequestV16) -> V16Result<u128> {
-        let (size_q, _, _) = Self::trade_signed_size_deltas(request.size_q)?;
-        Ok(size_q)
     }
 
     // Contract layer: the fill sign convention — long receives the signed

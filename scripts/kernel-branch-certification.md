@@ -34,7 +34,7 @@ Total: 273/273 base + 4 added kernels (batch-projection, restart counters/slot) 
 CERTIFIES: every inventory artifact holds against the branch's actual
 production code; the kernel refactor preserved all proof-level semantics
 (not merely runtime-test parity); the boundary theorem (scripts/boundary_audit.py,
-55/55) and both liveness-rank components are production-proven.
+56/56) and both liveness-rank components are production-proven.
 
 PARTIALLY CLOSED SINCE (see scripts/proof-frontier-closure.md): monolithic-body
 exact frames are now DEMONSTRATED by composition for the attach and clear bodies

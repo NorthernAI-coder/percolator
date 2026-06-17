@@ -1298,6 +1298,36 @@ impl V16Core {
         }
     }
 
+    /// PRODUCTION FIDELITY (roadmap 3C step 2, NB1 preflight leaves): the three
+    /// TradeGuardSummary preflight flags — no_barrier_touch, no_loss_stale_block,
+    /// no_adverse_lag — and the production trade_preflight_risk_gate are the SAME
+    /// decision: an economically-valid trade clears preflight IFF it touches no
+    /// pending-domain barrier and is not a risk increase under a loss-stale or
+    /// lagged asset. The contract proves the flag-conjunction EQUALS the real
+    /// gate's accept decision, so those summary flags faithfully represent the
+    /// production preflight (no hidden preflight reject outside them). Pure.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &bool| {
+        *result
+            == trade_preflight_risk_gate(
+                risk_increasing,
+                asset_loss_stale,
+                target_effective_lag,
+                touches_pending_domain_barrier,
+            )
+            .is_ok()
+    }))]
+    pub(crate) fn kernel_trade_preflight_admits(
+        risk_increasing: bool,
+        asset_loss_stale: bool,
+        target_effective_lag: bool,
+        touches_pending_domain_barrier: bool,
+    ) -> bool {
+        // no_barrier_touch && no_loss_stale_block && no_adverse_lag
+        !touches_pending_domain_barrier
+            && !(risk_increasing && asset_loss_stale)
+            && !(risk_increasing && target_effective_lag)
+    }
+
     /// PRODUCTION KERNEL (roadmap 3B.6, Pillar S/L S-A1 cap): the social-loss
     /// chunk cap — the bookable chunk is `min(residual_remaining, public chunk
     /// cap)`, so a single step books NO MORE than the outstanding residual and

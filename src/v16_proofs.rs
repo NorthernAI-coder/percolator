@@ -2227,3 +2227,18 @@ fn contract_check_build_trade_request_guard_summary() {
     let max_trading_fee_bps: u64 = kani::any();
     let _ = V16Core::build_trade_request_guard_summary(request, max_market_slots, max_trading_fee_bps);
 }
+
+// ROADMAP 3C step 2 (NB1 preflight fidelity): full-domain contract check that the
+// three preflight summary flags' conjunction EQUALS the production
+// trade_preflight_risk_gate accept decision.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_trade_preflight_admits)]
+#[kani::unwind(4)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_trade_preflight_admits() {
+    let a: bool = kani::any();
+    let b: bool = kani::any();
+    let c: bool = kani::any();
+    let d: bool = kani::any();
+    let _ = V16Core::kernel_trade_preflight_admits(a, b, c, d);
+}

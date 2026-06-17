@@ -44,7 +44,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | A5 liquidatable | preflight accept + route proofs | PARTIAL | dec via S-L2/S-L3 → P3/P4 |
 | A6 recovery-eligible | proof_v16_permissionless_recovery_crank_is_accounting_neutral | PROVEN (gate-clean) | — |
 | A7 resolved winner | resolved_winddown_* + terminal suite | PARTIAL | gate proof + P6 FUZZ-B |
-| NB1 valid trade not blocked | kernel_trade_admit (composition, 10 guards); **build_trade_request_guard_summary (PROVEN + PRODUCTION-FAITHFUL: each scalar request/config flag == its validate_trade_request leaf; validate_trade_request admits iff all_pass)**; margin/risk/locked-lane gate proofs | PARTIAL (request leaves PRODUCTION-FAITHFUL; composition proven) | remaining: preflight + final-gate leaf builders (loss-stale, lag, barrier, IM, locked-lane), then the route proof |
+| NB1 valid trade not blocked | kernel_trade_admit (composition, 10 guards); build_trade_request_guard_summary (request leaves FAITHFUL); **kernel_trade_preflight_admits (PROVEN FAITHFUL: no_barrier_touch&&no_loss_stale_block&&no_adverse_lag == trade_preflight_risk_gate Ok)**; kernel_initial/locked_margin_gate biconditionals (margin/locked-lane leaves PROVEN) | PARTIAL (request+preflight+margin leaves FAITHFUL) | remaining: accounts_current (refresh/cert) leaf + composing route proof |
 | NB2 finite crank progress | unwind(40) bounds (req 33); permissionless-crank proofs; clock-advance | PARTIAL | per-continuation bounded-work + rank/terminal artifact for EVERY selected crank action → P4 |
 
 ## Pillar F — state floor (see state_invariant_catalog.md)

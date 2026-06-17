@@ -11149,8 +11149,17 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         // so it is NOT proactively classified here — recovery_eligible stays in
         // the summary type for the proven selector but is driven by expired_close.
         let recovery_eligible = false;
-        let resolved_winner =
-            resolved && account.header.pnl.get() > 0 && self.resolved_positive_payout_ready()?;
+        // resolved_winner routes to close_resolved, which can only REALIZE a
+        // positive payout once the payout snapshot is captured (a separate
+        // resolved-lifecycle step) — without it create_resolved_payout_receipt
+        // returns RecoveryRequired. Gate on the snapshot so the dispatch always
+        // makes real terminal progress. NB (scope): the auto-crank does not yet
+        // drive the snapshot-capture step nor the Resolved unattributed-insolvency
+        // terminal recovery; those remain separate resolved-winddown entrypoints.
+        let resolved_winner = resolved
+            && account.header.pnl.get() > 0
+            && decode_bool(self.header.payout_snapshot_captured)?
+            && self.resolved_positive_payout_ready()?;
 
         Ok(V16Core::actionable_summary_from_signals(
             stale,

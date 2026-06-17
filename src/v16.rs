@@ -11137,8 +11137,18 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         // liquidate entrypoint requires an active leg), so the flag must be false.
         let liquidatable =
             live && cert_current && cert.certified_liq_deficit != 0 && has_open_risk;
-        let recovery_eligible =
-            self.resolved_unattributed_insolvent_negative_pnl_requires_recovery(account)?;
+        // Permissionless recovery (declare_permissionless_recovery) is a LIVE-mode
+        // action — it rejects Resolved mode with LockActive. The proactive Live
+        // recovery condition the auto-crank declares is an EXPIRED outstanding
+        // close (expired_close -> DeclareRecovery, reason
+        // ActiveBankruptCloseCannotProgress); every other recovery reason is
+        // declared REACTIVELY inside the dispatched crank op when it detects
+        // non-progress (BIndexHeadroomExhausted, etc.). A Resolved-mode
+        // unattributed-insolvent account is a TERMINAL RecoveryRequired state with
+        // no permissionless crank (close_resolved returns Err(RecoveryRequired)),
+        // so it is NOT proactively classified here — recovery_eligible stays in
+        // the summary type for the proven selector but is driven by expired_close.
+        let recovery_eligible = false;
         let resolved_winner =
             resolved && account.header.pnl.get() > 0 && self.resolved_positive_payout_ready()?;
 

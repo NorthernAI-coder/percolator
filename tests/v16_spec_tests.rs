@@ -2701,3 +2701,74 @@ fn v16_auto_crank_drives_stale_underwater_account_to_derisked_fixed_point() {
     market.validate_shape().unwrap();
     account.validate_with_market(&market.as_view()).unwrap();
 }
+
+// ROADMAP 3C step 4 — terminal no-DoS route via the self-classifying crank: a
+// Live account whose outstanding bankruptcy close ledger has EXPIRED (current
+// slot past max_close_slot) is classified expired_close, and the auto-crank
+// dispatches the terminal recovery declaration (ActiveBankruptCloseCannotProgress)
+// — the close-cannot-progress recovery, no caller-chosen action, no value move.
+#[test]
+fn v16_auto_crank_declares_recovery_for_expired_live_close() {
+    use percolator::{CloseProgressLedgerV16, CloseProgressLedgerV16Account};
+
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut account_header = account_fixture(1, 41);
+    header.current_slot = V16PodU64::new(10);
+
+    // An active, outstanding (residual>0), EXPIRED close ledger on asset 0.
+    let market_id = markets[0].engine.asset.try_to_runtime().unwrap().market_id;
+    account_header.close_progress = CloseProgressLedgerV16Account::from_runtime(&CloseProgressLedgerV16 {
+        active: true,
+        finalized: false,
+        canceled: false,
+        close_id: 1,
+        asset_index: 0,
+        market_id,
+        domain_side: SideV16::Short,
+        gross_loss_at_close_start: 10,
+        drift_reference_slot: 1,
+        max_close_slot: 2, // < current_slot 10 => expired
+        support_consumed: 0,
+        junior_face_burned: 0,
+        insurance_spent: 0,
+        b_loss_booked: 0,
+        explicit_loss_assigned: 0,
+        quantity_adl_applied_q: 0,
+        drift_consumed: 0,
+        residual_remaining: 10,
+    });
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+
+    let summary = market.build_actionable_summary(&account.as_view()).unwrap();
+    assert!(
+        summary.expired_close,
+        "outstanding expired close ledger must classify expired_close: {summary:?}"
+    );
+    assert!(!summary.recovery_eligible && !summary.resolved_winner);
+
+    let hint = AutoCrankHintV16 {
+        now_slot: 10,
+        asset_index: 0,
+        effective_price: 100,
+        funding_rate_e9: 0,
+        liquidation_close_q: 0,
+        liquidation_fee_bps: 0,
+        resolved_close_fee_rate_per_slot: 0,
+    };
+    let vault_before = market.header.vault;
+    let r = market
+        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .unwrap();
+    assert_eq!(r.selected, Some(ProgressContinuationV16::DeclareRecovery));
+    assert_eq!(
+        r.outcome,
+        AutoCrankOutcomeV16::Progressed(PermissionlessProgressOutcomeV16::RecoveryDeclared(
+            PermissionlessRecoveryReasonV16::ActiveBankruptCloseCannotProgress
+        ))
+    );
+    // recovery declaration moves no value.
+    assert_eq!(market.header.vault, vault_before);
+    market.validate_shape().unwrap();
+}

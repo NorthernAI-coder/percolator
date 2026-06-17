@@ -46,3 +46,18 @@ ceil-divide — Kani-intractable to symex; see no-steal-theorem.md).
 - Trusted base for these compositions = `ArithmeticAxiom (loss_weight_for_basis
   == ceil spec)` + the differential discharge. Never claimed as "Kani proved the
   U256 implementation."
+
+## Stubbed helper: `crate::v16::social_loss_book_split`
+Production: `social_loss_book_split(engine_chunk, carried_rem, weight_sum) =
+((engine_chunk*SOCIAL_LOSS_DEN + carried_rem) / weight_sum, ... % weight_sum)` —
+the wide social-loss booking division (numerator scaled by SOCIAL_LOSS_DEN ~2^70).
+
+| axiom stub | opaque property assumed | sound for | Kani proofs consuming it | discharge artifact |
+|------------|-------------------------|-----------|--------------------------|--------------------|
+| `axiom_social_loss_book_split` (v16_proofs.rs) | `weight_sum==0 => Err` (matches production); else result `(delta_b, new_rem)` arbitrary | SHELL only (booked_loss==engine_chunk, remaining_after+booked==residual, explicit_loss==0, delta_b>0) — none depend on the split VALUE | `contract_check_bresidual_chunk_conservation` | `social_loss_split_tier_a_exhaustive` + `social_loss_split_sampled` (reference_model_conformance.rs) |
+
+- The conservation/no-explicit-loss/B-progress shell holds for ANY split output
+  because apply_bankruptcy_residual_chunk_to_loss_side sets booked_loss=engine_chunk
+  and remaining_after=residual_remaining-engine_chunk directly, and rejects
+  delta_b==0 (-> None). The split's exact (delta_b,new_rem) value is the discharge
+  fuzz's job, never re-derived in Kani (would reintroduce the wide division).

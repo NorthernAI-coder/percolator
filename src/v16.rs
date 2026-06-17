@@ -1446,6 +1446,81 @@ impl V16Core {
         residual_remaining.min(public_chunk_cap)
     }
 
+    /// PRODUCTION KERNEL (roadmap workstream B.3, social-loss shell): book one
+    /// live social-loss residual chunk to the loss side's B-index. No-LoF shell
+    /// properties (the division (delta_b,new_rem) is via social_loss_book_split,
+    /// discharged by reference-model fuzz; these properties hold for ANY split):
+    /// when a chunk is booked (Some), it books EXACTLY engine_chunk
+    /// (booked_loss==engine_chunk), conserves the residual
+    /// (remaining_after+booked_loss==residual_remaining), assigns NO explicit loss
+    /// on the live path (explicit_loss==0), and makes real B-rank progress
+    /// (delta_b>0). Booking only ADDS to the loss side's b_num (monotone, never
+    /// burns value).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::modifies(asset))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &V16Result<Option<BResidualBookingOutcomeV16>>| {
+        match r {
+            Ok(Some(o)) => {
+                o.explicit_loss == 0
+                    && o.booked_loss == engine_chunk
+                    && o.delta_b > 0
+                    && o.remaining_after.checked_add(o.booked_loss) == Some(residual_remaining)
+            }
+            _ => true,
+        }
+    }))]
+    pub(crate) fn apply_bankruptcy_residual_chunk_to_loss_side(
+        asset: &mut AssetStateV16,
+        opp: SideV16,
+        engine_chunk: u128,
+        residual_remaining: u128,
+    ) -> V16Result<Option<BResidualBookingOutcomeV16>> {
+        if engine_chunk == 0 || engine_chunk > residual_remaining {
+            return Ok(None);
+        }
+        let (b_now, weight_sum, rem) = match opp {
+            SideV16::Long => (
+                asset.b_long_num,
+                asset.loss_weight_sum_long,
+                asset.social_loss_remainder_long_num,
+            ),
+            SideV16::Short => (
+                asset.b_short_num,
+                asset.loss_weight_sum_short,
+                asset.social_loss_remainder_short_num,
+            ),
+        };
+        if weight_sum == 0 {
+            return Ok(None);
+        }
+        // PRODUCTION HELPER: the booking division (delta_b, new_rem).
+        let (delta_b, new_rem) = social_loss_book_split(engine_chunk, rem, weight_sum)?;
+        if delta_b == 0 || b_now.checked_add(delta_b).is_none() {
+            return Ok(None);
+        }
+        match opp {
+            SideV16::Long => {
+                asset.b_long_num = asset
+                    .b_long_num
+                    .checked_add(delta_b)
+                    .ok_or(V16Error::ArithmeticOverflow)?;
+                asset.social_loss_remainder_long_num = new_rem;
+            }
+            SideV16::Short => {
+                asset.b_short_num = asset
+                    .b_short_num
+                    .checked_add(delta_b)
+                    .ok_or(V16Error::ArithmeticOverflow)?;
+                asset.social_loss_remainder_short_num = new_rem;
+            }
+        }
+        Ok(Some(BResidualBookingOutcomeV16 {
+            booked_loss: engine_chunk,
+            explicit_loss: 0,
+            delta_b,
+            remaining_after: residual_remaining - engine_chunk,
+        }))
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -12631,7 +12706,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             return Err(V16Error::RecoveryRequired);
         }
         let mut asset = asset;
-        if let Some(outcome) = Self::apply_bankruptcy_residual_chunk_to_loss_side(
+        if let Some(outcome) = V16Core::apply_bankruptcy_residual_chunk_to_loss_side(
             &mut asset,
             opp,
             engine_chunk,
@@ -12654,59 +12729,6 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             PermissionlessRecoveryReasonV16::BIndexHeadroomExhausted,
         )?;
         Err(V16Error::RecoveryRequired)
-    }
-
-    fn apply_bankruptcy_residual_chunk_to_loss_side(
-        asset: &mut AssetStateV16,
-        opp: SideV16,
-        engine_chunk: u128,
-        residual_remaining: u128,
-    ) -> V16Result<Option<BResidualBookingOutcomeV16>> {
-        if engine_chunk == 0 || engine_chunk > residual_remaining {
-            return Ok(None);
-        }
-        let (b_now, weight_sum, rem) = match opp {
-            SideV16::Long => (
-                asset.b_long_num,
-                asset.loss_weight_sum_long,
-                asset.social_loss_remainder_long_num,
-            ),
-            SideV16::Short => (
-                asset.b_short_num,
-                asset.loss_weight_sum_short,
-                asset.social_loss_remainder_short_num,
-            ),
-        };
-        if weight_sum == 0 {
-            return Ok(None);
-        }
-        // PRODUCTION HELPER: the booking division (delta_b, new_rem).
-        let (delta_b, new_rem) = social_loss_book_split(engine_chunk, rem, weight_sum)?;
-        if delta_b == 0 || b_now.checked_add(delta_b).is_none() {
-            return Ok(None);
-        }
-        match opp {
-            SideV16::Long => {
-                asset.b_long_num = asset
-                    .b_long_num
-                    .checked_add(delta_b)
-                    .ok_or(V16Error::ArithmeticOverflow)?;
-                asset.social_loss_remainder_long_num = new_rem;
-            }
-            SideV16::Short => {
-                asset.b_short_num = asset
-                    .b_short_num
-                    .checked_add(delta_b)
-                    .ok_or(V16Error::ArithmeticOverflow)?;
-                asset.social_loss_remainder_short_num = new_rem;
-            }
-        }
-        Ok(Some(BResidualBookingOutcomeV16 {
-            booked_loss: engine_chunk,
-            explicit_loss: 0,
-            delta_b,
-            remaining_after: residual_remaining - engine_chunk,
-        }))
     }
 
     fn book_bankruptcy_residual_chunk_for_account_core(

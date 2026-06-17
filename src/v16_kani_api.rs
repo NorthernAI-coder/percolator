@@ -763,7 +763,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         engine_chunk: u128,
         residual_remaining: u128,
     ) -> V16Result<Option<BResidualBookingOutcomeV16>> {
-        Self::apply_bankruptcy_residual_chunk_to_loss_side(
+        V16Core::apply_bankruptcy_residual_chunk_to_loss_side(
             asset,
             opp,
             engine_chunk,

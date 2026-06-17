@@ -2301,3 +2301,42 @@ fn contract_check_actionable_summary_from_signals() {
         kani::any(),
     );
 }
+
+// ROADMAP workstream B.3 (social-loss shell, no-LoF): the live booking division
+// social_loss_book_split (engine_chunk*SOCIAL_LOSS_DEN / weight_sum) is a wide
+// symbolic u128 division that resists Kani — stub it to an arbitrary (delta_b,
+// new_rem). This is SOUND for the SHELL properties below: they assert the booking
+// books exactly engine_chunk, conserves the residual, assigns no live explicit
+// loss, and makes positive B progress — none of which depend on the split VALUE
+// (that exactness is discharged by the social_loss_book_split reference-model
+// fuzz conformance). The fn rejects delta_b==0 (-> None), so any Some has delta_b>0.
+#[cfg(all(kani, feature = "contracts"))]
+fn axiom_social_loss_book_split(
+    _engine_chunk: u128,
+    _carried_rem: u128,
+    weight_sum: u128,
+) -> V16Result<(u128, u128)> {
+    if weight_sum == 0 {
+        return Err(V16Error::InvalidConfig);
+    }
+    Ok((kani::any(), kani::any()))
+}
+
+// ROADMAP workstream B.3: social-loss live-booking conservation + no-explicit-loss
+// + B-progress, with the split division stubbed to its fuzz-discharged axiom.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::apply_bankruptcy_residual_chunk_to_loss_side)]
+#[kani::stub(crate::v16::social_loss_book_split, axiom_social_loss_book_split)]
+#[kani::solver(cadical)]
+fn contract_check_bresidual_chunk_conservation() {
+    let mut asset: AssetStateV16 = kani::any();
+    let opp: SideV16 = kani::any();
+    let engine_chunk: u128 = kani::any();
+    let residual_remaining: u128 = kani::any();
+    let _ = V16Core::apply_bankruptcy_residual_chunk_to_loss_side(
+        &mut asset,
+        opp,
+        engine_chunk,
+        residual_remaining,
+    );
+}

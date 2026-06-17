@@ -63,3 +63,37 @@ S-A1 (global conservation), Pillar-F soundness lemmas (P1), the FUZZ rows → P6
 Tier-A/Tier-B.
 PROVEN (no new work, keep gate-clean): S-T3,S-T4,S-T6,S-L1,S-L4,S-C1,S-C3,S-C5,
 S-U1,S-U3,A4,A6,U13(reject).
+
+## Roadmap exhaustion status (tractable items complete)
+
+The cleanly-tractable roadmap items are exhausted. Established this effort:
+
+**Conservation chain (workstream B, no-LoF) — bankruptcy-residual, 5 proven layers:**
+apply_bankruptcy_residual_chunk_to_loss_side (leaf: conservation + side isolation
++ monotonicity) -> kernel_bresidual_step (booking-step composition) ->
+closure_close_ledger_absorbs_booking_outcome (ledger residual == booking
+remaining) -> kernel_settle_resolved_pnl_after_booking (negative PnL reduced by
+exactly the absorbed loss, never over-cleared) -> insurance-draw vault-neutrality
+(kernel_consume_insurance_layer scalar conservation + flow-proof Ok-IFF-vault-flat
+biconditional). All proven without the view-symbolic wall.
+
+**Self-classifying crank (workstream A/C) — production-wired liveness selector,
+5 TDD-surfaced soundness bugs fixed; classifier flags all FAITHFUL + mode-gated.**
+
+**Certification gates (workstream E) — COMPLETE, all green:** route_fidelity_roster
+(29 summary fields tied to production), no_lof_entrypoint_roster (56 entrypoints,
+21 FLOW/56 FLOOR/16 KERNEL), dead_kernel_check (28 kernels: 23 called / 1
+entrypoint / 4 verified fidelity models), guard_mutation_sensitivity (all fields
+consulted), liveness_roster_enforcement, arithmetic_axiom_manifest_check,
+cover_vacuity_gate, symbolic_assert_audit.
+
+**Remaining = documented permanent walls + out-of-scope (NOT tractable-undone):**
+- view-symbolic / monolith-interior route proofs (A1..A7 reaching kernels through
+  the real public body; NB1 composing route; the 4 fidelity models wired into
+  production; close_resolved terminal composition; single_step_capacity wide-
+  divisor division + declare_recovery validate_shape over the symbolic view).
+- per-op B.1 value THEOREMS for all 56 entrypoints (35 are FLOOR-only — rely on
+  the Pillar-F validator floor + Phase-1 soundness, not a per-op value-flow proof).
+- wrapper proof consumption + LiteSVM CU/journeys (workstream D, Phase 7) —
+  OUT OF SCOPE (finding 7, engine-only).
+- SCHED (external scheduler liveness) — named external assumption.

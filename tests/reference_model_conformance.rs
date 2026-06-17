@@ -424,3 +424,45 @@ proptest! {
         check_split(chunk, rem, ws);
     }
 }
+
+// ---- ROADMAP Phase 5 (arithmetic policy): explicit BOUNDARY VECTORS. The Tier-A
+// exhaustive + Tier-B sampled tests cover small + random-wide domains; these pin
+// the differential discharge EXACTLY at the extremes named in the policy
+// (max/min notional, fee at 0 and the bps cap, split at the weight_sum /
+// SOCIAL_LOSS_DEN boundaries) so the axiom discharge is not only sampled. ----
+#[test]
+fn arithmetic_boundary_vectors_fee_notional_risk() {
+    let big = (1u128 << 80) - 1;
+    let max_px = 1_000_000_000_000u64 - 1;
+    // fee: zero size, zero bps, max bps cap, max size x cap
+    for &(n, bps) in &[(0u128, 0u64), (0, 10_000), (1, 10_000), (big, 0),
+                       (big, 10_000), (MAX_MARGIN_BPS_REF, 10_000),
+                       (MAX_MARGIN_BPS_REF - 1, 10_000), (MAX_MARGIN_BPS_REF + 1, 1)] {
+        check_fee(n, bps);
+    }
+    // notional/risk: zero, max, and exactly on the POS_SCALE denominator boundary
+    for &(s, px) in &[(0u128, 0u64), (0, max_px), (big, 0), (big, max_px),
+                      (POS_SCALE_REF, 1), (POS_SCALE_REF - 1, 1), (POS_SCALE_REF + 1, 1),
+                      (1, max_px), (POS_SCALE_REF, max_px)] {
+        check_notional(s, px);
+        check_risk(s, px);
+    }
+}
+
+#[test]
+fn arithmetic_boundary_vectors_social_loss_split() {
+    // split at the weight_sum / SOCIAL_LOSS_DEN boundaries: db progresses IFF
+    // numerator >= ws, so pin num just below / at / just above ws.
+    for &(chunk, rem, ws) in &[
+        (0u128, 0u128, 1u128),                       // zero chunk
+        (0, 0, SOCIAL_LOSS_DEN),                      // zero chunk, large ws
+        (1, 0, SOCIAL_LOSS_DEN),                      // num == ws exactly -> db==1, nr==0
+        (1, 0, SOCIAL_LOSS_DEN + 1),                  // num == ws-1 -> db==0
+        (1, 1, SOCIAL_LOSS_DEN),                      // num == ws+1 -> db==1, nr==1
+        (1, SOCIAL_LOSS_DEN - 1, SOCIAL_LOSS_DEN),    // max remainder < ws
+        (1000, 0, 1),                                 // ws==1 -> nr==0, db==num
+        ((1u128 << 50), 0, SOCIAL_LOSS_DEN),          // large chunk
+    ] {
+        check_split(chunk, rem, ws);
+    }
+}

@@ -11118,16 +11118,18 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         // (e.g. insurance absorbed the loss); only OUTSTANDING residual is real,
         // actionable close work. The `active` flag can linger past that.
         let close_outstanding = ledger.active && ledger.residual_remaining > 0;
-        // AdvanceClose dispatches a B-chunk settle on the ledger's asset, which
-        // needs an active leg there; a residual-only ledger with no leg is a
-        // recovery case with no standalone Live crank, not a clean AdvanceClose.
-        let ledger_asset_has_leg = ledger.active
-            && (ledger.asset_index as usize)
-                < self.header.config.max_market_slots.get() as usize
-            && Self::active_leg_slot_for_asset(account, ledger.asset_index as usize)?.is_some();
         let stale = live && !cert_current;
         let b_stale = live && Self::has_b_stale_leg(account)?;
-        let pending_close = live && close_outstanding && ledger_asset_has_leg;
+        // pending_close is NOT proactively classified: the close-ledger residual is
+        // booked ONLY inside the liquidation/resolved path that owns it
+        // (book_bankruptcy_residual_chunk_for_account_core) — settle_account_b_chunk
+        // does not touch it, so an AdvanceClose->SettleB dispatch would not advance
+        // the ledger. An outstanding Live close with a leg is liquidatable (the
+        // residual is an open deficit), so the Liquidate continuation books the
+        // residual chunk; the leg-less / expired cases are handled by expired_close
+        // -> recovery or are the documented backstopped A3 route. AdvanceClose is
+        // therefore classifier-unreachable (the proven selector still admits it).
+        let pending_close = false;
         // Expired outstanding close -> terminal recovery (Recover needs no leg).
         let expired_close =
             live && close_outstanding && self.header.current_slot.get() > ledger.max_close_slot;
@@ -11217,8 +11219,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 )?)
             }
             Some(ProgressContinuationV16::AdvanceClose) => {
-                // A pending close ledger advances by settling its B-chunk on the
-                // ledger's own asset (the bankruptcy close domain).
+                // CLASSIFIER-UNREACHABLE: build_actionable_summary never sets
+                // pending_close (the only source of AdvanceClose), because the
+                // close-ledger residual is booked inside the liquidation/resolved
+                // path that owns it, not by settle_account_b_chunk — see
+                // build_actionable_summary. The proven selector still admits this
+                // continuation, so we keep the arm total. If ever reached, the
+                // closest public step is a B-chunk settle on the ledger's asset.
                 let ledger_asset = account.header.close_progress.try_to_runtime()?.asset_index;
                 AutoCrankOutcomeV16::Progressed(crank(
                     self,

@@ -88,7 +88,14 @@ def fns_in(path):
 # Composed L.sel oracle (3A.4): select_progress_witness proves that for ANY
 # actionable summary a non-blocked continuation is deterministically selected,
 # resolving overlapping classes — the overlap-safe gate-reachability existential.
+# 3C step 4: this selector is now PRODUCTION-WIRED — permissionless_auto_crank_
+# not_atomic builds the summary from real state (build_actionable_summary, each
+# flag == its production eligibility predicate, mode-gated), assembles it via the
+# proven actionable_summary_from_signals kernel, runs this selector, and
+# dispatches the chosen continuation to the matching proven entrypoint.
 COMPOSED_SELECTOR = ("src/v16_proofs.rs", "contract_check_select_progress_witness")
+# 3C step 4 classifier-assembly fidelity (production self-classifying crank).
+CLASSIFIER_ASSEMBLY = ("src/v16_proofs.rs", "contract_check_actionable_summary_from_signals")
 
 missing = []
 def check(label, status, path, fns):
@@ -105,6 +112,7 @@ for cls, halves in ROSTER.items():
 for label, (st, path, fns) in NB.items():
     check(label, st, path, fns)
 check("composed L.sel selector", PROVEN, COMPOSED_SELECTOR[0], [COMPOSED_SELECTOR[1]])
+check("classifier assembly fidelity", PROVEN, CLASSIFIER_ASSEMBLY[0], [CLASSIFIER_ASSEMBLY[1]])
 
 if missing:
     print("LIVENESS ROSTER GAP(S):")

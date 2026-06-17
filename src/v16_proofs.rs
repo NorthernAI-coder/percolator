@@ -2282,3 +2282,22 @@ fn contract_check_build_resolved_close_rank() {
         kani::any(), kani::any(), kani::any(), kani::any(), kani::any(), kani::any(),
     );
 }
+
+// ROADMAP 3C step 4 (actionable-state classifier fidelity): full-domain contract
+// check that actionable_summary_from_signals maps each evaluated per-class
+// eligibility signal to its summary flag, so build_actionable_summary faithfully
+// feeds the proven select_progress_witness selector.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::actionable_summary_from_signals)]
+#[kani::solver(cadical)]
+fn contract_check_actionable_summary_from_signals() {
+    let _ = V16Core::actionable_summary_from_signals(
+        kani::any(),
+        kani::any(),
+        kani::any(),
+        kani::any(),
+        kani::any(),
+        kani::any(),
+        kani::any(),
+    );
+}

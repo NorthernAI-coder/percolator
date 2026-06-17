@@ -12,6 +12,9 @@ use percolator::{
     V16Config, V16Error, V16PodI128, V16PodU128, V16PodU32, V16PodU64, V16_EMPTY_ACTIVE_BITMAP,
 };
 use percolator::{ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
+use percolator::{
+    AutoCrankHintV16, AutoCrankOutcomeV16, ProgressContinuationV16,
+};
 
 const FUNDING_COUNTER_PRICE: u64 = 1_000_000;
 const FUNDING_COUNTER_RATE_E9: i128 = 10_000;
@@ -2515,4 +2518,70 @@ fn v16_grant_source_positive_pnl_attributes_claims_and_aggregates_in_lockstep() 
     let err = market.add_account_source_positive_pnl_not_atomic(&mut account, 0, 1);
     assert_eq!(err, Err(V16Error::LockActive));
     assert_eq!(account.header.pnl.get(), 25);
+}
+
+// ROADMAP 3C step 4 — self-classifying crank. The keeper no longer chooses the
+// action: build_actionable_summary classifies the account and
+// select_progress_witness picks the continuation the auto-crank dispatches.
+#[test]
+fn v16_auto_crank_classifies_fresh_account_stale_then_refreshes_to_clean() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut account_header = account_fixture(1, 21);
+    {
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut account = PortfolioV16ViewMut::new(&mut account_header);
+        market.deposit_not_atomic(&mut account, 1_000).unwrap();
+    }
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+
+    // A fresh (uncertified) account in a Live market is classified stale ONLY.
+    let summary = market.build_actionable_summary(&account.as_view()).unwrap();
+    assert!(summary.stale, "fresh uncertified account must be stale");
+    assert!(
+        !summary.b_stale
+            && !summary.pending_close
+            && !summary.expired_close
+            && !summary.liquidatable
+            && !summary.recovery_eligible
+            && !summary.resolved_winner,
+        "no other actionable class on a fresh empty account"
+    );
+
+    let hint = AutoCrankHintV16 {
+        now_slot: 5,
+        asset_index: 0,
+        effective_price: 100,
+        funding_rate_e9: 0,
+        liquidation_close_q: 0,
+        liquidation_fee_bps: 0,
+        resolved_close_fee_rate_per_slot: 0,
+    };
+
+    // The self-classifying crank selects RefreshAccount and dispatches it; the
+    // account becomes current (real liveness progress, no caller-chosen action).
+    let r = market
+        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .unwrap();
+    assert_eq!(r.selected, Some(ProgressContinuationV16::RefreshAccount));
+    assert_eq!(
+        r.outcome,
+        AutoCrankOutcomeV16::Progressed(PermissionlessProgressOutcomeV16::AccountCurrent)
+    );
+
+    // Now certified & clean -> not actionable -> NoAction (terminates).
+    let summary2 = market.build_actionable_summary(&account.as_view()).unwrap();
+    assert!(
+        !summary2.is_actionable(),
+        "a refreshed, clean account is not actionable"
+    );
+    let r2 = market
+        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .unwrap();
+    assert_eq!(r2.selected, None);
+    assert_eq!(r2.outcome, AutoCrankOutcomeV16::NoAction);
+
+    market.validate_shape().unwrap();
+    account.validate_with_market(&market.as_view()).unwrap();
 }

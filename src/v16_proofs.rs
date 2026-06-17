@@ -2364,3 +2364,74 @@ fn contract_check_kernel_bresidual_step() {
     let resolved: bool = kani::any();
     let _ = V16Core::kernel_bresidual_step(residual_remaining, booked, resolved);
 }
+
+// ROADMAP workstream B.2 (cross-layer conservation): book_bankruptcy_residual_
+// chunk_for_account_core calls the inner booking step on ledger.residual_remaining
+// and then advances the close ledger by the outcome's (booked_loss, explicit_loss).
+// This proves the two layers AGREE: the ledger's residual AFTER the advance equals
+// the booking step's carried-forward remaining_after — no value drifts between the
+// social-loss booking and the close-ledger accounting. Composes the proven
+// kernel_advance_close_ledger residual identity with the inner-step conservation
+// (kernel_bresidual_step: booked+explicit+remaining == residual_in).
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn closure_close_ledger_absorbs_booking_outcome() {
+    let ledger = CloseProgressLedgerV16 {
+        active: true,
+        finalized: false,
+        canceled: kani::any(),
+        close_id: kani::any(),
+        asset_index: kani::any(),
+        market_id: kani::any(),
+        domain_side: if kani::any() { SideV16::Long } else { SideV16::Short },
+        gross_loss_at_close_start: kani::any(),
+        drift_reference_slot: kani::any(),
+        max_close_slot: kani::any(),
+        support_consumed: kani::any(),
+        junior_face_burned: kani::any(),
+        insurance_spent: kani::any(),
+        b_loss_booked: kani::any(),
+        explicit_loss_assigned: kani::any(),
+        quantity_adl_applied_q: kani::any(),
+        drift_consumed: kani::any(),
+        residual_remaining: kani::any(),
+    };
+    // validated-ledger precondition (production-guaranteed by
+    // validate_close_progress_ledger_with_market): residual == total - progress.
+    kani::assume(ledger.gross_loss_at_close_start < 1u128 << 64);
+    kani::assume(ledger.drift_consumed < 1u128 << 64);
+    kani::assume(ledger.support_consumed < 1u128 << 64);
+    kani::assume(ledger.insurance_spent < 1u128 << 64);
+    kani::assume(ledger.b_loss_booked < 1u128 << 64);
+    kani::assume(ledger.explicit_loss_assigned < 1u128 << 64);
+    let total = ledger.gross_loss_at_close_start + ledger.drift_consumed;
+    let pre_progress = ledger.support_consumed
+        + ledger.insurance_spent
+        + ledger.b_loss_booked
+        + ledger.explicit_loss_assigned;
+    kani::assume(pre_progress <= total);
+    kani::assume(ledger.residual_remaining == total - pre_progress);
+
+    // The inner booking step's outcome, conserving ledger.residual_remaining
+    // (the postcondition proven by kernel_bresidual_step / the leaf contract).
+    let booked_loss: u128 = kani::any();
+    let explicit_loss: u128 = kani::any();
+    let remaining_after: u128 = kani::any();
+    kani::assume(booked_loss < 1u128 << 64);
+    kani::assume(explicit_loss < 1u128 << 64);
+    // residual_remaining == total - pre_progress <= total < 2^65, so the
+    // carried-forward remainder is bounded too (keeps the harness sums in range).
+    kani::assume(remaining_after < 1u128 << 65);
+    kani::assume(booked_loss + explicit_loss + remaining_after == ledger.residual_remaining);
+
+    // book_bankruptcy_residual_chunk_for_account_core advances by (0,0,0, booked, explicit).
+    if let Ok(l) = V16Core::kernel_advance_close_ledger(ledger, 0, 0, 0, booked_loss, explicit_loss) {
+        // CROSS-LAYER AGREEMENT: the ledger's carried-forward residual equals the
+        // booking step's remaining_after — booking and ledger never drift apart.
+        assert_eq!(l.residual_remaining, remaining_after);
+        // and the ledger's residual dropped by exactly what was booked + lost.
+        assert_eq!(l.residual_remaining + booked_loss + explicit_loss, ledger.residual_remaining);
+    }
+}

@@ -13,7 +13,7 @@ use percolator::{
 };
 use percolator::{ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
 use percolator::{
-    AutoCrankHintV16, AutoCrankOutcomeV16, ProgressContinuationV16,
+    AutoCrankObservationV16, AutoCrankOutcomeV16, AutoCrankPlanV16, AutoCrankWorkV16,
 };
 
 const FUNDING_COUNTER_PRICE: u64 = 1_000_000;
@@ -2549,22 +2549,24 @@ fn v16_auto_crank_classifies_fresh_account_stale_then_refreshes_to_clean() {
         "no other actionable class on a fresh empty account"
     );
 
-    let hint = AutoCrankHintV16 {
-        now_slot: 5,
+    let obs = [AutoCrankObservationV16 {
         asset_index: 0,
         effective_price: 100,
         funding_rate_e9: 0,
-        liquidation_close_q: 0,
-        liquidation_fee_bps: 0,
+    }];
+    let work = AutoCrankWorkV16 {
+        now_slot: 5,
+        observations: &obs,
+        liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };
 
-    // The self-classifying crank selects RefreshAccount and dispatches it; the
-    // account becomes current (real liveness progress, no caller-chosen action).
+    // The engine selects RefreshAccount (engine-chosen asset) and dispatches it;
+    // the account becomes current (real liveness progress, no caller-chosen action).
     let r = market
-        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .permissionless_auto_crank_not_atomic(&mut account, work)
         .unwrap();
-    assert_eq!(r.selected, Some(ProgressContinuationV16::RefreshAccount));
+    assert!(matches!(r.selected, AutoCrankPlanV16::RefreshAccount { .. }));
     assert_eq!(
         r.outcome,
         AutoCrankOutcomeV16::Progressed(PermissionlessProgressOutcomeV16::AccountCurrent)
@@ -2577,9 +2579,9 @@ fn v16_auto_crank_classifies_fresh_account_stale_then_refreshes_to_clean() {
         "a refreshed, clean account is not actionable"
     );
     let r2 = market
-        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .permissionless_auto_crank_not_atomic(&mut account, work)
         .unwrap();
-    assert_eq!(r2.selected, None);
+    assert_eq!(r2.selected, AutoCrankPlanV16::NoAction);
     assert_eq!(r2.outcome, AutoCrankOutcomeV16::NoAction);
 
     market.validate_shape().unwrap();
@@ -2645,53 +2647,52 @@ fn v16_auto_crank_drives_stale_underwater_account_to_derisked_fixed_point() {
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
 
-    let hint = AutoCrankHintV16 {
-        now_slot: 10,
+    let obs = [AutoCrankObservationV16 {
         asset_index: 0,
         effective_price: 100,
         funding_rate_e9: 0,
-        liquidation_close_q: POS_SCALE,
-        liquidation_fee_bps: 0,
+    }];
+    let work = AutoCrankWorkV16 {
+        now_slot: 10,
+        observations: &obs,
+        liquidation_max_close_q: POS_SCALE,
         resolved_close_fee_rate_per_slot: 0,
     };
 
-    // Drive the self-classifying crank to a fixed point. It MUST converge
-    // (no-DoS) within a bounded number of steps.
-    let mut kinds = Vec::new();
+    // Drive the engine auto-crank to a fixed point. It MUST converge (no-DoS)
+    // within a bounded number of steps, self-selecting the asset each step.
+    let mut plans = Vec::new();
+    let mut saw_refresh = false;
+    let mut saw_liquidate = false;
     let mut steps = 0;
     loop {
         let summary = market.build_actionable_summary(&account.as_view()).unwrap();
-        let r = match market.permissionless_auto_crank_not_atomic(&mut account, hint) {
+        let r = match market.permissionless_auto_crank_not_atomic(&mut account, work) {
             Ok(r) => r,
             Err(e) => panic!(
-                "step {steps} dispatch err {e:?}; summary={summary:?}; kinds={kinds:?}; bitmap={}",
+                "step {steps} dispatch err {e:?}; summary={summary:?}; plans={plans:?}; bitmap={}",
                 account.header.active_bitmap[0].get()
             ),
         };
         match r.selected {
-            None => break,
-            Some(k) => kinds.push(k),
+            AutoCrankPlanV16::NoAction => break,
+            AutoCrankPlanV16::RefreshAccount { .. } => saw_refresh = true,
+            AutoCrankPlanV16::Liquidate { .. } => saw_liquidate = true,
+            _ => {}
         }
+        plans.push(r.selected);
         steps += 1;
         assert!(
             steps < 12,
-            "self-classifying crank must converge (no-DoS); selected so far: {:?}",
-            kinds
+            "engine auto-crank must converge (no-DoS); selected so far: {:?}",
+            plans
         );
     }
 
-    // The classifier escalated: it refreshed the stale account, then liquidated
+    // The engine escalated: it refreshed the stale account, then liquidated
     // the underwater position — and reached a non-actionable fixed point.
-    assert!(
-        kinds.contains(&ProgressContinuationV16::RefreshAccount),
-        "must refresh the uncertified account: {:?}",
-        kinds
-    );
-    assert!(
-        kinds.contains(&ProgressContinuationV16::Liquidate),
-        "must liquidate the underwater position: {:?}",
-        kinds
-    );
+    assert!(saw_refresh, "must refresh the uncertified account: {:?}", plans);
+    assert!(saw_liquidate, "must liquidate the underwater position: {:?}", plans);
     assert_eq!(
         account.header.active_bitmap[0].get(),
         0,
@@ -2748,20 +2749,23 @@ fn v16_auto_crank_declares_recovery_for_expired_live_close() {
     );
     assert!(!summary.recovery_eligible && !summary.resolved_winner);
 
-    let hint = AutoCrankHintV16 {
+    // DeclareRecovery needs no observation (empty work).
+    let work = AutoCrankWorkV16 {
         now_slot: 10,
-        asset_index: 0,
-        effective_price: 100,
-        funding_rate_e9: 0,
-        liquidation_close_q: 0,
-        liquidation_fee_bps: 0,
+        observations: &[],
+        liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };
     let vault_before = market.header.vault;
     let r = market
-        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .permissionless_auto_crank_not_atomic(&mut account, work)
         .unwrap();
-    assert_eq!(r.selected, Some(ProgressContinuationV16::DeclareRecovery));
+    assert_eq!(
+        r.selected,
+        AutoCrankPlanV16::DeclareRecovery {
+            reason: PermissionlessRecoveryReasonV16::ActiveBankruptCloseCannotProgress
+        }
+    );
     assert_eq!(
         r.outcome,
         AutoCrankOutcomeV16::Progressed(PermissionlessProgressOutcomeV16::RecoveryDeclared(
@@ -2857,27 +2861,62 @@ fn v16_auto_crank_settles_b_stale_leg() {
     let summary = market.build_actionable_summary(&account.as_view()).unwrap();
     assert!(summary.b_stale, "b-stale leg must classify b_stale: {summary:?}");
 
-    let hint = AutoCrankHintV16 {
-        now_slot: 10,
+    let obs = [AutoCrankObservationV16 {
         asset_index: 0,
         effective_price: 100,
         funding_rate_e9: 0,
-        liquidation_close_q: 0,
-        liquidation_fee_bps: 0,
+    }];
+    let work = AutoCrankWorkV16 {
+        now_slot: 10,
+        observations: &obs,
+        liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };
     let r = market
-        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .permissionless_auto_crank_not_atomic(&mut account, work)
         .unwrap();
     // b_stale has priority over the stale-cert refresh, so SettleBChunk is selected
-    // and dispatched to the real B-chunk settle entrypoint (AccountBChunk outcome).
-    // The rank-decreasing B-advance for a genuinely drifted leg (delta_b>0) is
-    // proven at the A2 kernel (kernel_advance_leg_b_snap /
-    // liveness_b_stale_leg_has_advancing_chunk); here we verify the dispatch route.
-    assert_eq!(r.selected, Some(ProgressContinuationV16::SettleBChunk));
+    // with the engine-chosen asset (the b-stale leg's asset) and dispatched to the
+    // real B-chunk settle entrypoint (AccountBChunk outcome). The rank-decreasing
+    // B-advance for a genuinely drifted leg (delta_b>0) is proven at the A2 kernel.
+    assert_eq!(r.selected, AutoCrankPlanV16::SettleBChunk { asset_index: 0 });
     assert!(matches!(
         r.outcome,
         AutoCrankOutcomeV16::Progressed(PermissionlessProgressOutcomeV16::AccountBChunk(_))
     ));
+    market.validate_shape().unwrap();
+}
+
+// ENGINE.MD order-insensitivity: when the engine-selected step needs an
+// observation the caller did not supply (e.g. a stale keeper tx whose task
+// changed), the auto-crank returns a clean NonProgress error WITHOUT mutating
+// state — so arbitrary landing order is safe.
+#[test]
+fn v16_auto_crank_missing_observation_is_clean_nonprogress_no_mutation() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut account_header = account_fixture(1, 71);
+    {
+        let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        let mut account = PortfolioV16ViewMut::new(&mut account_header);
+        market.deposit_not_atomic(&mut account, 1_000).unwrap();
+    }
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+
+    // fresh account -> selector wants RefreshAccount, which needs an observation;
+    // supply NONE -> clean NonProgress, no mutation.
+    let summary = market.build_actionable_summary(&account.as_view()).unwrap();
+    assert!(summary.stale);
+    let cert_before = account.header.health_cert;
+    let work = AutoCrankWorkV16 {
+        now_slot: 5,
+        observations: &[],
+        liquidation_max_close_q: 0,
+        resolved_close_fee_rate_per_slot: 0,
+    };
+    let r = market.permissionless_auto_crank_not_atomic(&mut account, work);
+    assert_eq!(r, Err(percolator::V16Error::NonProgress));
+    // no mutation (SVM would roll back anyway, but the engine did not commit).
+    assert_eq!(account.header.health_cert, cert_before);
     market.validate_shape().unwrap();
 }

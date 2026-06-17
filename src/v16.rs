@@ -1182,6 +1182,117 @@ impl V16Core {
         }
     }
 
+    /// PRODUCTION KERNEL (engine.md asset self-selection): the bounded first-match
+    /// leg/asset scan. Given a per-leg actionability flag array (the caller sets
+    /// `flags[i]` to the production predicate for slot i — e.g. an active b-stale
+    /// leg, or an active leg eligible for liquidation), return the FIRST actionable
+    /// slot, so the engine — not the caller — picks the asset for the selected
+    /// continuation. PROVES (engine.md proof targets): the returned slot is IN
+    /// RANGE and ACTIONABLE (`flags[slot]`), it is the FIRST such slot, and the
+    /// scan is COMPLETE (returns Some IFF any flag is set). Bounded by
+    /// V16_MAX_PORTFOLIO_ASSETS_N (no unbounded loop). Pure.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &Option<usize>| {
+        match r {
+            Some(i) => {
+                *i < V16_MAX_PORTFOLIO_ASSETS_N
+                    && flags[*i]
+                    && {
+                        // first match: every earlier slot is not actionable
+                        let mut j = 0;
+                        let mut earlier_clear = true;
+                        while j < *i {
+                            if flags[j] {
+                                earlier_clear = false;
+                            }
+                            j += 1;
+                        }
+                        earlier_clear
+                    }
+            }
+            None => {
+                // completeness: no slot is actionable
+                let mut j = 0;
+                let mut any = false;
+                while j < V16_MAX_PORTFOLIO_ASSETS_N {
+                    if flags[j] {
+                        any = true;
+                    }
+                    j += 1;
+                }
+                !any
+            }
+        }
+    }))]
+    pub(crate) fn first_actionable_slot(
+        flags: [bool; V16_MAX_PORTFOLIO_ASSETS_N],
+    ) -> Option<usize> {
+        let mut slot = 0usize;
+        while slot < V16_MAX_PORTFOLIO_ASSETS_N {
+            if flags[slot] {
+                return Some(slot);
+            }
+            slot += 1;
+        }
+        None
+    }
+
+    /// PRODUCTION KERNEL (engine.md selection semantics): from the actionable
+    /// summary and the ENGINE-selected assets, choose the single highest-priority
+    /// bounded plan, carrying the engine-chosen asset (the caller chooses neither
+    /// the action nor the asset). PROVES: TOTALITY (an actionable account yields a
+    /// non-NoAction plan), PRIORITY DETERMINISM (the documented order: recovery >
+    /// resolved-close > b-stale settle > liquidate > refresh), and SELECTED-ASSET
+    /// fidelity (SettleBChunk/Liquidate carry exactly the provided engine-selected
+    /// slot). `pending_close` is classifier-unreachable (build_actionable_summary
+    /// never sets it — a leg-bearing pending close is liquidatable; see the
+    /// AdvanceClose note), so it is required absent here. Pure.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(!summary.pending_close))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &AutoCrankPlanV16| {
+        let recovery = summary.expired_close || summary.recovery_eligible;
+        match r {
+            AutoCrankPlanV16::NoAction => !summary.is_actionable(),
+            AutoCrankPlanV16::DeclareRecovery { reason } => recovery && *reason == recovery_reason,
+            AutoCrankPlanV16::CloseResolved => !recovery && summary.resolved_winner,
+            AutoCrankPlanV16::SettleBChunk { asset_index } =>
+                !recovery && !summary.resolved_winner && summary.b_stale && *asset_index == b_stale_slot,
+            AutoCrankPlanV16::Liquidate { asset_index } =>
+                !recovery && !summary.resolved_winner && !summary.b_stale && summary.liquidatable
+                    && *asset_index == liq_slot,
+            AutoCrankPlanV16::RefreshAccount { asset_index } =>
+                !recovery && !summary.resolved_winner && !summary.b_stale && !summary.liquidatable
+                    && summary.stale && *asset_index == refresh_asset,
+        }
+    }))]
+    pub(crate) fn select_auto_crank_plan(
+        summary: ActionableSummaryV16,
+        b_stale_slot: usize,
+        liq_slot: usize,
+        refresh_asset: Option<usize>,
+        recovery_reason: PermissionlessRecoveryReasonV16,
+    ) -> AutoCrankPlanV16 {
+        if summary.expired_close || summary.recovery_eligible {
+            AutoCrankPlanV16::DeclareRecovery {
+                reason: recovery_reason,
+            }
+        } else if summary.resolved_winner {
+            AutoCrankPlanV16::CloseResolved
+        } else if summary.b_stale {
+            AutoCrankPlanV16::SettleBChunk {
+                asset_index: b_stale_slot,
+            }
+        } else if summary.liquidatable {
+            AutoCrankPlanV16::Liquidate {
+                asset_index: liq_slot,
+            }
+        } else if summary.stale {
+            AutoCrankPlanV16::RefreshAccount {
+                asset_index: refresh_asset,
+            }
+        } else {
+            AutoCrankPlanV16::NoAction
+        }
+    }
+
     /// PRODUCTION KERNEL (roadmap 3B.8, Pillar L A7.dec): resolved-close progress
     /// classification — the no-DoS close property. Each call to the resolved
     /// close-out is `Closed` (no pending component remains), `ProgressOnly` (a
@@ -2744,6 +2855,7 @@ pub enum BackingBucketStatusV16 {
     Impaired,
 }
 
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum PermissionlessRecoveryReasonV16 {
     BelowProgressFloor,
@@ -4532,21 +4644,40 @@ impl ActionableSummaryV16 {
     }
 }
 
-/// Per-action hints the self-classifying crank still needs from the caller. The
-/// CLASSIFIER decides WHICH action (build_actionable_summary +
-/// select_progress_witness); the caller supplies only the unavoidable oracle
-/// observation (price / slot / funding) and the concrete action parameters
-/// (which asset to act on, the liquidation size + fee, the resolved-close fee
-/// rate). The keeper no longer chooses the action TYPE.
+/// One oracle observation a keeper submits to the auto-crank (engine.md). The
+/// caller supplies a bounded set of these for the assets it has fresh data for;
+/// the ENGINE selects which (if any) the highest-priority step needs. The caller
+/// never chooses the action TYPE or the asset.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct AutoCrankHintV16 {
-    pub now_slot: u64,
+pub struct AutoCrankObservationV16 {
     pub asset_index: usize,
     pub effective_price: u64,
     pub funding_rate_e9: i128,
-    pub liquidation_close_q: u128,
-    pub liquidation_fee_bps: u64,
+}
+
+/// Bounded work a keeper submits to the order-insensitive auto-crank (engine.md):
+/// observations that may land in any order, a liquidation work budget, and the
+/// resolved-close fee rate. NO caller-chosen action, asset, or liquidation fee —
+/// the engine selects the step and the asset and derives the fee from config.
+#[derive(Clone, Copy, Debug)]
+pub struct AutoCrankWorkV16<'a> {
+    pub now_slot: u64,
+    pub observations: &'a [AutoCrankObservationV16],
+    pub liquidation_max_close_q: u128,
     pub resolved_close_fee_rate_per_slot: u128,
+}
+
+/// The bounded progress step the engine SELECTED from current state (engine.md).
+/// The asset/leg is chosen by the engine, not the caller. One auto-crank call
+/// dispatches exactly one of these.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum AutoCrankPlanV16 {
+    NoAction,
+    RefreshAccount { asset_index: Option<usize> },
+    SettleBChunk { asset_index: usize },
+    Liquidate { asset_index: usize },
+    DeclareRecovery { reason: PermissionlessRecoveryReasonV16 },
+    CloseResolved,
 }
 
 /// The outcome of one self-classifying crank step: nothing actionable, a
@@ -4559,13 +4690,11 @@ pub enum AutoCrankOutcomeV16 {
     ResolvedClose(ResolvedCloseOutcomeV16),
 }
 
-/// Result of `permissionless_auto_crank_not_atomic`: the continuation the
-/// classifier+selector chose (None when not actionable) and the dispatched
-/// outcome. `selected` is exactly `select_progress_witness(build_actionable_
-/// summary(account))`, so the dispatch is transparent and auditable.
+/// Result of `permissionless_auto_crank_not_atomic`: the engine-selected plan
+/// (including the engine-chosen asset) and the dispatched outcome.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct AutoCrankResultV16 {
-    pub selected: Option<ProgressContinuationV16>,
+    pub selected: AutoCrankPlanV16,
     pub outcome: AutoCrankOutcomeV16,
 }
 
@@ -11472,91 +11601,168 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
     /// action parameters via the hint. Returns the selected continuation (None
     /// when not actionable) and the dispatched outcome. Each continuation's
     /// dispatch target is valid in the mode that the classifier gated its flag to.
+    /// ENGINE asset self-selection (engine.md): scan the account's bounded legs and
+    /// return, for each asset-scoped continuation, the engine-chosen asset_index —
+    /// the FIRST active b-stale leg's asset (SettleBChunk), and the FIRST active
+    /// leg's asset (used for both Liquidate and the refresh accrual target). The
+    /// selection is proven in-range / actionable / first-match / complete by the
+    /// first_actionable_slot contract; the slot->asset_index read is by inspection.
+    fn auto_crank_selected_assets(
+        account: &PortfolioV16View<'_>,
+    ) -> V16Result<(Option<usize>, Option<usize>)> {
+        let bitmap = account.header.active_bitmap.map(V16PodU64::get);
+        let mut active_flags = [false; V16_MAX_PORTFOLIO_ASSETS_N];
+        let mut b_stale_flags = [false; V16_MAX_PORTFOLIO_ASSETS_N];
+        let mut slot = 0usize;
+        while slot < V16_MAX_PORTFOLIO_ASSETS_N {
+            let leg = account.header.legs[slot].try_to_runtime()?;
+            let active = active_bitmap_get(bitmap, slot) && leg.active;
+            active_flags[slot] = active;
+            b_stale_flags[slot] = active && leg.b_stale;
+            slot += 1;
+        }
+        let asset_of = |s: Option<usize>| -> V16Result<Option<usize>> {
+            match s {
+                Some(i) => Ok(Some(
+                    account.header.legs[i].try_to_runtime()?.asset_index as usize,
+                )),
+                None => Ok(None),
+            }
+        };
+        let b_stale_asset = asset_of(V16Core::first_actionable_slot(b_stale_flags))?;
+        let active_asset = asset_of(V16Core::first_actionable_slot(active_flags))?;
+        Ok((b_stale_asset, active_asset))
+    }
+
+    /// PRODUCTION ORDER-INSENSITIVE AUTO-CRANK (engine.md): the canonical no-DoS
+    /// public crank. The caller submits bounded observations (any landing order) +
+    /// a liquidation budget; the ENGINE classifies the account, selects the single
+    /// highest-priority continuation AND its asset (self-selected), matches the
+    /// observation it needs, derives the liquidation fee from config (never the
+    /// caller), and dispatches exactly one bounded primitive. Returns NoAction when
+    /// no progress is currently needed, and `NonProgress` (no mutation) when the
+    /// selected step needs an observation the caller did not supply — so a stale
+    /// keeper tx for a task that changed cleanly no-ops/errors. One call = one step.
     pub fn permissionless_auto_crank_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,
-        hint: AutoCrankHintV16,
+        work: AutoCrankWorkV16<'_>,
     ) -> V16Result<AutoCrankResultV16> {
         let summary = self.build_actionable_summary(&account.as_view())?;
-        let selected = V16Core::select_progress_witness(summary);
-        let crank = |me: &mut Self,
-                     account: &mut PortfolioV16ViewMut<'_>,
-                     action: PermissionlessCrankActionV16|
-         -> V16Result<PermissionlessProgressOutcomeV16> {
-            me.permissionless_crank_not_atomic(
-                account,
-                PermissionlessCrankRequestV16 {
-                    now_slot: hint.now_slot,
-                    asset_index: hint.asset_index,
-                    effective_price: hint.effective_price,
-                    funding_rate_e9: hint.funding_rate_e9,
-                    action,
-                },
-            )
+        let (b_stale_asset, active_asset) =
+            Self::auto_crank_selected_assets(&account.as_view())?;
+        let recovery_reason = if summary.expired_close {
+            PermissionlessRecoveryReasonV16::ActiveBankruptCloseCannotProgress
+        } else {
+            PermissionlessRecoveryReasonV16::ExplicitLossOrDustAuditOverflow
         };
-        let outcome = match selected {
-            None => AutoCrankOutcomeV16::NoAction,
-            Some(ProgressContinuationV16::RefreshAccount) => AutoCrankOutcomeV16::Progressed(
-                crank(self, account, PermissionlessCrankActionV16::Refresh)?,
-            ),
-            Some(ProgressContinuationV16::SettleBChunk) => {
-                AutoCrankOutcomeV16::Progressed(crank(
-                    self,
+        // PRODUCTION KERNEL: the proven plan selector (priority + totality +
+        // engine-selected asset). refresh accrues the first active leg's asset.
+        let plan = V16Core::select_auto_crank_plan(
+            summary,
+            b_stale_asset.unwrap_or(0),
+            active_asset.unwrap_or(0),
+            active_asset,
+            recovery_reason,
+        );
+
+        let obs_for = |i: usize| -> V16Result<AutoCrankObservationV16> {
+            work.observations
+                .iter()
+                .copied()
+                .find(|o| o.asset_index == i)
+                .ok_or(V16Error::NonProgress)
+        };
+        let crank_with =
+            |me: &mut Self,
+             account: &mut PortfolioV16ViewMut<'_>,
+             asset_index: usize,
+             obs: AutoCrankObservationV16,
+             action: PermissionlessCrankActionV16|
+             -> V16Result<PermissionlessProgressOutcomeV16> {
+                me.permissionless_crank_not_atomic(
                     account,
-                    PermissionlessCrankActionV16::SettleB {
-                        asset_index: hint.asset_index,
+                    PermissionlessCrankRequestV16 {
+                        now_slot: work.now_slot,
+                        asset_index,
+                        effective_price: obs.effective_price,
+                        funding_rate_e9: obs.funding_rate_e9,
+                        action,
                     },
-                )?)
-            }
-            Some(ProgressContinuationV16::AdvanceClose) => {
-                // CLASSIFIER-UNREACHABLE: build_actionable_summary never sets
-                // pending_close (the only source of AdvanceClose), because the
-                // close-ledger residual is booked inside the liquidation/resolved
-                // path that owns it, not by settle_account_b_chunk — see
-                // build_actionable_summary. The proven selector still admits this
-                // continuation, so we keep the arm total. If ever reached, the
-                // closest public step is a B-chunk settle on the ledger's asset.
-                let ledger_asset = account.header.close_progress.try_to_runtime()?.asset_index;
-                AutoCrankOutcomeV16::Progressed(crank(
-                    self,
-                    account,
-                    PermissionlessCrankActionV16::SettleB {
-                        asset_index: ledger_asset as usize,
-                    },
-                )?)
-            }
-            Some(ProgressContinuationV16::Liquidate) => AutoCrankOutcomeV16::Progressed(crank(
-                self,
-                account,
-                PermissionlessCrankActionV16::Liquidate(LiquidationRequestV16 {
-                    asset_index: hint.asset_index,
-                    close_q: hint.liquidation_close_q,
-                    fee_bps: hint.liquidation_fee_bps,
-                }),
-            )?),
-            Some(ProgressContinuationV16::DeclareRecovery) => {
-                // expired_close declares the close-cannot-progress recovery (the
-                // same reason ensure_close_progress_not_expired uses); the
-                // resolved unattributed-insolvency case declares the loss recovery.
-                let reason = if summary.expired_close {
-                    PermissionlessRecoveryReasonV16::ActiveBankruptCloseCannotProgress
-                } else {
-                    PermissionlessRecoveryReasonV16::ExplicitLossOrDustAuditOverflow
+                )
+            };
+
+        let outcome = match plan {
+            AutoCrankPlanV16::NoAction => AutoCrankOutcomeV16::NoAction,
+            AutoCrankPlanV16::RefreshAccount { asset_index } => {
+                // accrue the engine-selected asset; if none, use the first
+                // supplied observation (account/market refresh needs price data).
+                let (ai, obs) = match asset_index {
+                    Some(i) => (i, obs_for(i)?),
+                    None => {
+                        let o = work
+                            .observations
+                            .first()
+                            .copied()
+                            .ok_or(V16Error::NonProgress)?;
+                        (o.asset_index, o)
+                    }
                 };
-                AutoCrankOutcomeV16::Progressed(crank(
+                AutoCrankOutcomeV16::Progressed(crank_with(
                     self,
                     account,
-                    PermissionlessCrankActionV16::Recover(reason),
+                    ai,
+                    obs,
+                    PermissionlessCrankActionV16::Refresh,
                 )?)
             }
-            Some(ProgressContinuationV16::CloseResolved) => AutoCrankOutcomeV16::ResolvedClose(
+            AutoCrankPlanV16::SettleBChunk { asset_index } => {
+                let obs = obs_for(asset_index)?;
+                AutoCrankOutcomeV16::Progressed(crank_with(
+                    self,
+                    account,
+                    asset_index,
+                    obs,
+                    PermissionlessCrankActionV16::SettleB { asset_index },
+                )?)
+            }
+            AutoCrankPlanV16::Liquidate { asset_index } => {
+                let obs = obs_for(asset_index)?;
+                // CONFIG fee policy — never a caller hint (engine.md).
+                let fee_bps = self.header.config.try_to_runtime_shape()?.liquidation_fee_bps;
+                AutoCrankOutcomeV16::Progressed(crank_with(
+                    self,
+                    account,
+                    asset_index,
+                    obs,
+                    PermissionlessCrankActionV16::Liquidate(LiquidationRequestV16 {
+                        asset_index,
+                        close_q: work.liquidation_max_close_q,
+                        fee_bps,
+                    }),
+                )?)
+            }
+            AutoCrankPlanV16::DeclareRecovery { reason } => {
+                // recovery declaration needs no observation.
+                AutoCrankOutcomeV16::Progressed(self.permissionless_crank_not_atomic(
+                    account,
+                    PermissionlessCrankRequestV16 {
+                        now_slot: work.now_slot,
+                        asset_index: 0,
+                        effective_price: 0,
+                        funding_rate_e9: 0,
+                        action: PermissionlessCrankActionV16::Recover(reason),
+                    },
+                )?)
+            }
+            AutoCrankPlanV16::CloseResolved => AutoCrankOutcomeV16::ResolvedClose(
                 self.close_resolved_account_not_atomic(
                     account,
-                    hint.resolved_close_fee_rate_per_slot,
+                    work.resolved_close_fee_rate_per_slot,
                 )?,
             ),
         };
-        Ok(AutoCrankResultV16 { selected, outcome })
+        Ok(AutoCrankResultV16 { selected: plan, outcome })
     }
 
     fn active_leg_slot_for_asset(

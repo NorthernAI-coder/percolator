@@ -42,9 +42,12 @@ MATRIX = {
     "SettleBChunk": (
         "PermissionlessCrankActionV16::SettleB",
         [(HARNESS, "contract_check_kernel_advance_leg_b_snap")]),
-    "AdvanceClose": (
-        "ProgressContinuationV16::AdvanceClose",
-        [(HARNESS, "closure_kernel_advance_close_ledger_rank_witness")]),
+    # AdvanceClose is FOLDED (engine.md redesign): AutoCrankPlanV16 has no
+    # AdvanceClose variant. A leg-bearing pending close is liquidatable (Liquidate
+    # books the residual chunk); a leg-less / expired close routes to recovery.
+    # The close-ledger rank step itself stays proven by
+    # closure_kernel_advance_close_ledger_rank_witness (consumed by the
+    # bankruptcy-residual booking path), not by an auto-crank dispatch arm.
     "Liquidate": (
         "PermissionlessCrankActionV16::Liquidate",
         [(HARNESS, "contract_check_kernel_reduce_position_delta")]),
@@ -69,8 +72,8 @@ def main():
     # the auto-crank body (route-fidelity dispatch surface)
     m = re.search(r"fn permissionless_auto_crank_not_atomic.*?\n    \}", src, re.S)
     auto = m.group(0) if m else ""
-    # the proven selector must enumerate every continuation
-    sel = re.search(r"fn select_progress_witness.*?\n    \}", src, re.S)
+    # the proven engine plan selector must enumerate every dispatched continuation
+    sel = re.search(r"fn select_auto_crank_plan.*?\n    \}", src, re.S)
     sel = sel.group(0) if sel else ""
 
     bounded = MAXN in src  # the static per-account scan bound exists

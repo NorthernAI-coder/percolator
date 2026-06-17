@@ -2820,3 +2820,74 @@ fn v16_auto_crank_resolved_winner_requires_captured_payout_snapshot() {
     assert_eq!(r.outcome, AutoCrankOutcomeV16::NoAction);
     market.validate_shape().unwrap();
 }
+
+// ROADMAP 3C step 4 — b-stale dispatch arm: an account with a b-stale active leg
+// is classified b_stale (priority over the stale-cert refresh), and the auto-crank
+// dispatches the B-chunk settle that clears it (real B-rank progress).
+#[test]
+fn v16_auto_crank_settles_b_stale_leg() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut account_header = account_fixture(1, 51);
+    header.current_slot = V16PodU64::new(10);
+    header.slot_last = V16PodU64::new(10);
+    let mut asset0 = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset0.slot_last = 10;
+    asset0.oi_eff_long_q = POS_SCALE;
+    asset0.oi_eff_short_q = POS_SCALE;
+    asset0.loss_weight_sum_long = POS_SCALE;
+    asset0.loss_weight_sum_short = POS_SCALE;
+    asset0.stored_pos_count_long = 1;
+    asset0.stored_pos_count_short = 1;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset0);
+
+    // Active leg flagged b-stale, with b_snap already at the current target so the
+    // settle resolves to a clean delta_b=0 clear (progress: clears the b-stale flag).
+    account_header.legs[0] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
+        active: true,
+        asset_index: 0,
+        market_id: asset0.market_id,
+        side: SideV16::Long,
+        basis_pos_q: POS_SCALE as i128,
+        a_basis: ADL_ONE,
+        k_snap: asset0.k_long,
+        f_snap: asset0.f_long_num,
+        epoch_snap: asset0.epoch_long,
+        loss_weight: POS_SCALE,
+        b_snap: asset0.b_long_num,
+        b_rem: 0,
+        b_epoch_snap: asset0.epoch_long,
+        b_stale: true,
+        stale: false,
+    });
+    account_header.active_bitmap[0] = V16PodU64::new(1);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+
+    let summary = market.build_actionable_summary(&account.as_view()).unwrap();
+    assert!(summary.b_stale, "b-stale leg must classify b_stale: {summary:?}");
+
+    let hint = AutoCrankHintV16 {
+        now_slot: 10,
+        asset_index: 0,
+        effective_price: 100,
+        funding_rate_e9: 0,
+        liquidation_close_q: 0,
+        liquidation_fee_bps: 0,
+        resolved_close_fee_rate_per_slot: 0,
+    };
+    let r = market
+        .permissionless_auto_crank_not_atomic(&mut account, hint)
+        .unwrap();
+    // b_stale has priority over the stale-cert refresh, so SettleBChunk is selected
+    // and dispatched to the real B-chunk settle entrypoint (AccountBChunk outcome).
+    // The rank-decreasing B-advance for a genuinely drifted leg (delta_b>0) is
+    // proven at the A2 kernel (kernel_advance_leg_b_snap /
+    // liveness_b_stale_leg_has_advancing_chunk); here we verify the dispatch route.
+    assert_eq!(r.selected, Some(ProgressContinuationV16::SettleBChunk));
+    assert!(matches!(
+        r.outcome,
+        AutoCrankOutcomeV16::Progressed(PermissionlessProgressOutcomeV16::AccountBChunk(_))
+    ));
+    market.validate_shape().unwrap();
+}

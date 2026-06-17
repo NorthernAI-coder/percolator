@@ -1455,18 +1455,39 @@ impl V16Core {
     /// (remaining_after+booked_loss==residual_remaining), assigns NO explicit loss
     /// on the live path (explicit_loss==0), and makes real B-rank progress
     /// (delta_b>0). Booking only ADDS to the loss side's b_num (monotone, never
-    /// burns value).
+    /// burns value) and is SIDE-ISOLATED: the opposite (non-loss) side's B-index
+    /// and social-loss remainder are never touched (no cross-side contamination);
+    /// it operates on a single asset, so there is structurally no cross-asset
+    /// mutation either.
     #[cfg_attr(all(kani, feature = "contracts"), kani::modifies(asset))]
     #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &V16Result<Option<BResidualBookingOutcomeV16>>| {
-        match r {
-            Ok(Some(o)) => {
-                o.explicit_loss == 0
-                    && o.booked_loss == engine_chunk
-                    && o.delta_b > 0
-                    && o.remaining_after.checked_add(o.booked_loss) == Some(residual_remaining)
+        // SIDE ISOLATION + MONOTONICITY (holds on every path): the loss side's
+        // B-index only grows; the OTHER side's B-index + remainder are unchanged.
+        let isolated = match opp {
+            SideV16::Long => {
+                asset.b_long_num >= old(asset.b_long_num)
+                    && asset.b_short_num == old(asset.b_short_num)
+                    && asset.social_loss_remainder_short_num
+                        == old(asset.social_loss_remainder_short_num)
             }
-            _ => true,
-        }
+            SideV16::Short => {
+                asset.b_short_num >= old(asset.b_short_num)
+                    && asset.b_long_num == old(asset.b_long_num)
+                    && asset.social_loss_remainder_long_num
+                        == old(asset.social_loss_remainder_long_num)
+            }
+        };
+        isolated
+            && match r {
+                Ok(Some(o)) => {
+                    o.explicit_loss == 0
+                        && o.booked_loss == engine_chunk
+                        && o.delta_b > 0
+                        && o.remaining_after.checked_add(o.booked_loss)
+                            == Some(residual_remaining)
+                }
+                _ => true,
+            }
     }))]
     pub(crate) fn apply_bankruptcy_residual_chunk_to_loss_side(
         asset: &mut AssetStateV16,

@@ -106,8 +106,8 @@ CLASSES = [
       (PROOFS, "proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk")]),
 
     ("account refresh / crank / fees", KERNEL_VALUE,
-     ["full_account_refresh", "permissionless_crank", "account_fee", "accrue_asset_to",
-      "sync_account_fee_to_slot"],
+     ["full_account_refresh", "permissionless_crank", "permissionless_auto_crank",
+      "account_fee", "accrue_asset_to", "sync_account_fee_to_slot"],
      [(HARNESS, "contract_check_kernel_advance_leg_b_snap"),
       (HARNESS, "closure_kernel_advance_close_ledger_rank_witness"),
       (PROOFS, "proof_v16_permissionless_recovery_crank_is_accounting_neutral")]),

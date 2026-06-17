@@ -1328,6 +1328,38 @@ impl V16Core {
             && !(risk_increasing && target_effective_lag)
     }
 
+    /// PRODUCTION FIDELITY (roadmap 3C step 2, NB1 accounts_current leaf): a
+    /// health certificate is current/certifiable for a favorable action IFF it
+    /// is valid, all four market epochs (oracle/funding/risk/asset-set) match the
+    /// cert's, and the cert was issued against the account's current active
+    /// bitmap. ensure_favorable_action_current_certificate calls this, so the
+    /// `accounts_current` summary flag faithfully represents the production
+    /// currentness gate (no hidden staleness reject outside it). Pure scalar.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &bool| {
+        *result
+            == (cert.valid
+                && cert.cert_oracle_epoch == oracle_epoch
+                && cert.cert_funding_epoch == funding_epoch
+                && cert.cert_risk_epoch == risk_epoch
+                && cert.cert_asset_set_epoch == asset_set_epoch
+                && cert.active_bitmap_at_cert == account_bitmap)
+    }))]
+    pub(crate) fn kernel_cert_is_current(
+        cert: HealthCertV16,
+        oracle_epoch: u64,
+        funding_epoch: u64,
+        risk_epoch: u64,
+        asset_set_epoch: u64,
+        account_bitmap: V16ActiveBitmap,
+    ) -> bool {
+        cert.valid
+            && cert.cert_oracle_epoch == oracle_epoch
+            && cert.cert_funding_epoch == funding_epoch
+            && cert.cert_risk_epoch == risk_epoch
+            && cert.cert_asset_set_epoch == asset_set_epoch
+            && cert.active_bitmap_at_cert == account_bitmap
+    }
+
     /// PRODUCTION KERNEL (roadmap 3B.6, Pillar S/L S-A1 cap): the social-loss
     /// chunk cap — the bookable chunk is `min(residual_remaining, public chunk
     /// cap)`, so a single step books NO MORE than the outstanding residual and
@@ -11340,13 +11372,15 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         account: &PortfolioV16View<'_>,
     ) -> V16Result<()> {
         let cert = account.header.health_cert.try_to_runtime()?;
-        if !cert.valid
-            || cert.cert_oracle_epoch != self.header.oracle_epoch.get()
-            || cert.cert_funding_epoch != self.header.funding_epoch.get()
-            || cert.cert_risk_epoch != self.header.risk_epoch.get()
-            || cert.cert_asset_set_epoch != self.header.asset_set_epoch.get()
-            || cert.active_bitmap_at_cert != account.header.active_bitmap.map(V16PodU64::get)
-        {
+        // PRODUCTION KERNEL: cert currentness (valid + all epochs + bitmap match).
+        if !V16Core::kernel_cert_is_current(
+            cert,
+            self.header.oracle_epoch.get(),
+            self.header.funding_epoch.get(),
+            self.header.risk_epoch.get(),
+            self.header.asset_set_epoch.get(),
+            account.header.active_bitmap.map(V16PodU64::get),
+        ) {
             return Err(V16Error::Stale);
         }
         Ok(())

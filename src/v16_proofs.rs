@@ -2242,3 +2242,29 @@ fn contract_check_kernel_trade_preflight_admits() {
     let d: bool = kani::any();
     let _ = V16Core::kernel_trade_preflight_admits(a, b, c, d);
 }
+
+// ROADMAP 3C step 2 (NB1 accounts_current leaf fidelity): full-domain contract
+// check that kernel_cert_is_current == valid && all 4 epochs match && bitmap
+// matches — the exact ensure_favorable_action_current_certificate decision.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_cert_is_current)]
+#[kani::unwind(16)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_cert_is_current() {
+    let cert = HealthCertV16 {
+        certified_equity: kani::any(),
+        certified_initial_req: kani::any(),
+        certified_maintenance_req: kani::any(),
+        certified_liq_deficit: kani::any(),
+        certified_worst_case_loss: kani::any(),
+        cert_oracle_epoch: kani::any(),
+        cert_funding_epoch: kani::any(),
+        cert_risk_epoch: kani::any(),
+        cert_asset_set_epoch: kani::any(),
+        active_bitmap_at_cert: kani::any(),
+        valid: kani::any(),
+    };
+    let _ = V16Core::kernel_cert_is_current(
+        cert, kani::any(), kani::any(), kani::any(), kani::any(), kani::any(),
+    );
+}

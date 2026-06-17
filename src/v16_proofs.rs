@@ -2449,3 +2449,29 @@ fn contract_check_kernel_settle_resolved_pnl_after_booking() {
     let explicit_loss: u128 = kani::any();
     let _ = V16Core::kernel_settle_resolved_pnl_after_booking(pnl, booked_loss, explicit_loss);
 }
+
+// ROADMAP workstream B.2 (insurance-draw vault-neutrality, REJECTION complement):
+// the insurance->close-spent reclassification in consume_domain_insurance_for_
+// negative_pnl has NO external quote flow, so the flow proof must REJECT any real
+// vault movement. With the vault-flat witness (contract_check_flow_insurance_to_
+// close_insurance_spent) this is the biconditional: validate_insurance_to_close_
+// insurance_spent is Ok IFF the vault is unchanged. So the draw provably moves
+// `used` from the insurance pool to the close's insurance_spent (scalar amounts
+// proven by kernel_consume_insurance_layer) and CANNOT succeed while moving real
+// tokens through the vault — no-LoF at the flow seam.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn contract_check_flow_insurance_to_close_rejects_vault_movement() {
+    let amount: u128 = kani::any();
+    let vault_before: u128 = kani::any();
+    let vault_after: u128 = kani::any();
+    kani::assume(vault_before != vault_after);
+    assert!(TokenValueFlowProofV16::validate_insurance_to_close_insurance_spent(
+        amount,
+        vault_before,
+        vault_after
+    )
+    .is_err());
+}

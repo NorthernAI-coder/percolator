@@ -85,8 +85,17 @@ NB = {
          ["contract_check_kernel_economically_valid_trade_admits",
           "contract_check_kernel_trade_admit",
           "contract_check_kernel_initial_margin_gate"]),
-    "NB2 finite crank progress (clock+rank steps; per-continuation bounded-work pending)":
-        (PARTIAL, PROOFS, ["proof_v16_public_permissionless_empty_market_crank_advances_clock_without_value_movement"]),
+    # NB2 is now PROVEN-AT-KERNEL: select_progress_witness is proven TOTAL over
+    # actionable summaries, and the nb2_continuation_matrix gate pins every one of
+    # its 6 continuations to (a) an auto-crank dispatch arm, (b) a present rank /
+    # terminal artifact, (c) the static per-account scan bound
+    # (V16_MAX_PORTFOLIO_ASSETS_N). The rank-decrease over the full symbolic
+    # monolith body and the max-shape CU envelope (wrapper/LiteSVM) are the
+    # documented backstopped half.
+    "NB2 finite crank progress (selector-total + per-continuation dispatch/rank/bounded)":
+        (PROVEN_AT_KERNEL, HARNESS,
+         ["contract_check_select_progress_witness",
+          "closure_kernel_advance_close_ledger_rank_witness"]),
 }
 
 _cache = {}

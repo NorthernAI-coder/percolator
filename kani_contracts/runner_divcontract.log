@@ -1,6 +1,0 @@
-[21:31:23] warming target/contracts cache (un-timed)...
-[21:31:24] cache warm.
-[22:01:25] contract_check_loss_weight_for_basis -> TIMEOUT (1800s)
-=====
-harness                               wall_s  status
-contract_check_loss_weight_for_basis  1800    TIMEOUT

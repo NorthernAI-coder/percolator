@@ -1,6 +1,0 @@
-[04:21:55] warming target/contracts cache (un-timed)...
-[04:23:48] cache warm.
-[04:26:20] composition_clear_leg_value_conservation -> PASS (151s)
-=====
-harness                                   wall_s  status
-composition_clear_leg_value_conservation  151     PASS

@@ -1,6 +1,0 @@
-[14:35:02] warming target/contracts cache (un-timed)...
-[14:36:12] cache warm.
-[14:36:58] composition_attach_body_frame_division_stubbed -> FAIL(1) (45s)
-=====
-harness                                         wall_s  status
-composition_attach_body_frame_division_stubbed  45      FAIL(1)

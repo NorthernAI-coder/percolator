@@ -1,6 +1,0 @@
-[14:18:58] warming target/contracts cache (un-timed)...
-[14:20:48] cache warm.
-[14:20:55] contract_check_kernel_accumulate_batch_trade -> PASS (6s)
-=====
-harness                                       wall_s  status
-contract_check_kernel_accumulate_batch_trade  6       PASS

@@ -113,119 +113,51 @@ longer applies to the architecture.
 
 ### No-LoF / No-DoS: what is proven, and under what assumptions
 
-The engine carries a decomposed, machine-checked argument for two safety
-properties at the pure-engine boundary. The precise claim is a **conditional
-10/10**: 10/10 *under this decomposition and the named assumptions below* — not
-an unconditional "the full engine and wrapper are proven end-to-end". It is a
-composed proof, not a single all-transitions theorem (that one query is
-intractable for this prover generation), and several no-DoS obligations are
-**proven at the kernel/dispatch boundary** rather than as a full route-level
-theorem over the symbolic monolith body (the distinction is stated explicitly
-below — it is accepted/backstopped by the architecture, not a soundness gap).
+The precise claim is a **conditional 10/10**: 10/10 *under this decomposition and
+the named assumptions below* — not an unconditional "the full engine and wrapper
+are proven end-to-end". It is a composed proof, not a single all-transitions
+theorem (that query is intractable for this prover generation), and several
+no-DoS obligations are **proven at the kernel/dispatch boundary**, not as a full
+route-level theorem over the symbolic monolith body — accepted/backstopped by the
+decomposition, not a soundness gap.
 
-No loss of funds (no-LoF):
+- **No-LoF.** `GlobalValidState` (`validate_shape` + per-touched-account
+  `validate_with_market`) holds at every committed `Ok` exit of all 56 public
+  `*_not_atomic` entrypoints (`scripts/boundary_audit.py`, 56/56). Each entrypoint
+  maps to a stronger per-class proof source (`scripts/lof_transition_class_roster.py`),
+  and `scripts/no_lof_strength_roster.py` enforces **zero value-bearing FLOOR-only**
+  entrypoints (51 per-op THEOREM, 5 non-value-bearing FLOOR). Wide arithmetic is
+  abstracted to opaque spec values in Kani and discharged by Tier-A/Tier-B
+  differential fuzz (`scripts/arithmetic_axiom_manifest.md`).
+- **No-DoS.** `scripts/actionable_class_coverage.py` covers the 7 ActionableState
+  classes. **NB1** is PROVEN-AT-KERNEL (`kernel_economically_valid_trade_admits`:
+  admit IFF economically valid). **NB2** is PROVEN-AT-KERNEL (the selector is
+  proven total; `scripts/nb2_continuation_matrix.py` pins each continuation to a
+  dispatch arm + rank/terminal artifact + the static scan bound). The
+  order-insensitive public auto-crank is engine-selected: `first_actionable_slot`
+  (bounded asset self-selection) and `select_auto_crank_plan` (totality + priority
+  + engine-selected asset) are proven; the liquidation fee is config-derived; a
+  step with no matching observation returns a clean `NonProgress` without mutation.
 
-- `GlobalValidState` — `validate_shape` plus per-touched-account
-  `validate_with_market` — is preserved at every committed `Ok` exit of all 56
-  public `*_not_atomic` entrypoints, checked transitively by
-  `scripts/boundary_audit.py` (56/56). `Err` paths fully revert at the execution
-  boundary, so they need no preservation.
-- Every public entrypoint is mapped to a stronger no-LoF proof source by an
-  enforced partition, `scripts/lof_transition_class_roster.py` (10 transition
-  classes; build fails on any unclassified entrypoint or missing artifact):
-  exact whole-state frames, whole-body frame+value composition (attach/clear),
-  production kernel-contract value deltas, typed `TokenValueFlowProofV16`
-  validation, and inductive encumbrance/lien closure proofs.
-- A per-entrypoint **strength roster**, `scripts/no_lof_strength_roster.py`,
-  classifies each entrypoint THEOREM (per-op value/frame/kernel/closure proof) vs
-  FLOOR (validator floor only) and **enforces zero value-bearing FLOOR-only
-  entrypoints**: 51 THEOREM, 5 FLOOR (all verified non-value-bearing structural
-  setup ops). The bankruptcy-residual chain (booking leaf → step → ledger
-  absorption → PnL settlement → insurance-draw vault-neutrality) is a worked
-  example of the per-op value theorems.
-- Value-moving arithmetic is proven via the arithmetic-axiom recipe (policy in
-  `scripts/arithmetic_policy.md`): the wide division/multiplication helpers are
-  abstracted to opaque spec values inside Kani, and their exact forms are
-  discharged by Tier-A-exhaustive + Tier-B-sampled differential fuzz (with
-  explicit boundary vectors) against independent reimplementations. Kani never
-  executes wide arithmetic.
-
-No denial of service (no-DoS / liveness):
-
-- `ActionableState` is a 7-class disjunction; every class has a present, named
-  machine-checked witness, classified by strength and enforced by
-  `scripts/actionable_class_coverage.py`. A well-founded lexicographic rank
-  decreases on each continuation; the B-advance and close-advance rank steps are
-  machine-proven production kernels.
-- **NB1 (valid trade admitted)** is PROVEN-AT-KERNEL:
-  `kernel_economically_valid_trade_admits` proves *admit IFF economically valid*
-  over the production trade inputs (`EconomicallyValidTradeV16`), so no
-  economically-valid trade is internally DoSed and every rejection maps to a
-  concrete false precondition; the guard summary is proven faithful to production
-  (`scripts/route_fidelity_roster.py`).
-- **NB2 (finite crank progress)** is PROVEN-AT-KERNEL: the selector is proven
-  total over actionable summaries, and `scripts/nb2_continuation_matrix.py` pins
-  each continuation to a dispatch arm + a present rank/terminal artifact + the
-  static per-account scan bound.
-- The order-insensitive public auto-crank (`permissionless_auto_crank_not_atomic`)
-  is **engine-selected, not caller-directed**: the keeper submits bounded oracle
-  observations + a liquidation budget, and the ENGINE classifies the account,
-  selects the highest-priority step, and self-selects the asset. Two pure kernels
-  carry the proof: `first_actionable_slot` (the bounded leg scan returns an
-  in-range, actionable, first-match slot and is complete) and
-  `select_auto_crank_plan` (totality + priority determinism + the plan carries the
-  engine-selected asset). The liquidation fee is config-derived, never a caller
-  hint; a step whose observation is absent returns a clean `NonProgress` without
-  mutation, so stale keeper transactions are order-insensitive.
-- The **PROVEN-AT-KERNEL vs full-route distinction (explicit):** for NB1/NB2 and
-  the A1/A2/A3/A5/A7 classes, the step kernel, the dispatcher route fidelity, and
-  the guard/summary fidelity are each machine-checked, but the rank-decrease /
-  admission *over the full symbolic two-account or monolith body* is **not** a
-  single route-level theorem — it is accepted/backstopped by this decomposition
-  (kernel proof + dispatch fidelity + validator floor), and the max-shape CU
-  envelope is a wrapper/LiteSVM obligation. This is the honest boundary of the
-  current claim, not a soundness gap.
-
-Assumptions and named boundaries (the trusted base — also in
-`scripts/engine_contracts.json`):
-
-- `ArithmeticAxiom` + differential fuzz: the stubbed wide div/mul helpers equal
-  their spec; only this narrow, helper-specific arithmetic is assumed, never a
-  global arithmetic operator. See `scripts/arithmetic_policy.md` (conditional
-  Option 1; unconditional Option 2 tracked separately).
-- Execution-boundary atomicity: a rejected (`Err`) public call fully reverts.
-- External scheduler / fairness (SCHED): the engine proves a successful bounded
-  continuation *exists* for every actionable state; it does not prove an external
-  actor *submits* it. Permissionless cranks make every continuation callable by
-  any actor.
-- Wrapper obligations: account routing, signer/auth, oracle freshness, rollback
-  boundaries, and instruction serialization are the wrapper's to prove; the
-  wrapper imports `scripts/engine_contracts.json` rather than reproving engine
-  internals (the engine repo does not certify the wrapper).
-- Tool-generation limits (not soundness gaps): a single Kani query over all
-  public transitions at once, and whole-body value composition / full route-level
-  rank for large-interior bodies, are intractable due to bit-precise wide
-  arithmetic and large-struct symbolic state. The rosters above are the sound
-  decomposition.
+Assumptions (the trusted base, also in `scripts/engine_contracts.json`): SVM
+rollback on `Err`; scheduler fairness (SCHED); the named arithmetic axiom
+manifest; and wrapper routing/auth/oracle/CU obligations (the engine does not
+certify the wrapper). The full-monolith-route rank/admission and max-shape CU are
+the PROVEN-AT-KERNEL-vs-full-route boundary, not soundness gaps.
 
 ### Certification gates
 
-The engine signoff is gate-enforced. `python3 scripts/final_ci_gate.py
-[--with-conformance]` runs the full engine certification suite and fails on any
-gap: boundary audit, no-LoF entrypoint + strength rosters, lof transition-class
-roster, route-fidelity roster, guard mutation-sensitivity, actionable-class
-coverage, liveness roster (NB1/NB2 must not be PARTIAL), NB2 continuation matrix,
-dead-kernel check, arithmetic-axiom manifest, identity-independence and
-symbolic-assert audits, and the engine contract manifest. The
-**cover-vacuity gate** (`scripts/cover_vacuity_gate.py <kani-log-dirs>`) is an
-explicit condition run over **captured per-harness Kani logs** in CI — it fails
-any harness whose `kani::cover!` witness is unsatisfiable, so a vacuous-but-green
-proof cannot pass. (It is a log reader, so it runs after the Kani sweep produces
-fresh logs for the audited commit; it is not exercised by the source-only gates.)
+`python3 scripts/final_ci_gate.py [--with-conformance]` runs the engine
+certification suite and fails on any gap (boundary audit, no-LoF entrypoint +
+strength rosters, transition-class roster, route-fidelity roster, guard
+mutation-sensitivity, actionable-class coverage, liveness roster with NB1/NB2 not
+PARTIAL, NB2 continuation matrix, dead-kernel check, arithmetic-axiom manifest,
+identity-independence + symbolic-assert audits, engine contract manifest).
+`scripts/cover_vacuity_gate.py <kani-log-dirs>` is an explicit condition run over
+captured per-harness Kani logs in CI (it fails any harness whose `kani::cover!`
+witness is unsatisfiable). The engine exports `scripts/engine_contracts.json` for
+wrapper proofs to import.
 
-Full detail: `scripts/no-steal-theorem.md` (no-LoF), `scripts/no-dos-liveness.md`
-(no-DoS), `scripts/proof-frontier-closure.md` (the goal-by-goal index), and
-`scripts/coverage_reconciliation.md` (the per-spec matrix).
 
 ## Tests
 

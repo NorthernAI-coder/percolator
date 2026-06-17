@@ -1,3 +1,0 @@
-harness	wall_s	status
-liveness_pending_close_has_rank_decreasing_advance	4	PASS
-liveness_b_stale_leg_has_advancing_chunk	3	PASS

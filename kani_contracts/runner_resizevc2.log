@@ -1,6 +1,0 @@
-[12:40:07] warming target/contracts cache (un-timed)...
-[12:42:02] cache warm.
-[13:12:03] composition_resize_leg_value_conservation -> TIMEOUT (1800s)
-=====
-harness                                    wall_s  status
-composition_resize_leg_value_conservation  1800    TIMEOUT

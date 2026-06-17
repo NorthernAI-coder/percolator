@@ -1,6 +1,0 @@
-[23:57:24] warming target/contracts cache (un-timed)...
-[23:59:15] cache warm.
-[00:29:16] composition_kernel_attach_value_under_division_axiom -> TIMEOUT (1800s)
-=====
-harness                                               wall_s  status
-composition_kernel_attach_value_under_division_axiom  1800    TIMEOUT

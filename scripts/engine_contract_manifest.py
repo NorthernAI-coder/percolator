@@ -47,7 +47,7 @@ def load_lof():
 
 # auto-crank dispatch tokens -> continuation (for the liveness column)
 LIVENESS = {
-    "permissionless_auto_crank_not_atomic": "dispatcher(select_progress_witness)",
+    "permissionless_auto_crank_not_atomic": "dispatcher(select_auto_crank_plan)",
     "permissionless_crank_not_atomic": "refresh/settle-B/liquidate/recover",
     "close_resolved_account_not_atomic": "A7 resolved close (kernel_resolved_close_progress)",
     "liquidate_account_not_atomic": "A5 risk reduction (kernel_reduce_position_delta)",

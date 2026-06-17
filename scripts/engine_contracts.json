@@ -236,7 +236,7 @@
     "permissionless_auto_crank_not_atomic": {
       "class_proof_source": "KERNEL_VALUE",
       "class_tier": "THEOREM",
-      "liveness": "dispatcher(select_progress_witness)",
+      "liveness": "dispatcher(select_auto_crank_plan)",
       "transition_class": "account refresh / crank / fees"
     },
     "permissionless_crank_not_atomic": {

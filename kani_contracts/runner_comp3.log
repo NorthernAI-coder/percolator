@@ -1,6 +1,0 @@
-[13:16:04] warming target/contracts cache (un-timed)...
-[13:17:54] cache warm.
-[13:47:55] composition_attach_leg_at_slot_frame -> TIMEOUT (1800s)
-=====
-harness                               wall_s  status
-composition_attach_leg_at_slot_frame  1800    TIMEOUT

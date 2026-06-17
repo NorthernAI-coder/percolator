@@ -1,8 +1,0 @@
-[14:20:57] (1/2) proof_v16_frame_backing_deposit_touches_only_declared_state -> PASS (cbmc=274.47894s wall=277s)
-[14:24:54] (2/2) proof_v16_frame_backing_withdraw_touches_only_declared_state -> PASS (cbmc=231.75835s wall=236s)
-=====
-proof                                                         cbmc_time_s  wall_s  status
-proof_v16_frame_fee_charge_touches_only_declared_state        75.53506     80      PASS
-proof_v16_frame_backing_deposit_touches_only_declared_state   274.47894    277     PASS
-proof_v16_frame_backing_withdraw_touches_only_declared_state  231.75835    236     PASS
-=====

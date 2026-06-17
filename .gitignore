@@ -39,3 +39,10 @@ desktop.ini
 .env
 .env.local
 test-ledger/
+
+# Generated Kani proof output (per-harness logs, audit sweeps) — never tracked.
+kani_*/
+*.kani.log
+scripts/__pycache__/
+**/__pycache__/
+*.pyc

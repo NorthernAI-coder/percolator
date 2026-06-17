@@ -85,7 +85,7 @@ def main():
         return len(failed)
     print("FINAL CI GATE: engine signoff CLEAN — all engine certification gates pass.")
     print("Conditional 10/10 holds UNDER: SVM rollback, SCHED, the named arithmetic")
-    print("axiom manifest, and wrapper routing/auth/oracle (see arithmetic_policy.md,")
+    print("axiom manifest, and wrapper routing/auth/oracle (see the arithmetic-axiom manifest,")
     print("engine_contracts.json). NB1/NB2 are PROVEN-AT-KERNEL; full-monolith routes")
     print("and max-shape CU remain the documented backstopped/ wrapper halves.")
     return 0

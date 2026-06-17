@@ -1,6 +1,0 @@
-[20:18:48] warming target/contracts cache (un-timed)...
-[20:20:37] cache warm.
-[20:20:54] contract_check_kernel_advance_close_ledger -> FAIL(1) (16s)
-=====
-harness                                     wall_s  status
-contract_check_kernel_advance_close_ledger  16      FAIL(1)

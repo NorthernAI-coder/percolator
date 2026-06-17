@@ -1,1 +1,0 @@
-proof_v16_public_finalize_side_reset_success_is_value_neutral

@@ -1,6 +1,0 @@
-[02:35:12] warming target/contracts cache (un-timed)...
-[02:37:04] cache warm.
-[02:38:08] composition_attach_value_conservation_under_axiom -> FAIL(1) (63s)
-=====
-harness                                            wall_s  status
-composition_attach_value_conservation_under_axiom  63      FAIL(1)

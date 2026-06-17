@@ -1,6 +1,0 @@
-[19:48:29] warming target/contracts cache (un-timed)...
-[19:48:31] cache warm.
-[19:48:33] contract_check_kernel_resize_leg_same_side -> FAIL(1) (1s)
-=====
-harness                                     wall_s  status
-contract_check_kernel_resize_leg_same_side  1       FAIL(1)

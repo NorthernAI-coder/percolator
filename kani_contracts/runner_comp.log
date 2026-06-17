@@ -1,6 +1,0 @@
-[12:42:57] warming target/contracts cache (un-timed)...
-[12:42:58] cache warm.
-[12:43:01] composition_attach_leg_at_slot_frame -> FAIL(1) (2s)
-=====
-harness                               wall_s  status
-composition_attach_leg_at_slot_frame  2       FAIL(1)

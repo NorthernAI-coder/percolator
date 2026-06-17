@@ -1,8 +1,0 @@
-[22:19:28] warming target/contracts cache (un-timed)...
-[22:21:18] cache warm.
-[22:21:23] contract_check_kernel_initial_margin_gate -> PASS (4s)
-[22:21:31] contract_check_kernel_locked_margin_gate -> PASS (7s)
-=====
-harness                                    wall_s  status
-contract_check_kernel_initial_margin_gate  4       PASS
-contract_check_kernel_locked_margin_gate   7       PASS

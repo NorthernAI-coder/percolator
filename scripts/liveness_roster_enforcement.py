@@ -18,7 +18,7 @@ This script FAILS the build if any named artifact is missing (renamed/deleted)
 or any class lacks a recorded disposition for both halves — turning the
 liveness catalog into an enforced invariant. It does NOT re-run proofs.
 
-Derived from scripts/liveness_obligation_catalog.md + no-dos-liveness.md.
+Enforces the no-DoS liveness roster (NB1/NB2 + A1..A7).
 """
 import re
 import sys

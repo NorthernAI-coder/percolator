@@ -1,0 +1,702 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.03s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-8cea79f84246ca79__RNvCs35DYgTG8RvC_10proofs_v1670proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator3v1622active_bitmap_is_emptyCs35DYgTG8RvC_10proofs_v16.0 iteration 1 file /home/anatoly/percolator/src/v16.rs line 192 column 5 function percolator::active_bitmap_is_empty thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator3v1622active_bitmap_is_emptyCs35DYgTG8RvC_10proofs_v16.0 iteration 1 file /home/anatoly/percolator/src/v16.rs line 192 column 5 function percolator::active_bitmap_is_empty thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator3v1622active_bitmap_is_emptyCs35DYgTG8RvC_10proofs_v16.0 iteration 1 file /home/anatoly/percolator/src/v16.rs line 192 column 5 function percolator::active_bitmap_is_empty thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator3v1622active_bitmap_is_emptyCs35DYgTG8RvC_10proofs_v16.0 iteration 1 file /home/anatoly/percolator/src/v16.rs line 192 column 5 function percolator::active_bitmap_is_empty thread 0
+Runtime Symex: 0.073419s
+size of program expression: 5341 steps
+slicing removed 3414 assignments
+Generated 338 VCC(s), 50 remaining after simplification
+Runtime Postprocess Equation: 0.000590365s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.0126273s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.047e-06s
+Solving with CaDiCaL 2.0.0
+24951 variables, 59312 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00422037s
+Runtime decision procedure: 0.017184s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+24952 variables, 59313 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00483639s
+Runtime decision procedure: 0.00492766s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+24953 variables, 59314 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00917577s
+Runtime decision procedure: 0.00926365s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+24954 variables, 59315 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.408575s
+Runtime decision procedure: 0.408633s
+
+RESULTS:
+Check 1: proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to negate with overflow"
+	 - Location: tests/proofs_v16.rs:3671:16 in function proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk
+
+Check 2: proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.cover.1
+	 - Status: SATISFIED
+	 - Description: "liquidation guard detects symbolic uncovered loss with remaining open risk"
+	 - Location: tests/proofs_v16.rs:3719:5 in function proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk
+
+Check 3: proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.cover.2
+	 - Status: SATISFIED
+	 - Description: "liquidation guard detects partial close preserving the only active leg"
+	 - Location: tests/proofs_v16.rs:3723:5 in function proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk
+
+Check 4: proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.assertion.2
+	 - Status: SUCCESS
+	 - Description: "assertion failed: close_with_other_risk == uncovered"
+	 - Location: tests/proofs_v16.rs:3727:5 in function proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk
+
+Check 5: proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.assertion.3
+	 - Status: SUCCESS
+	 - Description: "assertion failed: !full_close_without_other_risk"
+	 - Location: tests/proofs_v16.rs:3728:5 in function proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk
+
+Check 6: proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.assertion.4
+	 - Status: SUCCESS
+	 - Description: "assertion failed: partial_close_without_other_risk == uncovered && close_q < leg_abs_q"
+	 - Location: tests/proofs_v16.rs:3729:5 in function proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk
+
+Check 7: proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk.assertion.5
+	 - Status: SUCCESS
+	 - Description: "assertion failed: !covered_loss_with_other_risk"
+	 - Location: tests/proofs_v16.rs:3733:5 in function proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk
+
+Check 8: <std::result::Result<[u64; 1], percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<[u64; 1], percolator::V16Error> as std::ops::Try>::branch
+
+Check 9: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 10: <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::contains::<u128>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::contains::<u128>
+
+Check 11: percolator::v16::active_bitmap_clear.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:227:16 in function percolator::v16::active_bitmap_clear
+
+Check 12: percolator::v16::active_bitmap_clear.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:227:16 in function percolator::v16::active_bitmap_clear
+
+Check 13: percolator::v16::active_bitmap_clear.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:228:15 in function percolator::v16::active_bitmap_clear
+
+Check 14: percolator::v16::active_bitmap_clear.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:228:15 in function percolator::v16::active_bitmap_clear
+
+Check 15: percolator::v16::active_bitmap_clear.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/v16.rs:229:22 in function percolator::v16::active_bitmap_clear
+
+Check 16: percolator::v16::active_bitmap_clear.assertion.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 17: percolator::v16::active_bitmap_with_cleared.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16.rs:238:5 in function percolator::v16::active_bitmap_with_cleared
+
+Check 18: percolator::active_bitmap_is_empty.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:193:12 in function percolator::active_bitmap_is_empty
+
+Check 19: percolator::active_bitmap_is_empty.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/v16.rs:196:9 in function percolator::active_bitmap_is_empty
+
+Check 20: percolator::v16::liquidation_close_would_leave_uncovered_loss_with_open_risk.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16.rs:275:35 in function percolator::v16::liquidation_close_would_leave_uncovered_loss_with_open_risk
+
+Check 21: std::result::Result::<(), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(), percolator::V16Error>::unwrap
+
+Check 22: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 23: std::result::Result::<bool, percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<bool, percolator::V16Error>::unwrap
+
+Check 24: percolator::v16::active_bitmap_set.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:216:16 in function percolator::v16::active_bitmap_set
+
+Check 25: percolator::v16::active_bitmap_set.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:216:16 in function percolator::v16::active_bitmap_set
+
+Check 26: percolator::v16::active_bitmap_set.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:217:15 in function percolator::v16::active_bitmap_set
+
+Check 27: percolator::v16::active_bitmap_set.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:217:15 in function percolator::v16::active_bitmap_set
+
+Check 28: percolator::v16::active_bitmap_set.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/v16.rs:218:21 in function percolator::v16::active_bitmap_set
+
+Check 29: percolator::v16::active_bitmap_set.assertion.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 30: percolator::v16::active_bitmap_set.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 31: percolator::v16::active_bitmap_set.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 32: percolator::v16::active_bitmap_set.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 33: percolator::v16::active_bitmap_set.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 34: percolator::v16::active_bitmap_set.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 35: percolator::v16::active_bitmap_set.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 36: percolator::v16::active_bitmap_set.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:218:5 in function percolator::v16::active_bitmap_set
+
+Check 37: percolator::v16::active_bitmap_set.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:219:5 in function percolator::v16::active_bitmap_set
+
+Check 38: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 39: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2169:22 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 40: std::result::Result::<(), percolator::V16Error>::unwrap.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(), percolator::V16Error>::unwrap
+
+Check 41: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 42: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 43: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 44: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 45: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 46: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 47: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 48: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 49: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 50: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 51: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 52: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::le
+
+Check 53: <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound
+
+Check 54: <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound
+
+Check 55: <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound
+
+Check 56: <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound
+
+Check 57: <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound
+
+Check 58: <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u128> as std::ops::RangeBounds<u128>>::end_bound
+
+Check 59: percolator::v16::active_bitmap_clear.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 60: percolator::v16::active_bitmap_clear.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 61: percolator::v16::active_bitmap_clear.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 62: percolator::v16::active_bitmap_clear.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 63: percolator::v16::active_bitmap_clear.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 64: percolator::v16::active_bitmap_clear.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 65: percolator::v16::active_bitmap_clear.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:229:5 in function percolator::v16::active_bitmap_clear
+
+Check 66: percolator::v16::active_bitmap_clear.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:230:5 in function percolator::v16::active_bitmap_clear
+
+Check 67: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 68: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 69: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 70: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 71: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 72: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 73: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 74: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 75: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 76: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 77: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 78: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::le
+
+Check 79: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 80: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 81: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 82: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 83: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 84: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 85: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 86: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 87: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 88: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 89: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 90: std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u128>::lt
+
+Check 91: percolator::v16::active_bitmap_with_cleared.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:238:5 in function percolator::v16::active_bitmap_with_cleared
+
+Check 92: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 93: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 94: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 95: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 96: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 97: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 98: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 99: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 100: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 101: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 102: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 103: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 104: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 105: percolator::active_bitmap_is_empty.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:193:12 in function percolator::active_bitmap_is_empty
+
+
+SUMMARY:
+ ** 0 of 103 failed
+
+ ** 2 of 2 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 0.7460492s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

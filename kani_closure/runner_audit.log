@@ -1,0 +1,38 @@
+[04:47:01] warming target/contracts cache (un-timed)...
+[04:48:34] cache warm.
+[04:48:39] closure_bucket_status_machine_prepare_counterparty_lien_create_delta -> PASS (4s)
+[04:48:44] closure_bucket_status_machine_prepare_counterparty_lien_impair_delta -> PASS (4s)
+[04:48:49] closure_bucket_status_machine_prepare_counterparty_lien_release_delta -> PASS (4s)
+[04:48:54] closure_bucket_status_machine_prepare_counterparty_lien_terminal_release_delta -> PASS (4s)
+[04:48:58] closure_ledger_inv_genesis -> PASS (3s)
+[04:49:02] closure_ledger_inv_prepare_counterparty_backing_add_delta -> PASS (3s)
+[04:49:07] closure_ledger_inv_prepare_counterparty_backing_withdraw_delta -> PASS (4s)
+[04:49:11] closure_ledger_inv_prepare_counterparty_lien_consume_delta -> PASS (3s)
+[04:49:16] closure_ledger_inv_prepare_counterparty_lien_create_delta -> PASS (4s)
+[04:49:20] closure_ledger_inv_prepare_counterparty_lien_impair_delta -> PASS (3s)
+[04:49:25] closure_ledger_inv_prepare_counterparty_lien_release_delta -> PASS (4s)
+[04:49:29] closure_ledger_inv_prepare_counterparty_lien_terminal_release_delta -> PASS (3s)
+[04:49:40] closure_ledger_inv_prepare_insurance_lien_consume_delta -> PASS (10s)
+[04:49:44] closure_ledger_inv_prepare_insurance_lien_create_delta -> PASS (3s)
+[04:49:50] closure_ledger_inv_prepare_insurance_lien_impair_delta -> PASS (5s)
+[04:49:55] closure_ledger_inv_prepare_insurance_lien_release_delta -> PASS (4s)
+[04:50:06] closure_ledger_inv_prepare_insurance_lien_terminal_release_delta -> PASS (10s)
+=====
+harness                                                                         wall_s  status
+closure_bucket_status_machine_prepare_counterparty_lien_create_delta            4       PASS
+closure_bucket_status_machine_prepare_counterparty_lien_impair_delta            4       PASS
+closure_bucket_status_machine_prepare_counterparty_lien_release_delta           4       PASS
+closure_bucket_status_machine_prepare_counterparty_lien_terminal_release_delta  4       PASS
+closure_ledger_inv_genesis                                                      3       PASS
+closure_ledger_inv_prepare_counterparty_backing_add_delta                       3       PASS
+closure_ledger_inv_prepare_counterparty_backing_withdraw_delta                  4       PASS
+closure_ledger_inv_prepare_counterparty_lien_consume_delta                      3       PASS
+closure_ledger_inv_prepare_counterparty_lien_create_delta                       4       PASS
+closure_ledger_inv_prepare_counterparty_lien_impair_delta                       3       PASS
+closure_ledger_inv_prepare_counterparty_lien_release_delta                      4       PASS
+closure_ledger_inv_prepare_counterparty_lien_terminal_release_delta             3       PASS
+closure_ledger_inv_prepare_insurance_lien_consume_delta                         10      PASS
+closure_ledger_inv_prepare_insurance_lien_create_delta                          3       PASS
+closure_ledger_inv_prepare_insurance_lien_impair_delta                          5       PASS
+closure_ledger_inv_prepare_insurance_lien_release_delta                         4       PASS
+closure_ledger_inv_prepare_insurance_lien_terminal_release_delta                10      PASS

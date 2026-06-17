@@ -1,0 +1,6 @@
+[20:12:35] warming target/contracts cache (un-timed)...
+[20:14:25] cache warm.
+[20:14:30] contract_check_kernel_advance_leg_b_snap -> PASS (4s)
+=====
+harness                                   wall_s  status
+contract_check_kernel_advance_leg_b_snap  4       PASS

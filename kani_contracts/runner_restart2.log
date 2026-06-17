@@ -1,0 +1,8 @@
+[14:22:36] warming target/contracts cache (un-timed)...
+[14:24:25] cache warm.
+[14:24:30] contract_check_asset_restart_next_counters -> PASS (4s)
+[14:24:37] contract_check_restarted_asset_slot_preserving_insurance_budget -> FAIL(1) (6s)
+=====
+harness                                                          wall_s  status
+contract_check_asset_restart_next_counters                       4       PASS
+contract_check_restarted_asset_slot_preserving_insurance_budget  6       FAIL(1)

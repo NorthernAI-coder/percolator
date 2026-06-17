@@ -1,0 +1,1007 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.01s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused import: `BOUND_SCALE`
+  --> tests/rounding_residue_fuzz.rs:11:18
+   |
+11 | use percolator::{BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
+   |                  ^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-4577c1653a5a3cdb__RNvCs35DYgTG8RvC_10proofs_v1663proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16.rs line 3080 column 21 function percolator::v16::validate_resolved_payout_receipt_value thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16.rs line 3080 column 21 function percolator::v16::validate_resolved_payout_receipt_value thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::apply_resolved_payout_receipt_payment thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<percolator::ResolvedPayoutReceiptV16, percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<percolator::ResolvedPayoutReceiptV16, percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16.rs line 3080 column 21 function percolator::v16::validate_resolved_payout_receipt_value thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16.rs line 3080 column 21 function percolator::v16::validate_resolved_payout_receipt_value thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::apply_resolved_payout_receipt_payment thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq thread 0
+Runtime Symex: 0.192556s
+size of program expression: 13413 steps
+slicing removed 10117 assignments
+Generated 148 VCC(s), 65 remaining after simplification
+Runtime Postprocess Equation: 0.00532174s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.0245607s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.829e-06s
+Solving with CaDiCaL 2.0.0
+46105 variables, 94097 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0190455s
+Runtime decision procedure: 0.0443293s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+46106 variables, 94098 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0029404s
+Runtime decision procedure: 0.00320141s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+46107 variables, 94099 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.32331s
+Runtime decision procedure: 0.323678s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+46108 variables, 94100 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 2.66115s
+Runtime decision procedure: 2.66153s
+
+RESULTS:
+Check 1: percolator::v16::validate_resolved_payout_receipt_value.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16.rs:3080:21 in function percolator::v16::validate_resolved_payout_receipt_value
+
+Check 2: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 3: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 4: percolator::v16::apply_resolved_payout_receipt_payment.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::apply_resolved_payout_receipt_payment
+
+Check 5: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 6: core::num::<impl u128>::checked_sub.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:800:31 in function core::num::<impl u128>::checked_sub
+
+Check 7: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 8: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 9: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:7286:27 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 10: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:7287:23 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 11: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7287:23 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 12: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:7296:21 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 13: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7298:71 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 14: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.cover.1
+	 - Status: SATISFIED
+	 - Description: "resolved receipt proof covers non-final receipt topup"
+	 - Location: tests/proofs_v16.rs:7300:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 15: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.cover.2
+	 - Status: SATISFIED
+	 - Description: "resolved receipt proof covers finalized idempotent zero topup"
+	 - Location: tests/proofs_v16.rs:7304:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 16: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.cover.3
+	 - Status: SATISFIED
+	 - Description: "resolved receipt proof covers widened over-bound terminal receipt"
+	 - Location: tests/proofs_v16.rs:7308:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 17: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: ok_payment.paid_effective == terminal"
+	 - Location: tests/proofs_v16.rs:7312:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 18: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: ok_payment.finalized"
+	 - Location: tests/proofs_v16.rs:7313:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 19: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: ok_payment.prior_bound_contribution_num == prior_bound"
+	 - Location: tests/proofs_v16.rs:7314:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 20: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.9
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:7315:56 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 21: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: ok_payment.prior_bound_contribution_num >= terminal * BOUND_SCALE"
+	 - Location: tests/proofs_v16.rs:7315:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 22: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.11
+	 - Status: SUCCESS
+	 - Description: "assertion failed: ok_payment.live_released_face_at_receipt ==
+receipt.live_released_face_at_receipt"
+	 - Location: tests/proofs_v16.rs:7316:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 23: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: ok_payment.terminal_positive_claim_face == terminal"
+	 - Location: tests/proofs_v16.rs:7320:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 24: proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim.assertion.13
+	 - Status: SUCCESS
+	 - Description: "assertion failed: overpay == Err(V16Error::InvalidLeg)"
+	 - Location: tests/proofs_v16.rs:7321:5 in function proof_v16_resolved_receipt_payment_cannot_exceed_terminal_claim
+
+Check 25: core::num::<impl u128>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u128>::checked_add
+
+Check 26: std::result::Result::<percolator::ResolvedPayoutReceiptV16, percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<percolator::ResolvedPayoutReceiptV16, percolator::V16Error>::unwrap
+
+Check 27: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 28: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 29: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 30: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 31: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 32: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 33: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 34: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 35: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 36: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 37: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 38: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::ResolvedPayoutReceiptV16>::eq
+
+Check 39: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 40: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 41: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 42: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 43: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 44: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 45: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 46: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 47: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 48: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 49: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 50: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 51: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 52: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 53: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 54: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 55: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 56: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 57: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 58: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 59: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 60: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 61: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 62: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 63: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 64: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 65: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 66: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 67: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 68: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 69: <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2184:23 in function <std::result::Result<percolator::ResolvedPayoutReceiptV16, percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual
+
+Check 70: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 71: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 72: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 73: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 74: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 75: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 76: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 77: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 78: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 79: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 80: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 81: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 82: percolator::v16::validate_resolved_payout_receipt_value.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3090:5 in function percolator::v16::validate_resolved_payout_receipt_value
+
+Check 83: percolator::v16::validate_resolved_payout_receipt_value.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3078:16 in function percolator::v16::validate_resolved_payout_receipt_value
+
+Check 84: percolator::v16::apply_resolved_payout_receipt_payment.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3097:5 in function percolator::v16::apply_resolved_payout_receipt_payment
+
+Check 85: percolator::v16::apply_resolved_payout_receipt_payment.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3109:16 in function percolator::v16::apply_resolved_payout_receipt_payment
+
+Check 86: percolator::v16::apply_resolved_payout_receipt_payment.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3116:5 in function percolator::v16::apply_resolved_payout_receipt_payment
+
+Check 87: percolator::v16::apply_resolved_payout_receipt_payment.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3102:16 in function percolator::v16::apply_resolved_payout_receipt_payment
+
+Check 88: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 89: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 90: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 91: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 92: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 93: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 94: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 95: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 96: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 97: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 98: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 99: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 100: std::result::Result::<percolator::ResolvedPayoutReceiptV16, percolator::V16Error>::unwrap.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<percolator::ResolvedPayoutReceiptV16, percolator::V16Error>::unwrap
+
+Check 101: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 102: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2169:22 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 103: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 104: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 105: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 106: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 107: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 108: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 109: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 110: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 111: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 112: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 113: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 114: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 115: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3039:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 116: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 117: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 118: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 119: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 120: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 121: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 122: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 123: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 124: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 125: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 126: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 127: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3040:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 128: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 129: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 130: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 131: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 132: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 133: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 134: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 135: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 136: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 137: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 138: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 139: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3041:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 140: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 141: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 142: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 143: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 144: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 145: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 146: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 147: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 148: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 149: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 150: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 151: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3042:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 152: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 153: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 154: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 155: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 156: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 157: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 158: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 159: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 160: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 161: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 162: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 163: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3043:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 164: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 165: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 166: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 167: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 168: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 169: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 170: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.67
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 171: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.68
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 172: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.69
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 173: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.70
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 174: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.71
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+Check 175: <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq.pointer_dereference.72
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3044:5 in function <percolator::ResolvedPayoutReceiptV16 as std::cmp::PartialEq>::eq
+
+
+SUMMARY:
+ ** 0 of 172 failed
+
+ ** 3 of 3 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 3.6122224s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

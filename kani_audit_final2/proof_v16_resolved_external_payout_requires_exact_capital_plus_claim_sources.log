@@ -1,0 +1,1984 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.92s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.02s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused import: `BOUND_SCALE`
+  --> tests/rounding_residue_fuzz.rs:11:18
+   |
+11 | use percolator::{BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
+   |                  ^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-c544f21be19593ae__RNvCs35DYgTG8RvC_10proofs_v1676proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<percolator::TokenValueFlowProofV16, percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<percolator::TokenValueFlowProofV16, percolator::V16Error>::unwrap thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 1 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 2 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 3 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 4 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 5 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 6 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 7 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 8 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 9 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 10 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 11 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 12 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 13 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 14 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 15 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 16 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::TokenValueFlowProofV16::validate thread 0
+Unwinding loop _RNvMst_NtCs4R3y7dmBGud_10percolator3v16NtB5_22TokenValueFlowProofV168validate.0 iteration 17 file /home/anatoly/percolator/src/v16.rs line 3492 column 9 function percolator::TokenValueFlowProofV16::validate thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq thread 0
+Runtime Symex: 0.771583s
+size of program expression: 43617 steps
+slicing removed 35864 assignments
+Generated 769 VCC(s), 223 remaining after simplification
+Runtime Postprocess Equation: 0.0262922s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.11522s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.678e-06s
+Solving with CaDiCaL 2.0.0
+144098 variables, 308060 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.275409s
+Runtime decision procedure: 0.392765s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+144099 variables, 308061 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0175246s
+Runtime decision procedure: 0.0190191s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+144100 variables, 308062 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0177974s
+Runtime decision procedure: 0.0190429s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+144101 variables, 308063 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.020536s
+Runtime decision procedure: 0.0214655s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+144102 variables, 308064 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.161462s
+Runtime decision procedure: 0.162451s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+144103 variables, 308065 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.102063s
+Runtime decision procedure: 0.103313s
+
+RESULTS:
+Check 1: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 2: memcmp.precondition.1
+	 - Status: SUCCESS
+	 - Description: "memcmp region 1 readable"
+	 - Location: <builtin-library-memcmp>:19 in function memcmp
+
+Check 3: memcmp.precondition.2
+	 - Status: SUCCESS
+	 - Description: "memcpy region 2 readable"
+	 - Location: <builtin-library-memcmp>:21 in function memcmp
+
+Check 4: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 5: percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out
+
+Check 6: std::result::Result::<percolator::TokenValueFlowProofV16, percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<percolator::TokenValueFlowProofV16, percolator::V16Error>::unwrap
+
+Check 7: percolator::TokenValueFlowProofV16::debit.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 8: percolator::TokenValueFlowProofV16::debit.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 9: percolator::TokenValueFlowProofV16::debit.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 10: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 11: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 12: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 13: percolator::TokenValueFlowProofV16::validate.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 14: percolator::TokenValueFlowProofV16::validate.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 15: percolator::TokenValueFlowProofV16::validate.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::TokenValueFlowProofV16::validate
+
+Check 16: percolator::TokenValueFlowProofV16::validate.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/v16.rs:3499:13 in function percolator::TokenValueFlowProofV16::validate
+
+Check 17: percolator::TokenValueFlowProofV16::validate.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:3506:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 18: percolator::TokenValueFlowProofV16::validate.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:3508:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 19: percolator::TokenValueFlowProofV16::validate.assertion.6
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:3513:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 20: percolator::TokenValueFlowProofV16::validate.assertion.7
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:3515:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 21: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7490:22 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 22: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:7496:13 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 23: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7493:14 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 24: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7500:24 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 25: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.cover.1
+	 - Status: SATISFIED
+	 - Description: "resolved external payout supports mixed capital and resolved claim sources"
+	 - Location: tests/proofs_v16.rs:7511:5 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 26: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.cover.2
+	 - Status: SATISFIED
+	 - Description: "resolved external payout rejects overpay beyond available sources"
+	 - Location: tests/proofs_v16.rs:7515:5 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 27: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.cover.3
+	 - Status: SATISFIED
+	 - Description: "resolved external payout rejects under-matched source accounting"
+	 - Location: tests/proofs_v16.rs:7519:5 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 28: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.5
+	 - Status: SUCCESS
+	 - Description: "assertion failed: result == Err(V16Error::InvalidConfig)"
+	 - Location: tests/proofs_v16.rs:7544:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 29: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.external_quote_in == 0"
+	 - Location: tests/proofs_v16.rs:7526:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 30: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.external_quote_out == source_sum"
+	 - Location: tests/proofs_v16.rs:7527:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 31: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.vault_before == vault_before"
+	 - Location: tests/proofs_v16.rs:7528:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 32: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.9
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.vault_after == vault_after"
+	 - Location: tests/proofs_v16.rs:7529:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 33: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.10
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7531:26 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 34: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.11
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:7531:13 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 35: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.debits[TokenValueClassV16::AccountCapital as usize] == capital_paid"
+	 - Location: tests/proofs_v16.rs:7530:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 36: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.13
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7535:26 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 37: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.14
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:7535:13 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 38: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.15
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.debits[TokenValueClassV16::ResolvedPayoutPaid as usize] ==
+resolved_payout_paid"
+	 - Location: tests/proofs_v16.rs:7534:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 39: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.16
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:7539:27 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 40: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.17
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:7539:13 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 41: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.18
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.credits[TokenValueClassV16::ExternalQuote as usize] == source_sum"
+	 - Location: tests/proofs_v16.rs:7538:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 42: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.assertion.19
+	 - Status: SUCCESS
+	 - Description: "assertion failed: proof.validate() == Ok(())"
+	 - Location: tests/proofs_v16.rs:7542:9 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 43: percolator::TokenValueFlowProofV16::credit.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 44: percolator::TokenValueFlowProofV16::credit.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 45: percolator::TokenValueFlowProofV16::credit.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 46: core::num::<impl u128>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u128>::checked_add
+
+Check 47: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 48: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 49: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2169:22 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 50: memcmp.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 51: memcmp.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 52: memcmp.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 53: memcmp.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 54: memcmp.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 55: memcmp.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 56: memcmp.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 57: memcmp.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 58: memcmp.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 59: memcmp.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 60: memcmp.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 61: memcmp.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: <builtin-library-memcmp>:27 in function memcmp
+
+Check 62: percolator::TokenValueFlowProofV16::credit.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 63: percolator::TokenValueFlowProofV16::credit.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 64: percolator::TokenValueFlowProofV16::credit.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 65: percolator::TokenValueFlowProofV16::credit.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 66: percolator::TokenValueFlowProofV16::credit.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 67: percolator::TokenValueFlowProofV16::credit.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 68: percolator::TokenValueFlowProofV16::credit.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3482:29 in function percolator::TokenValueFlowProofV16::credit
+
+Check 69: percolator::TokenValueFlowProofV16::credit.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 70: percolator::TokenValueFlowProofV16::credit.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 71: percolator::TokenValueFlowProofV16::credit.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 72: percolator::TokenValueFlowProofV16::credit.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 73: percolator::TokenValueFlowProofV16::credit.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 74: percolator::TokenValueFlowProofV16::credit.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 75: percolator::TokenValueFlowProofV16::credit.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3482:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 76: percolator::TokenValueFlowProofV16::credit.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3485:9 in function percolator::TokenValueFlowProofV16::credit
+
+Check 77: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:7531:13 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 78: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:7535:13 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 79: proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:7539:13 in function proof_v16_resolved_external_payout_requires_exact_capital_plus_claim_sources
+
+Check 80: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 81: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 82: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 83: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 84: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 85: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 86: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 87: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 88: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 89: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 90: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 91: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 92: percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3456:9 in function percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out
+
+Check 93: percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3457:9 in function percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out
+
+Check 94: percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3458:9 in function percolator::TokenValueFlowProofV16::capital_and_resolved_payout_to_external_out
+
+Check 95: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 96: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 97: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 98: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 99: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 100: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 101: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 102: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 103: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 104: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 105: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 106: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 107: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 108: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 109: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 110: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 111: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 112: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 113: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 114: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 115: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 116: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 117: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 118: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 119: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 120: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 121: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 122: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 123: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 124: <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 125: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 126: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 127: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 128: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 129: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 130: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 131: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 132: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 133: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 134: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 135: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 136: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 137: percolator::TokenValueFlowProofV16::validate.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 138: percolator::TokenValueFlowProofV16::validate.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 139: percolator::TokenValueFlowProofV16::validate.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 140: percolator::TokenValueFlowProofV16::validate.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 141: percolator::TokenValueFlowProofV16::validate.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 142: percolator::TokenValueFlowProofV16::validate.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 143: percolator::TokenValueFlowProofV16::validate.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3494:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 144: percolator::TokenValueFlowProofV16::validate.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 145: percolator::TokenValueFlowProofV16::validate.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 146: percolator::TokenValueFlowProofV16::validate.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 147: percolator::TokenValueFlowProofV16::validate.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 148: percolator::TokenValueFlowProofV16::validate.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 149: percolator::TokenValueFlowProofV16::validate.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 150: percolator::TokenValueFlowProofV16::validate.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3497:30 in function percolator::TokenValueFlowProofV16::validate
+
+Check 151: percolator::TokenValueFlowProofV16::validate.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3505:12 in function percolator::TokenValueFlowProofV16::validate
+
+Check 152: percolator::TokenValueFlowProofV16::validate.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3505:12 in function percolator::TokenValueFlowProofV16::validate
+
+Check 153: percolator::TokenValueFlowProofV16::validate.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3505:12 in function percolator::TokenValueFlowProofV16::validate
+
+Check 154: percolator::TokenValueFlowProofV16::validate.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3505:12 in function percolator::TokenValueFlowProofV16::validate
+
+Check 155: percolator::TokenValueFlowProofV16::validate.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3505:12 in function percolator::TokenValueFlowProofV16::validate
+
+Check 156: percolator::TokenValueFlowProofV16::validate.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3505:12 in function percolator::TokenValueFlowProofV16::validate
+
+Check 157: percolator::TokenValueFlowProofV16::validate.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3505:32 in function percolator::TokenValueFlowProofV16::validate
+
+Check 158: percolator::TokenValueFlowProofV16::validate.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3505:32 in function percolator::TokenValueFlowProofV16::validate
+
+Check 159: percolator::TokenValueFlowProofV16::validate.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3505:32 in function percolator::TokenValueFlowProofV16::validate
+
+Check 160: percolator::TokenValueFlowProofV16::validate.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3505:32 in function percolator::TokenValueFlowProofV16::validate
+
+Check 161: percolator::TokenValueFlowProofV16::validate.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3505:32 in function percolator::TokenValueFlowProofV16::validate
+
+Check 162: percolator::TokenValueFlowProofV16::validate.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3505:32 in function percolator::TokenValueFlowProofV16::validate
+
+Check 163: percolator::TokenValueFlowProofV16::validate.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3506:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 164: percolator::TokenValueFlowProofV16::validate.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3506:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 165: percolator::TokenValueFlowProofV16::validate.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3506:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 166: percolator::TokenValueFlowProofV16::validate.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3506:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 167: percolator::TokenValueFlowProofV16::validate.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3506:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 168: percolator::TokenValueFlowProofV16::validate.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3506:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 169: percolator::TokenValueFlowProofV16::validate.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3506:50 in function percolator::TokenValueFlowProofV16::validate
+
+Check 170: percolator::TokenValueFlowProofV16::validate.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3506:50 in function percolator::TokenValueFlowProofV16::validate
+
+Check 171: percolator::TokenValueFlowProofV16::validate.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3506:50 in function percolator::TokenValueFlowProofV16::validate
+
+Check 172: percolator::TokenValueFlowProofV16::validate.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3506:50 in function percolator::TokenValueFlowProofV16::validate
+
+Check 173: percolator::TokenValueFlowProofV16::validate.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3506:50 in function percolator::TokenValueFlowProofV16::validate
+
+Check 174: percolator::TokenValueFlowProofV16::validate.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3506:50 in function percolator::TokenValueFlowProofV16::validate
+
+Check 175: percolator::TokenValueFlowProofV16::validate.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3507:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 176: percolator::TokenValueFlowProofV16::validate.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3507:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 177: percolator::TokenValueFlowProofV16::validate.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3507:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 178: percolator::TokenValueFlowProofV16::validate.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3507:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 179: percolator::TokenValueFlowProofV16::validate.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3507:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 180: percolator::TokenValueFlowProofV16::validate.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3507:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 181: percolator::TokenValueFlowProofV16::validate.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3507:41 in function percolator::TokenValueFlowProofV16::validate
+
+Check 182: percolator::TokenValueFlowProofV16::validate.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3507:41 in function percolator::TokenValueFlowProofV16::validate
+
+Check 183: percolator::TokenValueFlowProofV16::validate.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3507:41 in function percolator::TokenValueFlowProofV16::validate
+
+Check 184: percolator::TokenValueFlowProofV16::validate.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3507:41 in function percolator::TokenValueFlowProofV16::validate
+
+Check 185: percolator::TokenValueFlowProofV16::validate.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3507:41 in function percolator::TokenValueFlowProofV16::validate
+
+Check 186: percolator::TokenValueFlowProofV16::validate.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3507:41 in function percolator::TokenValueFlowProofV16::validate
+
+Check 187: percolator::TokenValueFlowProofV16::validate.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3508:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 188: percolator::TokenValueFlowProofV16::validate.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3508:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 189: percolator::TokenValueFlowProofV16::validate.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3508:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 190: percolator::TokenValueFlowProofV16::validate.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3508:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 191: percolator::TokenValueFlowProofV16::validate.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3508:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 192: percolator::TokenValueFlowProofV16::validate.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3508:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 193: percolator::TokenValueFlowProofV16::validate.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3508:45 in function percolator::TokenValueFlowProofV16::validate
+
+Check 194: percolator::TokenValueFlowProofV16::validate.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3508:45 in function percolator::TokenValueFlowProofV16::validate
+
+Check 195: percolator::TokenValueFlowProofV16::validate.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3508:45 in function percolator::TokenValueFlowProofV16::validate
+
+Check 196: percolator::TokenValueFlowProofV16::validate.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3508:45 in function percolator::TokenValueFlowProofV16::validate
+
+Check 197: percolator::TokenValueFlowProofV16::validate.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3508:45 in function percolator::TokenValueFlowProofV16::validate
+
+Check 198: percolator::TokenValueFlowProofV16::validate.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3508:45 in function percolator::TokenValueFlowProofV16::validate
+
+Check 199: percolator::TokenValueFlowProofV16::validate.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3513:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 200: percolator::TokenValueFlowProofV16::validate.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3513:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 201: percolator::TokenValueFlowProofV16::validate.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3513:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 202: percolator::TokenValueFlowProofV16::validate.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3513:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 203: percolator::TokenValueFlowProofV16::validate.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3513:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 204: percolator::TokenValueFlowProofV16::validate.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3513:31 in function percolator::TokenValueFlowProofV16::validate
+
+Check 205: percolator::TokenValueFlowProofV16::validate.pointer_dereference.67
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3513:51 in function percolator::TokenValueFlowProofV16::validate
+
+Check 206: percolator::TokenValueFlowProofV16::validate.pointer_dereference.68
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3513:51 in function percolator::TokenValueFlowProofV16::validate
+
+Check 207: percolator::TokenValueFlowProofV16::validate.pointer_dereference.69
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3513:51 in function percolator::TokenValueFlowProofV16::validate
+
+Check 208: percolator::TokenValueFlowProofV16::validate.pointer_dereference.70
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3513:51 in function percolator::TokenValueFlowProofV16::validate
+
+Check 209: percolator::TokenValueFlowProofV16::validate.pointer_dereference.71
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3513:51 in function percolator::TokenValueFlowProofV16::validate
+
+Check 210: percolator::TokenValueFlowProofV16::validate.pointer_dereference.72
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3513:51 in function percolator::TokenValueFlowProofV16::validate
+
+Check 211: percolator::TokenValueFlowProofV16::validate.pointer_dereference.73
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3514:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 212: percolator::TokenValueFlowProofV16::validate.pointer_dereference.74
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3514:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 213: percolator::TokenValueFlowProofV16::validate.pointer_dereference.75
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3514:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 214: percolator::TokenValueFlowProofV16::validate.pointer_dereference.76
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3514:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 215: percolator::TokenValueFlowProofV16::validate.pointer_dereference.77
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3514:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 216: percolator::TokenValueFlowProofV16::validate.pointer_dereference.78
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3514:16 in function percolator::TokenValueFlowProofV16::validate
+
+Check 217: percolator::TokenValueFlowProofV16::validate.pointer_dereference.79
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3514:42 in function percolator::TokenValueFlowProofV16::validate
+
+Check 218: percolator::TokenValueFlowProofV16::validate.pointer_dereference.80
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3514:42 in function percolator::TokenValueFlowProofV16::validate
+
+Check 219: percolator::TokenValueFlowProofV16::validate.pointer_dereference.81
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3514:42 in function percolator::TokenValueFlowProofV16::validate
+
+Check 220: percolator::TokenValueFlowProofV16::validate.pointer_dereference.82
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3514:42 in function percolator::TokenValueFlowProofV16::validate
+
+Check 221: percolator::TokenValueFlowProofV16::validate.pointer_dereference.83
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3514:42 in function percolator::TokenValueFlowProofV16::validate
+
+Check 222: percolator::TokenValueFlowProofV16::validate.pointer_dereference.84
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3514:42 in function percolator::TokenValueFlowProofV16::validate
+
+Check 223: percolator::TokenValueFlowProofV16::validate.pointer_dereference.85
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3515:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 224: percolator::TokenValueFlowProofV16::validate.pointer_dereference.86
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3515:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 225: percolator::TokenValueFlowProofV16::validate.pointer_dereference.87
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3515:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 226: percolator::TokenValueFlowProofV16::validate.pointer_dereference.88
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3515:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 227: percolator::TokenValueFlowProofV16::validate.pointer_dereference.89
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3515:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 228: percolator::TokenValueFlowProofV16::validate.pointer_dereference.90
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3515:20 in function percolator::TokenValueFlowProofV16::validate
+
+Check 229: percolator::TokenValueFlowProofV16::validate.pointer_dereference.91
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3515:46 in function percolator::TokenValueFlowProofV16::validate
+
+Check 230: percolator::TokenValueFlowProofV16::validate.pointer_dereference.92
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3515:46 in function percolator::TokenValueFlowProofV16::validate
+
+Check 231: percolator::TokenValueFlowProofV16::validate.pointer_dereference.93
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3515:46 in function percolator::TokenValueFlowProofV16::validate
+
+Check 232: percolator::TokenValueFlowProofV16::validate.pointer_dereference.94
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3515:46 in function percolator::TokenValueFlowProofV16::validate
+
+Check 233: percolator::TokenValueFlowProofV16::validate.pointer_dereference.95
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3515:46 in function percolator::TokenValueFlowProofV16::validate
+
+Check 234: percolator::TokenValueFlowProofV16::validate.pointer_dereference.96
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3515:46 in function percolator::TokenValueFlowProofV16::validate
+
+Check 235: percolator::TokenValueFlowProofV16::validate.pointer_dereference.97
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3520:9 in function percolator::TokenValueFlowProofV16::validate
+
+Check 236: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 237: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 238: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 239: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 240: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 241: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 242: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 243: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 244: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 245: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 246: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 247: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::TokenValueFlowProofV16>::eq
+
+Check 248: percolator::TokenValueFlowProofV16::debit.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 249: percolator::TokenValueFlowProofV16::debit.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 250: percolator::TokenValueFlowProofV16::debit.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 251: percolator::TokenValueFlowProofV16::debit.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 252: percolator::TokenValueFlowProofV16::debit.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 253: percolator::TokenValueFlowProofV16::debit.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 254: percolator::TokenValueFlowProofV16::debit.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3474:28 in function percolator::TokenValueFlowProofV16::debit
+
+Check 255: percolator::TokenValueFlowProofV16::debit.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 256: percolator::TokenValueFlowProofV16::debit.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 257: percolator::TokenValueFlowProofV16::debit.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 258: percolator::TokenValueFlowProofV16::debit.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 259: percolator::TokenValueFlowProofV16::debit.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 260: percolator::TokenValueFlowProofV16::debit.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 261: percolator::TokenValueFlowProofV16::debit.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3474:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 262: percolator::TokenValueFlowProofV16::debit.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3477:9 in function percolator::TokenValueFlowProofV16::debit
+
+Check 263: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 264: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 265: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 266: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 267: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 268: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 269: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 270: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 271: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 272: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 273: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 274: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3255:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 275: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 276: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 277: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 278: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 279: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 280: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 281: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 282: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 283: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 284: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 285: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 286: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3256:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 287: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 288: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 289: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 290: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 291: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 292: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 293: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 294: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 295: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 296: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 297: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 298: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3257:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 299: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 300: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 301: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 302: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 303: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 304: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 305: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 306: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 307: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 308: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 309: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 310: <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3258:5 in function <percolator::TokenValueFlowProofV16 as std::cmp::PartialEq>::eq
+
+Check 311: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 312: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 313: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 314: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 315: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 316: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 317: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 318: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 319: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 320: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 321: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 322: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 323: std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &()>::eq
+
+Check 324: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 325: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 326: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 327: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 328: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 329: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 330: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 331: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 332: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 333: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 334: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 335: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 336: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 337: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 338: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 339: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 340: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 341: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 342: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 343: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 344: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 345: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 346: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 347: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 348: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 349: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 350: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 351: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 352: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 353: <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<percolator::TokenValueFlowProofV16, percolator::V16Error> as std::cmp::PartialEq>::eq
+
+
+SUMMARY:
+ ** 0 of 350 failed
+
+ ** 3 of 3 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 3.0444136s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

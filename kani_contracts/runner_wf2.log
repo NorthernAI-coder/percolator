@@ -1,0 +1,6 @@
+[01:01:31] warming target/contracts cache (un-timed)...
+[01:01:33] cache warm.
+[01:01:35] division_axiom_is_self_consistent -> FAIL(1) (1s)
+=====
+harness                            wall_s  status
+division_axiom_is_self_consistent  1       FAIL(1)

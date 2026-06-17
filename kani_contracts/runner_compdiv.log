@@ -1,0 +1,8 @@
+[14:30:05] warming target/contracts cache (un-timed)...
+scripts/contracts_runner.sh: line 38: 678020 Killed                  cargo kani $KANI_Z --features "$FEATURES" --only-codegen > "$LOG_DIR/warmup.log" 2>&1
+[14:31:53] cache warm.
+scripts/contracts_runner.sh: line 42: 680222 Killed                  timeout --kill-after=30 "$BUDGET_S" cargo kani $KANI_Z --features "$FEATURES" --harness "$h" --output-format terse > "$logf" 2>&1
+[14:32:29] composition_attach_body_frame_division_stubbed -> TIMEOUT (35s)
+=====
+harness                                         wall_s  status
+composition_attach_body_frame_division_stubbed  35      TIMEOUT

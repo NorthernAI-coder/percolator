@@ -1,0 +1,8 @@
+[20:55:41] warming target/closure cache (un-timed)...
+[20:57:23] cache warm.
+[20:57:28] liveness_pending_close_has_rank_decreasing_advance -> PASS (4s)
+[20:57:32] liveness_b_stale_leg_has_advancing_chunk -> PASS (3s)
+=====
+harness                                             wall_s  status
+liveness_pending_close_has_rank_decreasing_advance  4       PASS
+liveness_b_stale_leg_has_advancing_chunk            3       PASS

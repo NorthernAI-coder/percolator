@@ -1,0 +1,414 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.92s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.03s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-4f9de3d6ac75939a__RNvCs35DYgTG8RvC_10proofs_v1666proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::V16Core::prepare_insurance_lien_consume_delta thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16, u128, u128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16, u128, u128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::V16Core::prepare_insurance_lien_consume_delta thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16, u128, u128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16, u128, u128), percolator::V16Error>::unwrap thread 0
+Runtime Symex: 0.188331s
+size of program expression: 12846 steps
+slicing removed 9584 assignments
+Generated 119 VCC(s), 92 remaining after simplification
+Runtime Postprocess Equation: 0.00440452s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.0635293s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.618e-06s
+Solving with CaDiCaL 2.0.0
+113015 variables, 336611 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0547654s
+Runtime decision procedure: 0.119629s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+113016 variables, 336612 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 30.5517s
+Runtime decision procedure: 30.552s
+
+RESULTS:
+Check 1: percolator::v16::V16Core::amount_from_bound_num.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:374:21 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 2: percolator::v16::V16Core::amount_from_bound_num.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:374:21 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 3: percolator::v16::V16Core::amount_from_bound_num.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:375:19 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 4: percolator::v16::V16Core::amount_from_bound_num.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:375:19 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 5: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:10735:21 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 6: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:10736:22 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 7: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:10737:21 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 8: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:10738:23 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 9: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.5
+	 - Status: SUCCESS
+	 - Description: "assertion failed: spent == first_atoms"
+	 - Location: tests/proofs_v16.rs:10760:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 10: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: insurance == second_atoms"
+	 - Location: tests/proofs_v16.rs:10761:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 11: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation.insurance_credit_reserved_num == second_num"
+	 - Location: tests/proofs_v16.rs:10762:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 12: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation.valid_liened_insurance_num == second_num"
+	 - Location: tests/proofs_v16.rs:10763:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 13: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.9
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation.consumed_insurance_num == first_num"
+	 - Location: tests/proofs_v16.rs:10764:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 14: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.insurance_credit_reserved_num == second_num"
+	 - Location: tests/proofs_v16.rs:10765:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 15: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.11
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.valid_liened_insurance_num == second_num"
+	 - Location: tests/proofs_v16.rs:10766:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 16: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.credit_rate_num == CREDIT_RATE_SCALE"
+	 - Location: tests/proofs_v16.rs:10767:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 17: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.cover.1
+	 - Status: SATISFIED
+	 - Description: "split aligned insurance-lien consumption is nontrivial"
+	 - Location: tests/proofs_v16.rs:10779:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 18: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.13
+	 - Status: SUCCESS
+	 - Description: "assertion failed: spent == total_atoms"
+	 - Location: tests/proofs_v16.rs:10783:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 19: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.14
+	 - Status: SUCCESS
+	 - Description: "assertion failed: insurance == 0"
+	 - Location: tests/proofs_v16.rs:10784:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 20: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.15
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation.insurance_credit_reserved_num == 0"
+	 - Location: tests/proofs_v16.rs:10785:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 21: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.16
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation.valid_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:10786:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 22: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.17
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation.consumed_insurance_num == total_num"
+	 - Location: tests/proofs_v16.rs:10787:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 23: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.18
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation.impaired_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:10788:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 24: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.19
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.insurance_credit_reserved_num == 0"
+	 - Location: tests/proofs_v16.rs:10789:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 25: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.20
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.valid_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:10790:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 26: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.21
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.impaired_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:10791:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 27: proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms.assertion.22
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.credit_rate_num == CREDIT_RATE_SCALE"
+	 - Location: tests/proofs_v16.rs:10792:5 in function proof_v16_insurance_lien_split_consume_spends_exact_reserved_atoms
+
+Check 28: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 29: core::num::<impl u128>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u128>::checked_add
+
+Check 30: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 31: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 32: percolator::v16::V16Core::prepare_insurance_lien_consume_delta.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1588:9 in function percolator::v16::V16Core::prepare_insurance_lien_consume_delta
+
+Check 33: percolator::v16::V16Core::prepare_insurance_lien_consume_delta.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1589:9 in function percolator::v16::V16Core::prepare_insurance_lien_consume_delta
+
+Check 34: percolator::v16::V16Core::prepare_insurance_lien_consume_delta.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1594:9 in function percolator::v16::V16Core::prepare_insurance_lien_consume_delta
+
+Check 35: percolator::v16::V16Core::prepare_insurance_lien_consume_delta.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1595:9 in function percolator::v16::V16Core::prepare_insurance_lien_consume_delta
+
+Check 36: percolator::v16::V16Core::prepare_insurance_lien_consume_delta.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::V16Core::prepare_insurance_lien_consume_delta
+
+Check 37: percolator::v16::V16Core::prepare_insurance_lien_consume_delta.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1602:13 in function percolator::v16::V16Core::prepare_insurance_lien_consume_delta
+
+Check 38: std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16, u128, u128), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16, u128, u128), percolator::V16Error>::unwrap
+
+Check 39: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 40: percolator::v16::V16Core::validate_bound_num_atom_aligned.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:420:12 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 41: percolator::v16::V16Core::validate_bound_num_atom_aligned.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:420:12 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 42: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 43: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2169:22 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 44: percolator::v16::V16Core::prepare_insurance_lien_consume_delta.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1578:9 in function percolator::v16::V16Core::prepare_insurance_lien_consume_delta
+
+Check 45: percolator::v16::V16Core::validate_bound_num_atom_aligned.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:423:9 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 46: percolator::v16::V16Core::validate_bound_num_atom_aligned.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:418:20 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 47: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+
+SUMMARY:
+ ** 0 of 46 failed
+
+ ** 1 of 1 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 31.341688s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

@@ -1,0 +1,6 @@
+[02:41:48] warming target/contracts cache (un-timed)...
+[02:43:40] cache warm.
+[02:44:41] composition_attach_value_conservation_under_axiom -> PASS (60s)
+=====
+harness                                            wall_s  status
+composition_attach_value_conservation_under_axiom  60      PASS

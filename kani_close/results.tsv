@@ -1,0 +1,6 @@
+proof	cbmc_time_s	wall_s	status
+proof_v16_close_begin_rejects_occupied_domain_before_mutation	47.832954	52	PASS
+proof_v16_close_begin_rejects_account_with_active_close	57.460045	61	PASS
+proof_v16_close_begin_takes_barrier_and_stamps_immutable_identity	68.47056	72	PASS
+proof_v16_withdraw_rejects_while_close_active	65.33755	71	PASS
+proof_v16_close_cancel_shape_rejects_dropped_residual	34.87617	40	PASS

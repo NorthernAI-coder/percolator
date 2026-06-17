@@ -1,0 +1,873 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.13s
+Checking harness proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-cdf2f560a1925269__RNvCs35DYgTG8RvC_10proofs_v1679proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::MarketGroupV16ViewMut::<'_, u64>::withdraw_domain_insurance_delta thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 9973 column 1 function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq thread 0
+Runtime Symex: 0.0617641s
+size of program expression: 4683 steps
+slicing removed 3068 assignments
+Generated 178 VCC(s), 82 remaining after simplification
+Runtime Postprocess Equation: 0.000676044s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.016193s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.047e-06s
+Solving with CaDiCaL 2.0.0
+27208 variables, 87558 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00391848s
+Runtime decision procedure: 0.0205133s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+27209 variables, 87559 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.236526s
+Runtime decision procedure: 0.236986s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+27210 variables, 87560 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0114592s
+Runtime decision procedure: 0.0117483s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+27211 variables, 87561 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0139684s
+Runtime decision procedure: 0.0142572s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+27212 variables, 87562 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.252684s
+Runtime decision procedure: 0.252936s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+27213 variables, 87563 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 12.829s
+Runtime decision procedure: 12.8291s
+
+RESULTS:
+Check 1: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 2: core::num::<impl u128>::checked_sub.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:800:31 in function core::num::<impl u128>::checked_sub
+
+Check 3: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 4: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 5: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:9983:37 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 6: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:9984:37 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 7: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:9985:30 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 8: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:9985:30 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 9: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:9986:21 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 10: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.cover.1
+	 - Status: SATISFIED
+	 - Description: "domain insurance withdraw delta covers nontrivial domain-scoped success"
+	 - Location: tests/proofs_v16.rs:9998:5 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 11: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.cover.2
+	 - Status: SATISFIED
+	 - Description: "domain insurance withdraw delta rejects globally reserved insurance"
+	 - Location: tests/proofs_v16.rs:10002:5 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 12: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.cover.3
+	 - Status: SATISFIED
+	 - Description: "domain insurance withdraw delta rejects selected-domain overdraw"
+	 - Location: tests/proofs_v16.rs:10006:5 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 13: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.cover.4
+	 - Status: SATISFIED
+	 - Description: "domain insurance withdraw delta rejects vault-liquidity overdraw"
+	 - Location: tests/proofs_v16.rs:10010:5 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 14: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: result.is_ok() == expected_ok"
+	 - Location: tests/proofs_v16.rs:10014:5 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 15: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:9973:1 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 16: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: withdraw > selected_available || withdraw > global_available || withdraw >
+vault"
+	 - Location: tests/proofs_v16.rs:10033:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 17: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: result == Err(V16Error::LockActive)"
+	 - Location: tests/proofs_v16.rs:10034:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 18: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.9
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10016:32 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 19: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_vault == vault - withdraw"
+	 - Location: tests/proofs_v16.rs:10016:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 20: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.11
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10017:36 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 21: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_insurance == insurance - withdraw"
+	 - Location: tests/proofs_v16.rs:10017:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 22: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.13
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10018:33 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 23: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.14
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_budget == selected_budget - withdraw"
+	 - Location: tests/proofs_v16.rs:10018:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 24: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.15
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10019:20 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 25: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.16
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10019:40 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 26: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.17
+	 - Status: SUCCESS
+	 - Description: "assertion failed: vault - next_vault == insurance - next_insurance"
+	 - Location: tests/proofs_v16.rs:10019:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 27: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.18
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10020:20 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 28: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.19
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10020:40 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 29: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.20
+	 - Status: SUCCESS
+	 - Description: "assertion failed: vault - next_vault == selected_budget - next_budget"
+	 - Location: tests/proofs_v16.rs:10020:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 30: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.21
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10022:13 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 31: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.22
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10023:13 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 32: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.23
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_insurance - source_reserved == global_available - withdraw"
+	 - Location: tests/proofs_v16.rs:10021:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 33: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.24
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10026:13 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 34: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.25
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10026:13 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 35: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.26
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10027:13 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 36: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.27
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_budget - spent - domain_reserved == selected_available - withdraw"
+	 - Location: tests/proofs_v16.rs:10025:9 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 37: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.28
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10030:21 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 38: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.29
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10030:21 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 39: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.30
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10030:62 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 40: proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving.assertion.31
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_budget - spent - domain_reserved <= next_insurance - source_reserved"
+	 - Location: tests/proofs_v16.rs:10030:13 in function proof_v16_domain_insurance_withdraw_delta_is_budget_scoped_and_value_conserving
+
+Check 41: percolator::MarketGroupV16ViewMut::<'_, u64>::withdraw_domain_insurance_delta.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::MarketGroupV16ViewMut::<'_, u64>::withdraw_domain_insurance_delta
+
+Check 42: std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok
+
+Check 43: std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok
+
+Check 44: std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok
+
+Check 45: std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok
+
+Check 46: std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok
+
+Check 47: std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(u128, u128, u128), percolator::V16Error>::is_ok
+
+Check 48: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 49: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 50: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 51: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 52: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 53: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 54: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 55: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 56: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 57: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 58: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 59: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 60: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 61: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 62: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 63: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 64: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 65: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 66: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 67: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 68: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 69: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 70: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 71: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 72: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 73: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 74: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 75: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 76: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 77: <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:553:16 in function <std::result::Result<(u128, u128, u128), percolator::V16Error> as std::cmp::PartialEq>::eq
+
+Check 78: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 79: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 80: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 81: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 82: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 83: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 84: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 85: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 86: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 87: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 88: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 89: std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &percolator::V16Error>::eq
+
+Check 90: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 91: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 92: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 93: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 94: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 95: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 96: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 97: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 98: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 99: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 100: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 101: <percolator::V16Error as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:166:30 in function <percolator::V16Error as std::cmp::PartialEq>::eq
+
+Check 102: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 103: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 104: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 105: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 106: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 107: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 108: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 109: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 110: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 111: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 112: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 113: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 114: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 115: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 116: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 117: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 118: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 119: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:27 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 120: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 121: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 122: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 123: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 124: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 125: std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2090:34 in function std::cmp::impls::<impl std::cmp::PartialEq for &(u128, u128, u128)>::eq
+
+Check 126: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 127: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 128: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 129: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 130: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 131: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 132: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 133: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 134: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 135: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 136: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+Check 137: std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for u128>::eq
+
+
+SUMMARY:
+ ** 0 of 133 failed
+
+ ** 4 of 4 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 13.852461s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

@@ -1,0 +1,1047 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.00s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused import: `BOUND_SCALE`
+  --> tests/rounding_residue_fuzz.rs:11:18
+   |
+11 | use percolator::{BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
+   |                  ^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_resolved_winddown_releases_impaired_insurance_lien...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-444bc8fa7ac26263__RNvCs35DYgTG8RvC_10proofs_v1660proof_v16_resolved_winddown_releases_impaired_insurance_lien.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+Runtime Symex: 0.0876195s
+size of program expression: 6104 steps
+slicing removed 4085 assignments
+Generated 209 VCC(s), 44 remaining after simplification
+Runtime Postprocess Equation: 0.00194813s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.0199143s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.228e-06s
+Solving with CaDiCaL 2.0.0
+45678 variables, 110650 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00619311s
+Runtime decision procedure: 0.0267049s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+45679 variables, 110651 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00177266s
+Runtime decision procedure: 0.0019978s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+45680 variables, 110652 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.339101s
+Runtime decision procedure: 0.339238s
+
+RESULTS:
+Check 1: std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::InsuranceCreditReservationV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap
+
+Check 2: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:6856:18 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 3: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:6858:20 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 4: proof_v16_resolved_winddown_releases_impaired_insurance_lien.cover.1
+	 - Status: SATISFIED
+	 - Description: "terminal wind-down releases wide impaired insurance lien"
+	 - Location: tests/proofs_v16.rs:6881:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 5: proof_v16_resolved_winddown_releases_impaired_insurance_lien.cover.2
+	 - Status: SATISFIED
+	 - Description: "terminal wind-down still releases wide valid insurance lien"
+	 - Location: tests/proofs_v16.rs:6885:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 6: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.3
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation_after.insurance_credit_reserved_num == 0"
+	 - Location: tests/proofs_v16.rs:6889:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 7: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.4
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation_after.valid_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:6890:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 8: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.5
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation_after.impaired_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:6891:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 9: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: reservation_after.consumed_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:6892:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 10: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after.insurance_credit_reserved_num == 0"
+	 - Location: tests/proofs_v16.rs:6893:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 11: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after.valid_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:6894:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 12: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.9
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after.impaired_liened_insurance_num == 0"
+	 - Location: tests/proofs_v16.rs:6895:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 13: proof_v16_resolved_winddown_releases_impaired_insurance_lien.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after == SourceCreditStateV16::EMPTY"
+	 - Location: tests/proofs_v16.rs:6896:5 in function proof_v16_resolved_winddown_releases_impaired_insurance_lien
+
+Check 14: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 15: core::num::<impl u128>::checked_sub.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:800:31 in function core::num::<impl u128>::checked_sub
+
+Check 16: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 17: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 18: percolator::v16::V16Core::validate_bound_num_atom_aligned.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:420:12 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 19: percolator::v16::V16Core::validate_bound_num_atom_aligned.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:420:12 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 20: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 21: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 22: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1168:9 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 23: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1169:9 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 24: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1170:9 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 25: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1171:9 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 26: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1172:9 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 27: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.assertion.6
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1173:9 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 28: percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1150:9 in function percolator::v16::V16Core::prepare_insurance_lien_terminal_release_delta
+
+Check 29: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 30: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 31: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 32: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 33: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 34: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 35: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 36: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 37: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 38: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 39: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 40: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2121:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 41: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 42: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 43: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 44: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 45: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 46: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 47: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 48: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 49: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 50: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 51: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 52: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2122:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 53: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 54: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 55: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 56: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 57: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 58: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 59: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 60: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 61: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 62: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 63: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 64: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2123:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 65: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 66: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 67: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 68: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 69: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 70: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 71: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 72: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 73: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 74: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 75: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 76: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2124:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 77: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 78: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 79: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 80: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 81: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 82: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 83: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 84: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 85: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 86: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 87: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 88: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2125:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 89: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 90: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 91: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 92: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 93: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 94: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 95: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.67
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 96: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.68
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 97: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.69
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 98: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.70
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 99: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.71
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 100: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.72
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2126:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 101: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.73
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 102: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.74
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 103: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.75
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 104: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.76
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 105: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.77
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 106: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.78
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 107: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.79
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 108: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.80
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 109: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.81
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 110: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.82
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 111: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.83
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 112: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.84
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2127:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 113: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.85
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 114: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.86
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 115: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.87
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 116: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.88
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 117: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.89
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 118: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.90
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 119: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.91
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 120: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.92
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 121: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.93
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 122: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.94
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 123: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.95
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 124: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.96
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2128:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 125: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.97
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 126: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.98
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 127: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.99
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 128: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.100
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 129: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.101
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 130: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.102
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 131: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.103
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 132: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.104
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 133: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.105
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 134: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.106
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 135: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.107
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 136: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.108
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2129:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 137: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.109
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 138: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.110
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 139: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.111
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 140: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.112
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 141: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.113
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 142: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.114
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 143: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.115
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 144: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.116
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 145: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.117
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 146: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.118
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 147: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.119
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 148: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.120
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2130:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 149: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.121
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 150: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.122
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 151: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.123
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 152: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.124
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 153: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.125
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 154: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.126
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 155: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.127
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 156: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.128
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 157: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.129
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 158: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.130
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 159: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.131
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 160: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.132
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2131:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 161: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.133
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 162: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.134
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 163: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.135
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 164: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.136
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 165: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.137
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 166: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.138
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 167: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.139
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 168: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.140
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 169: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.141
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 170: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.142
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 171: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.143
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 172: <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.144
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2132:5 in function <percolator::SourceCreditStateV16 as std::cmp::PartialEq>::eq
+
+Check 173: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 174: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 175: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 176: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 177: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 178: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 179: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 180: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 181: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 182: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 183: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 184: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 185: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 186: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2169:22 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 187: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 188: percolator::v16::V16Core::validate_bound_num_atom_aligned.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:423:9 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 189: percolator::v16::V16Core::validate_bound_num_atom_aligned.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:418:20 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+
+SUMMARY:
+ ** 0 of 187 failed
+
+ ** 2 of 2 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 0.6849513s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

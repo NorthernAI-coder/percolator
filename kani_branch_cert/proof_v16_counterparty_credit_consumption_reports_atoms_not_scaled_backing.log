@@ -1,0 +1,2659 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.15s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-e01525ea47c4e292__RNvCs35DYgTG8RvC_10proofs_v1674proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/wide_math.rs line 1311 column 9 function percolator::wide_math::U512::checked_div_rem_by_u256 thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator9wide_mathNtB5_4U5128cmp_u512.0 iteration 1 file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U512::cmp_u512 thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator9wide_mathNtB5_4U5128cmp_u512.0 iteration 2 file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U512::cmp_u512 thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator9wide_mathNtB5_4U5128cmp_u512.0 iteration 3 file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U512::cmp_u512 thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator9wide_mathNtB5_4U5128cmp_u512.0 iteration 4 file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U512::cmp_u512 thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/wide_math.rs line 1105 column 9 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_gt}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 1 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 2 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 3 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 4 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 5 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 6 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 7 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 8 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 9 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 10 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 11 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 12 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 13 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 14 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 15 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 661 column 15 function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_sub thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1041 column 15 function std::option::Option::<percolator::wide_math::U256>::unwrap_or thread 0
+Not unwinding loop _RNvNtCs4R3y7dmBGud_10percolator9wide_math12div_rem_u256.0 iteration 16 file /home/anatoly/percolator/src/wide_math.rs line 1131 column 5 function percolator::wide_math::div_rem_u256 thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2660 column 15 function <std::option::Option<u128> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::wide_math::U256::checked_add thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1544 column 15 function std::option::Option::<percolator::wide_math::U256>::and_then::<u128, {closure@percolator::v16::V16Core::source_credit_lien_amounts_for_effective::{closure#0}}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::V16Core::source_credit_lien_amounts_for_effective thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(u128, u128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(u128, u128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::V16Core::prepare_counterparty_lien_consume_delta thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16_kani_api.rs line 524 column 9 function percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<u128, percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<u128, percolator::V16Error>::unwrap thread 0
+Runtime Symex: 1.0699s
+size of program expression: 73161 steps
+slicing removed 58809 assignments
+Generated 3135 VCC(s), 947 remaining after simplification
+Runtime Postprocess Equation: 0.0495844s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.390663s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.919e-06s
+Solving with CaDiCaL 2.0.0
+531546 variables, 1634149 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 7.78237s
+Runtime decision procedure: 8.17924s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+531547 variables, 1634150 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 7.03913s
+Runtime decision procedure: 7.04425s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+531548 variables, 1634151 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 1.93467s
+Runtime decision procedure: 1.93654s
+
+RESULTS:
+Check 1: percolator::wide_math::U512::mul_u256.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1189:22 in function percolator::wide_math::U512::mul_u256
+
+Check 2: percolator::wide_math::U512::mul_u256.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1195:22 in function percolator::wide_math::U512::mul_u256
+
+Check 3: percolator::wide_math::U512::mul_u256.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1195:22 in function percolator::wide_math::U512::mul_u256
+
+Check 4: percolator::wide_math::U512::mul_u256.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1198:18 in function percolator::wide_math::U512::mul_u256
+
+Check 5: std::option::Option::<percolator::wide_math::U256>::unwrap_or.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1041:15 in function std::option::Option::<percolator::wide_math::U256>::unwrap_or
+
+Check 6: std::option::Option::<percolator::wide_math::U256>::and_then::<u128, {closure@percolator::v16::V16Core::source_credit_lien_amounts_for_effective::{closure#0}}>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1544:15 in function std::option::Option::<percolator::wide_math::U256>::and_then::<u128, {closure@percolator::v16::V16Core::source_credit_lien_amounts_for_effective::{closure#0}}>
+
+Check 7: <std::option::Option<(percolator::wide_math::U256, percolator::wide_math::U256)> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2660:15 in function <std::option::Option<(percolator::wide_math::U256, percolator::wide_math::U256)> as std::ops::Try>::branch
+
+Check 8: percolator::wide_math::U256::hi.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 9: percolator::wide_math::U512::shl_u512.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1222:26 in function percolator::wide_math::U512::shl_u512
+
+Check 10: percolator::wide_math::U512::shl_u512.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1222:26 in function percolator::wide_math::U512::shl_u512
+
+Check 11: percolator::wide_math::U512::shl_u512.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1223:25 in function percolator::wide_math::U512::shl_u512
+
+Check 12: percolator::wide_math::U512::shl_u512.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1223:25 in function percolator::wide_math::U512::shl_u512
+
+Check 13: percolator::wide_math::U512::shl_u512.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/wide_math.rs:1226:18 in function percolator::wide_math::U512::shl_u512
+
+Check 14: percolator::wide_math::U512::shl_u512.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1227:32 in function percolator::wide_math::U512::shl_u512
+
+Check 15: percolator::wide_math::U512::shl_u512.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1227:25 in function percolator::wide_math::U512::shl_u512
+
+Check 16: percolator::wide_math::U512::shl_u512.assertion.5
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:1227:25 in function percolator::wide_math::U512::shl_u512
+
+Check 17: percolator::wide_math::U512::shl_u512.assertion.6
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1227:13 in function percolator::wide_math::U512::shl_u512
+
+Check 18: percolator::wide_math::U512::shl_u512.assertion.7
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1229:37 in function percolator::wide_math::U512::shl_u512
+
+Check 19: percolator::wide_math::U512::shl_u512.assertion.8
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1229:37 in function percolator::wide_math::U512::shl_u512
+
+Check 20: percolator::wide_math::U512::shl_u512.assertion.9
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1229:30 in function percolator::wide_math::U512::shl_u512
+
+Check 21: percolator::wide_math::U512::shl_u512.assertion.10
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1229:60 in function percolator::wide_math::U512::shl_u512
+
+Check 22: percolator::wide_math::U512::shl_u512.assertion.11
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:1229:30 in function percolator::wide_math::U512::shl_u512
+
+Check 23: percolator::wide_math::U512::shl_u512.assertion.12
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1229:17 in function percolator::wide_math::U512::shl_u512
+
+Check 24: percolator::wide_math::U256::checked_sub.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:82:28 in function percolator::wide_math::U256::checked_sub
+
+Check 25: percolator::wide_math::U256::checked_sub.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:82:54 in function percolator::wide_math::U256::checked_sub
+
+Check 26: percolator::wide_math::U256::checked_sub.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:83:18 in function percolator::wide_math::U256::checked_sub
+
+Check 27: percolator::wide_math::U256::checked_sub.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:83:40 in function percolator::wide_math::U256::checked_sub
+
+Check 28: percolator::wide_math::U256::checked_sub.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::wide_math::U256::checked_sub
+
+Check 29: core::panicking::panic_nounwind_fmt::runtime.unsupported_construct.1
+	 - Status: SUCCESS
+	 - Description: "call to foreign "Rust" function `_RNvCsfNd5Qxpi3D5_7___rustc17rust_begin_unwind` is not currently supported by Kani. Please post your example at https://github.com/model-checking/kani/issues/new/choose"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panicking.rs:110:17 in function core::panicking::panic_nounwind_fmt::runtime
+
+Check 30: percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16_kani_api.rs:524:9 in function percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing
+
+Check 31: percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16_kani_api.rs:525:12 in function percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing
+
+Check 32: percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16_kani_api.rs:525:12 in function percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing
+
+Check 33: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 34: core::num::<impl u128>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u128>::checked_add
+
+Check 35: core::num::<impl usize>::unchecked_sub.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:896:17 in function core::num::<impl usize>::unchecked_sub
+
+Check 36: std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_gt}>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:661:15 in function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_gt}>
+
+Check 37: percolator::wide_math::leading_zeros_u256.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1098:9 in function percolator::wide_math::leading_zeros_u256
+
+Check 38: std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap
+
+Check 39: std::panic::Location::<'_>::caller.unsupported_construct.1
+	 - Status: SUCCESS
+	 - Description: "caller_location is not currently supported by Kani. Please post your example at https://github.com/model-checking/kani/issues/374"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/location.rs:147:9 in function std::panic::Location::<'_>::caller
+
+Check 40: <std::option::Option<u128> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2660:15 in function <std::option::Option<u128> as std::ops::Try>::branch
+
+Check 41: percolator::v16::V16Core::prepare_counterparty_lien_create_delta.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1275:9 in function percolator::v16::V16Core::prepare_counterparty_lien_create_delta
+
+Check 42: percolator::v16::V16Core::prepare_counterparty_lien_create_delta.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::V16Core::prepare_counterparty_lien_create_delta
+
+Check 43: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 44: percolator::wide_math::U512::leading_zeros.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/wide_math.rs:1283:18 in function percolator::wide_math::U512::leading_zeros
+
+Check 45: percolator::wide_math::U512::leading_zeros.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 46: percolator::wide_math::U512::leading_zeros.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1285:24 in function percolator::wide_math::U512::leading_zeros
+
+Check 47: percolator::wide_math::U512::leading_zeros.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "attempt to multiply with overflow"
+	 - Location: src/wide_math.rs:1285:24 in function percolator::wide_math::U512::leading_zeros
+
+Check 48: percolator::wide_math::U512::leading_zeros.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 49: percolator::wide_math::U512::leading_zeros.assertion.5
+	 - Status: UNREACHABLE
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1285:24 in function percolator::wide_math::U512::leading_zeros
+
+Check 50: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: tests/proofs_v16.rs:11167:16 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 51: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: tests/proofs_v16.rs:11167:16 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 52: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.2
+	 - Status: SUCCESS
+	 - Description: "assertion failed: backing_after_create.fresh_unliened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:11195:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 53: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.3
+	 - Status: SUCCESS
+	 - Description: "assertion failed: backing_after_create.valid_liened_backing_num == backing_num"
+	 - Location: tests/proofs_v16.rs:11196:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 54: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.4
+	 - Status: SUCCESS
+	 - Description: "assertion failed: backing_after_create.consumed_liened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:11197:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 55: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.5
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_create.positive_claim_bound_num == required_face_num"
+	 - Location: tests/proofs_v16.rs:11198:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 56: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_create.exact_positive_claim_num == required_face_num"
+	 - Location: tests/proofs_v16.rs:11202:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 57: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_create.fresh_reserved_backing_num == backing_num"
+	 - Location: tests/proofs_v16.rs:11206:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 58: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_create.valid_liened_backing_num == backing_num"
+	 - Location: tests/proofs_v16.rs:11207:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 59: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.9
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_create.spent_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:11208:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 60: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_create.provider_receivable_num == 0"
+	 - Location: tests/proofs_v16.rs:11209:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 61: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.11
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_create.credit_rate_num == rate"
+	 - Location: tests/proofs_v16.rs:11210:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 62: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.cover.1
+	 - Status: SATISFIED
+	 - Description: "counterparty source-credit consume uses nontrivial atom value"
+	 - Location: tests/proofs_v16.rs:11223:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 63: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.cover.2
+	 - Status: SATISFIED
+	 - Description: "counterparty source-credit consume covers partial-rate source lien"
+	 - Location: tests/proofs_v16.rs:11227:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 64: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: required_face_num >= backing_num"
+	 - Location: tests/proofs_v16.rs:11231:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 65: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.13
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:11232:29 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 66: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.14
+	 - Status: SUCCESS
+	 - Description: "assertion failed: backing_num == effective * BOUND_SCALE"
+	 - Location: tests/proofs_v16.rs:11232:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 67: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.15
+	 - Status: SUCCESS
+	 - Description: "assertion failed: cure_atoms == effective"
+	 - Location: tests/proofs_v16.rs:11233:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 68: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.16
+	 - Status: SUCCESS
+	 - Description: "assertion failed: cure_atoms != backing_num"
+	 - Location: tests/proofs_v16.rs:11234:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 69: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.17
+	 - Status: SUCCESS
+	 - Description: "assertion failed: backing_after_consume.fresh_unliened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:11235:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 70: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.18
+	 - Status: SUCCESS
+	 - Description: "assertion failed: backing_after_consume.valid_liened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:11236:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 71: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.19
+	 - Status: SUCCESS
+	 - Description: "assertion failed: backing_after_consume.consumed_liened_backing_num == backing_num"
+	 - Location: tests/proofs_v16.rs:11237:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 72: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.20
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_consume.positive_claim_bound_num == required_face_num"
+	 - Location: tests/proofs_v16.rs:11241:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 73: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.21
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_consume.exact_positive_claim_num == required_face_num"
+	 - Location: tests/proofs_v16.rs:11245:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 74: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.22
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_consume.fresh_reserved_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:11249:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 75: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.23
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_consume.valid_liened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:11250:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 76: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.24
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_consume.spent_backing_num == backing_num"
+	 - Location: tests/proofs_v16.rs:11251:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 77: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.25
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_consume.provider_receivable_num == backing_num"
+	 - Location: tests/proofs_v16.rs:11252:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 78: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.assertion.26
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after_consume.credit_rate_num == rate"
+	 - Location: tests/proofs_v16.rs:11253:5 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 79: percolator::wide_math::U512::try_into_u256.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1293:12 in function percolator::wide_math::U512::try_into_u256
+
+Check 80: percolator::wide_math::U512::try_into_u256.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1293:30 in function percolator::wide_math::U512::try_into_u256
+
+Check 81: percolator::wide_math::U512::try_into_u256.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1296:28 in function percolator::wide_math::U512::try_into_u256
+
+Check 82: percolator::wide_math::U512::try_into_u256.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1296:39 in function percolator::wide_math::U512::try_into_u256
+
+Check 83: std::result::Result::<(u128, u128), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(u128, u128), percolator::V16Error>::unwrap
+
+Check 84: percolator::wide_math::checked_mul_div_ceil_u256.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/wide_math.rs:1504:18 in function percolator::wide_math::checked_mul_div_ceil_u256
+
+Check 85: percolator::wide_math::U512::is_zero.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 86: percolator::wide_math::U512::is_zero.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 87: percolator::wide_math::U512::is_zero.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 88: percolator::wide_math::U512::is_zero.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 89: percolator::wide_math::U256::try_into_u128.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 90: percolator::wide_math::U256::try_into_u128.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 91: percolator::wide_math::widening_mul_u128.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:1053:16 in function percolator::wide_math::widening_mul_u128
+
+Check 92: percolator::wide_math::widening_mul_u128.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:1055:16 in function percolator::wide_math::widening_mul_u128
+
+Check 93: percolator::wide_math::widening_mul_u128.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: src/wide_math.rs:1057:14 in function percolator::wide_math::widening_mul_u128
+
+Check 94: percolator::wide_math::widening_mul_u128.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: src/wide_math.rs:1058:14 in function percolator::wide_math::widening_mul_u128
+
+Check 95: percolator::wide_math::widening_mul_u128.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: src/wide_math.rs:1059:14 in function percolator::wide_math::widening_mul_u128
+
+Check 96: percolator::wide_math::widening_mul_u128.assertion.6
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: src/wide_math.rs:1060:14 in function percolator::wide_math::widening_mul_u128
+
+Check 97: percolator::wide_math::widening_mul_u128.assertion.7
+	 - Status: SUCCESS
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:1066:45 in function percolator::wide_math::widening_mul_u128
+
+Check 98: percolator::wide_math::widening_mul_u128.assertion.8
+	 - Status: SUCCESS
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:1067:19 in function percolator::wide_math::widening_mul_u128
+
+Check 99: percolator::wide_math::widening_mul_u128.assertion.9
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1067:14 in function percolator::wide_math::widening_mul_u128
+
+Check 100: percolator::wide_math::widening_mul_u128.assertion.10
+	 - Status: SUCCESS
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:1067:33 in function percolator::wide_math::widening_mul_u128
+
+Check 101: percolator::wide_math::widening_mul_u128.assertion.11
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1067:14 in function percolator::wide_math::widening_mul_u128
+
+Check 102: percolator::wide_math::widening_mul_u128.assertion.12
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1067:14 in function percolator::wide_math::widening_mul_u128
+
+Check 103: <std::option::Option<percolator::wide_math::U256> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2660:15 in function <std::option::Option<percolator::wide_math::U256> as std::ops::Try>::branch
+
+Check 104: percolator::wide_math::U256::is_zero.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 105: percolator::wide_math::U256::is_zero.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 106: percolator::wide_math::U512::checked_div_rem_by_u256.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: src/wide_math.rs:1311:9 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 107: percolator::wide_math::U512::checked_div_rem_by_u256.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1324:12 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 108: percolator::wide_math::U512::checked_div_rem_by_u256.assertion.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1324:30 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 109: percolator::wide_math::U512::checked_div_rem_by_u256.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1337:21 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 110: percolator::wide_math::U512::checked_div_rem_by_u256.assertion.5
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1349:13 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 111: percolator::wide_math::U512::checked_div_rem_by_u256.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/wide_math.rs:1352:17 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 112: percolator::wide_math::U512::checked_div_rem_by_u256.assertion.6
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1325:33 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 113: percolator::wide_math::U512::checked_div_rem_by_u256.assertion.7
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1325:44 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 114: percolator::wide_math::U512::cmp_u512.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/wide_math.rs:1205:18 in function percolator::wide_math::U512::cmp_u512
+
+Check 115: percolator::wide_math::U512::cmp_u512.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1206:19 in function percolator::wide_math::U512::cmp_u512
+
+Check 116: percolator::wide_math::U512::cmp_u512.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1206:34 in function percolator::wide_math::U512::cmp_u512
+
+Check 117: percolator::wide_math::U512::set_bit.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1274:20 in function percolator::wide_math::U512::set_bit
+
+Check 118: percolator::wide_math::U512::set_bit.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1274:20 in function percolator::wide_math::U512::set_bit
+
+Check 119: percolator::wide_math::U512::set_bit.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1275:17 in function percolator::wide_math::U512::set_bit
+
+Check 120: percolator::wide_math::U512::set_bit.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1275:17 in function percolator::wide_math::U512::set_bit
+
+Check 121: percolator::wide_math::U512::set_bit.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:1277:25 in function percolator::wide_math::U512::set_bit
+
+Check 122: percolator::wide_math::U512::set_bit.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1277:9 in function percolator::wide_math::U512::set_bit
+
+Check 123: percolator::wide_math::U256::lo.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 124: percolator::wide_math::U512::shr_u512.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1243:26 in function percolator::wide_math::U512::shr_u512
+
+Check 125: percolator::wide_math::U512::shr_u512.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1243:26 in function percolator::wide_math::U512::shr_u512
+
+Check 126: percolator::wide_math::U512::shr_u512.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1244:25 in function percolator::wide_math::U512::shr_u512
+
+Check 127: percolator::wide_math::U512::shr_u512.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1244:25 in function percolator::wide_math::U512::shr_u512
+
+Check 128: percolator::wide_math::U512::shr_u512.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1247:21 in function percolator::wide_math::U512::shr_u512
+
+Check 129: percolator::wide_math::U512::shr_u512.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/wide_math.rs:1247:18 in function percolator::wide_math::U512::shr_u512
+
+Check 130: percolator::wide_math::U512::shr_u512.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1248:32 in function percolator::wide_math::U512::shr_u512
+
+Check 131: percolator::wide_math::U512::shr_u512.assertion.5
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1248:25 in function percolator::wide_math::U512::shr_u512
+
+Check 132: percolator::wide_math::U512::shr_u512.assertion.6
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:1248:25 in function percolator::wide_math::U512::shr_u512
+
+Check 133: percolator::wide_math::U512::shr_u512.assertion.7
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1248:13 in function percolator::wide_math::U512::shr_u512
+
+Check 134: percolator::wide_math::U512::shr_u512.assertion.8
+	 - Status: UNREACHABLE
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1249:34 in function percolator::wide_math::U512::shr_u512
+
+Check 135: percolator::wide_math::U512::shr_u512.assertion.9
+	 - Status: UNREACHABLE
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1249:33 in function percolator::wide_math::U512::shr_u512
+
+Check 136: percolator::wide_math::U512::shr_u512.assertion.10
+	 - Status: UNREACHABLE
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1250:37 in function percolator::wide_math::U512::shr_u512
+
+Check 137: percolator::wide_math::U512::shr_u512.assertion.11
+	 - Status: UNREACHABLE
+	 - Description: "attempt to add with overflow"
+	 - Location: src/wide_math.rs:1250:37 in function percolator::wide_math::U512::shr_u512
+
+Check 138: percolator::wide_math::U512::shr_u512.assertion.12
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1250:30 in function percolator::wide_math::U512::shr_u512
+
+Check 139: percolator::wide_math::U512::shr_u512.assertion.13
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1250:60 in function percolator::wide_math::U512::shr_u512
+
+Check 140: percolator::wide_math::U512::shr_u512.assertion.14
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:1250:30 in function percolator::wide_math::U512::shr_u512
+
+Check 141: percolator::wide_math::U512::shr_u512.assertion.15
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1250:17 in function percolator::wide_math::U512::shr_u512
+
+Check 142: core::num::<impl usize>::unchecked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:717:17 in function core::num::<impl usize>::unchecked_add
+
+Check 143: percolator::v16::V16Core::source_credit_lien_amounts_for_effective.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::V16Core::source_credit_lien_amounts_for_effective
+
+Check 144: percolator::wide_math::U256::checked_add.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:75:27 in function percolator::wide_math::U256::checked_add
+
+Check 145: percolator::wide_math::U256::checked_add.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:75:53 in function percolator::wide_math::U256::checked_add
+
+Check 146: percolator::wide_math::U256::checked_add.assertion.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:76:18 in function percolator::wide_math::U256::checked_add
+
+Check 147: percolator::wide_math::U256::checked_add.assertion.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:76:40 in function percolator::wide_math::U256::checked_add
+
+Check 148: percolator::wide_math::U256::checked_add.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::wide_math::U256::checked_add
+
+Check 149: percolator::v16::V16Core::validate_bound_num_atom_aligned.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:420:12 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 150: percolator::v16::V16Core::validate_bound_num_atom_aligned.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:420:12 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 151: std::result::Result::<u128, percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<u128, percolator::V16Error>::unwrap
+
+Check 152: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::contains::<u8>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::contains::<u8>
+
+Check 153: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 154: std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:661:15 in function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>
+
+Check 155: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 156: percolator::v16::V16Core::prepare_counterparty_lien_consume_delta.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1492:9 in function percolator::v16::V16Core::prepare_counterparty_lien_consume_delta
+
+Check 157: percolator::v16::V16Core::prepare_counterparty_lien_consume_delta.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1503:9 in function percolator::v16::V16Core::prepare_counterparty_lien_consume_delta
+
+Check 158: percolator::v16::V16Core::prepare_counterparty_lien_consume_delta.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1504:9 in function percolator::v16::V16Core::prepare_counterparty_lien_consume_delta
+
+Check 159: percolator::v16::V16Core::prepare_counterparty_lien_consume_delta.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::V16Core::prepare_counterparty_lien_consume_delta
+
+Check 160: percolator::wide_math::U512::sub_u512.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/wide_math.rs:1260:18 in function percolator::wide_math::U512::sub_u512
+
+Check 161: percolator::wide_math::U512::sub_u512.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1261:28 in function percolator::wide_math::U512::sub_u512
+
+Check 162: percolator::wide_math::U512::sub_u512.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1261:54 in function percolator::wide_math::U512::sub_u512
+
+Check 163: percolator::wide_math::U512::sub_u512.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1263:13 in function percolator::wide_math::U512::sub_u512
+
+Check 164: percolator::wide_math::div_rem_u256.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: src/wide_math.rs:1105:9 in function percolator::wide_math::div_rem_u256
+
+Check 165: percolator::wide_math::div_rem_u256.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1124:17 in function percolator::wide_math::div_rem_u256
+
+Check 166: percolator::wide_math::div_rem_u256.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:1137:9 in function percolator::wide_math::div_rem_u256
+
+Check 167: percolator::wide_math::div_rem_u256.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1118:17 in function percolator::wide_math::div_rem_u256
+
+Check 168: percolator::wide_math::div_rem_u256.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/wide_math.rs:1118:17 in function percolator::wide_math::div_rem_u256
+
+Check 169: percolator::wide_math::div_rem_u256.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1119:17 in function percolator::wide_math::div_rem_u256
+
+Check 170: percolator::wide_math::div_rem_u256.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/wide_math.rs:1119:17 in function percolator::wide_math::div_rem_u256
+
+Check 171: percolator::wide_math::U256::shl.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:196:21 in function percolator::wide_math::U256::shl
+
+Check 172: percolator::wide_math::U256::shl.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:197:22 in function percolator::wide_math::U256::shl
+
+Check 173: percolator::wide_math::U256::shl.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:197:22 in function percolator::wide_math::U256::shl
+
+Check 174: percolator::wide_math::U256::shl.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:199:22 in function percolator::wide_math::U256::shl
+
+Check 175: percolator::wide_math::U256::shl.assertion.5
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:199:22 in function percolator::wide_math::U256::shl
+
+Check 176: percolator::wide_math::U256::shl.assertion.6
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:200:23 in function percolator::wide_math::U256::shl
+
+Check 177: percolator::wide_math::U256::shl.assertion.7
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:200:22 in function percolator::wide_math::U256::shl
+
+Check 178: percolator::wide_math::U256::shl.assertion.8
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:200:45 in function percolator::wide_math::U256::shl
+
+Check 179: percolator::wide_math::U256::shl.assertion.9
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:200:58 in function percolator::wide_math::U256::shl
+
+Check 180: percolator::wide_math::U256::shl.assertion.10
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:200:44 in function percolator::wide_math::U256::shl
+
+Check 181: std::option::Option::<percolator::wide_math::U256>::expect.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:968:15 in function std::option::Option::<percolator::wide_math::U256>::expect
+
+Check 182: percolator::wide_math::U256::shr.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:213:21 in function percolator::wide_math::U256::shr
+
+Check 183: percolator::wide_math::U256::shr.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:214:19 in function percolator::wide_math::U256::shr
+
+Check 184: percolator::wide_math::U256::shr.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:214:19 in function percolator::wide_math::U256::shr
+
+Check 185: percolator::wide_math::U256::shr.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:216:22 in function percolator::wide_math::U256::shr
+
+Check 186: percolator::wide_math::U256::shr.assertion.5
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:216:22 in function percolator::wide_math::U256::shr
+
+Check 187: percolator::wide_math::U256::shr.assertion.6
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:217:23 in function percolator::wide_math::U256::shr
+
+Check 188: percolator::wide_math::U256::shr.assertion.7
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift right with overflow"
+	 - Location: src/wide_math.rs:217:22 in function percolator::wide_math::U256::shr
+
+Check 189: percolator::wide_math::U256::shr.assertion.8
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:217:45 in function percolator::wide_math::U256::shr
+
+Check 190: percolator::wide_math::U256::shr.assertion.9
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/wide_math.rs:217:58 in function percolator::wide_math::U256::shr
+
+Check 191: percolator::wide_math::U256::shr.assertion.10
+	 - Status: UNREACHABLE
+	 - Description: "attempt to shift left with overflow"
+	 - Location: src/wide_math.rs:217:44 in function percolator::wide_math::U256::shr
+
+Check 192: percolator::wide_math::U256::bitor.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:15 in function percolator::wide_math::U256::bitor
+
+Check 193: percolator::wide_math::U256::bitor.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:27 in function percolator::wide_math::U256::bitor
+
+Check 194: percolator::wide_math::U256::bitor.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:37 in function percolator::wide_math::U256::bitor
+
+Check 195: percolator::wide_math::U256::bitor.assertion.4
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:49 in function percolator::wide_math::U256::bitor
+
+Check 196: core::num::<impl u128>::checked_sub.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:800:31 in function core::num::<impl u128>::checked_sub
+
+Check 197: std::option::expect_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2183:5 in function std::option::expect_failed
+
+Check 198: percolator::wide_math::U256::is_zero.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 199: percolator::wide_math::U256::is_zero.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 200: percolator::wide_math::U256::is_zero.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 201: percolator::wide_math::U256::is_zero.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 202: percolator::wide_math::U256::is_zero.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 203: percolator::wide_math::U256::is_zero.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 204: percolator::wide_math::U256::is_zero.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:60:9 in function percolator::wide_math::U256::is_zero
+
+Check 205: percolator::wide_math::U256::is_zero.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 206: percolator::wide_math::U256::is_zero.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 207: percolator::wide_math::U256::is_zero.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 208: percolator::wide_math::U256::is_zero.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 209: percolator::wide_math::U256::is_zero.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 210: percolator::wide_math::U256::is_zero.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 211: percolator::wide_math::U256::is_zero.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:60:27 in function percolator::wide_math::U256::is_zero
+
+Check 212: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 213: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 214: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 215: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 216: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 217: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 218: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 219: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 220: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 221: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 222: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 223: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 224: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 225: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 226: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 227: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 228: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 229: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 230: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 231: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 232: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 233: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 234: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 235: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 236: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 237: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 238: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 239: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 240: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 241: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 242: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 243: percolator::wide_math::U256::try_into_u128.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 244: percolator::wide_math::U256::try_into_u128.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 245: percolator::wide_math::U256::try_into_u128.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 246: percolator::wide_math::U256::try_into_u128.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 247: percolator::wide_math::U256::try_into_u128.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 248: percolator::wide_math::U256::try_into_u128.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 249: percolator::wide_math::U256::try_into_u128.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:65:12 in function percolator::wide_math::U256::try_into_u128
+
+Check 250: percolator::wide_math::U256::try_into_u128.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 251: percolator::wide_math::U256::try_into_u128.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 252: percolator::wide_math::U256::try_into_u128.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 253: percolator::wide_math::U256::try_into_u128.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 254: percolator::wide_math::U256::try_into_u128.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 255: percolator::wide_math::U256::try_into_u128.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 256: percolator::wide_math::U256::try_into_u128.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:66:18 in function percolator::wide_math::U256::try_into_u128
+
+Check 257: percolator::wide_math::U512::is_zero.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 258: percolator::wide_math::U512::is_zero.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 259: percolator::wide_math::U512::is_zero.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 260: percolator::wide_math::U512::is_zero.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 261: percolator::wide_math::U512::is_zero.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 262: percolator::wide_math::U512::is_zero.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 263: percolator::wide_math::U512::is_zero.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:9 in function percolator::wide_math::U512::is_zero
+
+Check 264: percolator::wide_math::U512::is_zero.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 265: percolator::wide_math::U512::is_zero.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 266: percolator::wide_math::U512::is_zero.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 267: percolator::wide_math::U512::is_zero.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 268: percolator::wide_math::U512::is_zero.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 269: percolator::wide_math::U512::is_zero.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 270: percolator::wide_math::U512::is_zero.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:27 in function percolator::wide_math::U512::is_zero
+
+Check 271: percolator::wide_math::U512::is_zero.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 272: percolator::wide_math::U512::is_zero.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 273: percolator::wide_math::U512::is_zero.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 274: percolator::wide_math::U512::is_zero.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 275: percolator::wide_math::U512::is_zero.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 276: percolator::wide_math::U512::is_zero.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 277: percolator::wide_math::U512::is_zero.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:45 in function percolator::wide_math::U512::is_zero
+
+Check 278: percolator::wide_math::U512::is_zero.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 279: percolator::wide_math::U512::is_zero.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 280: percolator::wide_math::U512::is_zero.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 281: percolator::wide_math::U512::is_zero.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 282: percolator::wide_math::U512::is_zero.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 283: percolator::wide_math::U512::is_zero.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 284: percolator::wide_math::U512::is_zero.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1157:63 in function percolator::wide_math::U512::is_zero
+
+Check 285: std::cmp::Ordering::as_raw.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:408:9 in function std::cmp::Ordering::as_raw
+
+Check 286: std::cmp::Ordering::as_raw.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:408:9 in function std::cmp::Ordering::as_raw
+
+Check 287: proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing.division-by-zero.1
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: tests/proofs_v16.rs:11167:16 in function proof_v16_counterparty_credit_consumption_reports_atoms_not_scaled_backing
+
+Check 288: percolator::wide_math::U512::leading_zeros.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 289: percolator::wide_math::U512::leading_zeros.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 290: percolator::wide_math::U512::leading_zeros.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 291: percolator::wide_math::U512::leading_zeros.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 292: percolator::wide_math::U512::leading_zeros.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 293: percolator::wide_math::U512::leading_zeros.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 294: percolator::wide_math::U512::leading_zeros.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1284:16 in function percolator::wide_math::U512::leading_zeros
+
+Check 295: percolator::wide_math::U512::leading_zeros.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 296: percolator::wide_math::U512::leading_zeros.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 297: percolator::wide_math::U512::leading_zeros.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 298: percolator::wide_math::U512::leading_zeros.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 299: percolator::wide_math::U512::leading_zeros.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 300: percolator::wide_math::U512::leading_zeros.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 301: percolator::wide_math::U512::leading_zeros.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1285:47 in function percolator::wide_math::U512::leading_zeros
+
+Check 302: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 303: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2169:22 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 304: percolator::v16::V16Core::prepare_counterparty_lien_create_delta.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1273:20 in function percolator::v16::V16Core::prepare_counterparty_lien_create_delta
+
+Check 305: percolator::wide_math::U256::hi.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 306: percolator::wide_math::U256::hi.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 307: percolator::wide_math::U256::hi.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 308: percolator::wide_math::U256::hi.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 309: percolator::wide_math::U256::hi.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 310: percolator::wide_math::U256::hi.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 311: percolator::wide_math::U256::hi.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:55:9 in function percolator::wide_math::U256::hi
+
+Check 312: percolator::wide_math::div_rem_u256.division-by-zero.1
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: src/wide_math.rs:1118:17 in function percolator::wide_math::div_rem_u256
+
+Check 313: percolator::wide_math::div_rem_u256.division-by-zero.2
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: src/wide_math.rs:1119:17 in function percolator::wide_math::div_rem_u256
+
+Check 314: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 315: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 316: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 317: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 318: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 319: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 320: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 321: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 322: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 323: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 324: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 325: <std::cmp::Ordering as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:385:44 in function <std::cmp::Ordering as std::cmp::PartialEq>::eq
+
+Check 326: percolator::wide_math::U512::shl_u512.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1227:25 in function percolator::wide_math::U512::shl_u512
+
+Check 327: percolator::wide_math::U512::shl_u512.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1227:13 in function percolator::wide_math::U512::shl_u512
+
+Check 328: percolator::wide_math::U512::shl_u512.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1229:30 in function percolator::wide_math::U512::shl_u512
+
+Check 329: percolator::wide_math::U512::shl_u512.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1229:17 in function percolator::wide_math::U512::shl_u512
+
+Check 330: percolator::v16::V16Core::prepare_counterparty_lien_consume_delta.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1490:20 in function percolator::v16::V16Core::prepare_counterparty_lien_consume_delta
+
+Check 331: std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap
+
+Check 332: percolator::wide_math::U256::shl.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:197:22 in function percolator::wide_math::U256::shl
+
+Check 333: percolator::wide_math::U256::shl.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:199:22 in function percolator::wide_math::U256::shl
+
+Check 334: percolator::wide_math::U256::shl.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:200:23 in function percolator::wide_math::U256::shl
+
+Check 335: percolator::wide_math::U256::shl.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:200:45 in function percolator::wide_math::U256::shl
+
+Check 336: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 337: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 338: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 339: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 340: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 341: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 342: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 343: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 344: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 345: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 346: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 347: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 348: percolator::wide_math::U512::try_into_u256.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1293:12 in function percolator::wide_math::U512::try_into_u256
+
+Check 349: percolator::wide_math::U512::try_into_u256.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1293:30 in function percolator::wide_math::U512::try_into_u256
+
+Check 350: percolator::wide_math::U512::try_into_u256.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1296:28 in function percolator::wide_math::U512::try_into_u256
+
+Check 351: percolator::wide_math::U512::try_into_u256.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1296:39 in function percolator::wide_math::U512::try_into_u256
+
+Check 352: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 353: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 354: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 355: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 356: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 357: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 358: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 359: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 360: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 361: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 362: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 363: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 364: <std::result::Result<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2184:23 in function <std::result::Result<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual
+
+Check 365: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:766:23 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 366: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:766:23 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 367: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:766:23 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 368: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:766:23 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 369: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:766:23 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 370: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:766:23 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 371: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:768:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 372: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:768:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 373: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:768:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 374: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:768:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 375: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:768:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 376: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:768:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next
+
+Check 377: percolator::wide_math::U256::checked_sub.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:82:28 in function percolator::wide_math::U256::checked_sub
+
+Check 378: percolator::wide_math::U256::checked_sub.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:82:54 in function percolator::wide_math::U256::checked_sub
+
+Check 379: percolator::wide_math::U256::checked_sub.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:83:18 in function percolator::wide_math::U256::checked_sub
+
+Check 380: percolator::wide_math::U256::checked_sub.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:83:40 in function percolator::wide_math::U256::checked_sub
+
+Check 381: percolator::wide_math::U256::shr.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:214:19 in function percolator::wide_math::U256::shr
+
+Check 382: percolator::wide_math::U256::shr.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:216:22 in function percolator::wide_math::U256::shr
+
+Check 383: percolator::wide_math::U256::shr.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:217:23 in function percolator::wide_math::U256::shr
+
+Check 384: percolator::wide_math::U256::shr.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:217:45 in function percolator::wide_math::U256::shr
+
+Check 385: percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16_kani_api.rs:524:9 in function percolator::v16::v16_kani_api::<impl percolator::MarketGroupV16ViewMut<'_, u64>>::kani_counterparty_cure_atoms_from_scaled_backing
+
+Check 386: percolator::wide_math::U256::lo.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 387: percolator::wide_math::U256::lo.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 388: percolator::wide_math::U256::lo.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 389: percolator::wide_math::U256::lo.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 390: percolator::wide_math::U256::lo.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 391: percolator::wide_math::U256::lo.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 392: percolator::wide_math::U256::lo.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:50:9 in function percolator::wide_math::U256::lo
+
+Check 393: std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_gt}>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:661:15 in function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_gt}>
+
+Check 394: percolator::wide_math::U512::checked_div_rem_by_u256.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1324:12 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 395: percolator::wide_math::U512::checked_div_rem_by_u256.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1324:30 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 396: percolator::wide_math::U512::checked_div_rem_by_u256.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1325:33 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 397: percolator::wide_math::U512::checked_div_rem_by_u256.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1325:44 in function percolator::wide_math::U512::checked_div_rem_by_u256
+
+Check 398: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:58 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 399: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:58 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 400: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:58 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 401: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:58 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 402: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:58 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 403: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:58 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 404: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:65 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 405: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:65 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 406: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:65 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 407: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:65 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 408: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:65 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 409: std::cmp::impls::<impl std::cmp::Ord for u128>::cmp.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1998:65 in function std::cmp::impls::<impl std::cmp::Ord for u128>::cmp
+
+Check 410: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 411: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 412: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 413: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 414: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 415: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 416: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 417: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 418: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 419: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 420: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 421: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 422: percolator::wide_math::U512::set_bit.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1277:9 in function percolator::wide_math::U512::set_bit
+
+Check 423: percolator::wide_math::U512::shr_u512.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1248:25 in function percolator::wide_math::U512::shr_u512
+
+Check 424: percolator::wide_math::U512::shr_u512.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1248:13 in function percolator::wide_math::U512::shr_u512
+
+Check 425: percolator::wide_math::U512::shr_u512.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1250:30 in function percolator::wide_math::U512::shr_u512
+
+Check 426: percolator::wide_math::U512::shr_u512.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1250:17 in function percolator::wide_math::U512::shr_u512
+
+Check 427: percolator::wide_math::U256::checked_add.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:75:27 in function percolator::wide_math::U256::checked_add
+
+Check 428: percolator::wide_math::U256::checked_add.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:75:53 in function percolator::wide_math::U256::checked_add
+
+Check 429: percolator::wide_math::U256::checked_add.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:76:18 in function percolator::wide_math::U256::checked_add
+
+Check 430: percolator::wide_math::U256::checked_add.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:76:40 in function percolator::wide_math::U256::checked_add
+
+Check 431: percolator::v16::V16Core::validate_bound_num_atom_aligned.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:423:9 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 432: percolator::v16::V16Core::validate_bound_num_atom_aligned.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:418:20 in function percolator::v16::V16Core::validate_bound_num_atom_aligned
+
+Check 433: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_const::<1>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:196:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_const::<1>
+
+Check 434: std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:661:15 in function std::option::Option::<std::cmp::Ordering>::is_some_and::<fn(std::cmp::Ordering) -> bool {std::cmp::Ordering::is_ge}>
+
+Check 435: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 436: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 437: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 438: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 439: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 440: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 441: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 442: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 443: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 444: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 445: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 446: std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for usize>::lt
+
+Check 447: percolator::wide_math::U512::sub_u512.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1261:28 in function percolator::wide_math::U512::sub_u512
+
+Check 448: percolator::wide_math::U512::sub_u512.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1261:54 in function percolator::wide_math::U512::sub_u512
+
+Check 449: percolator::wide_math::U512::sub_u512.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:1263:13 in function percolator::wide_math::U512::sub_u512
+
+Check 450: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:58 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 451: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:58 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 452: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:58 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 453: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:58 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 454: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:58 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 455: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:58 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 456: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 457: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 458: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 459: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 460: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 461: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:809:13 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 462: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:810:18 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 463: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:810:18 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 464: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:810:18 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 465: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:810:18 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 466: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:810:18 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 467: <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/iter/range.rs:810:18 in function <std::ops::Range<usize> as std::iter::range::RangeIteratorImpl>::spec_next_back
+
+Check 468: percolator::wide_math::U256::bitor.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:15 in function percolator::wide_math::U256::bitor
+
+Check 469: percolator::wide_math::U256::bitor.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:27 in function percolator::wide_math::U256::bitor
+
+Check 470: percolator::wide_math::U256::bitor.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:37 in function percolator::wide_math::U256::bitor
+
+Check 471: percolator::wide_math::U256::bitor.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/wide_math.rs:229:49 in function percolator::wide_math::U256::bitor
+
+Check 472: percolator::wide_math::div_rem_u256.unwind.0
+	 - Status: SUCCESS
+	 - Description: "unwinding assertion loop 0"
+	 - Location: src/wide_math.rs:1131:5 in function percolator::wide_math::div_rem_u256
+
+
+SUMMARY:
+ ** 0 of 470 failed (79 unreachable)
+
+ ** 2 of 2 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 22.447512s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

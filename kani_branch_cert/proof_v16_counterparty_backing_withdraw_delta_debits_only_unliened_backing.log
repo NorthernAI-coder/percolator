@@ -1,0 +1,346 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.01s
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-0579162a28c36840__RNvCs35DYgTG8RvC_10proofs_v1674proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+Runtime Symex: 0.0445554s
+size of program expression: 3463 steps
+slicing removed 2232 assignments
+Generated 66 VCC(s), 38 remaining after simplification
+Runtime Postprocess Equation: 0.00032719s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.00899841s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 6.389e-06s
+Solving with CaDiCaL 2.0.0
+16755 variables, 44168 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00267115s
+Runtime decision procedure: 0.0118962s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+16756 variables, 44169 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00450937s
+Runtime decision procedure: 0.00457778s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+16757 variables, 44170 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 20.3605s
+Runtime decision procedure: 20.3606s
+
+RESULTS:
+Check 1: std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap
+
+Check 2: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 3: percolator::v16::V16Core::prepare_counterparty_backing_withdraw_delta.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1371:9 in function percolator::v16::V16Core::prepare_counterparty_backing_withdraw_delta
+
+Check 4: percolator::v16::V16Core::prepare_counterparty_backing_withdraw_delta.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1372:9 in function percolator::v16::V16Core::prepare_counterparty_backing_withdraw_delta
+
+Check 5: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:5691:23 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 6: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:5692:24 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 7: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:5702:37 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 8: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:5716:21 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 9: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.cover.1
+	 - Status: SATISFIED
+	 - Description: "fresh backing withdraw delta covers partial principal withdrawal"
+	 - Location: tests/proofs_v16.rs:5717:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 10: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.cover.2
+	 - Status: SATISFIED
+	 - Description: "fresh backing withdraw delta covers full unliened principal withdrawal"
+	 - Location: tests/proofs_v16.rs:5721:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 11: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:5727:9 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 12: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: bucket_after.fresh_unliened_backing_num == remaining * BOUND_SCALE"
+	 - Location: tests/proofs_v16.rs:5725:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 13: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: bucket_after.valid_liened_backing_num == BOUND_SCALE"
+	 - Location: tests/proofs_v16.rs:5729:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 14: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.8
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:5732:9 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 15: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.9
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:5732:9 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 16: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after.fresh_reserved_backing_num ==
+remaining * BOUND_SCALE + BOUND_SCALE"
+	 - Location: tests/proofs_v16.rs:5730:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 17: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.11
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after.valid_liened_backing_num == BOUND_SCALE"
+	 - Location: tests/proofs_v16.rs:5734:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 18: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after.provider_receivable_num == 0"
+	 - Location: tests/proofs_v16.rs:5735:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 19: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.13
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source_after.spent_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:5736:5 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 20: proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing.assertion.14
+	 - Status: SUCCESS
+	 - Description: "assertion failed: bucket_after.status == BackingBucketStatusV16::Fresh"
+	 - Location: tests/proofs_v16.rs:5738:9 in function proof_v16_counterparty_backing_withdraw_delta_debits_only_unliened_backing
+
+Check 21: percolator::v16::V16Core::prepare_counterparty_backing_withdraw_delta.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1369:20 in function percolator::v16::V16Core::prepare_counterparty_backing_withdraw_delta
+
+Check 22: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 23: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 24: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 25: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 26: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 27: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 28: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 29: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 30: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 31: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 32: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 33: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 34: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 35: std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap
+
+
+SUMMARY:
+ ** 0 of 33 failed
+
+ ** 2 of 2 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 20.541527s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

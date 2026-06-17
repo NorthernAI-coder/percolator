@@ -1,0 +1,6 @@
+[15:33:56] warming target/contracts cache (un-timed)...
+[15:35:47] cache warm.
+[15:39:35] composition_clear_leg_body_frame -> PASS (227s)
+=====
+harness                           wall_s  status
+composition_clear_leg_body_frame  227     PASS

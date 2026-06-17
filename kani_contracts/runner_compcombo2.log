@@ -1,0 +1,6 @@
+[14:41:47] warming target/contracts cache (un-timed)...
+[14:43:37] cache warm.
+[14:45:35] composition_attach_body_frame_division_stubbed -> PASS (117s)
+=====
+harness                                         wall_s  status
+composition_attach_body_frame_division_stubbed  117     PASS

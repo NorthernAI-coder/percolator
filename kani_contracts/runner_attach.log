@@ -1,0 +1,6 @@
+[19:53:49] warming target/contracts cache (un-timed)...
+[19:53:50] cache warm.
+[19:53:52] contract_check_kernel_attach_leg -> FAIL(1) (1s)
+=====
+harness                           wall_s  status
+contract_check_kernel_attach_leg  1       FAIL(1)

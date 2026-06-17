@@ -1360,6 +1360,39 @@ impl V16Core {
             && cert.active_bitmap_at_cert == account_bitmap
     }
 
+    /// PRODUCTION FIDELITY BUILDER (roadmap 3C step 3, A7 close-rank): map the
+    /// real resolved-close per-component signals to the compact rank summary that
+    /// kernel_resolved_close_progress classifies. Each rank flag is EXACTLY its
+    /// production predicate — b-stale bit, negative PnL, a live leg (non-empty
+    /// active bitmap), residual capital, an open receipt, and the explicit
+    /// recovery predicate — so the close-rank summary faithfully represents the
+    /// real account/market state (no hidden pending component outside it). Pure.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &ResolvedCloseRankV16| {
+        r.b_stale == b_stale
+            && r.negative_pnl == (pnl < 0)
+            && r.active_leg == !active_bitmap_is_empty(active_bitmap)
+            && r.capital == (capital > 0)
+            && r.receipt_claim == receipt_present
+            && r.recovery_required == recovery_required
+    }))]
+    pub(crate) fn build_resolved_close_rank(
+        b_stale: bool,
+        pnl: i128,
+        active_bitmap: V16ActiveBitmap,
+        capital: u128,
+        receipt_present: bool,
+        recovery_required: bool,
+    ) -> ResolvedCloseRankV16 {
+        ResolvedCloseRankV16 {
+            b_stale,
+            negative_pnl: pnl < 0,
+            active_leg: !active_bitmap_is_empty(active_bitmap),
+            capital: capital > 0,
+            receipt_claim: receipt_present,
+            recovery_required,
+        }
+    }
+
     /// PRODUCTION KERNEL (roadmap 3B.6, Pillar S/L S-A1 cap): the social-loss
     /// chunk cap — the bookable chunk is `min(residual_remaining, public chunk
     /// cap)`, so a single step books NO MORE than the outstanding residual and

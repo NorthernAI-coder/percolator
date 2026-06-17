@@ -1,0 +1,97 @@
+[15:40:09] (1/47) proof_v16_backing_domain_fee_split_for_lien_delta_is_exact_and_conservative -> SKIP (already done)
+[15:40:09] (2/47) proof_v16_backing_utilization_fee_is_capped_by_capital_and_conserves_ctot_to_earnings -> SKIP (already done)
+[15:40:09] (3/47) proof_v16_backing_utilization_fee_never_charges_negative_pnl_account -> SKIP (already done)
+[15:40:09] (4/47) proof_v16_backing_utilization_fee_quote_atoms_is_exact_floor_and_time_bounded -> SKIP (already done)
+[15:40:09] (5/47) proof_v16_batch_outcome_accumulator_is_exact_and_overflow_checked -> SKIP (already done)
+[15:40:09] (6/47) proof_v16_canonical_retired_asset_slot_preserves_identity_and_clears_local_ledgers -> SKIP (already done)
+[15:40:09] (7/47) proof_v16_duplicate_asset_legs_reject_before_double_counting_support -> SKIP (already done)
+[15:40:09] (8/47) proof_v16_fee_core_moves_current_capital_to_insurance_only -> SKIP (already done)
+[15:40:09] (9/47) proof_v16_final_batch_margin_gate_accepts_only_final_certified_im -> SKIP (already done)
+[15:40:09] (10/47) proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters -> SKIP (already done)
+[15:41:31] (11/47) proof_v16_frame_fee_charge_touches_only_declared_state -> PASS (cbmc=75.23432s wall=81s)
+[15:43:20] (12/47) proof_v16_frame_mark_drain_only_touches_only_declared_state -> PASS (cbmc=103.23141s wall=108s)
+[15:44:20] (13/47) proof_v16_frame_side_reset_touches_only_declared_state -> PASS (cbmc=54.529488s wall=59s)
+[15:45:09] (14/47) proof_v16_in_place_account_init_clears_hidden_risk_state_and_validates -> PASS (cbmc=42.42027s wall=47s)
+[15:45:34] (15/47) proof_v16_inductive_fee_core_preserves_senior_solvency_and_never_debits_insurance -> PASS (cbmc=20.596132s wall=24s)
+[15:49:19] (16/47) proof_v16_insolvent_resolved_receipt_clears_at_terminal_rate -> PASS (cbmc=217.39706s wall=223s)
+[15:49:31] (17/47) proof_v16_locked_trade_margin_gate_cannot_use_positive_pnl_credit -> PASS (cbmc=8.2227s wall=11s)
+[15:50:34] (18/47) proof_v16_loss_senior_fee_ordering_consumes_kf_loss_before_fee -> PASS (cbmc=55.309406s wall=62s)
+[15:50:38] (19/47) proof_v16_loss_stale_trade_scope_allows_only_unrelated_current_assets -> PASS (cbmc=0.024086038s wall=3s)
+[15:53:53] (20/47) proof_v16_mark_asset_drain_only_is_value_neutral_and_epoch_scoped -> PASS (cbmc=189.13623s wall=194s)
+[15:54:21] (21/47) proof_v16_pending_domain_loss_barrier_detects_touching_position_changes -> PASS (cbmc=22.603249s wall=27s)
+[15:54:25] (22/47) proof_v16_position_delta_risk_classifier_matches_abs_exposure_change -> PASS (cbmc=0.4890026s wall=3s)
+[16:01:32] (23/47) proof_v16_public_account_backing_fee_split_preserves_senior_stock -> PASS (cbmc=420.1162s wall=426s)
+[16:07:33] (24/47) proof_v16_public_backing_fee_charges_only_selected_domain -> PASS (cbmc=353.20496s wall=359s)
+[16:07:58] (25/47) proof_v16_public_finalize_side_reset_rejects_each_blocker_without_mutation -> PASS (cbmc=20.181767s wall=24s)
+[16:08:28] (26/47) proof_v16_public_finalize_side_reset_success_is_value_neutral -> PASS (cbmc=25.49579s wall=29s)
+[16:09:49] (27/47) proof_v16_public_market_activation_starts_domains_unfunded_and_value_neutral -> PASS (cbmc=75.59235s wall=80s)
+[16:12:50] (28/47) proof_v16_public_resolve_market_is_value_neutral_and_clears_loss_stale -> PASS (cbmc=174.74344s wall=179s)
+[16:14:30] (29/47) proof_v16_public_restart_asset_zero_preserves_only_selected_slot_in_two_slot_view -> PASS (cbmc=93.93015s wall=99s)
+[16:15:22] (30/47) proof_v16_public_restart_empty_asset_zero_preserves_budgets_and_senior_value -> PASS (cbmc=46.386913s wall=51s)
+[16:17:06] (31/47) proof_v16_public_restart_nonzero_asset_preserves_only_selected_slot_in_two_slot_view -> PASS (cbmc=97.82217s wall=103s)
+[16:17:53] (32/47) proof_v16_public_restart_rejects_spent_domain_before_mutation -> PASS (cbmc=40.972786s wall=46s)
+[16:22:53] (33/47) proof_v16_recovery_mode_blocks_fee_sync_and_pnl_conversion_before_mutation -> PASS (cbmc=291.2797s wall=299s)
+[16:23:07] (34/47) proof_v16_restart_empty_asset_core_preserves_budgets_and_assigns_fresh_market -> PASS (cbmc=9.56795s wall=13s)
+[16:28:18] (35/47) proof_v16_retire_empty_asset_is_value_neutral_and_epoch_scoped -> PASS (cbmc=304.7428s wall=310s)
+[16:31:04] (36/47) proof_v16_retire_nonempty_asset_rejects -> PASS (cbmc=159.6709s wall=165s)
+[16:31:42] (37/47) proof_v16_retired_slot_reactivation_accepts_only_empty_source_credit_amounts -> PASS (cbmc=33.398827s wall=37s)
+[16:35:15] (38/47) proof_v16_reused_asset_slot_rejects_stale_market_id_leg -> PASS (cbmc=206.47614s wall=212s)
+[16:37:06] (39/47) proof_v16_seq_two_fees_compound_exactly -> PASS (cbmc=105.3506s wall=110s)
+[16:37:10] (40/47) proof_v16_signed_trade_request_maps_to_opposite_account_deltas -> PASS (cbmc=0.2942889s wall=3s)
+[16:37:27] (41/47) proof_v16_symbolic_conservative_fee_profile_satisfies_mm_envelope_on_small_notionals -> PASS (cbmc=13.119431s wall=16s)
+[16:38:23] (42/47) proof_v16_trade_fee_helper_does_not_charge_negative_pnl_account -> PASS (cbmc=50.571575s wall=54s)
+[16:39:18] (43/47) proof_v16_trade_fee_helper_moves_capital_to_insurance_only -> PASS (cbmc=49.226173s wall=53s)
+[16:39:23] (44/47) proof_v16_trade_preflight_risk_gate_blocks_only_unsafe_risk_increase -> PASS (cbmc=0.7719825s wall=4s)
+[16:43:50] (45/47) proof_v16_view_fee_sync_settles_negative_pnl_before_fee -> PASS (cbmc=258.2533s wall=266s)
+[16:43:55] (46/47) proof_v16_view_trade_position_delta_preserves_oi_symmetry -> PASS (cbmc=0.9473195s wall=4s)
+[16:44:02] (47/47) proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome -> PASS (cbmc=2.7665844s wall=6s)
+=====
+proof                                                                                  cbmc_time_s  wall_s  status
+proof_v16_backing_domain_fee_split_for_lien_delta_is_exact_and_conservative            20.81502     24      PASS
+proof_v16_backing_utilization_fee_is_capped_by_capital_and_conserves_ctot_to_earnings  2.0022826    5       PASS
+proof_v16_backing_utilization_fee_never_charges_negative_pnl_account                   0.27412653   3       PASS
+proof_v16_backing_utilization_fee_quote_atoms_is_exact_floor_and_time_bounded          35.001846    39      PASS
+proof_v16_batch_outcome_accumulator_is_exact_and_overflow_checked                      0.5620403    3       PASS
+proof_v16_canonical_retired_asset_slot_preserves_identity_and_clears_local_ledgers     3.0363657    6       PASS
+proof_v16_duplicate_asset_legs_reject_before_double_counting_support                   142.45924    148     PASS
+proof_v16_fee_core_moves_current_capital_to_insurance_only                             31.152693    35      PASS
+proof_v16_final_batch_margin_gate_accepts_only_final_certified_im                      6.0827904    9       PASS
+proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters           11.516209    14      PASS
+proof_v16_frame_fee_charge_touches_only_declared_state                                 75.23432     81      PASS
+proof_v16_frame_mark_drain_only_touches_only_declared_state                            103.23141    108     PASS
+proof_v16_frame_side_reset_touches_only_declared_state                                 54.529488    59      PASS
+proof_v16_in_place_account_init_clears_hidden_risk_state_and_validates                 42.42027     47      PASS
+proof_v16_inductive_fee_core_preserves_senior_solvency_and_never_debits_insurance      20.596132    24      PASS
+proof_v16_insolvent_resolved_receipt_clears_at_terminal_rate                           217.39706    223     PASS
+proof_v16_locked_trade_margin_gate_cannot_use_positive_pnl_credit                      8.2227       11      PASS
+proof_v16_loss_senior_fee_ordering_consumes_kf_loss_before_fee                         55.309406    62      PASS
+proof_v16_loss_stale_trade_scope_allows_only_unrelated_current_assets                  0.024086038  3       PASS
+proof_v16_mark_asset_drain_only_is_value_neutral_and_epoch_scoped                      189.13623    194     PASS
+proof_v16_pending_domain_loss_barrier_detects_touching_position_changes                22.603249    27      PASS
+proof_v16_position_delta_risk_classifier_matches_abs_exposure_change                   0.4890026    3       PASS
+proof_v16_public_account_backing_fee_split_preserves_senior_stock                      420.1162     426     PASS
+proof_v16_public_backing_fee_charges_only_selected_domain                              353.20496    359     PASS
+proof_v16_public_finalize_side_reset_rejects_each_blocker_without_mutation             20.181767    24      PASS
+proof_v16_public_finalize_side_reset_success_is_value_neutral                          25.49579     29      PASS
+proof_v16_public_market_activation_starts_domains_unfunded_and_value_neutral           75.59235     80      PASS
+proof_v16_public_resolve_market_is_value_neutral_and_clears_loss_stale                 174.74344    179     PASS
+proof_v16_public_restart_asset_zero_preserves_only_selected_slot_in_two_slot_view      93.93015     99      PASS
+proof_v16_public_restart_empty_asset_zero_preserves_budgets_and_senior_value           46.386913    51      PASS
+proof_v16_public_restart_nonzero_asset_preserves_only_selected_slot_in_two_slot_view   97.82217     103     PASS
+proof_v16_public_restart_rejects_spent_domain_before_mutation                          40.972786    46      PASS
+proof_v16_recovery_mode_blocks_fee_sync_and_pnl_conversion_before_mutation             291.2797     299     PASS
+proof_v16_restart_empty_asset_core_preserves_budgets_and_assigns_fresh_market          9.56795      13      PASS
+proof_v16_retire_empty_asset_is_value_neutral_and_epoch_scoped                         304.7428     310     PASS
+proof_v16_retire_nonempty_asset_rejects                                                159.6709     165     PASS
+proof_v16_retired_slot_reactivation_accepts_only_empty_source_credit_amounts           33.398827    37      PASS
+proof_v16_reused_asset_slot_rejects_stale_market_id_leg                                206.47614    212     PASS
+proof_v16_seq_two_fees_compound_exactly                                                105.3506     110     PASS
+proof_v16_signed_trade_request_maps_to_opposite_account_deltas                         0.2942889    3       PASS
+proof_v16_symbolic_conservative_fee_profile_satisfies_mm_envelope_on_small_notionals   13.119431    16      PASS
+proof_v16_trade_fee_helper_does_not_charge_negative_pnl_account                        50.571575    54      PASS
+proof_v16_trade_fee_helper_moves_capital_to_insurance_only                             49.226173    53      PASS
+proof_v16_trade_preflight_risk_gate_blocks_only_unsafe_risk_increase                   0.7719825    4       PASS
+proof_v16_view_fee_sync_settles_negative_pnl_before_fee                                258.2533     266     PASS
+proof_v16_view_trade_position_delta_preserves_oi_symmetry                              0.9473195    4       PASS
+proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome       2.7665844    6       PASS
+=====

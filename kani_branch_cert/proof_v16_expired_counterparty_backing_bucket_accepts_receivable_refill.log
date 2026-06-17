@@ -1,0 +1,455 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.92s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.02s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-f6a9491baeb01fbc__RNvCs35DYgTG8RvC_10proofs_v1671proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap thread 0
+Runtime Symex: 0.066683s
+size of program expression: 5116 steps
+slicing removed 3230 assignments
+Generated 86 VCC(s), 42 remaining after simplification
+Runtime Postprocess Equation: 0.000628553s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.00807761s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 4.957e-06s
+Solving with CaDiCaL 2.0.0
+21973 variables, 33206 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00205057s
+Runtime decision procedure: 0.0104334s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+21974 variables, 33207 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00245868s
+Runtime decision procedure: 0.00254486s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+21975 variables, 33208 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.0255649s
+Runtime decision procedure: 0.0256107s
+
+RESULTS:
+Check 1: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 2: core::num::<impl u128>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u128>::checked_add
+
+Check 3: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 4: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 5: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.cover.1
+	 - Status: SATISFIED
+	 - Description: "partial expired-bucket refill"
+	 - Location: tests/proofs_v16.rs:10864:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 6: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.cover.2
+	 - Status: SATISFIED
+	 - Description: "complete expired-bucket refill"
+	 - Location: tests/proofs_v16.rs:10865:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 7: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_bucket.status == BackingBucketStatusV16::Fresh"
+	 - Location: tests/proofs_v16.rs:10866:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 8: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.2
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_bucket.expiry_slot == 20"
+	 - Location: tests/proofs_v16.rs:10867:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 9: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10868:57 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 10: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.4
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_bucket.consumed_liened_backing_num == receivable - refill"
+	 - Location: tests/proofs_v16.rs:10868:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 11: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:10869:53 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 12: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_source.provider_receivable_num == receivable - refill"
+	 - Location: tests/proofs_v16.rs:10869:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 13: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_bucket.fresh_unliened_backing_num == amount"
+	 - Location: tests/proofs_v16.rs:10870:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 14: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_bucket.valid_liened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:10871:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 15: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.9
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_bucket.impaired_liened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:10872:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 16: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_source.fresh_reserved_backing_num == amount"
+	 - Location: tests/proofs_v16.rs:10873:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 17: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.11
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_source.spent_backing_num == receivable"
+	 - Location: tests/proofs_v16.rs:10874:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 18: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_source.valid_liened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:10875:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 19: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.13
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_source.impaired_liened_backing_num == 0"
+	 - Location: tests/proofs_v16.rs:10876:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 20: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.14
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_source.credit_rate_num == CREDIT_RATE_SCALE"
+	 - Location: tests/proofs_v16.rs:10877:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 21: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.15
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:10879:9 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 22: proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill.assertion.16
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_source.provider_receivable_num + refill == next_source.spent_backing_num"
+	 - Location: tests/proofs_v16.rs:10878:5 in function proof_v16_expired_counterparty_backing_bucket_accepts_receivable_refill
+
+Check 23: std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap
+
+Check 24: percolator::v16::V16Core::prepare_counterparty_backing_add_delta.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1330:9 in function percolator::v16::V16Core::prepare_counterparty_backing_add_delta
+
+Check 25: percolator::v16::V16Core::prepare_counterparty_backing_add_delta.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: src/v16.rs:1331:9 in function percolator::v16::V16Core::prepare_counterparty_backing_add_delta
+
+Check 26: percolator::v16::V16Core::prepare_counterparty_backing_add_delta.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::V16Core::prepare_counterparty_backing_add_delta
+
+Check 27: percolator::v16::V16Core::prepare_counterparty_backing_add_delta.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1316:20 in function percolator::v16::V16Core::prepare_counterparty_backing_add_delta
+
+Check 28: percolator::v16::V16Core::prepare_counterparty_backing_add_delta.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1324:25 in function percolator::v16::V16Core::prepare_counterparty_backing_add_delta
+
+Check 29: percolator::v16::V16Core::prepare_counterparty_backing_add_delta.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1328:20 in function percolator::v16::V16Core::prepare_counterparty_backing_add_delta
+
+Check 30: percolator::v16::V16Core::prepare_counterparty_backing_add_delta.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1311:20 in function percolator::v16::V16Core::prepare_counterparty_backing_add_delta
+
+Check 31: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 32: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 33: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 34: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 35: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 36: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 37: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 38: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 39: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 40: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 41: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 42: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 43: std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error>::unwrap
+
+Check 44: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 45: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 46: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 47: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 48: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 49: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 50: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 51: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 52: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 53: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 54: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 55: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 56: <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1989:30 in function <percolator::BackingBucketStatusV16 as std::cmp::PartialEq>::eq
+
+Check 57: <std::result::Result<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2184:23 in function <std::result::Result<(percolator::BackingBucketV16, percolator::SourceCreditStateV16), percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual
+
+
+SUMMARY:
+ ** 0 of 55 failed
+
+ ** 2 of 2 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 0.32752025s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

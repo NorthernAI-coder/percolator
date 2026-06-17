@@ -1,0 +1,6 @@
+[20:58:31] warming target/legs2 cache (un-timed)...
+[21:00:13] cache warm.
+[21:30:14] reducedlegs_clear_leg_direct_body_frame -> TIMEOUT (1800s)
+=====
+harness                                  wall_s  status
+reducedlegs_clear_leg_direct_body_frame  1800    TIMEOUT

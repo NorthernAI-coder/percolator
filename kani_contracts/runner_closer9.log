@@ -1,0 +1,6 @@
+[22:08:14] warming target/contracts cache (un-timed)...
+[22:10:04] cache warm.
+[22:17:14] closure_kernel_advance_close_ledger_rank_witness -> PASS (429s)
+=====
+harness                                           wall_s  status
+closure_kernel_advance_close_ledger_rank_witness  429     PASS

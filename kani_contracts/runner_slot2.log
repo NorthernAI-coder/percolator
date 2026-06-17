@@ -1,0 +1,7 @@
+[14:25:19] warming target/contracts cache (un-timed)...
+[14:27:08] cache warm.
+[14:27:15] closure_restarted_slot_preserves_budget_witness -> PASS (6s)
+=====
+harness                                          wall_s  status
+contract_check_asset_restart_next_counters       4       PASS
+closure_restarted_slot_preserves_budget_witness  6       PASS

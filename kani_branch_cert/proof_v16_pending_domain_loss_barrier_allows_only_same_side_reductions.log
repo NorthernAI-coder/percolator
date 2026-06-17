@@ -1,0 +1,234 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.92s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.90s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-9dfe23ad15985319__RNvCs35DYgTG8RvC_10proofs_v1670proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+Runtime Symex: 0.0159561s
+size of program expression: 1843 steps
+slicing removed 798 assignments
+Generated 20 VCC(s), 20 remaining after simplification
+Runtime Postprocess Equation: 0.000247381s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.00994812s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 6.53e-06s
+Solving with CaDiCaL 2.0.0
+20213 variables, 57667 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00478202s
+Runtime decision procedure: 0.014954s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+20214 variables, 57668 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0173721s
+Runtime decision procedure: 0.0174673s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+20215 variables, 57669 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0169201s
+Runtime decision procedure: 0.0170121s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+20216 variables, 57670 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00336625s
+Runtime decision procedure: 0.00345699s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+20217 variables, 57671 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00254358s
+Runtime decision procedure: 0.00261047s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+20218 variables, 57672 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0108721s
+Runtime decision procedure: 0.0109542s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+20219 variables, 57673 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.218274s
+Runtime decision procedure: 0.218307s
+
+RESULTS:
+Check 1: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.cover.1
+	 - Status: SATISFIED
+	 - Description: "pending-domain barrier blocks opening new touched risk"
+	 - Location: tests/proofs_v16.rs:3615:5 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 2: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.cover.2
+	 - Status: SATISFIED
+	 - Description: "pending-domain barrier blocks same-side risk increase"
+	 - Location: tests/proofs_v16.rs:3619:5 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 3: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.cover.3
+	 - Status: SATISFIED
+	 - Description: "pending-domain barrier blocks side flips"
+	 - Location: tests/proofs_v16.rs:3627:5 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 4: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.cover.4
+	 - Status: SATISFIED
+	 - Description: "pending-domain barrier permits flat obligation"
+	 - Location: tests/proofs_v16.rs:3635:5 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 5: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.cover.5
+	 - Status: SATISFIED
+	 - Description: "pending-domain barrier permits same-side risk reduction"
+	 - Location: tests/proofs_v16.rs:3639:5 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 6: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.cover.6
+	 - Status: SATISFIED
+	 - Description: "pending-domain barrier ignores unrelated position changes"
+	 - Location: tests/proofs_v16.rs:3643:5 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 7: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: blocked == touches_barrier && !same_side_reduction_or_flat"
+	 - Location: tests/proofs_v16.rs:3647:5 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 8: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.assertion.2
+	 - Status: SUCCESS
+	 - Description: "assertion failed: !blocked"
+	 - Location: tests/proofs_v16.rs:3649:9 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 9: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.assertion.3
+	 - Status: SUCCESS
+	 - Description: "assertion failed: blocked"
+	 - Location: tests/proofs_v16.rs:3652:9 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+Check 10: proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions.assertion.4
+	 - Status: SUCCESS
+	 - Description: "assertion failed: blocked"
+	 - Location: tests/proofs_v16.rs:3655:9 in function proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions
+
+
+SUMMARY:
+ ** 0 of 4 failed
+
+ ** 6 of 6 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 0.42252094s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

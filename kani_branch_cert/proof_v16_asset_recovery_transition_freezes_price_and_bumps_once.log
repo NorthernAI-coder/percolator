@@ -1,0 +1,2935 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.02s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_asset_recovery_transition_freezes_price_and_bumps_once...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-4e98609067f29ba5__RNvCs35DYgTG8RvC_10proofs_v1664proof_v16_asset_recovery_transition_freezes_price_and_bumps_once.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u64>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u64>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::V16Core::prepare_asset_recovery_transition thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(percolator::AssetStateV16, u64, u64), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(percolator::AssetStateV16, u64, u64), percolator::V16Error>::unwrap thread 0
+Runtime Symex: 0.20607s
+size of program expression: 11293 steps
+slicing removed 7742 assignments
+Generated 574 VCC(s), 21 remaining after simplification
+Runtime Postprocess Equation: 0.00371493s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.0255615s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.368e-06s
+Solving with CaDiCaL 2.0.0
+73745 variables, 98106 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0199862s
+Runtime decision procedure: 0.0463921s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+73746 variables, 98107 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00200404s
+Runtime decision procedure: 0.00230472s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+73747 variables, 98108 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.000298187s
+Runtime decision procedure: 0.000496344s
+
+RESULTS:
+Check 1: core::num::<impl u64>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u64>::checked_add
+
+Check 2: <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch
+
+Check 3: percolator::v16::V16Core::prepare_asset_recovery_transition.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::V16Core::prepare_asset_recovery_transition
+
+Check 4: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 5: <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::contains::<u16>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::contains::<u16>
+
+Check 6: std::option::Option::<u64>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u64>::ok_or::<percolator::V16Error>
+
+Check 7: std::result::Result::<(percolator::AssetStateV16, u64, u64), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::AssetStateV16, u64, u64), percolator::V16Error>::unwrap
+
+Check 8: proof_v16_asset_recovery_transition_freezes_price_and_bumps_once.cover.1
+	 - Status: SATISFIED
+	 - Description: "asset recovery transition covers drain-only asset with nontrivial price"
+	 - Location: tests/proofs_v16.rs:734:5 in function proof_v16_asset_recovery_transition_freezes_price_and_bumps_once
+
+Check 9: proof_v16_asset_recovery_transition_freezes_price_and_bumps_once.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next == asset"
+	 - Location: tests/proofs_v16.rs:738:5 in function proof_v16_asset_recovery_transition_freezes_price_and_bumps_once
+
+Check 10: proof_v16_asset_recovery_transition_freezes_price_and_bumps_once.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:739:38 in function proof_v16_asset_recovery_transition_freezes_price_and_bumps_once
+
+Check 11: proof_v16_asset_recovery_transition_freezes_price_and_bumps_once.assertion.3
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_asset_set_epoch == asset_set_epoch as u64 + 1"
+	 - Location: tests/proofs_v16.rs:739:5 in function proof_v16_asset_recovery_transition_freezes_price_and_bumps_once
+
+Check 12: proof_v16_asset_recovery_transition_freezes_price_and_bumps_once.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:740:33 in function proof_v16_asset_recovery_transition_freezes_price_and_bumps_once
+
+Check 13: proof_v16_asset_recovery_transition_freezes_price_and_bumps_once.assertion.5
+	 - Status: SUCCESS
+	 - Description: "assertion failed: next_risk_epoch == risk_epoch as u64 + 1"
+	 - Location: tests/proofs_v16.rs:740:5 in function proof_v16_asset_recovery_transition_freezes_price_and_bumps_once
+
+Check 14: <std::result::Result<(percolator::AssetStateV16, u64, u64), percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2184:23 in function <std::result::Result<(percolator::AssetStateV16, u64, u64), percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual
+
+Check 15: std::result::Result::<(percolator::AssetStateV16, u64, u64), percolator::V16Error>::unwrap.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(percolator::AssetStateV16, u64, u64), percolator::V16Error>::unwrap
+
+Check 16: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 17: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 18: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 19: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 20: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 21: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 22: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 23: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 24: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 25: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 26: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 27: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::le
+
+Check 28: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 29: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 30: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 31: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 32: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 33: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 34: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 35: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 36: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 37: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 38: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 39: <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1971:30 in function <percolator::AssetLifecycleV16 as std::cmp::PartialEq>::eq
+
+Check 40: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 41: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 42: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 43: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 44: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 45: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 46: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 47: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 48: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 49: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 50: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 51: std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u16>::lt
+
+Check 52: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 53: percolator::v16::V16Core::prepare_asset_recovery_transition.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:368:18 in function percolator::v16::V16Core::prepare_asset_recovery_transition
+
+Check 54: percolator::v16::V16Core::prepare_asset_recovery_transition.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:357:28 in function percolator::v16::V16Core::prepare_asset_recovery_transition
+
+Check 55: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 56: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 57: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 58: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 59: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 60: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 61: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 62: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 63: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 64: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 65: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 66: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::le
+
+Check 67: <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound
+
+Check 68: <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound
+
+Check 69: <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound
+
+Check 70: <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound
+
+Check 71: <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound
+
+Check 72: <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u16> as std::ops::RangeBounds<u16>>::end_bound
+
+Check 73: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 74: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 75: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 76: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 77: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 78: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 79: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 80: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 81: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 82: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 83: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 84: <percolator::SideModeV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1964:30 in function <percolator::SideModeV16 as std::cmp::PartialEq>::eq
+
+Check 85: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 86: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 87: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 88: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 89: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 90: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 91: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 92: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 93: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 94: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 95: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 96: std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u16>::lt
+
+Check 97: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 98: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 99: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 100: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 101: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 102: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 103: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 104: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 105: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 106: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 107: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 108: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2590:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 109: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 110: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 111: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 112: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 113: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 114: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 115: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 116: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 117: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 118: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 119: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 120: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2591:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 121: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 122: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 123: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 124: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 125: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 126: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 127: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 128: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 129: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 130: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 131: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 132: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2593:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 133: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 134: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 135: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 136: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 137: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 138: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 139: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 140: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 141: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 142: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 143: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 144: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2594:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 145: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 146: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 147: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 148: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 149: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 150: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 151: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 152: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 153: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 154: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 155: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 156: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2595:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 157: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 158: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 159: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 160: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 161: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 162: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 163: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.67
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 164: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.68
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 165: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.69
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 166: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.70
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 167: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.71
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 168: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.72
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2596:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 169: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.73
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 170: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.74
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 171: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.75
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 172: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.76
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 173: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.77
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 174: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.78
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 175: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.79
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 176: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.80
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 177: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.81
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 178: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.82
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 179: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.83
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 180: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.84
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2597:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 181: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.85
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 182: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.86
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 183: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.87
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 184: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.88
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 185: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.89
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 186: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.90
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 187: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.91
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 188: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.92
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 189: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.93
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 190: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.94
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 191: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.95
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 192: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.96
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2598:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 193: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.97
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 194: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.98
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 195: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.99
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 196: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.100
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 197: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.101
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 198: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.102
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 199: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.103
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 200: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.104
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 201: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.105
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 202: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.106
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 203: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.107
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 204: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.108
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2599:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 205: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.109
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 206: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.110
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 207: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.111
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 208: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.112
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 209: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.113
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 210: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.114
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 211: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.115
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 212: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.116
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 213: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.117
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 214: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.118
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 215: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.119
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 216: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.120
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2600:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 217: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.121
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 218: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.122
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 219: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.123
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 220: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.124
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 221: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.125
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 222: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.126
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 223: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.127
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 224: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.128
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 225: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.129
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 226: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.130
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 227: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.131
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 228: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.132
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2601:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 229: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.133
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 230: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.134
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 231: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.135
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 232: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.136
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 233: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.137
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 234: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.138
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 235: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.139
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 236: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.140
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 237: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.141
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 238: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.142
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 239: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.143
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 240: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.144
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2602:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 241: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.145
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 242: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.146
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 243: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.147
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 244: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.148
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 245: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.149
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 246: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.150
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 247: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.151
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 248: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.152
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 249: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.153
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 250: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.154
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 251: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.155
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 252: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.156
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2603:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 253: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.157
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 254: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.158
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 255: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.159
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 256: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.160
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 257: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.161
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 258: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.162
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 259: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.163
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 260: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.164
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 261: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.165
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 262: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.166
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 263: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.167
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 264: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.168
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2604:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 265: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.169
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 266: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.170
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 267: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.171
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 268: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.172
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 269: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.173
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 270: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.174
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 271: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.175
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 272: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.176
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 273: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.177
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 274: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.178
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 275: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.179
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 276: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.180
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2605:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 277: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.181
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 278: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.182
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 279: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.183
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 280: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.184
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 281: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.185
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 282: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.186
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 283: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.187
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 284: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.188
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 285: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.189
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 286: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.190
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 287: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.191
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 288: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.192
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2606:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 289: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.193
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 290: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.194
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 291: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.195
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 292: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.196
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 293: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.197
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 294: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.198
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 295: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.199
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 296: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.200
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 297: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.201
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 298: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.202
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 299: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.203
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 300: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.204
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2607:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 301: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.205
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 302: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.206
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 303: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.207
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 304: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.208
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 305: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.209
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 306: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.210
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 307: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.211
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 308: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.212
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 309: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.213
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 310: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.214
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 311: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.215
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 312: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.216
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2608:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 313: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.217
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 314: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.218
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 315: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.219
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 316: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.220
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 317: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.221
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 318: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.222
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 319: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.223
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 320: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.224
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 321: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.225
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 322: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.226
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 323: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.227
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 324: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.228
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2609:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 325: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.229
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 326: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.230
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 327: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.231
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 328: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.232
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 329: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.233
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 330: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.234
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 331: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.235
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 332: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.236
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 333: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.237
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 334: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.238
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 335: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.239
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 336: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.240
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2610:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 337: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.241
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 338: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.242
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 339: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.243
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 340: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.244
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 341: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.245
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 342: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.246
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 343: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.247
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 344: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.248
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 345: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.249
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 346: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.250
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 347: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.251
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 348: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.252
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2611:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 349: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.253
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 350: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.254
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 351: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.255
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 352: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.256
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 353: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.257
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 354: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.258
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 355: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.259
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 356: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.260
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 357: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.261
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 358: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.262
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 359: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.263
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 360: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.264
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2612:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 361: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.265
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 362: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.266
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 363: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.267
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 364: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.268
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 365: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.269
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 366: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.270
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 367: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.271
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 368: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.272
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 369: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.273
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 370: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.274
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 371: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.275
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 372: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.276
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2613:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 373: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.277
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 374: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.278
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 375: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.279
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 376: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.280
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 377: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.281
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 378: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.282
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 379: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.283
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 380: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.284
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 381: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.285
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 382: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.286
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 383: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.287
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 384: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.288
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2614:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 385: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.289
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 386: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.290
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 387: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.291
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 388: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.292
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 389: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.293
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 390: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.294
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 391: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.295
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 392: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.296
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 393: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.297
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 394: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.298
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 395: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.299
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 396: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.300
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2615:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 397: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.301
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 398: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.302
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 399: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.303
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 400: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.304
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 401: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.305
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 402: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.306
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 403: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.307
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 404: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.308
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 405: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.309
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 406: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.310
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 407: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.311
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 408: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.312
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2616:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 409: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.313
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 410: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.314
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 411: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.315
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 412: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.316
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 413: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.317
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 414: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.318
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 415: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.319
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 416: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.320
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 417: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.321
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 418: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.322
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 419: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.323
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 420: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.324
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2617:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 421: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.325
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 422: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.326
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 423: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.327
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 424: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.328
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 425: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.329
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 426: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.330
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 427: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.331
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 428: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.332
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 429: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.333
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 430: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.334
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 431: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.335
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 432: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.336
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2618:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 433: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.337
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 434: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.338
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 435: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.339
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 436: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.340
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 437: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.341
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 438: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.342
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 439: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.343
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 440: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.344
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 441: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.345
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 442: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.346
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 443: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.347
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 444: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.348
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2619:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 445: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.349
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 446: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.350
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 447: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.351
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 448: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.352
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 449: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.353
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 450: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.354
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 451: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.355
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 452: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.356
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 453: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.357
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 454: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.358
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 455: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.359
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 456: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.360
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2620:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 457: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.361
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 458: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.362
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 459: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.363
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 460: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.364
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 461: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.365
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 462: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.366
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 463: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.367
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 464: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.368
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 465: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.369
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 466: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.370
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 467: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.371
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 468: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.372
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2621:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 469: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.373
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 470: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.374
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 471: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.375
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 472: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.376
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 473: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.377
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 474: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.378
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 475: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.379
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 476: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.380
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 477: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.381
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 478: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.382
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 479: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.383
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 480: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.384
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2622:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 481: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.385
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 482: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.386
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 483: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.387
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 484: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.388
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 485: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.389
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 486: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.390
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 487: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.391
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 488: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.392
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 489: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.393
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 490: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.394
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 491: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.395
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 492: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.396
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2623:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 493: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.397
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 494: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.398
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 495: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.399
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 496: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.400
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 497: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.401
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 498: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.402
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 499: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.403
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 500: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.404
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 501: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.405
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 502: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.406
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 503: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.407
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 504: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.408
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2624:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 505: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.409
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 506: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.410
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 507: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.411
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 508: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.412
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 509: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.413
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 510: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.414
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 511: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.415
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 512: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.416
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 513: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.417
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 514: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.418
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 515: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.419
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 516: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.420
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2625:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 517: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.421
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 518: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.422
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 519: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.423
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 520: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.424
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 521: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.425
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 522: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.426
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 523: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.427
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 524: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.428
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 525: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.429
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 526: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.430
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 527: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.431
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 528: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.432
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2626:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 529: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.433
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 530: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.434
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 531: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.435
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 532: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.436
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 533: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.437
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 534: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.438
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 535: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.439
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 536: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.440
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 537: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.441
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 538: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.442
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 539: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.443
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 540: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.444
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2627:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 541: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.445
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 542: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.446
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 543: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.447
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 544: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.448
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 545: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.449
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 546: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.450
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 547: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.451
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 548: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.452
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 549: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.453
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 550: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.454
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 551: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.455
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+Check 552: <percolator::AssetStateV16 as std::cmp::PartialEq>::eq.pointer_dereference.456
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:2628:5 in function <percolator::AssetStateV16 as std::cmp::PartialEq>::eq
+
+
+SUMMARY:
+ ** 0 of 551 failed
+
+ ** 1 of 1 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 0.48984918s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

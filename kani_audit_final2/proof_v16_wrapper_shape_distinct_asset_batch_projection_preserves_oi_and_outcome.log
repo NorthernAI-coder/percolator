@@ -1,0 +1,1600 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.93s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.04s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused import: `BOUND_SCALE`
+  --> tests/rounding_residue_fuzz.rs:11:18
+   |
+11 | use percolator::{BOUND_SCALE, CREDIT_RATE_SCALE, POS_SCALE};
+   |                  ^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-706bcd001b3d0df0__RNvCs35DYgTG8RvC_10proofs_v1680proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<i128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<i128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16.rs line 10448 column 30 function percolator::MarketGroupV16ViewMut::<'_, u64>::trade_signed_size_deltas thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(u128, i128, i128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(u128, i128, i128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<i128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<i128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16.rs line 10448 column 30 function percolator::MarketGroupV16ViewMut::<'_, u64>::trade_signed_size_deltas thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(u128, i128, i128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(u128, i128, i128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::add_open_interest_for_new_position thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u64>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u64>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::add_open_interest_for_new_position thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::add_open_interest_for_new_position thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u64>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u64>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::v16::add_open_interest_for_new_position thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2359 column 15 function <std::option::Option<i128> as std::cmp::PartialEq>::eq thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 2359 column 15 function <std::option::Option<i128> as std::cmp::PartialEq>::eq thread 0
+Runtime Symex: 0.483792s
+size of program expression: 31480 steps
+slicing removed 24899 assignments
+Generated 777 VCC(s), 129 remaining after simplification
+Runtime Postprocess Equation: 0.0128396s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.0630774s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 7.191e-06s
+Solving with CaDiCaL 2.0.0
+94667 variables, 184687 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0358642s
+Runtime decision procedure: 0.100471s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+94668 variables, 184688 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0052915s
+Runtime decision procedure: 0.00584402s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+94669 variables, 184689 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0535658s
+Runtime decision procedure: 0.054029s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+94670 variables, 184690 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00785355s
+Runtime decision procedure: 0.00842728s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+94671 variables, 184691 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.0171732s
+Runtime decision procedure: 0.0175536s
+
+RESULTS:
+Check 1: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 2: <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u64, percolator::V16Error> as std::ops::Try>::branch
+
+Check 3: std::option::Option::<u64>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u64>::ok_or::<percolator::V16Error>
+
+Check 4: percolator::v16::add_open_interest_for_new_position.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::v16::add_open_interest_for_new_position
+
+Check 5: core::num::<impl i128>::overflowing_neg.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to negate with overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/int_macros.rs:2890:18 in function core::num::<impl i128>::overflowing_neg
+
+Check 6: core::num::<impl u64>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u64>::checked_add
+
+Check 7: std::result::Result::<(u128, i128, i128), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(u128, i128, i128), percolator::V16Error>::unwrap
+
+Check 8: core::num::<impl u128>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u128>::checked_add
+
+Check 9: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:3297:14 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 10: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:3298:14 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 11: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to negate with overflow"
+	 - Location: tests/proofs_v16.rs:3302:9 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 12: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to negate with overflow"
+	 - Location: tests/proofs_v16.rs:3307:9 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 13: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.cover.1
+	 - Status: SATISFIED
+	 - Description: "wrapper-shape batch projection covers mixed long/short spread with nonzero fees"
+	 - Location: tests/proofs_v16.rs:3379:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 14: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.cover.2
+	 - Status: SATISFIED
+	 - Description: "wrapper-shape batch projection covers inverse spread and asymmetric risk flag"
+	 - Location: tests/proofs_v16.rs:3383:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 15: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.cover.3
+	 - Status: SATISFIED
+	 - Description: "wrapper-shape batch projection covers independent source-claim flag aggregation"
+	 - Location: tests/proofs_v16.rs:3387:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 16: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.5
+	 - Status: SUCCESS
+	 - Description: "assertion failed: side_a0 != side_b0"
+	 - Location: tests/proofs_v16.rs:3391:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 17: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: side_a1 != side_b1"
+	 - Location: tests/proofs_v16.rs:3392:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 18: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: delta_a0.checked_add(delta_b0) == Some(0)"
+	 - Location: tests/proofs_v16.rs:3393:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 19: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: delta_a1.checked_add(delta_b1) == Some(0)"
+	 - Location: tests/proofs_v16.rs:3394:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 20: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.9
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset0.oi_eff_long_q == q0"
+	 - Location: tests/proofs_v16.rs:3395:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 21: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.10
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset0.oi_eff_short_q == q0"
+	 - Location: tests/proofs_v16.rs:3396:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 22: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.11
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset1.oi_eff_long_q == q1"
+	 - Location: tests/proofs_v16.rs:3397:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 23: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset1.oi_eff_short_q == q1"
+	 - Location: tests/proofs_v16.rs:3398:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 24: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.13
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset0.loss_weight_sum_long == loss_weight0"
+	 - Location: tests/proofs_v16.rs:3399:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 25: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.14
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset0.loss_weight_sum_short == loss_weight0"
+	 - Location: tests/proofs_v16.rs:3400:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 26: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.15
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset1.loss_weight_sum_long == loss_weight1"
+	 - Location: tests/proofs_v16.rs:3401:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 27: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.16
+	 - Status: SUCCESS
+	 - Description: "assertion failed: asset1.loss_weight_sum_short == loss_weight1"
+	 - Location: tests/proofs_v16.rs:3402:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 28: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.17
+	 - Status: SUCCESS
+	 - Description: "assertion failed: outcome.fill_count == 2"
+	 - Location: tests/proofs_v16.rs:3403:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 29: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.18
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:3404:31 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 30: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.19
+	 - Status: SUCCESS
+	 - Description: "assertion failed: outcome.fee_a == fee_a0 as u128 + fee_a1 as u128"
+	 - Location: tests/proofs_v16.rs:3404:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 31: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.20
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:3405:31 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 32: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.21
+	 - Status: SUCCESS
+	 - Description: "assertion failed: outcome.fee_b == fee_b0 as u128 + fee_b1 as u128"
+	 - Location: tests/proofs_v16.rs:3405:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 33: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.22
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: tests/proofs_v16.rs:3406:34 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 34: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.23
+	 - Status: SUCCESS
+	 - Description: "assertion failed: outcome.notional == notional0 as u128 + notional1 as u128"
+	 - Location: tests/proofs_v16.rs:3406:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 35: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.24
+	 - Status: SUCCESS
+	 - Description: "assertion failed: risk_increasing == risk0 || risk1"
+	 - Location: tests/proofs_v16.rs:3407:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 36: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.25
+	 - Status: SUCCESS
+	 - Description: "assertion failed: long_has_source_claims == long_claim0 || long_claim1"
+	 - Location: tests/proofs_v16.rs:3408:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 37: proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome.assertion.26
+	 - Status: SUCCESS
+	 - Description: "assertion failed: short_has_source_claims == short_claim0 || short_claim1"
+	 - Location: tests/proofs_v16.rs:3409:5 in function proof_v16_wrapper_shape_distinct_asset_batch_projection_preserves_oi_and_outcome
+
+Check 38: <std::result::Result<i128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<i128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 39: std::option::Option::<i128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<i128>::ok_or::<percolator::V16Error>
+
+Check 40: std::result::Result::<(), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(), percolator::V16Error>::unwrap
+
+Check 41: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 42: <std::option::Option<i128> as std::cmp::PartialEq>::eq.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 43: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 44: percolator::MarketGroupV16ViewMut::<'_, u64>::trade_signed_size_deltas.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16.rs:10448:30 in function percolator::MarketGroupV16ViewMut::<'_, u64>::trade_signed_size_deltas
+
+Check 45: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::contains::<u8>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::contains::<u8>
+
+Check 46: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 47: std::option::Option::<u32>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u32>::ok_or::<percolator::V16Error>
+
+Check 48: <std::result::Result<u32, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u32, percolator::V16Error> as std::ops::Try>::branch
+
+Check 49: core::num::<impl u32>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u32>::checked_add
+
+Check 50: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 51: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 52: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 53: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 54: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 55: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 56: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 57: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 58: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 59: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 60: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 61: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 62: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 63: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 64: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 65: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 66: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 67: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 68: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 69: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 70: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 71: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 72: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 73: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 74: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 75: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 76: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 77: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 78: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 79: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 80: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 81: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 82: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 83: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 84: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 85: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 86: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 87: percolator::v16::add_open_interest_for_new_position.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:306:44 in function percolator::v16::add_open_interest_for_new_position
+
+Check 88: percolator::v16::add_open_interest_for_new_position.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:306:44 in function percolator::v16::add_open_interest_for_new_position
+
+Check 89: percolator::v16::add_open_interest_for_new_position.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:306:44 in function percolator::v16::add_open_interest_for_new_position
+
+Check 90: percolator::v16::add_open_interest_for_new_position.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:306:44 in function percolator::v16::add_open_interest_for_new_position
+
+Check 91: percolator::v16::add_open_interest_for_new_position.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:306:44 in function percolator::v16::add_open_interest_for_new_position
+
+Check 92: percolator::v16::add_open_interest_for_new_position.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:306:44 in function percolator::v16::add_open_interest_for_new_position
+
+Check 93: percolator::v16::add_open_interest_for_new_position.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:306:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 94: percolator::v16::add_open_interest_for_new_position.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:306:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 95: percolator::v16::add_open_interest_for_new_position.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:306:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 96: percolator::v16::add_open_interest_for_new_position.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:306:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 97: percolator::v16::add_open_interest_for_new_position.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:306:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 98: percolator::v16::add_open_interest_for_new_position.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:306:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 99: percolator::v16::add_open_interest_for_new_position.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:310:36 in function percolator::v16::add_open_interest_for_new_position
+
+Check 100: percolator::v16::add_open_interest_for_new_position.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:310:36 in function percolator::v16::add_open_interest_for_new_position
+
+Check 101: percolator::v16::add_open_interest_for_new_position.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:310:36 in function percolator::v16::add_open_interest_for_new_position
+
+Check 102: percolator::v16::add_open_interest_for_new_position.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:310:36 in function percolator::v16::add_open_interest_for_new_position
+
+Check 103: percolator::v16::add_open_interest_for_new_position.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:310:36 in function percolator::v16::add_open_interest_for_new_position
+
+Check 104: percolator::v16::add_open_interest_for_new_position.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:310:36 in function percolator::v16::add_open_interest_for_new_position
+
+Check 105: percolator::v16::add_open_interest_for_new_position.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:310:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 106: percolator::v16::add_open_interest_for_new_position.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:310:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 107: percolator::v16::add_open_interest_for_new_position.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:310:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 108: percolator::v16::add_open_interest_for_new_position.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:310:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 109: percolator::v16::add_open_interest_for_new_position.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:310:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 110: percolator::v16::add_open_interest_for_new_position.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:310:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 111: percolator::v16::add_open_interest_for_new_position.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:314:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 112: percolator::v16::add_open_interest_for_new_position.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:314:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 113: percolator::v16::add_open_interest_for_new_position.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:314:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 114: percolator::v16::add_open_interest_for_new_position.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:314:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 115: percolator::v16::add_open_interest_for_new_position.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:314:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 116: percolator::v16::add_open_interest_for_new_position.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:314:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 117: percolator::v16::add_open_interest_for_new_position.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:314:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 118: percolator::v16::add_open_interest_for_new_position.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:314:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 119: percolator::v16::add_open_interest_for_new_position.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:314:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 120: percolator::v16::add_open_interest_for_new_position.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:314:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 121: percolator::v16::add_open_interest_for_new_position.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:314:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 122: percolator::v16::add_open_interest_for_new_position.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:314:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 123: percolator::v16::add_open_interest_for_new_position.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:292:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 124: percolator::v16::add_open_interest_for_new_position.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:292:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 125: percolator::v16::add_open_interest_for_new_position.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:292:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 126: percolator::v16::add_open_interest_for_new_position.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:292:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 127: percolator::v16::add_open_interest_for_new_position.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:292:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 128: percolator::v16::add_open_interest_for_new_position.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:292:43 in function percolator::v16::add_open_interest_for_new_position
+
+Check 129: percolator::v16::add_open_interest_for_new_position.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:292:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 130: percolator::v16::add_open_interest_for_new_position.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:292:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 131: percolator::v16::add_open_interest_for_new_position.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:292:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 132: percolator::v16::add_open_interest_for_new_position.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:292:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 133: percolator::v16::add_open_interest_for_new_position.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:292:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 134: percolator::v16::add_open_interest_for_new_position.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:292:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 135: percolator::v16::add_open_interest_for_new_position.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:296:35 in function percolator::v16::add_open_interest_for_new_position
+
+Check 136: percolator::v16::add_open_interest_for_new_position.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:296:35 in function percolator::v16::add_open_interest_for_new_position
+
+Check 137: percolator::v16::add_open_interest_for_new_position.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:296:35 in function percolator::v16::add_open_interest_for_new_position
+
+Check 138: percolator::v16::add_open_interest_for_new_position.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:296:35 in function percolator::v16::add_open_interest_for_new_position
+
+Check 139: percolator::v16::add_open_interest_for_new_position.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:296:35 in function percolator::v16::add_open_interest_for_new_position
+
+Check 140: percolator::v16::add_open_interest_for_new_position.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:296:35 in function percolator::v16::add_open_interest_for_new_position
+
+Check 141: percolator::v16::add_open_interest_for_new_position.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:296:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 142: percolator::v16::add_open_interest_for_new_position.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:296:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 143: percolator::v16::add_open_interest_for_new_position.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:296:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 144: percolator::v16::add_open_interest_for_new_position.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:296:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 145: percolator::v16::add_open_interest_for_new_position.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:296:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 146: percolator::v16::add_open_interest_for_new_position.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:296:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 147: percolator::v16::add_open_interest_for_new_position.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:300:42 in function percolator::v16::add_open_interest_for_new_position
+
+Check 148: percolator::v16::add_open_interest_for_new_position.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:300:42 in function percolator::v16::add_open_interest_for_new_position
+
+Check 149: percolator::v16::add_open_interest_for_new_position.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:300:42 in function percolator::v16::add_open_interest_for_new_position
+
+Check 150: percolator::v16::add_open_interest_for_new_position.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:300:42 in function percolator::v16::add_open_interest_for_new_position
+
+Check 151: percolator::v16::add_open_interest_for_new_position.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:300:42 in function percolator::v16::add_open_interest_for_new_position
+
+Check 152: percolator::v16::add_open_interest_for_new_position.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:300:42 in function percolator::v16::add_open_interest_for_new_position
+
+Check 153: percolator::v16::add_open_interest_for_new_position.pointer_dereference.67
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:300:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 154: percolator::v16::add_open_interest_for_new_position.pointer_dereference.68
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:300:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 155: percolator::v16::add_open_interest_for_new_position.pointer_dereference.69
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:300:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 156: percolator::v16::add_open_interest_for_new_position.pointer_dereference.70
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:300:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 157: percolator::v16::add_open_interest_for_new_position.pointer_dereference.71
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:300:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 158: percolator::v16::add_open_interest_for_new_position.pointer_dereference.72
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:300:13 in function percolator::v16::add_open_interest_for_new_position
+
+Check 159: percolator::v16::add_open_interest_for_new_position.pointer_dereference.73
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:320:5 in function percolator::v16::add_open_interest_for_new_position
+
+Check 160: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 161: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 162: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 163: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 164: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 165: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 166: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 167: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 168: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 169: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 170: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 171: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 172: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 173: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 174: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 175: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 176: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 177: <std::option::Option<i128> as std::cmp::PartialEq>::eq.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:2359:15 in function <std::option::Option<i128> as std::cmp::PartialEq>::eq
+
+Check 178: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 179: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 180: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 181: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 182: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 183: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 184: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 185: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 186: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 187: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 188: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 189: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 190: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 191: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 192: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 193: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 194: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 195: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 196: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 197: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 198: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 199: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 200: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 201: <percolator::SideV16 as std::cmp::PartialEq>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:1394:30 in function <percolator::SideV16 as std::cmp::PartialEq>::eq
+
+Check 202: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 203: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 204: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 205: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 206: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 207: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 208: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11963:30 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 209: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11963:30 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 210: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11963:30 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 211: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11963:30 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 212: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11963:30 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 213: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11963:30 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 214: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11963:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 215: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11963:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 216: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11963:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 217: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11963:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 218: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11963:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 219: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11963:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 220: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11967:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 221: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11967:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 222: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11967:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 223: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11967:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 224: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11967:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 225: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11967:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 226: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11967:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 227: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11967:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 228: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11967:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 229: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11967:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 230: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11967:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 231: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11967:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 232: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11971:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 233: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11971:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 234: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11971:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 235: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11971:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 236: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11971:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 237: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11971:25 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 238: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11971:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 239: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11971:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 240: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11971:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 241: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11971:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 242: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11971:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 243: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11971:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 244: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11975:28 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 245: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11975:28 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 246: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11975:28 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 247: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11975:28 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 248: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11975:28 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 249: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11975:28 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 250: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11975:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 251: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11975:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 252: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11975:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 253: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11975:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 254: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11975:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 255: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11975:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 256: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11979:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 257: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11979:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 258: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11979:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 259: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11979:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 260: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11979:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 261: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11979:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 262: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11980:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 263: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11980:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 264: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11980:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 265: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11980:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 266: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11980:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 267: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11980:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 268: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:11981:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 269: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:11981:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 270: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:11981:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 271: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11981:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 272: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:11981:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 273: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:11981:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 274: percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply.pointer_dereference.67
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:11982:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::accumulate_batch_trade_apply
+
+Check 275: std::result::Result::<(), percolator::V16Error>::unwrap.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(), percolator::V16Error>::unwrap
+
+Check 276: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 277: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 278: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 279: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 280: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 281: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:54 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 282: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 283: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 284: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 285: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 286: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+Check 287: std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1865:63 in function std::cmp::impls::<impl std::cmp::PartialEq for i128>::eq
+
+
+SUMMARY:
+ ** 0 of 284 failed
+
+ ** 3 of 3 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 2.4552443s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

@@ -1,0 +1,2778 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.94s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.99s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_final_batch_margin_gate_accepts_only_final_certified_im...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-950f70503d72106e__RNvCs35DYgTG8RvC_10proofs_v1665proof_v16_final_batch_margin_gate_accepts_only_final_certified_im.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+Unwinding loop _RINvNtCshyUqKTojS84_4core5array18try_from_fn_erasedNtNtCs4R3y7dmBGud_10percolator3v169V16PodU64INtNtNtB4_3ops9try_trait17NeverShortCircuitBN_ENCINvNvB2_25try_from_trusted_iterator4nextB1v_INtNtNtNtB4_4iter8adapters3map3MapINtNtB2_5drain5DrainyENCINvMB1y_B1v_10wrap_mut_1yNvMsz_BP_BN_3newE0EE0EBR_.0 iteration 1 file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs line 890 column 5 function std::array::try_from_fn_erased::<percolator::V16PodU64, std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, std::iter::Map<std::array::drain::Drain<'_, u64>, {closure@std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>::wrap_mut_1<u64, fn(u64) -> percolator::V16PodU64 {percolator::V16PodU64::new}>::{closure#0}}>>::{closure#0}}> thread 0
+Unwinding loop _RINvNtCshyUqKTojS84_4core5array18try_from_fn_erasedyINtNtNtB4_3ops9try_trait17NeverShortCircuityENCINvNvB2_25try_from_trusted_iterator4nextBO_INtNtNtNtB4_4iter8adapters3map3MapINtNtB2_5drain5DrainNtNtCs4R3y7dmBGud_10percolator3v169V16PodU64ENCINvMBR_BO_10wrap_mut_1B38_NCNvMsR_B3a_NtB3a_20HealthCertV16Account14try_to_runtime0E0EE0ECs35DYgTG8RvC_10proofs_v16.0 iteration 1 file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs line 890 column 5 function std::array::try_from_fn_erased::<u64, std::ops::try_trait::NeverShortCircuit<u64>, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<u64>, std::iter::Map<std::array::drain::Drain<'_, percolator::V16PodU64>, {closure@std::ops::try_trait::NeverShortCircuit<u64>::wrap_mut_1<percolator::V16PodU64, {closure@percolator::HealthCertV16Account::try_to_runtime::{closure#0}}>::{closure#0}}>>::{closure#0}}> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<bool, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::HealthCertV16Account::try_to_runtime thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/anatoly/percolator/src/v16.rs line 12151 column 20 function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin thread 0
+Runtime Symex: 2.89849s
+size of program expression: 115490 steps
+slicing removed 96633 assignments
+Generated 436 VCC(s), 35 remaining after simplification
+Runtime Postprocess Equation: 0.044037s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.219475s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 5.919e-06s
+Solving with CaDiCaL 2.0.0
+74027 variables, 103420 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00829145s
+Runtime decision procedure: 0.230458s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+74028 variables, 103421 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0115505s
+Runtime decision procedure: 0.0119291s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+74029 variables, 103422 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.00242954s
+Runtime decision procedure: 0.00276617s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+74030 variables, 103423 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0437823s
+Runtime decision procedure: 0.0440593s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+74031 variables, 103424 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.0613906s
+Runtime decision procedure: 0.0617239s
+
+RESULTS:
+Check 1: <std::ops::ControlFlow<std::ops::try_trait::NeverShortCircuitResidual, u64> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/control_flow.rs:115:15 in function <std::ops::ControlFlow<std::ops::try_trait::NeverShortCircuitResidual, u64> as std::ops::Try>::branch
+
+Check 2: std::slice::from_raw_parts_mut::<'_, u64>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/raw.rs:194:9 in function std::slice::from_raw_parts_mut::<'_, u64>
+
+Check 3: std::slice::from_raw_parts_mut::<'_, u64>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/raw.rs:194:9 in function std::slice::from_raw_parts_mut::<'_, u64>
+
+Check 4: std::mem::MaybeUninit::<u64>::assume_init_mut.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:992:13 in function std::mem::MaybeUninit::<u64>::assume_init_mut
+
+Check 5: std::mem::MaybeUninit::<u64>::assume_init_mut.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:992:13 in function std::mem::MaybeUninit::<u64>::assume_init_mut
+
+Check 6: std::ptr::drop_in_place::<std::array::Guard<'_, percolator::V16PodU64>>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::Guard<'_, percolator::V16PodU64>>
+
+Check 7: std::ptr::drop_in_place::<std::array::Guard<'_, percolator::V16PodU64>>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::Guard<'_, percolator::V16PodU64>>
+
+Check 8: core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<usize>
+
+Check 9: core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<usize>
+
+Check 10: std::ptr::const_ptr::<impl *const u64>::offset_from_unsigned.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: 0 < pointee_size && pointee_size <= isize::MAX as usize"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:727:9 in function std::ptr::const_ptr::<impl *const u64>::offset_from_unsigned
+
+Check 11: kani::rustc_intrinsics::offset::<u64, *const u64, usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset in bytes overflows isize"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<u64, *const u64, usize>
+
+Check 12: kani::rustc_intrinsics::offset::<u64, *const u64, usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer must point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<u64, *const u64, usize>
+
+Check 13: percolator::HealthCertV16Account::try_to_runtime.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 14: std::ptr::drop_in_place::<std::array::drain::Drain<'_, u64>>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::drain::Drain<'_, u64>>
+
+Check 15: std::ptr::drop_in_place::<std::array::drain::Drain<'_, u64>>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::drain::Drain<'_, u64>>
+
+Check 16: std::ptr::drop_in_place::<std::array::drain::Drain<'_, percolator::V16PodU64>>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::drain::Drain<'_, percolator::V16PodU64>>
+
+Check 17: std::ptr::drop_in_place::<std::array::drain::Drain<'_, percolator::V16PodU64>>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::drain::Drain<'_, percolator::V16PodU64>>
+
+Check 18: std::panic::Location::<'_>::caller.unsupported_construct.1
+	 - Status: SUCCESS
+	 - Description: "caller_location is not currently supported by Kani. Please post your example at https://github.com/model-checking/kani/issues/374"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/location.rs:147:9 in function std::panic::Location::<'_>::caller
+
+Check 19: <std::ops::ControlFlow<std::ops::try_trait::NeverShortCircuitResidual, percolator::V16PodU64> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/control_flow.rs:115:15 in function <std::ops::ControlFlow<std::ops::try_trait::NeverShortCircuitResidual, percolator::V16PodU64> as std::ops::Try>::branch
+
+Check 20: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.assertion.1
+	 - Status: SUCCESS
+	 - Description: "Cannot compute offset of a ZST"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 21: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer should point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 22: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 23: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 24: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 25: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 26: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Expected the distance between the pointers, in bytes, to be a
+                        multiple of the size of `T`"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 27: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 28: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to divide with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 29: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.arithmetic_overflow.3
+	 - Status: SUCCESS
+	 - Description: "attempt to divide with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 30: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.arithmetic_overflow.4
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 31: kani::rustc_intrinsics::offset::<percolator::V16PodU64, *const percolator::V16PodU64, usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset in bytes overflows isize"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<percolator::V16PodU64, *const percolator::V16PodU64, usize>
+
+Check 32: kani::rustc_intrinsics::offset::<percolator::V16PodU64, *const percolator::V16PodU64, usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer must point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<percolator::V16PodU64, *const percolator::V16PodU64, usize>
+
+Check 33: core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>
+
+Check 34: core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>
+
+Check 35: std::slice::IterMut::<'_, u64>::post_inc_start.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:17:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 36: std::slice::IterMut::<'_, u64>::post_inc_start.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:17:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 37: std::slice::IterMut::<'_, u64>::post_inc_start.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:39 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 38: std::slice::IterMut::<'_, u64>::post_inc_start.safety_check.3
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:21:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 39: std::slice::IterMut::<'_, u64>::post_inc_start.safety_check.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:21:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 40: std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "`dst` must be properly aligned"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:709:9 in function std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>
+
+Check 41: std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "write_bytes: attempt to compute number in bytes which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:709:9 in function std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>
+
+Check 42: <std::ops::try_trait::NeverShortCircuit<[percolator::V16PodU64; 1]> as std::ops::FromResidual>::from_residual.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/try_trait.rs:422:15 in function <std::ops::try_trait::NeverShortCircuit<[percolator::V16PodU64; 1]> as std::ops::FromResidual>::from_residual
+
+Check 43: kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<percolator::V16PodU64>, *mut std::mem::MaybeUninit<percolator::V16PodU64>, usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset in bytes overflows isize"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<percolator::V16PodU64>, *mut std::mem::MaybeUninit<percolator::V16PodU64>, usize>
+
+Check 44: kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<percolator::V16PodU64>, *mut std::mem::MaybeUninit<percolator::V16PodU64>, usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer must point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<percolator::V16PodU64>, *mut std::mem::MaybeUninit<percolator::V16PodU64>, usize>
+
+Check 45: std::array::try_from_fn_erased::<percolator::V16PodU64, std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, std::iter::Map<std::array::drain::Drain<'_, u64>, {closure@std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>::wrap_mut_1<u64, fn(u64) -> percolator::V16PodU64 {percolator::V16PodU64::new}>::{closure#0}}>>::{closure#0}}>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:891:20 in function std::array::try_from_fn_erased::<percolator::V16PodU64, std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, std::iter::Map<std::array::drain::Drain<'_, u64>, {closure@std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>::wrap_mut_1<u64, fn(u64) -> percolator::V16PodU64 {percolator::V16PodU64::new}>::{closure#0}}>>::{closure#0}}>
+
+Check 46: std::array::try_from_fn::<std::ops::try_trait::NeverShortCircuit<u64>, 1, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<u64>, std::iter::Map<std::array::drain::Drain<'_, percolator::V16PodU64>, {closure@std::ops::try_trait::NeverShortCircuit<u64>::wrap_mut_1<percolator::V16PodU64, {closure@percolator::HealthCertV16Account::try_to_runtime::{closure#0}}>::{closure#0}}>>::{closure#0}}>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:152:11 in function std::array::try_from_fn::<std::ops::try_trait::NeverShortCircuit<u64>, 1, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<u64>, std::iter::Map<std::array::drain::Drain<'_, percolator::V16PodU64>, {closure@std::ops::try_trait::NeverShortCircuit<u64>::wrap_mut_1<percolator::V16PodU64, {closure@percolator::HealthCertV16Account::try_to_runtime::{closure#0}}>::{closure#0}}>>::{closure#0}}>
+
+Check 47: kani::rustc_intrinsics::ptr_offset_from_unsigned::<percolator::V16PodU64>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Expected non-negative distance between pointers"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from_unsigned::<percolator::V16PodU64>
+
+Check 48: core::ub_checks::is_valid_allocation_size.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to divide by zero"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ub_checks.rs:149:54 in function core::ub_checks::is_valid_allocation_size
+
+Check 49: core::ub_checks::is_valid_allocation_size.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ub_checks.rs:149:54 in function core::ub_checks::is_valid_allocation_size
+
+Check 50: std::array::try_from_trusted_iterator::<percolator::V16PodU64, std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, 1, std::iter::Map<std::array::drain::Drain<'_, u64>, {closure@std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>::wrap_mut_1<u64, fn(u64) -> percolator::V16PodU64 {percolator::V16PodU64::new}>::{closure#0}}>>.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: iter.size_hint().0 >= N"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:855:5 in function std::array::try_from_trusted_iterator::<percolator::V16PodU64, std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, 1, std::iter::Map<std::array::drain::Drain<'_, u64>, {closure@std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>::wrap_mut_1<u64, fn(u64) -> percolator::V16PodU64 {percolator::V16PodU64::new}>::{closure#0}}>>
+
+Check 51: std::ptr::const_ptr::<impl *const percolator::V16PodU64>::offset_from_unsigned.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: 0 < pointee_size && pointee_size <= isize::MAX as usize"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:727:9 in function std::ptr::const_ptr::<impl *const percolator::V16PodU64>::offset_from_unsigned
+
+Check 52: kani::rustc_intrinsics::ptr_offset_from::<u64>.assertion.1
+	 - Status: SUCCESS
+	 - Description: "Cannot compute offset of a ZST"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 53: kani::rustc_intrinsics::ptr_offset_from::<u64>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer should point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 54: kani::rustc_intrinsics::ptr_offset_from::<u64>.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 55: kani::rustc_intrinsics::ptr_offset_from::<u64>.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 56: kani::rustc_intrinsics::ptr_offset_from::<u64>.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 57: kani::rustc_intrinsics::ptr_offset_from::<u64>.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 58: kani::rustc_intrinsics::ptr_offset_from::<u64>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Expected the distance between the pointers, in bytes, to be a
+                        multiple of the size of `T`"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 59: kani::rustc_intrinsics::ptr_offset_from::<u64>.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 60: kani::rustc_intrinsics::ptr_offset_from::<u64>.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to divide with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 61: kani::rustc_intrinsics::ptr_offset_from::<u64>.arithmetic_overflow.3
+	 - Status: SUCCESS
+	 - Description: "attempt to divide with overflow"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 62: kani::rustc_intrinsics::ptr_offset_from::<u64>.arithmetic_overflow.4
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 63: std::slice::from_raw_parts_mut::<'_, percolator::V16PodU64>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/raw.rs:194:9 in function std::slice::from_raw_parts_mut::<'_, percolator::V16PodU64>
+
+Check 64: std::slice::from_raw_parts_mut::<'_, percolator::V16PodU64>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/raw.rs:194:9 in function std::slice::from_raw_parts_mut::<'_, percolator::V16PodU64>
+
+Check 65: core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<usize>
+
+Check 66: core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<percolator::V16PodU64>]>::get_unchecked_mut::<usize>
+
+Check 67: std::mem::MaybeUninit::<percolator::V16PodU64>::assume_init_mut.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:992:13 in function std::mem::MaybeUninit::<percolator::V16PodU64>::assume_init_mut
+
+Check 68: std::mem::MaybeUninit::<percolator::V16PodU64>::assume_init_mut.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:992:13 in function std::mem::MaybeUninit::<percolator::V16PodU64>::assume_init_mut
+
+Check 69: kani::rustc_intrinsics::offset::<u64, *mut u64, usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset in bytes overflows isize"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<u64, *mut u64, usize>
+
+Check 70: kani::rustc_intrinsics::offset::<u64, *mut u64, usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer must point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<u64, *mut u64, usize>
+
+Check 71: core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>
+
+Check 72: core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/mod.rs:689:18 in function core::slice::<impl [std::mem::MaybeUninit<u64>]>::get_unchecked_mut::<std::ops::RangeTo<usize>>
+
+Check 73: <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::Try>::branch
+
+Check 74: <usize as kani::rustc_intrinsics::ToISize>::to_isize.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:176:17 in function <usize as kani::rustc_intrinsics::ToISize>::to_isize
+
+Check 75: <usize as kani::rustc_intrinsics::ToISize>::to_isize.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset value overflows isize"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function <usize as kani::rustc_intrinsics::ToISize>::to_isize
+
+Check 76: <usize as kani::rustc_intrinsics::ToISize>::to_isize.assertion.1
+	 - Status: SUCCESS
+	 - Description: "internal error: entered unreachable code"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function <usize as kani::rustc_intrinsics::ToISize>::to_isize
+
+Check 77: std::ptr::const_ptr::<impl *const ()>::is_aligned_to.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:1377:23 in function std::ptr::const_ptr::<impl *const ()>::is_aligned_to
+
+Check 78: std::ptr::const_ptr::<impl *const ()>::is_aligned_to.assertion.2
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:1374:13 in function std::ptr::const_ptr::<impl *const ()>::is_aligned_to
+
+Check 79: kani::rustc_intrinsics::offset::<percolator::V16PodU64, *mut percolator::V16PodU64, usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset in bytes overflows isize"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<percolator::V16PodU64, *mut percolator::V16PodU64, usize>
+
+Check 80: kani::rustc_intrinsics::offset::<percolator::V16PodU64, *mut percolator::V16PodU64, usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer must point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<percolator::V16PodU64, *mut percolator::V16PodU64, usize>
+
+Check 81: <std::result::Result<bool, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<bool, percolator::V16Error> as std::ops::Try>::branch
+
+Check 82: <std::ops::Range<usize> as std::slice::SliceIndex<[std::mem::MaybeUninit<u64>]>>::get_unchecked_mut.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/index.rs:430:27 in function <std::ops::Range<usize> as std::slice::SliceIndex<[std::mem::MaybeUninit<u64>]>>::get_unchecked_mut
+
+Check 83: core::panicking::panic_nounwind_fmt::runtime.unsupported_construct.1
+	 - Status: SUCCESS
+	 - Description: "call to foreign "Rust" function `_RNvCsfNd5Qxpi3D5_7___rustc17rust_begin_unwind` is not currently supported by Kani. Please post your example at https://github.com/model-checking/kani/issues/new/choose"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panicking.rs:110:17 in function core::panicking::panic_nounwind_fmt::runtime
+
+Check 84: std::array::try_from_trusted_iterator::<u64, std::ops::try_trait::NeverShortCircuit<u64>, 1, std::iter::Map<std::array::drain::Drain<'_, percolator::V16PodU64>, {closure@std::ops::try_trait::NeverShortCircuit<u64>::wrap_mut_1<percolator::V16PodU64, {closure@percolator::HealthCertV16Account::try_to_runtime::{closure#0}}>::{closure#0}}>>.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: iter.size_hint().0 >= N"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:855:5 in function std::array::try_from_trusted_iterator::<u64, std::ops::try_trait::NeverShortCircuit<u64>, 1, std::iter::Map<std::array::drain::Drain<'_, percolator::V16PodU64>, {closure@std::ops::try_trait::NeverShortCircuit<u64>::wrap_mut_1<percolator::V16PodU64, {closure@percolator::HealthCertV16Account::try_to_runtime::{closure#0}}>::{closure#0}}>>
+
+Check 85: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:18 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 86: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:18 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 87: core::num::<impl usize>::unchecked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:717:17 in function core::num::<impl usize>::unchecked_add
+
+Check 88: std::array::try_from_fn_erased::<u64, std::ops::try_trait::NeverShortCircuit<u64>, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<u64>, std::iter::Map<std::array::drain::Drain<'_, percolator::V16PodU64>, {closure@std::ops::try_trait::NeverShortCircuit<u64>::wrap_mut_1<percolator::V16PodU64, {closure@percolator::HealthCertV16Account::try_to_runtime::{closure#0}}>::{closure#0}}>>::{closure#0}}>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:891:20 in function std::array::try_from_fn_erased::<u64, std::ops::try_trait::NeverShortCircuit<u64>, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<u64>, std::iter::Map<std::array::drain::Drain<'_, percolator::V16PodU64>, {closure@std::ops::try_trait::NeverShortCircuit<u64>::wrap_mut_1<percolator::V16PodU64, {closure@percolator::HealthCertV16Account::try_to_runtime::{closure#0}}>::{closure#0}}>>::{closure#0}}>
+
+Check 89: kani::mem::cbmc::same_allocation.unsupported_construct.1
+	 - Status: SUCCESS
+	 - Description: "Kani does not support reasoning about pointer to unallocated memory"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::mem::cbmc::same_allocation
+
+Check 90: std::array::try_from_fn::<std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, 1, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, std::iter::Map<std::array::drain::Drain<'_, u64>, {closure@std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>::wrap_mut_1<u64, fn(u64) -> percolator::V16PodU64 {percolator::V16PodU64::new}>::{closure#0}}>>::{closure#0}}>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:152:11 in function std::array::try_from_fn::<std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, 1, {closure@std::array::try_from_trusted_iterator::next<std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>, std::iter::Map<std::array::drain::Drain<'_, u64>, {closure@std::ops::try_trait::NeverShortCircuit<percolator::V16PodU64>::wrap_mut_1<u64, fn(u64) -> percolator::V16PodU64 {percolator::V16PodU64::new}>::{closure#0}}>>::{closure#0}}>
+
+Check 91: std::ptr::NonNull::<u64>::as_mut::<'_>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:18 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+Check 92: std::ptr::NonNull::<u64>::as_mut::<'_>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:18 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+Check 93: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:17:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 94: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:17:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 95: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:39 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 96: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.safety_check.3
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:21:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 97: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.safety_check.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:21:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 98: kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<u64>, *mut std::mem::MaybeUninit<u64>, usize>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Offset in bytes overflows isize"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<u64>, *mut std::mem::MaybeUninit<u64>, usize>
+
+Check 99: kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<u64>, *mut std::mem::MaybeUninit<u64>, usize>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "Offset result and original pointer must point to the same allocation"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::offset::<std::mem::MaybeUninit<u64>, *mut std::mem::MaybeUninit<u64>, usize>
+
+Check 100: proof_v16_final_batch_margin_gate_accepts_only_final_certified_im.cover.1
+	 - Status: SATISFIED
+	 - Description: "final batch margin gate covers accepting overcollateralized certificates"
+	 - Location: tests/proofs_v16.rs:3444:5 in function proof_v16_final_batch_margin_gate_accepts_only_final_certified_im
+
+Check 101: proof_v16_final_batch_margin_gate_accepts_only_final_certified_im.cover.2
+	 - Status: SATISFIED
+	 - Description: "final batch margin gate covers rejecting negative final equity"
+	 - Location: tests/proofs_v16.rs:3448:5 in function proof_v16_final_batch_margin_gate_accepts_only_final_certified_im
+
+Check 102: proof_v16_final_batch_margin_gate_accepts_only_final_certified_im.cover.3
+	 - Status: SATISFIED
+	 - Description: "final batch margin gate covers rejecting undercollateralized certificates"
+	 - Location: tests/proofs_v16.rs:3452:5 in function proof_v16_final_batch_margin_gate_accepts_only_final_certified_im
+
+Check 103: proof_v16_final_batch_margin_gate_accepts_only_final_certified_im.cover.4
+	 - Status: SATISFIED
+	 - Description: "final batch margin gate covers rejecting stale final certificates"
+	 - Location: tests/proofs_v16.rs:3456:5 in function proof_v16_final_batch_margin_gate_accepts_only_final_certified_im
+
+Check 104: proof_v16_final_batch_margin_gate_accepts_only_final_certified_im.assertion.1
+	 - Status: SUCCESS
+	 - Description: "assertion failed: result.is_ok() == expected_ok"
+	 - Location: tests/proofs_v16.rs:3460:5 in function proof_v16_final_batch_margin_gate_accepts_only_final_certified_im
+
+Check 105: <std::ops::Range<usize> as std::slice::SliceIndex<[std::mem::MaybeUninit<percolator::V16PodU64>]>>::get_unchecked_mut.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/index.rs:430:27 in function <std::ops::Range<usize> as std::slice::SliceIndex<[std::mem::MaybeUninit<percolator::V16PodU64>]>>::get_unchecked_mut
+
+Check 106: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 107: <std::ops::try_trait::NeverShortCircuit<[u64; 1]> as std::ops::FromResidual>::from_residual.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/try_trait.rs:422:15 in function <std::ops::try_trait::NeverShortCircuit<[u64; 1]> as std::ops::FromResidual>::from_residual
+
+Check 108: std::ptr::drop_in_place::<std::array::Guard<'_, u64>>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "misaligned pointer to reference cast: address must be a multiple of its type's alignment"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::Guard<'_, u64>>
+
+Check 109: std::ptr::drop_in_place::<std::array::Guard<'_, u64>>.safety_check.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:805:1 in function std::ptr::drop_in_place::<std::array::Guard<'_, u64>>
+
+Check 110: kani::rustc_intrinsics::ptr_offset_from_unsigned::<u64>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "Expected non-negative distance between pointers"
+	 - Location: ../../runner/work/kani/kani/library/kani/src/lib.rs:57:1 in function kani::rustc_intrinsics::ptr_offset_from_unsigned::<u64>
+
+Check 111: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 112: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 113: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 114: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 115: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 116: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 117: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 118: percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:12151:20 in function percolator::MarketGroupV16ViewMut::<'_, u64>::ensure_initial_margin
+
+Check 119: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 120: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 121: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 122: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 123: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 124: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 125: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 126: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 127: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 128: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 129: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 130: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 131: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 132: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 133: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 134: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 135: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 136: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 137: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 138: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 139: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 140: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 141: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 142: std::slice::IterMut::<'_, u64>::as_mut_slice.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, u64>::as_mut_slice
+
+Check 143: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 144: <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2169:22 in function <std::result::Result<(), percolator::V16Error> as std::ops::Try>::branch
+
+Check 145: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 146: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 147: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 148: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 149: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 150: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 151: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 152: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 153: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 154: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 155: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 156: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 157: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 158: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 159: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 160: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 161: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 162: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 163: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 164: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 165: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 166: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 167: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 168: std::array::Guard::<'_, u64>::push_unchecked.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, u64>::push_unchecked
+
+Check 169: std::ptr::const_ptr::<impl *const T>::offset_from_unsigned::runtime_ptr_ge::runtime.pointer.1
+	 - Status: SUCCESS
+	 - Description: "same object violation in this >= origin"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:712:21 in function std::ptr::const_ptr::<impl *const T>::offset_from_unsigned::runtime_ptr_ge::runtime
+
+Check 170: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 171: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 172: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 173: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 174: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 175: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 176: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 177: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 178: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 179: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 180: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 181: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 182: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 183: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 184: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 185: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 186: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 187: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 188: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 189: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 190: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 191: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 192: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 193: std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, percolator::V16PodU64>::post_inc_start
+
+Check 194: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 195: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 196: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 197: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 198: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 199: std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<percolator::V16PodU64>::as_mut::<'_>
+
+Check 200: std::mem::MaybeUninit::<u64>::write.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<u64>::write
+
+Check 201: std::mem::MaybeUninit::<u64>::write.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<u64>::write
+
+Check 202: std::mem::MaybeUninit::<u64>::write.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<u64>::write
+
+Check 203: std::mem::MaybeUninit::<u64>::write.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<u64>::write
+
+Check 204: std::mem::MaybeUninit::<u64>::write.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<u64>::write
+
+Check 205: std::mem::MaybeUninit::<u64>::write.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<u64>::write
+
+Check 206: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 207: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 208: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 209: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 210: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 211: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter.rs:352:37 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 212: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 213: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 214: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 215: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 216: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 217: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 218: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 219: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 220: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 221: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 222: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 223: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 224: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 225: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 226: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 227: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 228: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 229: std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function std::slice::IterMut::<'_, percolator::V16PodU64>::as_mut_slice
+
+Check 230: std::ptr::read::<percolator::V16PodU64>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::V16PodU64>
+
+Check 231: std::ptr::read::<percolator::V16PodU64>.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::V16PodU64>
+
+Check 232: std::ptr::read::<percolator::V16PodU64>.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::V16PodU64>
+
+Check 233: std::ptr::read::<percolator::V16PodU64>.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::V16PodU64>
+
+Check 234: std::ptr::read::<percolator::V16PodU64>.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::V16PodU64>
+
+Check 235: std::ptr::read::<percolator::V16PodU64>.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::V16PodU64>
+
+Check 236: std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>.precondition_instance.1
+	 - Status: SUCCESS
+	 - Description: "memset destination region writeable"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:709:9 in function std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>
+
+Check 237: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_const::<1>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:196:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_const::<1>
+
+Check 238: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 239: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 240: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 241: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 242: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 243: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:100:27 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 244: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 245: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 246: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 247: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 248: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 249: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:107:72 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 250: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 251: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 252: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 253: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 254: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 255: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:44 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 256: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 257: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 258: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 259: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 260: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 261: std::slice::IterMut::<'_, u64>::post_inc_start.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:108:33 in function std::slice::IterMut::<'_, u64>::post_inc_start
+
+Check 262: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.division-by-zero.1
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 263: kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>.division-by-zero.2
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<percolator::V16PodU64>
+
+Check 264: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14351:31 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 265: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14351:31 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 266: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14351:31 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 267: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14351:31 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 268: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14351:31 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 269: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14351:31 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 270: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14352:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 271: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14352:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 272: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14352:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 273: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14352:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 274: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14352:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 275: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14352:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 276: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14353:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 277: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14353:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 278: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14353:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 279: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14353:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 280: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14353:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 281: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14353:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 282: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14354:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 283: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14354:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 284: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14354:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 285: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14354:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 286: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14354:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 287: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14354:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 288: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14355:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 289: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14355:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 290: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14355:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 291: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14355:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 292: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14355:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 293: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14355:40 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 294: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14356:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 295: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14356:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 296: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14356:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 297: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14356:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 298: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14356:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 299: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14356:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 300: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14357:33 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 301: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14357:33 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 302: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14357:33 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 303: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14357:33 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 304: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14357:33 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 305: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14357:33 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 306: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14358:30 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 307: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14358:30 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 308: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14358:30 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 309: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14358:30 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 310: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14358:30 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 311: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14358:30 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 312: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14359:35 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 313: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14359:35 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 314: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14359:35 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 315: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14359:35 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 316: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14359:35 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 317: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14359:35 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 318: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14360:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 319: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14360:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 320: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14360:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 321: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14360:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 322: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14360:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 323: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14360:36 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 324: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14361:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 325: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14361:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 326: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14361:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 327: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14361:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 328: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14361:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 329: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14361:32 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 330: percolator::HealthCertV16Account::try_to_runtime.pointer_dereference.67
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14363:9 in function percolator::HealthCertV16Account::try_to_runtime
+
+Check 331: std::result::Result::<(), percolator::V16Error>::is_ok.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(), percolator::V16Error>::is_ok
+
+Check 332: std::result::Result::<(), percolator::V16Error>::is_ok.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(), percolator::V16Error>::is_ok
+
+Check 333: std::result::Result::<(), percolator::V16Error>::is_ok.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(), percolator::V16Error>::is_ok
+
+Check 334: std::result::Result::<(), percolator::V16Error>::is_ok.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(), percolator::V16Error>::is_ok
+
+Check 335: std::result::Result::<(), percolator::V16Error>::is_ok.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(), percolator::V16Error>::is_ok
+
+Check 336: std::result::Result::<(), percolator::V16Error>::is_ok.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:594:18 in function std::result::Result::<(), percolator::V16Error>::is_ok
+
+Check 337: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 338: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 339: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 340: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 341: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 342: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 343: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 344: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 345: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 346: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 347: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 348: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 349: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 350: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 351: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 352: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 353: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 354: <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, percolator::V16PodU64> as std::iter::ExactSizeIterator>::len
+
+Check 355: std::ptr::read::<u64>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<u64>
+
+Check 356: std::ptr::read::<u64>.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<u64>
+
+Check 357: std::ptr::read::<u64>.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<u64>
+
+Check 358: std::ptr::read::<u64>.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<u64>
+
+Check 359: std::ptr::read::<u64>.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<u64>
+
+Check 360: std::ptr::read::<u64>.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<u64>
+
+Check 361: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 362: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 363: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 364: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 365: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 366: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 367: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 368: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 369: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 370: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 371: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 372: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:931:46 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 373: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 374: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 375: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 376: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 377: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 378: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:32 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 379: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 380: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 381: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 382: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 383: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 384: std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:932:13 in function std::array::Guard::<'_, percolator::V16PodU64>::push_unchecked
+
+Check 385: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 386: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 387: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 388: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 389: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 390: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 391: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 392: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 393: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 394: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 395: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 396: <std::array::Guard<'_, u64> as std::ops::Drop>::drop.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, u64> as std::ops::Drop>::drop
+
+Check 397: percolator::HealthCertV16Account::from_runtime.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14335:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 398: percolator::HealthCertV16Account::from_runtime.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14335:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 399: percolator::HealthCertV16Account::from_runtime.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14335:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 400: percolator::HealthCertV16Account::from_runtime.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14335:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 401: percolator::HealthCertV16Account::from_runtime.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14335:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 402: percolator::HealthCertV16Account::from_runtime.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14335:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 403: percolator::HealthCertV16Account::from_runtime.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14336:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 404: percolator::HealthCertV16Account::from_runtime.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14336:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 405: percolator::HealthCertV16Account::from_runtime.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14336:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 406: percolator::HealthCertV16Account::from_runtime.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14336:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 407: percolator::HealthCertV16Account::from_runtime.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14336:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 408: percolator::HealthCertV16Account::from_runtime.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14336:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 409: percolator::HealthCertV16Account::from_runtime.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14337:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 410: percolator::HealthCertV16Account::from_runtime.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14337:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 411: percolator::HealthCertV16Account::from_runtime.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14337:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 412: percolator::HealthCertV16Account::from_runtime.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14337:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 413: percolator::HealthCertV16Account::from_runtime.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14337:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 414: percolator::HealthCertV16Account::from_runtime.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14337:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 415: percolator::HealthCertV16Account::from_runtime.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14338:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 416: percolator::HealthCertV16Account::from_runtime.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14338:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 417: percolator::HealthCertV16Account::from_runtime.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14338:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 418: percolator::HealthCertV16Account::from_runtime.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14338:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 419: percolator::HealthCertV16Account::from_runtime.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14338:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 420: percolator::HealthCertV16Account::from_runtime.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14338:52 in function percolator::HealthCertV16Account::from_runtime
+
+Check 421: percolator::HealthCertV16Account::from_runtime.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14339:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 422: percolator::HealthCertV16Account::from_runtime.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14339:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 423: percolator::HealthCertV16Account::from_runtime.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14339:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 424: percolator::HealthCertV16Account::from_runtime.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14339:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 425: percolator::HealthCertV16Account::from_runtime.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14339:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 426: percolator::HealthCertV16Account::from_runtime.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14339:56 in function percolator::HealthCertV16Account::from_runtime
+
+Check 427: percolator::HealthCertV16Account::from_runtime.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14340:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 428: percolator::HealthCertV16Account::from_runtime.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14340:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 429: percolator::HealthCertV16Account::from_runtime.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14340:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 430: percolator::HealthCertV16Account::from_runtime.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14340:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 431: percolator::HealthCertV16Account::from_runtime.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14340:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 432: percolator::HealthCertV16Account::from_runtime.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14340:47 in function percolator::HealthCertV16Account::from_runtime
+
+Check 433: percolator::HealthCertV16Account::from_runtime.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14341:48 in function percolator::HealthCertV16Account::from_runtime
+
+Check 434: percolator::HealthCertV16Account::from_runtime.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14341:48 in function percolator::HealthCertV16Account::from_runtime
+
+Check 435: percolator::HealthCertV16Account::from_runtime.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14341:48 in function percolator::HealthCertV16Account::from_runtime
+
+Check 436: percolator::HealthCertV16Account::from_runtime.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14341:48 in function percolator::HealthCertV16Account::from_runtime
+
+Check 437: percolator::HealthCertV16Account::from_runtime.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14341:48 in function percolator::HealthCertV16Account::from_runtime
+
+Check 438: percolator::HealthCertV16Account::from_runtime.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14341:48 in function percolator::HealthCertV16Account::from_runtime
+
+Check 439: percolator::HealthCertV16Account::from_runtime.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14342:45 in function percolator::HealthCertV16Account::from_runtime
+
+Check 440: percolator::HealthCertV16Account::from_runtime.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14342:45 in function percolator::HealthCertV16Account::from_runtime
+
+Check 441: percolator::HealthCertV16Account::from_runtime.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14342:45 in function percolator::HealthCertV16Account::from_runtime
+
+Check 442: percolator::HealthCertV16Account::from_runtime.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14342:45 in function percolator::HealthCertV16Account::from_runtime
+
+Check 443: percolator::HealthCertV16Account::from_runtime.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14342:45 in function percolator::HealthCertV16Account::from_runtime
+
+Check 444: percolator::HealthCertV16Account::from_runtime.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14342:45 in function percolator::HealthCertV16Account::from_runtime
+
+Check 445: percolator::HealthCertV16Account::from_runtime.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14343:50 in function percolator::HealthCertV16Account::from_runtime
+
+Check 446: percolator::HealthCertV16Account::from_runtime.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14343:50 in function percolator::HealthCertV16Account::from_runtime
+
+Check 447: percolator::HealthCertV16Account::from_runtime.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14343:50 in function percolator::HealthCertV16Account::from_runtime
+
+Check 448: percolator::HealthCertV16Account::from_runtime.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14343:50 in function percolator::HealthCertV16Account::from_runtime
+
+Check 449: percolator::HealthCertV16Account::from_runtime.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14343:50 in function percolator::HealthCertV16Account::from_runtime
+
+Check 450: percolator::HealthCertV16Account::from_runtime.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14343:50 in function percolator::HealthCertV16Account::from_runtime
+
+Check 451: percolator::HealthCertV16Account::from_runtime.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14344:36 in function percolator::HealthCertV16Account::from_runtime
+
+Check 452: percolator::HealthCertV16Account::from_runtime.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14344:36 in function percolator::HealthCertV16Account::from_runtime
+
+Check 453: percolator::HealthCertV16Account::from_runtime.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14344:36 in function percolator::HealthCertV16Account::from_runtime
+
+Check 454: percolator::HealthCertV16Account::from_runtime.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14344:36 in function percolator::HealthCertV16Account::from_runtime
+
+Check 455: percolator::HealthCertV16Account::from_runtime.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14344:36 in function percolator::HealthCertV16Account::from_runtime
+
+Check 456: percolator::HealthCertV16Account::from_runtime.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14344:36 in function percolator::HealthCertV16Account::from_runtime
+
+Check 457: percolator::HealthCertV16Account::from_runtime.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:14345:32 in function percolator::HealthCertV16Account::from_runtime
+
+Check 458: percolator::HealthCertV16Account::from_runtime.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:14345:32 in function percolator::HealthCertV16Account::from_runtime
+
+Check 459: percolator::HealthCertV16Account::from_runtime.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:14345:32 in function percolator::HealthCertV16Account::from_runtime
+
+Check 460: percolator::HealthCertV16Account::from_runtime.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:14345:32 in function percolator::HealthCertV16Account::from_runtime
+
+Check 461: percolator::HealthCertV16Account::from_runtime.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:14345:32 in function percolator::HealthCertV16Account::from_runtime
+
+Check 462: percolator::HealthCertV16Account::from_runtime.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:14345:32 in function percolator::HealthCertV16Account::from_runtime
+
+Check 463: std::mem::MaybeUninit::<percolator::V16PodU64>::write.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<percolator::V16PodU64>::write
+
+Check 464: std::mem::MaybeUninit::<percolator::V16PodU64>::write.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<percolator::V16PodU64>::write
+
+Check 465: std::mem::MaybeUninit::<percolator::V16PodU64>::write.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<percolator::V16PodU64>::write
+
+Check 466: std::mem::MaybeUninit::<percolator::V16PodU64>::write.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<percolator::V16PodU64>::write
+
+Check 467: std::mem::MaybeUninit::<percolator::V16PodU64>::write.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<percolator::V16PodU64>::write
+
+Check 468: std::mem::MaybeUninit::<percolator::V16PodU64>::write.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/maybe_uninit.rs:559:9 in function std::mem::MaybeUninit::<percolator::V16PodU64>::write
+
+Check 469: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 470: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 471: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 472: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 473: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 474: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 475: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 476: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 477: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 478: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 479: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 480: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:13 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 481: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 482: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 483: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 484: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 485: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 486: <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/array/mod.rs:944:48 in function <std::array::Guard<'_, percolator::V16PodU64> as std::ops::Drop>::drop
+
+Check 487: percolator::v16::validate_non_min_i128.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:15003:5 in function percolator::v16::validate_non_min_i128
+
+Check 488: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 489: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 490: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 491: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 492: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 493: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:29:24 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 494: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 495: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 496: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 497: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 498: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 499: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:33:72 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 500: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 501: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 502: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 503: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 504: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 505: <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/slice/iter/macros.rs:57:51 in function <std::slice::IterMut<'_, u64> as std::iter::ExactSizeIterator>::len
+
+Check 506: core::ub_checks::is_valid_allocation_size.division-by-zero.1
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ub_checks.rs:149:54 in function core::ub_checks::is_valid_allocation_size
+
+Check 507: kani::rustc_intrinsics::ptr_offset_from::<u64>.division-by-zero.1
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:93:25 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 508: kani::rustc_intrinsics::ptr_offset_from::<u64>.division-by-zero.2
+	 - Status: SUCCESS
+	 - Description: "division by zero"
+	 - Location: ../../runner/work/kani/kani/library/kani_core/src/models.rs:97:21 in function kani::rustc_intrinsics::ptr_offset_from::<u64>
+
+Check 509: <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::Try>::branch
+
+Check 510: <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::Try>::branch.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2170:23 in function <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::Try>::branch
+
+Check 511: <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2184:23 in function <std::result::Result<percolator::HealthCertV16, percolator::V16Error> as std::ops::FromResidual<std::result::Result<std::convert::Infallible, percolator::V16Error>>>::from_residual
+
+Check 512: percolator::v16::V16Core::kernel_initial_margin_gate.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:818:9 in function percolator::v16::V16Core::kernel_initial_margin_gate
+
+Check 513: std::ptr::NonNull::<u64>::as_mut::<'_>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+Check 514: std::ptr::NonNull::<u64>::as_mut::<'_>.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+Check 515: std::ptr::NonNull::<u64>::as_mut::<'_>.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+Check 516: std::ptr::NonNull::<u64>::as_mut::<'_>.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+Check 517: std::ptr::NonNull::<u64>::as_mut::<'_>.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+Check 518: std::ptr::NonNull::<u64>::as_mut::<'_>.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/non_null.rs:481:24 in function std::ptr::NonNull::<u64>::as_mut::<'_>
+
+
+SUMMARY:
+ ** 0 of 514 failed (2 unreachable)
+
+ ** 4 of 4 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 6.0862317s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

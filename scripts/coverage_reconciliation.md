@@ -43,7 +43,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | A4 expired close | proof_v16_expired_close_progress_declares_recovery… (PUBLIC ROUTE) | PROVEN (gate-clean) | — |
 | A5 liquidatable | preflight accept + route proofs | PARTIAL | dec via S-L2/S-L3 → P3/P4 |
 | A6 recovery-eligible | proof_v16_permissionless_recovery_crank_is_accounting_neutral | PROVEN (gate-clean) | — |
-| A7 resolved winner | resolved_winddown_* + terminal suite | PARTIAL | gate proof + P6 FUZZ-B |
+| A7 resolved winner | resolved_winddown_* + terminal suite; kernel_resolved_close_progress (close-step rank) + build_resolved_close_rank FIDELITY-BUILDER (each rank flag == real per-component predicate: b-stale/neg-PnL/live-leg/capital/receipt/recovery) | PARTIAL (rank classifier + rank-summary builder both FAITHFUL) | remaining ONLY: wire close_resolved branch dispatch through the built rank (route proof) + P6 FUZZ-B terminal realization |
 | NB1 valid trade not blocked | ALL leaves PRODUCTION-FAITHFUL: build_trade_request_guard_summary (request); kernel_trade_preflight_admits (preflight); kernel_cert_is_current (accounts_current == ensure_favorable_action_current_certificate); kernel_initial/locked_margin_gate (final gates); kernel_trade_admit (composition) | PARTIAL (every leaf FAITHFUL) | remaining ONLY: the composing route proof (EconomicallyValidTrade => public route reaches fill) over the real two-account body |
 | NB2 finite crank progress | unwind(40) bounds (req 33); permissionless-crank proofs; clock-advance | PARTIAL | per-continuation bounded-work + rank/terminal artifact for EVERY selected crank action → P4 |
 

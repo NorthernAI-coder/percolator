@@ -1,0 +1,6 @@
+[23:54:50] warming target/contracts cache (un-timed)...
+[23:56:41] cache warm.
+[23:56:54] composition_kernel_attach_value_under_division_axiom -> FAIL(1) (12s)
+=====
+harness                                               wall_s  status
+composition_kernel_attach_value_under_division_axiom  12      FAIL(1)

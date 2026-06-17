@@ -1,0 +1,6 @@
+[21:01:52] warming target/contracts cache (un-timed)...
+[21:03:42] cache warm.
+[21:33:43] contract_check_kernel_advance_close_ledger -> TIMEOUT (1800s)
+=====
+harness                                     wall_s  status
+contract_check_kernel_advance_close_ledger  1800    TIMEOUT

@@ -1,0 +1,1435 @@
+Kani Rust Verifier 0.66.0 (cargo plugin)
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.91s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.12s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+warning: unused imports: `MarketGroupV16View` and `TradeRequestV16`
+  --> tests/proofs_v16.rs:22:42
+   |
+22 |     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+   |                                          ^^^^^^^^^^^^^^^^^^
+...
+31 |     TradeRequestV16,
+   |     ^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: Found the following unsupported constructs:
+             - caller_location (1)
+             - foreign function (1)
+         
+         Verification will fail if one or more of these constructs is reachable.
+         See https://model-checking.github.io/kani/rust-feature-support.html for more details.
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.05s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.06s
+   Compilingwarning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+ percolator v0.1.1 (/home/anatoly/percolator)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.08s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.07s
+   Compiling percolator v0.1.1 (/home/anatoly/percolator)
+warning: variable does not need to be mutable
+     --> src/v16.rs:11500:13
+      |
+11500 |         let mut ledger = account.header.close_progress.try_to_runtime()?;
+      |             ----^^^^^^
+      |             |
+      |             help: remove this `mut`
+      |
+      = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.14s
+Checking harness proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters...
+CBMC 6.8.0 (cbmc-6.8.0)
+CBMC version 6.8.0 (cbmc-6.8.0) 64-bit x86_64 linux
+Reading GOTO program from file /home/anatoly/percolator/target/kani-verify/kani/x86_64-unknown-linux-gnu/debug/deps/proofs_v16-fbe023b822e5d264__RNvCs35DYgTG8RvC_10proofs_v1676proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.out
+Generating GOTO Program
+Adding CPROVER library (x86_64)
+Removal of function pointers and virtual functions
+Generic Property Instrumentation
+Running with 16 object bits, 48 offset bits (user-specified)
+Starting Bounded Model Checking
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.0 iteration 1 file /home/anatoly/percolator/src/v16.rs line 3027 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.0 iteration 2 file /home/anatoly/percolator/src/v16.rs line 3027 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.0 iteration 3 file /home/anatoly/percolator/src/v16.rs line 3027 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.0 iteration 4 file /home/anatoly/percolator/src/v16.rs line 3027 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 1 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 2 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 3 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 4 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 5 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 6 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 7 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+Not unwinding loop _RNvMsi_NtCs4R3y7dmBGud_10percolator3v16NtB5_19PortfolioV16ViewMut22compact_source_domains.1 iteration 8 file /home/anatoly/percolator/src/v16.rs line 3038 column 9 function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs line 1337 column 15 function std::option::Option::<u128>::ok_or::<percolator::V16Error> thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 2168 column 15 function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch thread 0
+aborting path on assume(false) at file tests/proofs_v16.rs line 0 column 0 function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1231 column 15 function std::result::Result::<(u128, u128), percolator::V16Error>::unwrap thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1862 column 5 function std::result::unwrap_failed thread 0
+aborting path on assume(false) at file /home/runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs line 1233 column 23 function std::result::Result::<(u128, u128), percolator::V16Error>::unwrap thread 0
+Runtime Symex: 4.19732s
+size of program expression: 191388 steps
+slicing removed 155959 assignments
+Generated 548 VCC(s), 99 remaining after simplification
+Runtime Postprocess Equation: 0.241965s
+Passing problem to propositional reduction
+converting SSA
+Runtime Convert SSA: 0.393638s
+Running propositional reduction
+Post-processing
+Runtime Post-process: 6.45e-06s
+Solving with CaDiCaL 2.0.0
+119981 variables, 217425 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0241368s
+Runtime decision procedure: 0.423917s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+119982 variables, 217426 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0100915s
+Runtime decision procedure: 0.0106703s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+119983 variables, 217427 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.090293s
+Runtime decision procedure: 0.0908884s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+119984 variables, 217428 clauses
+SAT checker: instance is SATISFIABLE
+Runtime Solver: 0.0185435s
+Runtime decision procedure: 0.0189873s
+Running propositional reduction
+Solving with CaDiCaL 2.0.0
+119985 variables, 217429 clauses
+SAT checker: instance is UNSATISFIABLE
+Runtime Solver: 0.0728567s
+Runtime decision procedure: 0.0731266s
+
+RESULTS:
+Check 1: std::result::Result::<(u128, u128), percolator::V16Error>::unwrap.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1231:15 in function std::result::Result::<(u128, u128), percolator::V16Error>::unwrap
+
+Check 2: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:6916:21 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 3: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to multiply with overflow"
+	 - Location: tests/proofs_v16.rs:6917:20 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 4: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.3
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:6920:31 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 5: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:6932:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 6: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.5
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 7: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.cover.1
+	 - Status: SATISFIED
+	 - Description: "impaired source-claim burn covers partial burn retaining fee counter"
+	 - Location: tests/proofs_v16.rs:6952:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 8: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.cover.2
+	 - Status: SATISFIED
+	 - Description: "final impaired source-claim burn covers nontrivial fee-counter cleanup"
+	 - Location: tests/proofs_v16.rs:6956:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 9: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.6
+	 - Status: SUCCESS
+	 - Description: "assertion failed: burned == burn_num"
+	 - Location: tests/proofs_v16.rs:6960:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 10: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.7
+	 - Status: SUCCESS
+	 - Description: "assertion failed: effective_burned == expected_effective_burn"
+	 - Location: tests/proofs_v16.rs:6961:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 11: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.8
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.source_claim_bound_num.get() == expected_next_claim"
+	 - Location: tests/proofs_v16.rs:6962:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 12: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.9
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.source_claim_impaired_num.get() == expected_next_claim"
+	 - Location: tests/proofs_v16.rs:6963:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 13: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.10
+	 - Status: SUCCESS
+	 - Description: "attempt to subtract with overflow"
+	 - Location: tests/proofs_v16.rs:6966:9 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 14: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.11
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.source_lien_impaired_effective_reserved.get() ==
+effective - expected_effective_burn"
+	 - Location: tests/proofs_v16.rs:6964:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 15: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.12
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.source_lien_impaired_capital_at_risk_fee_revenue.get() ==
+expected_fee_after"
+	 - Location: tests/proofs_v16.rs:6968:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 16: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.13
+	 - Status: SUCCESS
+	 - Description: "assertion failed: source.is_occupied()"
+	 - Location: tests/proofs_v16.rs:6980:9 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 17: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.assertion.14
+	 - Status: SUCCESS
+	 - Description: ""final impaired source-claim burn must not leave reward counters blocking dematerialization""
+	 - Location: tests/proofs_v16.rs:6975:9 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 18: std::option::Option::<u128>::ok_or::<percolator::V16Error>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:1337:15 in function std::option::Option::<u128>::ok_or::<percolator::V16Error>
+
+Check 19: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 20: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.assertion.2
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 21: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.assertion.3
+	 - Status: UNREACHABLE
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 22: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.assertion.4
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/v16.rs:3034:17 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 23: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.assertion.5
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/v16.rs:3036:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 24: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.assertion.6
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 25: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.assertion.7
+	 - Status: SUCCESS
+	 - Description: "attempt to add with overflow"
+	 - Location: src/v16.rs:3040:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 26: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::contains::<u8>.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::contains::<u8>
+
+Check 27: percolator::v16::V16Core::amount_from_bound_num.assertion.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:374:21 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 28: percolator::v16::V16Core::amount_from_bound_num.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to divide by zero"
+	 - Location: src/v16.rs:374:21 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 29: percolator::v16::V16Core::amount_from_bound_num.assertion.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:375:19 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 30: percolator::v16::V16Core::amount_from_bound_num.arithmetic_overflow.2
+	 - Status: SUCCESS
+	 - Description: "attempt to calculate the remainder with a divisor of zero"
+	 - Location: src/v16.rs:375:19 in function percolator::v16::V16Core::amount_from_bound_num
+
+Check 31: std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>.safety_check.1
+	 - Status: SUCCESS
+	 - Description: "`dst` must be properly aligned"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:709:9 in function std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>
+
+Check 32: std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "write_bytes: attempt to compute number in bytes which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:709:9 in function std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>
+
+Check 33: <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:2168:15 in function <std::result::Result<u128, percolator::V16Error> as std::ops::Try>::branch
+
+Check 34: std::result::unwrap_failed.assertion.1
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:1862:5 in function std::result::unwrap_failed
+
+Check 35: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.assertion.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 36: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.assertion.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:7257:27 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 37: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.unreachable.1
+	 - Status: SUCCESS
+	 - Description: "unreachable code"
+	 - Location: tests/proofs_v16.rs:0:0 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 38: std::panic::Location::<'_>::caller.unsupported_construct.1
+	 - Status: SUCCESS
+	 - Description: "caller_location is not currently supported by Kani. Please post your example at https://github.com/model-checking/kani/issues/374"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panic/location.rs:147:9 in function std::panic::Location::<'_>::caller
+
+Check 39: core::num::<impl u128>::checked_sub.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_sub` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:800:31 in function core::num::<impl u128>::checked_sub
+
+Check 40: std::ptr::const_ptr::<impl *const ()>::is_aligned_to.assertion.1
+	 - Status: UNREACHABLE
+	 - Description: "attempt to subtract with overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:1377:23 in function std::ptr::const_ptr::<impl *const ()>::is_aligned_to
+
+Check 41: std::ptr::const_ptr::<impl *const ()>::is_aligned_to.assertion.2
+	 - Status: SUCCESS
+	 - Description: "This is a placeholder message; Kani doesn't support message formatted at runtime"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/const_ptr.rs:1374:13 in function std::ptr::const_ptr::<impl *const ()>::is_aligned_to
+
+Check 42: core::panicking::panic_nounwind_fmt::runtime.unsupported_construct.1
+	 - Status: SUCCESS
+	 - Description: "call to foreign "Rust" function `_RNvCsfNd5Qxpi3D5_7___rustc17rust_begin_unwind` is not currently supported by Kani. Please post your example at https://github.com/model-checking/kani/issues/new/choose"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/panicking.rs:110:17 in function core::panicking::panic_nounwind_fmt::runtime
+
+Check 43: core::num::<impl u128>::checked_add.arithmetic_overflow.1
+	 - Status: SUCCESS
+	 - Description: "attempt to compute `unchecked_add` which would overflow"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/num/uint_macros.rs:646:31 in function core::num::<impl u128>::checked_add
+
+Check 44: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 45: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 46: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 47: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 48: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 49: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 50: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 51: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 52: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 53: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 54: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 55: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2113:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::le
+
+Check 56: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 57: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 58: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 59: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 60: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 61: <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/range.rs:1131:12 in function <std::ops::RangeInclusive<u8> as std::ops::RangeBounds<u8>>::end_bound
+
+Check 62: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 63: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 64: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 65: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 66: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 67: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:28 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 68: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 69: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 70: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 71: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 72: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 73: std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:2109:35 in function std::cmp::impls::<impl std::cmp::PartialOrd for &u8>::lt
+
+Check 74: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 75: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 76: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 77: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 78: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 79: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 80: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 81: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 82: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 83: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 84: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 85: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 86: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:7247:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 87: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7257:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 88: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7257:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 89: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7257:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 90: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7257:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 91: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7257:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 92: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7257:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 93: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7259:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 94: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7259:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 95: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7259:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 96: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7259:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 97: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7259:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 98: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7259:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 99: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7258:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 100: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7258:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 101: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7258:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 102: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7258:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 103: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7258:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 104: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7258:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 105: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7265:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 106: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7265:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 107: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7265:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 108: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7265:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 109: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7265:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 110: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7265:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 111: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7270:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 112: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7270:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 113: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7270:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 114: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7270:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 115: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7270:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 116: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7270:22 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 117: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7267:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 118: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7267:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 119: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7267:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 120: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7267:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 121: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7267:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 122: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7267:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 123: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.49
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7273:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 124: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.50
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7273:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 125: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.51
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7273:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 126: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.52
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7273:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 127: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.53
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7273:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 128: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.54
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7273:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 129: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.55
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7272:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 130: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.56
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7272:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 131: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.57
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7272:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 132: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.58
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7272:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 133: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.59
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7272:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 134: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.60
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7272:9 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 135: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.61
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:7280:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 136: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.62
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:7280:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 137: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.63
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:7280:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 138: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.64
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:7280:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 139: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.65
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:7280:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 140: percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields.pointer_dereference.66
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:7280:13 in function percolator::MarketGroupV16ViewMut::<'_, u64>::burn_impaired_account_source_claim_fields
+
+Check 141: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 142: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 143: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 144: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 145: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 146: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 147: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 148: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 149: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 150: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 151: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 152: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::lt
+
+Check 153: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 154: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 155: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 156: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 157: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 158: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 159: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 160: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 161: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 162: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 163: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 164: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 165: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3028:26 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 166: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.13
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 167: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.14
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 168: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.15
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 169: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.16
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 170: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.17
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 171: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.18
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 172: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.19
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 173: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.20
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 174: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.21
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 175: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.22
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 176: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.23
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 177: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.24
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 178: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3031:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 179: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.25
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 180: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.26
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 181: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.27
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 182: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.28
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 183: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.29
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 184: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.30
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 185: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.31
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 186: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.32
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 187: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.33
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 188: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.34
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 189: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.35
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 190: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.36
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 191: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.array_bounds.3
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3032:21 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 192: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.37
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 193: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.38
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 194: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.39
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 195: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.40
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 196: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.41
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 197: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.42
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 198: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.43
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 199: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.44
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 200: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.45
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 201: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.46
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 202: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.47
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 203: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.pointer_dereference.48
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 204: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.array_bounds.4
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: src/v16.rs:3039:13 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+Check 205: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.array_bounds.1
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:6932:5 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 206: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 207: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 208: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 209: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 210: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 211: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 212: proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters.array_bounds.2
+	 - Status: SUCCESS
+	 - Description: "index out of bounds: the length is less than or equal to the given index"
+	 - Location: tests/proofs_v16.rs:6950:18 in function proof_v16_final_impaired_source_claim_burn_clears_account_occupancy_counters
+
+Check 213: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 214: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 215: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 216: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 217: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 218: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 219: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 220: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 221: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 222: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 223: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 224: std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1903:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u128>::lt
+
+Check 225: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 226: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 227: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 228: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 229: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 230: std::ptr::read::<percolator::PortfolioAccountV16Account>.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:1744:9 in function std::ptr::read::<percolator::PortfolioAccountV16Account>
+
+Check 231: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_const::<1>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:196:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_const::<1>
+
+Check 232: std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>.precondition_instance.1
+	 - Status: SUCCESS
+	 - Description: "memset destination region writeable"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:709:9 in function std::ptr::write_bytes::<percolator::PortfolioAccountV16Account>
+
+Check 233: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 234: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.2
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 235: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.3
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 236: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.4
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 237: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.5
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 238: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.6
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:50 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 239: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.7
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer NULL"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 240: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.8
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer invalid"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 241: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.9
+	 - Status: SUCCESS
+	 - Description: "dereference failure: deallocated dynamic object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 242: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.10
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 243: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.11
+	 - Status: SUCCESS
+	 - Description: "dereference failure: pointer outside object bounds"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 244: std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le.pointer_dereference.12
+	 - Status: SUCCESS
+	 - Description: "dereference failure: invalid integer address"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/cmp.rs:1905:59 in function std::cmp::impls::<impl std::cmp::PartialOrd for u8>::le
+
+Check 245: core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>.pointer_dereference.1
+	 - Status: SUCCESS
+	 - Description: "dereference failure: dead object"
+	 - Location: ../../runner/.rustup/toolchains/nightly-2025-11-05-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:214:34 in function core::fmt::rt::<impl std::fmt::Arguments<'_>>::new_v1::<2, 2>
+
+Check 246: percolator::PortfolioV16ViewMut::<'_>::compact_source_domains.unwind.1
+	 - Status: SUCCESS
+	 - Description: "unwinding assertion loop 1"
+	 - Location: src/v16.rs:3038:9 in function percolator::PortfolioV16ViewMut::<'_>::compact_source_domains
+
+
+SUMMARY:
+ ** 0 of 244 failed (3 unreachable)
+
+ ** 2 of 2 cover properties satisfied
+
+
+VERIFICATION:- SUCCESSFUL
+Verification Time: 11.288578s
+
+Manual Harness Summary:
+Complete - 1 successfully verified harnesses, 0 failures, 1 total.

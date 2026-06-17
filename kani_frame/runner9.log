@@ -1,0 +1,10 @@
+[18:42:10] (1/2) proof_v16_frame_oracle_target_update_touches_only_declared_state -> PASS (cbmc=101.949524s wall=107s)
+[18:46:29] (2/2) proof_v16_frame_insurance_account_credit_touches_only_declared_state -> PASS (cbmc=252.203s wall=258s)
+=====
+proof                                                                 cbmc_time_s  wall_s  status
+proof_v16_frame_fee_charge_touches_only_declared_state                75.53506     80      PASS
+proof_v16_frame_backing_deposit_touches_only_declared_state           274.47894    277     PASS
+proof_v16_frame_backing_withdraw_touches_only_declared_state          231.75835    236     PASS
+proof_v16_frame_oracle_target_update_touches_only_declared_state      101.949524   107     PASS
+proof_v16_frame_insurance_account_credit_touches_only_declared_state  252.203      258     PASS
+=====

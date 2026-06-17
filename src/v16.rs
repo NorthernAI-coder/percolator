@@ -1209,7 +1209,11 @@ impl V16Core {
     /// trade is NOT blocked — the no-DoS NB1 property at the full guard stack, not
     /// just the margin gate), and every rejection is attributed to the FIRST
     /// failing guard in production order (deterministic, no spurious rejection of
-    /// a valid trade). Pure boolean. NOTE: this proves the COMPOSITION + totality
+    /// a valid trade). Pure boolean. NOTE: fee-affordability is deliberately NOT
+    /// a guard — production CAPS the fee (`min(requested_fee, capital)`,
+    /// charge_account_fee_current_not_atomic), it never rejects a trade for
+    /// insufficient fee capital (Phase-3C audit fix). NOTE: this proves the
+    /// COMPOSITION + totality
     /// + first-failure attribution; full NB1 additionally requires each summary
     /// flag to reflect its real production guard (the per-guard discharge — fee
     /// affordability and oracle/funding envelope guard proofs are the remaining
@@ -1218,7 +1222,7 @@ impl V16Core {
         match result {
             // admitted IFF the whole guard stack passes
             Ok(()) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap
-                && g.accounts_current && g.fee_affordable && g.no_loss_stale_block
+                && g.accounts_current && g.no_loss_stale_block
                 && g.no_adverse_lag && g.no_barrier_touch && g.margin_ok && g.locked_lane_ok,
             // each rejection: that guard failed AND all earlier guards passed
             Err(TradeRejectReasonV16::InvalidRequest) => !g.request_valid,
@@ -1226,12 +1230,11 @@ impl V16Core {
             Err(TradeRejectReasonV16::PriceOutOfRange) => g.request_valid && g.size_nonzero && !g.price_in_range,
             Err(TradeRejectReasonV16::FeeBpsOverCap) => g.request_valid && g.size_nonzero && g.price_in_range && !g.fee_bps_in_cap,
             Err(TradeRejectReasonV16::AccountsStale) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && !g.accounts_current,
-            Err(TradeRejectReasonV16::FeeUnaffordable) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && !g.fee_affordable,
-            Err(TradeRejectReasonV16::LossStaleBlocked) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && !g.no_loss_stale_block,
-            Err(TradeRejectReasonV16::AdverseLag) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && !g.no_adverse_lag,
-            Err(TradeRejectReasonV16::BarrierTouch) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && g.no_adverse_lag && !g.no_barrier_touch,
-            Err(TradeRejectReasonV16::MarginFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && !g.margin_ok,
-            Err(TradeRejectReasonV16::LockedLaneFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.fee_affordable && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && g.margin_ok && !g.locked_lane_ok,
+            Err(TradeRejectReasonV16::LossStaleBlocked) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && !g.no_loss_stale_block,
+            Err(TradeRejectReasonV16::AdverseLag) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && !g.no_adverse_lag,
+            Err(TradeRejectReasonV16::BarrierTouch) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && g.no_adverse_lag && !g.no_barrier_touch,
+            Err(TradeRejectReasonV16::MarginFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && !g.margin_ok,
+            Err(TradeRejectReasonV16::LockedLaneFail) => g.request_valid && g.size_nonzero && g.price_in_range && g.fee_bps_in_cap && g.accounts_current && g.no_loss_stale_block && g.no_adverse_lag && g.no_barrier_touch && g.margin_ok && !g.locked_lane_ok,
         }
     }))]
     pub(crate) fn kernel_trade_admit(g: TradeGuardSummaryV16) -> Result<(), TradeRejectReasonV16> {
@@ -1245,8 +1248,6 @@ impl V16Core {
             Err(TradeRejectReasonV16::FeeBpsOverCap)
         } else if !g.accounts_current {
             Err(TradeRejectReasonV16::AccountsStale)
-        } else if !g.fee_affordable {
-            Err(TradeRejectReasonV16::FeeUnaffordable)
         } else if !g.no_loss_stale_block {
             Err(TradeRejectReasonV16::LossStaleBlocked)
         } else if !g.no_adverse_lag {
@@ -4161,7 +4162,6 @@ pub struct TradeGuardSummaryV16 {
     pub price_in_range: bool,    // exec price within the oracle envelope
     pub fee_bps_in_cap: bool,    // fee_bps <= MAX_MARGIN_BPS
     pub accounts_current: bool,  // both accounts refreshed/certifiable
-    pub fee_affordable: bool,    // account can pay the fee
     pub no_loss_stale_block: bool, // no unrelated loss-stale blocker
     pub no_adverse_lag: bool,    // no target/effective lag for a risk increase
     pub no_barrier_touch: bool,  // no pending-domain loss-barrier touch
@@ -4178,7 +4178,6 @@ pub enum TradeRejectReasonV16 {
     PriceOutOfRange,
     FeeBpsOverCap,
     AccountsStale,
-    FeeUnaffordable,
     LossStaleBlocked,
     AdverseLag,
     BarrierTouch,

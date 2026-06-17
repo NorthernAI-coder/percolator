@@ -44,7 +44,7 @@ must still pass cover_vacuity_gate.py + symbolic_assert_audit.py; rows marked
 | A5 liquidatable | preflight accept + route proofs | PARTIAL | dec via S-L2/S-L3 → P3/P4 |
 | A6 recovery-eligible | proof_v16_permissionless_recovery_crank_is_accounting_neutral | PROVEN (gate-clean) | — |
 | A7 resolved winner | resolved_winddown_* + terminal suite | PARTIAL | gate proof + P6 FUZZ-B |
-| NB1 valid trade not blocked | **kernel_trade_admit (PROVEN: full guard-stack COMPOSITION — admits iff all 11 guards pass, deterministic first-failure attribution)**; margin/risk/locked-lane gate proofs | PARTIAL (composition proven) | remaining: per-guard DISCHARGE that each summary flag reflects its real production guard (fee-affordability, oracle/funding envelope) → wire route + per-guard proofs |
+| NB1 valid trade not blocked | **kernel_trade_admit (PROVEN: full guard-stack COMPOSITION — admits iff all 10 guards pass, deterministic first-failure attribution)**; margin/risk/locked-lane gate proofs | PARTIAL (composition proven) | remaining: per-guard DISCHARGE that each summary flag reflects its real production guard (oracle/funding envelope) → (NB-fee NOTE: production caps the fee min(requested,capital), so fee-affordability is NOT a guard — removed per 3C audit) → wire route + per-guard proofs |
 | NB2 finite crank progress | unwind(40) bounds (req 33); permissionless-crank proofs; clock-advance | PARTIAL | per-continuation bounded-work + rank/terminal artifact for EVERY selected crank action → P4 |
 
 ## Pillar F — state floor (see state_invariant_catalog.md)

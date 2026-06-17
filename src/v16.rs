@@ -11112,12 +11112,31 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         );
         let ledger = account.header.close_progress.try_to_runtime()?;
 
+        let has_open_risk =
+            !active_bitmap_is_empty(account.header.active_bitmap.map(V16PodU64::get));
+        // A close ledger with residual_remaining==0 is already fully booked/covered
+        // (e.g. insurance absorbed the loss); only OUTSTANDING residual is real,
+        // actionable close work. The `active` flag can linger past that.
+        let close_outstanding = ledger.active && ledger.residual_remaining > 0;
+        // AdvanceClose dispatches a B-chunk settle on the ledger's asset, which
+        // needs an active leg there; a residual-only ledger with no leg is a
+        // recovery case with no standalone Live crank, not a clean AdvanceClose.
+        let ledger_asset_has_leg = ledger.active
+            && (ledger.asset_index as usize)
+                < self.header.config.max_market_slots.get() as usize
+            && Self::active_leg_slot_for_asset(account, ledger.asset_index as usize)?.is_some();
         let stale = live && !cert_current;
         let b_stale = live && Self::has_b_stale_leg(account)?;
-        let pending_close = live && ledger.active;
+        let pending_close = live && close_outstanding && ledger_asset_has_leg;
+        // Expired outstanding close -> terminal recovery (Recover needs no leg).
         let expired_close =
-            live && ledger.active && self.header.current_slot.get() > ledger.max_close_slot;
-        let liquidatable = live && cert_current && cert.certified_liq_deficit != 0;
+            live && close_outstanding && self.header.current_slot.get() > ledger.max_close_slot;
+        // liquidatable requires a current certified deficit AND actual open risk:
+        // a stale cert can still report a deficit after the position was already
+        // closed, but with no active leg there is nothing to liquidate (the real
+        // liquidate entrypoint requires an active leg), so the flag must be false.
+        let liquidatable =
+            live && cert_current && cert.certified_liq_deficit != 0 && has_open_risk;
         let recovery_eligible =
             self.resolved_unattributed_insolvent_negative_pnl_requires_recovery(account)?;
         let resolved_winner =

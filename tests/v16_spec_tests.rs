@@ -2585,3 +2585,119 @@ fn v16_auto_crank_classifies_fresh_account_stale_then_refreshes_to_clean() {
     market.validate_shape().unwrap();
     account.validate_with_market(&market.as_view()).unwrap();
 }
+
+// ROADMAP 3C step 4 / NB2 finite-multi-step liveness via the self-classifying
+// crank: an uncertified, underwater account must be driven to a de-risked fixed
+// point by repeated auto-cranks — the classifier ESCALATES (stale -> refresh,
+// then liquidatable -> liquidate) and TERMINATES (NoAction), with no caller-
+// chosen action. Same liquidatable shape the direct-liquidation test uses.
+#[test]
+fn v16_auto_crank_drives_stale_underwater_account_to_derisked_fixed_point() {
+    let (mut header, mut markets) = market_fixture(2, 100);
+    let mut account_header = account_fixture(2, 13);
+    header.current_slot = V16PodU64::new(10);
+    header.slot_last = V16PodU64::new(9);
+    header.loss_stale_active = 1;
+    header.vault = V16PodU128::new(50);
+    header.insurance = V16PodU128::new(50);
+    header.negative_pnl_account_count = V16PodU64::new(1);
+
+    let mut asset0 = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset0.slot_last = 10;
+    asset0.oi_eff_long_q = 2 * POS_SCALE;
+    asset0.oi_eff_short_q = 2 * POS_SCALE;
+    asset0.loss_weight_sum_long = 2 * POS_SCALE;
+    asset0.loss_weight_sum_short = 2 * POS_SCALE;
+    asset0.stored_pos_count_long = 2;
+    asset0.stored_pos_count_short = 2;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset0);
+    let mut asset1 = markets[1].engine.asset.try_to_runtime().unwrap();
+    asset1.slot_last = 9;
+    asset1.oi_eff_long_q = POS_SCALE;
+    asset1.oi_eff_short_q = POS_SCALE;
+    asset1.loss_weight_sum_long = POS_SCALE;
+    asset1.loss_weight_sum_short = POS_SCALE;
+    asset1.stored_pos_count_long = 1;
+    asset1.stored_pos_count_short = 1;
+    markets[1].engine.asset = AssetStateV16Account::from_runtime(&asset1);
+    header.resolved_payout_blocker_count = V16PodU64::new(6);
+
+    account_header.pnl = V16PodI128::new(-5);
+    account_header.legs[0] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
+        active: true,
+        asset_index: 0,
+        market_id: asset0.market_id,
+        side: SideV16::Long,
+        basis_pos_q: POS_SCALE as i128,
+        a_basis: ADL_ONE,
+        k_snap: asset0.k_long,
+        f_snap: asset0.f_long_num,
+        epoch_snap: asset0.epoch_long,
+        loss_weight: POS_SCALE,
+        b_snap: asset0.b_long_num,
+        b_rem: 0,
+        b_epoch_snap: asset0.epoch_long,
+        b_stale: false,
+        stale: false,
+    });
+    account_header.active_bitmap[0] = V16PodU64::new(1);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+
+    let hint = AutoCrankHintV16 {
+        now_slot: 10,
+        asset_index: 0,
+        effective_price: 100,
+        funding_rate_e9: 0,
+        liquidation_close_q: POS_SCALE,
+        liquidation_fee_bps: 0,
+        resolved_close_fee_rate_per_slot: 0,
+    };
+
+    // Drive the self-classifying crank to a fixed point. It MUST converge
+    // (no-DoS) within a bounded number of steps.
+    let mut kinds = Vec::new();
+    let mut steps = 0;
+    loop {
+        let summary = market.build_actionable_summary(&account.as_view()).unwrap();
+        let r = match market.permissionless_auto_crank_not_atomic(&mut account, hint) {
+            Ok(r) => r,
+            Err(e) => panic!(
+                "step {steps} dispatch err {e:?}; summary={summary:?}; kinds={kinds:?}; bitmap={}",
+                account.header.active_bitmap[0].get()
+            ),
+        };
+        match r.selected {
+            None => break,
+            Some(k) => kinds.push(k),
+        }
+        steps += 1;
+        assert!(
+            steps < 12,
+            "self-classifying crank must converge (no-DoS); selected so far: {:?}",
+            kinds
+        );
+    }
+
+    // The classifier escalated: it refreshed the stale account, then liquidated
+    // the underwater position — and reached a non-actionable fixed point.
+    assert!(
+        kinds.contains(&ProgressContinuationV16::RefreshAccount),
+        "must refresh the uncertified account: {:?}",
+        kinds
+    );
+    assert!(
+        kinds.contains(&ProgressContinuationV16::Liquidate),
+        "must liquidate the underwater position: {:?}",
+        kinds
+    );
+    assert_eq!(
+        account.header.active_bitmap[0].get(),
+        0,
+        "position must be liquidated at the fixed point"
+    );
+
+    market.validate_shape().unwrap();
+    account.validate_with_market(&market.as_view()).unwrap();
+}

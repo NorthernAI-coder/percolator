@@ -391,6 +391,10 @@ fn check_split(chunk: u128, rem: u128, ws: u128) {
             // exact integer identity: delta_b*ws + new_rem == numerator
             let num = chunk * SOCIAL_LOSS_DEN + rem;
             assert_eq!(db.checked_mul(ws).and_then(|v| v.checked_add(nr)), Some(num));
+            // PROGRESS (3C #5): delta_b advances IFF the numerator reaches one
+            // full weight_sum of capacity — so a chunk makes B progress exactly
+            // when there is capacity for it (the engine's delta_b==0 -> no-op).
+            assert_eq!(db > 0, num >= ws, "delta_b progress mismatch");
         }
         Err(()) => assert!(engine.is_err()),
     }

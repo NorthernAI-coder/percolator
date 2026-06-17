@@ -2773,16 +2773,17 @@ fn v16_auto_crank_declares_recovery_for_expired_live_close() {
     market.validate_shape().unwrap();
 }
 
-// ROADMAP 3C step 4 — resolved_winner SOUNDNESS gate: close_resolved can only
-// REALIZE a positive payout once the payout snapshot is captured (a separate
-// resolved-lifecycle step); without it the realization returns RecoveryRequired.
-// So a Resolved positive-PnL account whose snapshot is NOT yet captured must NOT
-// be classified resolved_winner (else the auto-crank would mis-dispatch into a
-// non-realizable close). This verifies the snapshot gate that prevents that.
-// (The happy-path resolved-close realization itself is covered by the dedicated
-// resolved-close proofs and v16_resolved_payout_topup_* tests.)
+// ROADMAP 3C step 4 — resolved_winner classification (selector routes it to
+// CloseResolved). KEY regression guard: resolved_winner must NOT gate on
+// payout_snapshot_captured — close_resolved captures the snapshot LAZILY (it is
+// the sole capturer), so gating on it would deadlock the first winner (never
+// classified -> never captured). Here the snapshot is NOT pre-captured yet a
+// payout-ready winner is still classified resolved_winner. (The dispatch's
+// terminal payout realization itself is covered by the resolved-close proofs and
+// the v16_resolved_payout_topup_* tests, whose fixtures fully set up the payout
+// ledger; building that consistent fixture by hand here is out of scope.)
 #[test]
-fn v16_auto_crank_resolved_winner_requires_captured_payout_snapshot() {
+fn v16_auto_crank_classifies_payout_ready_resolved_winner_without_snapshot() {
     let (mut header, mut markets) = market_fixture(1, 100);
     let mut account_header = account_fixture(1, 42);
     {
@@ -2790,35 +2791,24 @@ fn v16_auto_crank_resolved_winner_requires_captured_payout_snapshot() {
         market.resolve_market_not_atomic(1).unwrap();
     }
     header.vault = V16PodU128::new(50);
+    // Positive PnL, all blocking counts clear (resolved_positive_payout_ready);
+    // payout_snapshot_captured stays 0 — the property under test.
     account_header.pnl = V16PodI128::new(5);
-    // NOTE: payout_snapshot_captured stays 0 (resolve_market does not capture it).
 
-    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
-    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let account = PortfolioV16ViewMut::new(&mut account_header);
+    assert_eq!(
+        market.header.payout_snapshot_captured, 0,
+        "snapshot intentionally NOT captured"
+    );
 
     let summary = market.build_actionable_summary(&account.as_view()).unwrap();
     assert!(
-        !summary.resolved_winner,
-        "a winner without a captured payout snapshot must NOT be resolved_winner: {summary:?}"
+        summary.resolved_winner,
+        "a payout-ready resolved winner must be resolved_winner even before the \
+         snapshot is captured (no snapshot gate -> no first-winner deadlock): {summary:?}"
     );
-    assert!(!summary.is_actionable(), "no realizable permissionless action yet");
-
-    let hint = AutoCrankHintV16 {
-        now_slot: 2,
-        asset_index: 0,
-        effective_price: 100,
-        funding_rate_e9: 0,
-        liquidation_close_q: 0,
-        liquidation_fee_bps: 0,
-        resolved_close_fee_rate_per_slot: 0,
-    };
-    // The auto-crank takes no mis-action (no errored close dispatch).
-    let r = market
-        .permissionless_auto_crank_not_atomic(&mut account, hint)
-        .unwrap();
-    assert_eq!(r.selected, None);
-    assert_eq!(r.outcome, AutoCrankOutcomeV16::NoAction);
-    market.validate_shape().unwrap();
+    assert!(!summary.recovery_eligible && !summary.stale && !summary.liquidatable);
 }
 
 // ROADMAP 3C step 4 — b-stale dispatch arm: an account with a b-stale active leg

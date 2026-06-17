@@ -2475,3 +2475,28 @@ fn contract_check_flow_insurance_to_close_rejects_vault_movement() {
     )
     .is_err());
 }
+
+// ROADMAP Phase 2 (NB1 admission): an economically-valid trade is admitted, and
+// every rejection maps to a false economic precondition — admit IFF economically
+// valid. No economically-valid user trade is internally DoSed at the guard stack.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_economically_valid_trade_admits)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_economically_valid_trade_admits() {
+    let evt = EconomicallyValidTradeV16 {
+        asset_configured: kani::any(),
+        size_q: kani::any(),
+        price: kani::any(),
+        price_lo: kani::any(),
+        price_hi: kani::any(),
+        fee_bps: kani::any(),
+        max_fee_bps: kani::any(),
+        accounts_current: kani::any(),
+        not_loss_stale_blocked: kani::any(),
+        no_adverse_lag: kani::any(),
+        no_barrier_touch: kani::any(),
+        margin_ok: kani::any(),
+        locked_lane_ok: kani::any(),
+    };
+    let _ = V16Core::kernel_economically_valid_trade_admits(evt);
+}

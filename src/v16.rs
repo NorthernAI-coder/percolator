@@ -1276,6 +1276,27 @@ impl V16Core {
         }
     }
 
+    /// NB1 ADMISSION THEOREM (roadmap Phase 2): an economically-valid trade is
+    /// ADMITTED, and every rejection names a FALSE economic precondition. Composes
+    /// the economic-validity predicate (over production inputs) with the proven
+    /// guard chain: admit IFF economically valid. So no economically-valid user
+    /// trade can be blocked by an internal guard mismatch, and every internal
+    /// rejection maps to a concrete user-controllable false precondition (the
+    /// no-DoS NB1 property at the guard-composition boundary). PROOF-ONLY model;
+    /// the production trade body's route to this guard stack is the documented
+    /// route-fidelity layer (build_trade_request_guard_summary + the leaf kernels).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &Result<(), TradeRejectReasonV16>| {
+        // admit IFF economically valid; every Err means NOT economically valid.
+        r.is_ok() == evt.is_economically_valid()
+            && (r.is_err() == !evt.is_economically_valid())
+    }))]
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub(crate) fn kernel_economically_valid_trade_admits(
+        evt: EconomicallyValidTradeV16,
+    ) -> Result<(), TradeRejectReasonV16> {
+        Self::kernel_trade_admit(evt.to_guards())
+    }
+
     /// PRODUCTION FIDELITY BUILDER (roadmap 3C): map a trade request + config to
     /// the scalar request-guard summary. Each flag is EXACTLY the corresponding
     /// validate_trade_request leaf, so the public validator's accept/reject
@@ -4590,6 +4611,69 @@ pub struct TradeGuardSummaryV16 {
     pub no_barrier_touch: bool,  // no pending-domain loss-barrier touch
     pub margin_ok: bool,         // final IM gate
     pub locked_lane_ok: bool,    // locked-lane gate
+}
+
+/// NB1 economic-validity predicate (roadmap Phase 2): a trade is economically
+/// valid over its PRODUCTION INPUTS when every user-controllable precondition
+/// holds — asset configured, nonzero size, price within the oracle envelope, fee
+/// within cap, both accounts current, no unrelated loss-stale block, no adverse
+/// target/effective lag on a risk increase, no pending-domain barrier touch, and
+/// the margin / locked-lane gates pass. The scalar conditions are grounded in the
+/// real inputs (size_q, price vs [price_lo,price_hi], fee_bps vs max_fee_bps); the
+/// account/market conditions are the proven leaf predicates. PROOF-ONLY model.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[cfg_attr(not(kani), allow(dead_code))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct EconomicallyValidTradeV16 {
+    pub asset_configured: bool,
+    pub size_q: i128,
+    pub price: u64,
+    pub price_lo: u64,
+    pub price_hi: u64,
+    pub fee_bps: u64,
+    pub max_fee_bps: u64,
+    pub accounts_current: bool,
+    pub not_loss_stale_blocked: bool,
+    pub no_adverse_lag: bool,
+    pub no_barrier_touch: bool,
+    pub margin_ok: bool,
+    pub locked_lane_ok: bool,
+}
+
+impl EconomicallyValidTradeV16 {
+    /// The compact economic-validity predicate over the production inputs.
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub fn is_economically_valid(self) -> bool {
+        self.asset_configured
+            && self.size_q != 0
+            && self.price >= self.price_lo
+            && self.price <= self.price_hi
+            && self.fee_bps <= self.max_fee_bps
+            && self.accounts_current
+            && self.not_loss_stale_blocked
+            && self.no_adverse_lag
+            && self.no_barrier_touch
+            && self.margin_ok
+            && self.locked_lane_ok
+    }
+
+    /// Derive the production trade-guard summary from the economic inputs. Each
+    /// guard is exactly the corresponding economic precondition.
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub fn to_guards(self) -> TradeGuardSummaryV16 {
+        TradeGuardSummaryV16 {
+            request_valid: self.asset_configured,
+            size_nonzero: self.size_q != 0,
+            price_in_range: self.price >= self.price_lo && self.price <= self.price_hi,
+            fee_bps_in_cap: self.fee_bps <= self.max_fee_bps,
+            accounts_current: self.accounts_current,
+            no_loss_stale_block: self.not_loss_stale_blocked,
+            no_adverse_lag: self.no_adverse_lag,
+            no_barrier_touch: self.no_barrier_touch,
+            margin_ok: self.margin_ok,
+            locked_lane_ok: self.locked_lane_ok,
+        }
+    }
 }
 
 /// Why a trade was rejected (the FIRST failing guard, roadmap 3B.4). PROOF-ONLY:

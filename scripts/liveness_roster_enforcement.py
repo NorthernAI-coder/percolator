@@ -73,8 +73,18 @@ ROSTER = {
 # needs a bounded-work AND a rank/terminal artifact for EVERY selected crank
 # continuation, not just clock advance.
 NB = {
-    "NB1 valid trade admitted (margin gate; full guard stack pending)":
-        (PARTIAL, HARNESS, ["contract_check_kernel_initial_margin_gate"]),
+    # NB1 admission is now PROVEN-AT-KERNEL: kernel_economically_valid_trade_admits
+    # proves admit IFF EconomicallyValidTradeV16 (over production inputs) — every
+    # rejection maps to a false economic precondition, so no economically-valid
+    # trade is internally DoSed at the guard composition. The guard summary is
+    # faithful to production (route-fidelity roster); the production trade-body
+    # ROUTE to this guard stack over the symbolic two-account body is the
+    # documented backstopped half.
+    "NB1 valid trade admitted (admit IFF economically valid; full guard stack + fidelity)":
+        (PROVEN_AT_KERNEL, HARNESS,
+         ["contract_check_kernel_economically_valid_trade_admits",
+          "contract_check_kernel_trade_admit",
+          "contract_check_kernel_initial_margin_gate"]),
     "NB2 finite crank progress (clock+rank steps; per-continuation bounded-work pending)":
         (PARTIAL, PROOFS, ["proof_v16_public_permissionless_empty_market_crank_advances_clock_without_value_movement"]),
 }

@@ -2435,3 +2435,17 @@ fn closure_close_ledger_absorbs_booking_outcome() {
         assert_eq!(l.residual_remaining + booked_loss + explicit_loss, ledger.residual_remaining);
     }
 }
+
+// ROADMAP workstream B.2 (resolved-bankruptcy PnL settlement): the negative PnL
+// is reduced by exactly the loss the residual booking absorbed (cleared =
+// min(booked+explicit, |pnl|)), only shrinking the loss toward zero and never
+// over-clearing into a spurious positive credit.
+#[cfg(all(kani, feature = "contracts"))]
+#[kani::proof_for_contract(V16Core::kernel_settle_resolved_pnl_after_booking)]
+#[kani::solver(cadical)]
+fn contract_check_kernel_settle_resolved_pnl_after_booking() {
+    let pnl: i128 = kani::any();
+    let booked_loss: u128 = kani::any();
+    let explicit_loss: u128 = kani::any();
+    let _ = V16Core::kernel_settle_resolved_pnl_after_booking(pnl, booked_loss, explicit_loss);
+}

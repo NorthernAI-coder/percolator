@@ -1592,6 +1592,44 @@ impl V16Core {
         }
     }
 
+    /// PRODUCTION KERNEL (roadmap workstream B.2, resolved-bankruptcy PnL
+    /// settlement): reduce an account's NEGATIVE PnL by the loss the residual
+    /// booking just absorbed. `cleared = min(booked_loss + explicit_loss, |pnl|)`
+    /// — capped at the outstanding loss so it can never exceed it — and
+    /// new_pnl = pnl + cleared. PROVES the loss only SHRINKS toward zero
+    /// (pnl <= new_pnl <= 0; never over-cleared into a spurious positive credit)
+    /// and its magnitude drops by EXACTLY cleared (|new_pnl| == |pnl| - cleared).
+    /// Pure scalar; the resolved-bankruptcy settle glue calls exactly this for the
+    /// PnL update after book_bankruptcy_residual_chunk_for_account_core.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::requires(pnl < 0 && pnl > i128::MIN))]
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &V16Result<i128>| match r {
+        Ok(new_pnl) => {
+            let loss = pnl.unsigned_abs();
+            let cleared = booked_loss.saturating_add(explicit_loss).min(loss);
+            *new_pnl == pnl + (cleared as i128)
+                && *new_pnl <= 0
+                && *new_pnl >= pnl
+                && new_pnl.unsigned_abs() == loss - cleared
+        }
+        Err(_) => true,
+    }))]
+    pub(crate) fn kernel_settle_resolved_pnl_after_booking(
+        pnl: i128,
+        booked_loss: u128,
+        explicit_loss: u128,
+    ) -> V16Result<i128> {
+        let loss = pnl.unsigned_abs();
+        let cleared = booked_loss
+            .checked_add(explicit_loss)
+            .ok_or(V16Error::ArithmeticOverflow)?
+            .min(loss);
+        let cleared_i128 = i128::try_from(cleared).map_err(|_| V16Error::ArithmeticOverflow)?;
+        let new_pnl = pnl
+            .checked_add(cleared_i128)
+            .ok_or(V16Error::ArithmeticOverflow)?;
+        Ok(new_pnl)
+    }
+
     /// PRODUCTION KERNEL (liveness rank): the B-settlement leg advance.
     /// b_snap moves FORWARD by exactly delta_b — the well-founded rank
     /// component for the B-settlement progress theorem: each successful
@@ -13738,18 +13776,15 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             bankrupt_side,
             residual,
         )?;
-        let cleared = outcome
-            .booked_loss
-            .checked_add(outcome.explicit_loss)
-            .ok_or(V16Error::ArithmeticOverflow)?
-            .min(residual);
-        let cleared_i128 = i128::try_from(cleared).map_err(|_| V16Error::ArithmeticOverflow)?;
-        let new_pnl = account
-            .header
-            .pnl
-            .get()
-            .checked_add(cleared_i128)
-            .ok_or(V16Error::ArithmeticOverflow)?;
+        // PRODUCTION KERNEL: reduce the negative PnL by the absorbed loss
+        // (cleared = min(booked+explicit, |pnl|)); proven to only shrink the loss
+        // toward zero and never over-clear. residual == |pnl| here, so the
+        // kernel's |pnl|-cap is exactly the production min(.., residual).
+        let new_pnl = V16Core::kernel_settle_resolved_pnl_after_booking(
+            account.header.pnl.get(),
+            outcome.booked_loss,
+            outcome.explicit_loss,
+        )?;
         self.set_account_pnl(account, new_pnl)?;
         account.header.health_cert.valid = 0;
         Ok(())

@@ -1140,24 +1140,25 @@ impl V16Core {
         match result {
             None => !summary.is_actionable(),
             Some(k) => {
-                summary.is_actionable()
-                    && match k {
-                        // the selected continuation's class is live (non-blocked)
-                        ProgressContinuationV16::DeclareRecovery => summary.expired_close || summary.recovery_eligible,
-                        ProgressContinuationV16::CloseResolved => summary.resolved_winner,
-                        ProgressContinuationV16::AdvanceClose => summary.pending_close,
-                        ProgressContinuationV16::SettleBChunk => summary.b_stale,
-                        ProgressContinuationV16::Liquidate => summary.liquidatable,
-                        ProgressContinuationV16::RefreshAccount => summary.stale,
-                    }
-                    // deterministic priority: terminal recovery (expired/recovery)
-                    // is top; otherwise resolved-winner is next — higher-priority
-                    // active classes are never bypassed.
-                    && (!(summary.expired_close || summary.recovery_eligible)
-                        || *k == ProgressContinuationV16::DeclareRecovery)
-                    && ((summary.expired_close || summary.recovery_eligible)
-                        || !summary.resolved_winner
-                        || *k == ProgressContinuationV16::CloseResolved)
+                // FULL deterministic priority chain (3C): each kind is selected
+                // IFF its class is active AND every higher-priority class is
+                // inactive — so overlaps resolve to exactly one continuation and
+                // no higher-priority active class is ever bypassed.
+                let recovery = summary.expired_close || summary.recovery_eligible;
+                match k {
+                    ProgressContinuationV16::DeclareRecovery => recovery,
+                    ProgressContinuationV16::CloseResolved => !recovery && summary.resolved_winner,
+                    ProgressContinuationV16::AdvanceClose =>
+                        !recovery && !summary.resolved_winner && summary.pending_close,
+                    ProgressContinuationV16::SettleBChunk =>
+                        !recovery && !summary.resolved_winner && !summary.pending_close && summary.b_stale,
+                    ProgressContinuationV16::Liquidate =>
+                        !recovery && !summary.resolved_winner && !summary.pending_close
+                            && !summary.b_stale && summary.liquidatable,
+                    ProgressContinuationV16::RefreshAccount =>
+                        !recovery && !summary.resolved_winner && !summary.pending_close
+                            && !summary.b_stale && !summary.liquidatable && summary.stale,
+                }
             }
         }
     }))]

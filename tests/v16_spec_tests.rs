@@ -1849,6 +1849,7 @@ fn v16_public_liquidation_on_unfunded_domain_cannot_drain_shared_insurance() {
     account.validate_with_market(&market.as_view()).unwrap();
 }
 
+#[cfg(feature = "fuzz")] // exercises the internal direct-crank primitive via the shim
 #[test]
 fn v16_permissionless_liquidation_progresses_when_unrelated_asset_is_loss_stale() {
     let (mut header, mut markets) = market_fixture(2, 100);
@@ -1903,7 +1904,7 @@ fn v16_permissionless_liquidation_progresses_when_unrelated_asset_is_loss_stale(
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
     let outcome = market
-        .permissionless_crank_not_atomic(
+        .kani_permissionless_crank(
             &mut account,
             percolator::PermissionlessCrankRequestV16 {
                 now_slot: 10,
@@ -1936,6 +1937,7 @@ fn v16_permissionless_liquidation_progresses_when_unrelated_asset_is_loss_stale(
     account.validate_with_market(&market.as_view()).unwrap();
 }
 
+#[cfg(feature = "fuzz")] // exercises the internal direct-crank primitive via the shim
 #[test]
 fn v16_permissionless_recovery_crank_is_value_neutral_and_idempotent() {
     let (mut header, mut markets) = market_fixture(1, 100);
@@ -1956,7 +1958,7 @@ fn v16_permissionless_recovery_crank_is_value_neutral_and_idempotent() {
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
     let first = market
-        .permissionless_crank_not_atomic(
+        .kani_permissionless_crank(
             &mut account,
             PermissionlessCrankRequestV16 {
                 now_slot: 1,
@@ -1970,7 +1972,7 @@ fn v16_permissionless_recovery_crank_is_value_neutral_and_idempotent() {
         )
         .unwrap();
     let second = market
-        .permissionless_crank_not_atomic(
+        .kani_permissionless_crank(
             &mut account,
             PermissionlessCrankRequestV16 {
                 now_slot: 1,
@@ -1983,7 +1985,7 @@ fn v16_permissionless_recovery_crank_is_value_neutral_and_idempotent() {
             },
         )
         .unwrap();
-    let refresh_after_recovery = market.permissionless_crank_not_atomic(
+    let refresh_after_recovery = market.kani_permissionless_crank(
         &mut account,
         PermissionlessCrankRequestV16 {
             now_slot: 1,

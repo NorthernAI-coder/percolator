@@ -11065,7 +11065,15 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(PermissionlessProgressOutcomeV16::RecoveryDeclared(reason))
     }
 
-    pub fn permissionless_crank_not_atomic(
+    /// INTERNAL dispatch primitive (NOT a public/wrapper entrypoint): executes one
+    /// CALLER-CHOSEN action (Refresh / SettleB / Liquidate / Recover). It is unsafe
+    /// for opportunistic, out-of-order keepers because the caller's chosen action
+    /// can be stale by execution time. The single public permissionless route is
+    /// `permissionless_auto_crank_not_atomic`, which selects the action + asset from
+    /// current on-chain state; it dispatches to this primitive. pub(crate) so the
+    /// wrapper sees one crank API; the proof/fuzz suites reach it via
+    /// `kani_permissionless_crank`.
+    pub(crate) fn permissionless_crank_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,
         request: PermissionlessCrankRequestV16,
@@ -11262,15 +11270,31 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok((b_stale_asset, active_asset))
     }
 
-    /// PRODUCTION ORDER-INSENSITIVE AUTO-CRANK (engine.md): the canonical no-DoS
-    /// public crank. The caller submits bounded observations (any landing order) +
-    /// a liquidation budget; the ENGINE classifies the account, selects the single
-    /// highest-priority continuation AND its asset (self-selected), matches the
-    /// observation it needs, derives the liquidation fee from config (never the
-    /// caller), and dispatches exactly one bounded primitive. Returns NoAction when
-    /// no progress is currently needed, and `NonProgress` (no mutation) when the
-    /// selected step needs an observation the caller did not supply — so a stale
-    /// keeper tx for a task that changed cleanly no-ops/errors. One call = one step.
+    /// THE SINGLE PUBLIC PERMISSIONLESS CRANK (engine.md): the only crank the
+    /// wrapper should call — order-insensitive and engine-selected, built for a
+    /// swarm of opportunistic keepers whose transactions land out of order. The
+    /// per-action primitives (refresh / settle-B / liquidate / recover /
+    /// close-resolved) are internal dispatch targets, not wrapper entrypoints.
+    ///
+    /// Calling convention (wrapper side):
+    /// 1. Decode a public auto-crank instruction carrying a bounded set of oracle
+    ///    OBSERVATIONS (asset, authenticated price, funding) — one per asset the
+    ///    keeper has fresh data for — plus a `liquidation_max_close_q` work budget
+    ///    and the `resolved_close_fee_rate_per_slot`.
+    /// 2. Authenticate clock/slot + each observation against the oracle.
+    /// 3. Build `AutoCrankWorkV16 { now_slot, observations, liquidation_max_close_q,
+    ///    resolved_close_fee_rate_per_slot }` and call this ONCE (one ix = one step;
+    ///    never loop to a fixed point — CU).
+    /// 4. The engine classifies the account, selects the highest-priority step AND
+    ///    its asset (self-selected — the caller never chooses action or asset),
+    ///    matches the observation that step needs, derives the liquidation fee from
+    ///    CONFIG (never the caller), and dispatches one bounded primitive.
+    /// 5. On `Ok(result)`, mirror any wrapper-owned token/custody movement keyed off
+    ///    `result.selected` (the `AutoCrankPlanV16`): refresh / settle-B move no
+    ///    custody; liquidate / close-resolved may. `NoAction` => nothing was needed.
+    ///    `Err(NonProgress)` => the selected step needed an observation the caller
+    ///    did not supply (a stale/late tx whose task changed) — no mutation, so SVM
+    ///    rollback is a clean no-op and arbitrary landing order is safe.
     pub fn permissionless_auto_crank_not_atomic(
         &mut self,
         account: &mut PortfolioV16ViewMut<'_>,

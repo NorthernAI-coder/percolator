@@ -122,8 +122,8 @@ route-level theorem over the symbolic monolith body — accepted/backstopped by 
 decomposition, not a soundness gap.
 
 - **No-LoF.** `GlobalValidState` (`validate_shape` + per-touched-account
-  `validate_with_market`) holds at every committed `Ok` exit of all 56 public
-  `*_not_atomic` entrypoints (`scripts/boundary_audit.py`, 56/56). Each entrypoint
+  `validate_with_market`) holds at every committed `Ok` exit of all 55 public
+  `*_not_atomic` entrypoints (`scripts/boundary_audit.py`, 55/55). Each entrypoint
   maps to a stronger per-class proof source (`scripts/lof_transition_class_roster.py`),
   and `scripts/no_lof_strength_roster.py` enforces **zero value-bearing FLOOR-only**
   entrypoints (51 per-op THEOREM, 5 non-value-bearing FLOOR). Wide arithmetic is
@@ -144,6 +144,27 @@ rollback on `Err`; scheduler fairness (SCHED); the named arithmetic axiom
 manifest; and wrapper routing/auth/oracle/CU obligations (the engine does not
 certify the wrapper). The full-monolith-route rank/admission and max-shape CU are
 the PROVEN-AT-KERNEL-vs-full-route boundary, not soundness gaps.
+
+### Permissionless crank: one public route
+
+There is exactly **one** public crank entrypoint, `permissionless_auto_crank_not_
+atomic`. It is built for a swarm of opportunistic keepers landing out of order:
+the caller submits authenticated oracle **observations** (asset, price, funding)
+plus a liquidation budget, and the **engine** — not the caller — classifies the
+account, selects the highest-priority step *and its asset* from current on-chain
+state, derives the liquidation fee from config, and dispatches one bounded
+primitive. One instruction = one step (never loop to a fixed point).
+
+The per-action primitives (refresh / settle-B / liquidate / recover /
+close-resolved) are **internal** dispatch targets, not wrapper entrypoints —
+caller-chosen actions go stale under out-of-order landing. A step whose
+observation is absent returns `NonProgress` with no mutation, so a stale/late tx
+is a clean no-op (SVM rollback) and arbitrary landing order is safe.
+
+Wrapper call: decode the instruction → authenticate clock/observations → build
+`AutoCrankWorkV16` → call once → mirror token/custody movement keyed off
+`result.selected` (`AutoCrankPlanV16`). See the doc comment on
+`permissionless_auto_crank_not_atomic`.
 
 ### Certification gates
 

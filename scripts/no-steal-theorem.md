@@ -31,7 +31,7 @@ exact O(1) aggregate totals == per-domain sums, per-domain ledger closure,
 per-status bucket shapes) plus, on value-moving paths, a balanced typed
 `TokenValueFlowProofV16`.
 
-Machine check: `scripts/boundary_audit.py` verifies that ALL 56 public
+Machine check: `scripts/boundary_audit.py` verifies that ALL 55 public
 `*_not_atomic` entrypoints terminate their Ok path in (or transitively
 delegate to) one of the engine's state validators — so an Ok return cannot
 exist without the validators having passed, and an Err return commits
@@ -288,7 +288,7 @@ bearing bodies remain out, with differential fuzz as the documented substitute.
   continuation, with the machine-proven rank steps and the named scheduler
   assumption.
 - scripts/spec-coverage.md — 37 STRONG / 1 N/A; the two static audits
-  (boundary_audit.py 56/56, identity_independence_audit.py) cited inline.
+  (boundary_audit.py 55/55, identity_independence_audit.py) cited inline.
 - scripts/boundary_audit.py, scripts/identity_independence_audit.py —
   executable static checks for Lemma 0 (Ok-exit GlobalValidState) and #3
   (identity independence).

@@ -239,12 +239,6 @@
       "liveness": "dispatcher(select_auto_crank_plan)",
       "transition_class": "account refresh / crank / fees"
     },
-    "permissionless_crank_not_atomic": {
-      "class_proof_source": "KERNEL_VALUE",
-      "class_tier": "THEOREM",
-      "liveness": "refresh/settle-B/liquidate/recover",
-      "transition_class": "account refresh / crank / fees"
-    },
     "rebalance_reduce_position_not_atomic": {
       "class_proof_source": "WHOLE_BODY_COMPOSITION",
       "class_tier": "THEOREM",
@@ -349,5 +343,5 @@
     }
   },
   "engine": "percolator v16",
-  "public_entrypoints": 56
+  "public_entrypoints": 55
 }

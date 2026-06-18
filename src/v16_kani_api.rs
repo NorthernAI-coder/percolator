@@ -1600,3 +1600,17 @@ impl V16Core {
         }
     }
 }
+
+// Test/proof-only accessor for the INTERNAL direct-crank dispatch primitive
+// (permissionless_crank_not_atomic is pub(crate) — production wrappers call the
+// single public route permissionless_auto_crank_not_atomic). Lets the kani/fuzz
+// suites exercise one caller-chosen primitive action directly.
+impl<'a, T> MarketGroupV16ViewMut<'a, T> {
+    pub fn kani_permissionless_crank(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        request: PermissionlessCrankRequestV16,
+    ) -> V16Result<PermissionlessProgressOutcomeV16> {
+        self.permissionless_crank_not_atomic(account, request)
+    }
+}

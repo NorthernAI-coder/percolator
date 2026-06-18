@@ -7958,7 +7958,7 @@ fn proof_v16_permissionless_recovery_crank_is_accounting_neutral() {
     let residual_before = market.kani_residual();
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
     let outcome = market
-        .permissionless_crank_not_atomic(
+        .kani_permissionless_crank(
             &mut account,
             PermissionlessCrankRequestV16 {
                 now_slot,
@@ -8056,7 +8056,7 @@ fn proof_v16_public_permissionless_empty_market_crank_advances_clock_without_val
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
 
     let outcome = market
-        .permissionless_crank_not_atomic(
+        .kani_permissionless_crank(
             &mut account,
             PermissionlessCrankRequestV16 {
                 now_slot,
@@ -12709,7 +12709,7 @@ fn proof_v16_seq_double_crank_is_monotone_and_value_flat() {
     let effective_price = market.markets[0].engine.asset.try_to_runtime().unwrap().effective_price;
     for now_slot in [s1, s2] {
         market
-            .permissionless_crank_not_atomic(
+            .kani_permissionless_crank(
                 &mut account,
                 PermissionlessCrankRequestV16 {
                     now_slot,
@@ -13530,7 +13530,7 @@ fn proof_v16_frame_crank_touches_only_clock_and_cert_state() {
         let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
         let mut account = PortfolioV16ViewMut::new(&mut account_header);
         market
-            .permissionless_crank_not_atomic(
+            .kani_permissionless_crank(
                 &mut account,
                 PermissionlessCrankRequestV16 {
                     now_slot: current,

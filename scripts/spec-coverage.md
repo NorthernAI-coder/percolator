@@ -60,7 +60,7 @@ The remaining floor, all documented-by-experiment rather than open:
 - Exact frames for the intractable bodies: backstopped by gates + value skeletons +
   runtime flow validation on every execution.
 
-Bottom line: 37 STRONG (incl. #3 via identity-independence machine check and #37 decision core via the kernel-proofs gates), 1 N/A (#28). Machine-checked static audits: scripts/boundary_audit.py (56/56 Ok-exit validators) and scripts/identity_independence_audit.py.
+Bottom line: 37 STRONG (incl. #3 via identity-independence machine check and #37 decision core via the kernel-proofs gates), 1 N/A (#28). Machine-checked static audits: scripts/boundary_audit.py (55/55 Ok-exit validators) and scripts/identity_independence_audit.py.
 Exact-frame lattice: 16 ops (scripts/no-steal-theorem.md Lemma 4). Differential rate
 fuzz + constant-weight witness close #18/#1. Whole-body frame via COMPOSITION: attach_leg_at_slot frame-proven by stub_verified(kernel)+stub(division) (no-steal-theorem.md) — the monolithic-body-frame gap is reachable where a kernel seam exists. no-DoS liveness: ActionableState ->
 bounded-successful-continuation composition with machine-proven rank steps in

@@ -172,7 +172,7 @@ fn apply_fuzz_action(
             if target_a {
                 let mut account = PortfolioV16ViewMut::new(account_a);
                 market
-                    .permissionless_crank_not_atomic(
+                    .kani_permissionless_crank(
                         &mut account,
                         PermissionlessCrankRequestV16 {
                             now_slot: market.header.current_slot.get().saturating_add(1),
@@ -186,7 +186,7 @@ fn apply_fuzz_action(
             } else {
                 let mut account = PortfolioV16ViewMut::new(account_b);
                 market
-                    .permissionless_crank_not_atomic(
+                    .kani_permissionless_crank(
                         &mut account,
                         PermissionlessCrankRequestV16 {
                             now_slot: market.header.current_slot.get().saturating_add(1),
@@ -266,7 +266,7 @@ fn apply_fuzz_action(
             if target_a {
                 let mut account = PortfolioV16ViewMut::new(account_a);
                 market
-                    .permissionless_crank_not_atomic(
+                    .kani_permissionless_crank(
                         &mut account,
                         PermissionlessCrankRequestV16 {
                             now_slot: market.header.current_slot.get(),
@@ -282,7 +282,7 @@ fn apply_fuzz_action(
             } else {
                 let mut account = PortfolioV16ViewMut::new(account_b);
                 market
-                    .permissionless_crank_not_atomic(
+                    .kani_permissionless_crank(
                         &mut account,
                         PermissionlessCrankRequestV16 {
                             now_slot: market.header.current_slot.get(),

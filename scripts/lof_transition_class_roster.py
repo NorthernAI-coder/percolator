@@ -4,7 +4,7 @@ for no-LoF: public entrypoint / transition class -> proved frame/value source").
 
 Every public `*_not_atomic` entrypoint carries the UNIVERSAL no-LoF floor: its
 committed Ok-exit preserves GlobalValidState (validate_shape and per-touched-
-account validate_with_market), machine-checked transitively for all 56 by
+account validate_with_market), machine-checked transitively for all 55 by
 scripts/boundary_audit.py (the Lemma-0 boundary). Err paths fully revert at the
 execution boundary, so they need no preservation.
 
@@ -167,13 +167,13 @@ for ep, c in owner.items():
 
 print(f"LoF transition-class roster OK: all {len(entrypoints)} public *_not_atomic")
 print("entrypoints partition into transition classes, each with a present")
-print("proof-source artifact, atop the universal GlobalValidState floor (56/56):")
+print("proof-source artifact, atop the universal GlobalValidState floor (55/55):")
 print()
 for (name, strength, _pats, arts) in CLASSES:
     print(f"  [{strength:22s}] {name}  ({counts.get(name, 0)} entrypoints)")
     for (path, fn) in arts:
         print(f"       {path}::{fn}")
 print()
-print("Universal floor for ALL 56: GlobalValidState preserved at every committed")
+print("Universal floor for ALL 55: GlobalValidState preserved at every committed")
 print("Ok-exit (scripts/boundary_audit.py). The single all-transitions Kani query")
 print("is tool-impossible; this partition is its sound decomposition.")

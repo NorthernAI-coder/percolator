@@ -1,1 +1,0 @@
-proof_v16_frame_crank_touches_only_clock_and_cert_state

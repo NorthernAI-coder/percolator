@@ -1,2 +1,0 @@
-liveness_pending_close_has_rank_decreasing_advance
-liveness_b_stale_leg_has_advancing_chunk

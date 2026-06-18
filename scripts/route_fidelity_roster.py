@@ -66,11 +66,17 @@ def summary_fields(lines):
 
 
 def main():
-    lines = Path(SRC).read_text().splitlines()
-    # The fidelity `kani::ensures` clauses live on the builder/kernel in src/v16.rs
+    # Proof-only summary structs + their fidelity contracts may live in the
+    # cfg(kani) module v16_kani_api.rs (moved there to minimise the production
+    # audit surface); scan it too so those structs stay enforced.
+    KANI_API = "src/v16_kani_api.rs"
+    src_text = Path(SRC).read_text()
+    kani_text = Path(KANI_API).read_text() if Path(KANI_API).exists() else ""
+    lines = (src_text + "\n" + kani_text).splitlines()
+    # The fidelity `kani::ensures` clauses live on the builder/kernel
     # (e.g. `r.stale == stale`); the harness in v16_proofs.rs only calls them.
-    # Search both for the contract-equality signature `.<field> ==`.
-    haystack = Path(SRC).read_text() + "\n" + (Path(PROOFS).read_text() if Path(PROOFS).exists() else "")
+    # Search all three for the contract-equality signature `.<field> ==`.
+    haystack = src_text + "\n" + kani_text + "\n" + (Path(PROOFS).read_text() if Path(PROOFS).exists() else "")
     summaries = summary_fields(lines)
 
     violations = []

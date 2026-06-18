@@ -1211,3 +1211,392 @@ pub fn kani_social_loss_book_split(
 ) -> V16Result<(u128, u128)> {
     social_loss_book_split(engine_chunk, carried_rem, weight_sum)
 }
+
+// ===========================================================================
+// PROOF-ONLY FIDELITY MODELS (moved from src/v16.rs to minimise the production
+// audit surface). cfg(any(kani, feature="fuzz")): never in the production engine.
+// Proven faithful to a real production guard/predicate but NOT production-
+// dispatched; v16_proofs.rs consumes them as V16Core::* / re-exported types.
+// ===========================================================================
+
+
+/// Compact summary of the trade guard stack (roadmap 3B.4): each field is the
+/// result of one production guard an economically-valid trade must satisfy, in
+/// the order the public trade path applies them.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct TradeGuardSummaryV16 {
+    pub request_valid: bool,     // request shape / asset configured
+    pub size_nonzero: bool,      // nonzero trade size
+    pub price_in_range: bool,    // exec price within the oracle envelope
+    pub fee_bps_in_cap: bool,    // fee_bps <= MAX_MARGIN_BPS
+    pub accounts_current: bool,  // both accounts refreshed/certifiable
+    pub no_loss_stale_block: bool, // no unrelated loss-stale blocker
+    pub no_adverse_lag: bool,    // no target/effective lag for a risk increase
+    pub no_barrier_touch: bool,  // no pending-domain loss-barrier touch
+    pub margin_ok: bool,         // final IM gate
+    pub locked_lane_ok: bool,    // locked-lane gate
+}
+
+/// NB1 economic-validity predicate (roadmap Phase 2): a trade is economically
+/// valid over its PRODUCTION INPUTS when every user-controllable precondition
+/// holds — asset configured, nonzero size, price within the oracle envelope, fee
+/// within cap, both accounts current, no unrelated loss-stale block, no adverse
+/// target/effective lag on a risk increase, no pending-domain barrier touch, and
+/// the margin / locked-lane gates pass. The scalar conditions are grounded in the
+/// real inputs (size_q, price vs [price_lo,price_hi], fee_bps vs max_fee_bps); the
+/// account/market conditions are the proven leaf predicates. PROOF-ONLY model.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[cfg_attr(not(kani), allow(dead_code))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct EconomicallyValidTradeV16 {
+    pub asset_configured: bool,
+    pub size_q: i128,
+    pub price: u64,
+    pub price_lo: u64,
+    pub price_hi: u64,
+    pub fee_bps: u64,
+    pub max_fee_bps: u64,
+    pub accounts_current: bool,
+    pub not_loss_stale_blocked: bool,
+    pub no_adverse_lag: bool,
+    pub no_barrier_touch: bool,
+    pub margin_ok: bool,
+    pub locked_lane_ok: bool,
+}
+
+impl EconomicallyValidTradeV16 {
+    /// The compact economic-validity predicate over the production inputs.
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub fn is_economically_valid(self) -> bool {
+        self.asset_configured
+            && self.size_q != 0
+            && self.price >= self.price_lo
+            && self.price <= self.price_hi
+            && self.fee_bps <= self.max_fee_bps
+            && self.accounts_current
+            && self.not_loss_stale_blocked
+            && self.no_adverse_lag
+            && self.no_barrier_touch
+            && self.margin_ok
+            && self.locked_lane_ok
+    }
+
+    /// Derive the production trade-guard summary from the economic inputs. Each
+    /// guard is exactly the corresponding economic precondition.
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub fn to_guards(self) -> TradeGuardSummaryV16 {
+        TradeGuardSummaryV16 {
+            request_valid: self.asset_configured,
+            size_nonzero: self.size_q != 0,
+            price_in_range: self.price >= self.price_lo && self.price <= self.price_hi,
+            fee_bps_in_cap: self.fee_bps <= self.max_fee_bps,
+            accounts_current: self.accounts_current,
+            no_loss_stale_block: self.not_loss_stale_blocked,
+            no_adverse_lag: self.no_adverse_lag,
+            no_barrier_touch: self.no_barrier_touch,
+            margin_ok: self.margin_ok,
+            locked_lane_ok: self.locked_lane_ok,
+        }
+    }
+}
+
+/// Why a trade was rejected (the FIRST failing guard, roadmap 3B.4). PROOF-ONLY:
+/// the kernel_trade_admit fidelity model's reason type; not production-dispatched.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[cfg_attr(not(kani), allow(dead_code))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum TradeRejectReasonV16 {
+    InvalidRequest,
+    ZeroSize,
+    PriceOutOfRange,
+    FeeBpsOverCap,
+    AccountsStale,
+    LossStaleBlocked,
+    AdverseLag,
+    BarrierTouch,
+    MarginFail,
+    LockedLaneFail,
+}
+
+/// Compact rank summary for a resolved-close call (roadmap 3B.8): which pending
+/// components remain (each a rank component), plus the explicit recovery flag.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct ResolvedCloseRankV16 {
+    pub b_stale: bool,        // outstanding B settlement
+    pub negative_pnl: bool,   // unsettled negative PnL
+    pub active_leg: bool,     // an open leg remains
+    pub receipt_claim: bool,  // an unpaid resolved receipt claim
+    pub capital: bool,        // residual capital to disburse
+    pub recovery_required: bool, // the explicit recovery predicate holds
+}
+
+impl ResolvedCloseRankV16 {
+    #[cfg_attr(not(kani), allow(dead_code))] // PROOF-ONLY: used by kernel_resolved_close_progress (fidelity model)
+    pub fn has_pending(self) -> bool {
+        self.b_stale || self.negative_pnl || self.active_leg || self.receipt_claim || self.capital
+    }
+}
+
+/// Outcome of one resolved-close step (roadmap 3B.8). PROOF-ONLY: the
+/// kernel_resolved_close_progress fidelity model's output; not production-dispatched.
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[cfg_attr(not(kani), allow(dead_code))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ResolvedCloseStepV16 {
+    Closed,
+    ProgressOnly,
+    RecoveryRequired,
+}
+
+/// A public continuation kind the engine can make progress with (roadmap 3A.4).
+#[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum ProgressContinuationV16 {
+    DeclareRecovery, // A4 expired close / A6 recovery-eligible: terminal recovery
+    CloseResolved,   // A7 resolved winner: terminal realization
+    AdvanceClose,    // A3 pending close residual: close-ledger rank step
+    SettleBChunk,    // A2 b-stale leg: B-advance rank step
+    Liquidate,       // A5 liquidatable: risk-reduction
+    RefreshAccount,  // A1 stale account: protective accrual segment
+}
+
+impl V16Core {
+    /// PRODUCTION KERNEL (roadmap Phase 4 / 3A.4 liveness selector): the
+    /// gate-reachability oracle. Given the ActionableState summary, deterministi-
+    /// cally select a public continuation that makes progress, by a fixed
+    /// priority that resolves OVERLAPPING active classes (terminal/safety first):
+    /// expired-close/recovery -> resolved -> pending-close -> b-stale ->
+    /// liquidate -> refresh. Proves the no-DoS existential robustly: an actionable
+    /// state ALWAYS selects Some continuation (totality), the selected
+    /// continuation's class is ACTUALLY active (non-blocked — never picks a
+    /// continuation for an inactive class, so one active class cannot invalidate
+    /// the witness chosen for another), and the selection is deterministic. Pure;
+    /// composes the per-class L.dec rank kernels into one overlap-safe L.sel.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &Option<ProgressContinuationV16>| {
+        match result {
+            None => !summary.is_actionable(),
+            Some(k) => {
+                // FULL deterministic priority chain (3C): each kind is selected
+                // IFF its class is active AND every higher-priority class is
+                // inactive — so overlaps resolve to exactly one continuation and
+                // no higher-priority active class is ever bypassed.
+                let recovery = summary.expired_close || summary.recovery_eligible;
+                match k {
+                    ProgressContinuationV16::DeclareRecovery => recovery,
+                    ProgressContinuationV16::CloseResolved => !recovery && summary.resolved_winner,
+                    ProgressContinuationV16::AdvanceClose =>
+                        !recovery && !summary.resolved_winner && summary.pending_close,
+                    ProgressContinuationV16::SettleBChunk =>
+                        !recovery && !summary.resolved_winner && !summary.pending_close && summary.b_stale,
+                    ProgressContinuationV16::Liquidate =>
+                        !recovery && !summary.resolved_winner && !summary.pending_close
+                            && !summary.b_stale && summary.liquidatable,
+                    ProgressContinuationV16::RefreshAccount =>
+                        !recovery && !summary.resolved_winner && !summary.pending_close
+                            && !summary.b_stale && !summary.liquidatable && summary.stale,
+                }
+            }
+        }
+    }))]
+    pub(crate) fn select_progress_witness(
+        summary: ActionableSummaryV16,
+    ) -> Option<ProgressContinuationV16> {
+        if summary.expired_close || summary.recovery_eligible {
+            Some(ProgressContinuationV16::DeclareRecovery)
+        } else if summary.resolved_winner {
+            Some(ProgressContinuationV16::CloseResolved)
+        } else if summary.pending_close {
+            Some(ProgressContinuationV16::AdvanceClose)
+        } else if summary.b_stale {
+            Some(ProgressContinuationV16::SettleBChunk)
+        } else if summary.liquidatable {
+            Some(ProgressContinuationV16::Liquidate)
+        } else if summary.stale {
+            Some(ProgressContinuationV16::RefreshAccount)
+        } else {
+            None
+        }
+    }
+
+    /// PRODUCTION KERNEL (roadmap 3B.8, Pillar L A7.dec): resolved-close progress
+    /// classification — the no-DoS close property. Each call to the resolved
+    /// close-out is `Closed` (no pending component remains), `ProgressOnly` (a
+    /// rank component is still nonzero, so a strictly-smaller-rank step exists),
+    /// or `RecoveryRequired` (only when the explicit recovery predicate holds).
+    /// Proves: Closed IFF nothing pending and no recovery; ProgressOnly IMPLIES a
+    /// pending component exists (a real rank decrease is available — no spurious
+    /// non-progress); RecoveryRequired IFF the recovery flag. Pure; composes the
+    /// per-component rank kernels (b-advance, settle-principal, clear-leg,
+    /// payout-step) into the close termination argument.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &ResolvedCloseStepV16| {
+        match result {
+            ResolvedCloseStepV16::RecoveryRequired => rank.recovery_required,
+            ResolvedCloseStepV16::Closed => !rank.recovery_required && !rank.has_pending(),
+            ResolvedCloseStepV16::ProgressOnly => !rank.recovery_required && rank.has_pending(),
+        }
+    }))]
+    // PROOF-ONLY FIDELITY MODEL (not production-dispatched; see dead_kernel_check
+    // / route_fidelity_roster): consumed by contract_check_kernel_resolved_close_
+    // progress. Used only under cfg(kani), so allow dead_code in normal builds.
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub(crate) fn kernel_resolved_close_progress(rank: ResolvedCloseRankV16) -> ResolvedCloseStepV16 {
+        if rank.recovery_required {
+            ResolvedCloseStepV16::RecoveryRequired
+        } else if rank.has_pending() {
+            ResolvedCloseStepV16::ProgressOnly
+        } else {
+            ResolvedCloseStepV16::Closed
+        }
+    }
+
+    /// PRODUCTION KERNEL (roadmap 3B.4, Pillar L NB1 composition): the trade guard
+    /// stack as one decision. Admits IFF EVERY guard passes (an economically-valid
+    /// trade is NOT blocked — the no-DoS NB1 property at the full guard stack, not
+    /// just the margin gate), and every rejection is attributed to the FIRST
+    /// failing guard in production order (deterministic, no spurious rejection of
+    /// a valid trade). Pure boolean. NOTE: fee-affordability is deliberately NOT
+    /// a guard — production CAPS the fee (`min(requested_fee, capital)`,
+    /// charge_account_fee_current_not_atomic), it never rejects a trade for
+    /// insufficient fee capital (Phase-3C audit fix). NOTE: this proves the
+    /// COMPOSITION + totality
+    /// + first-failure attribution; full NB1 additionally requires each summary
+    /// flag to reflect its real production guard (the per-guard discharge — fee
+    /// affordability and oracle/funding envelope guard proofs are the remaining
+    /// rows, so NB1 stays PARTIAL until those land).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &Result<(), TradeRejectReasonV16>| {
+        match result {
+            // admitted IFF the whole guard stack passes
+            Ok(()) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap
+                && guards.accounts_current && guards.no_loss_stale_block
+                && guards.no_adverse_lag && guards.no_barrier_touch && guards.margin_ok && guards.locked_lane_ok,
+            // each rejection: that guard failed AND all earlier guards passed
+            Err(TradeRejectReasonV16::InvalidRequest) => !guards.request_valid,
+            Err(TradeRejectReasonV16::ZeroSize) => guards.request_valid && !guards.size_nonzero,
+            Err(TradeRejectReasonV16::PriceOutOfRange) => guards.request_valid && guards.size_nonzero && !guards.price_in_range,
+            Err(TradeRejectReasonV16::FeeBpsOverCap) => guards.request_valid && guards.size_nonzero && guards.price_in_range && !guards.fee_bps_in_cap,
+            Err(TradeRejectReasonV16::AccountsStale) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && !guards.accounts_current,
+            Err(TradeRejectReasonV16::LossStaleBlocked) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && !guards.no_loss_stale_block,
+            Err(TradeRejectReasonV16::AdverseLag) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && !guards.no_adverse_lag,
+            Err(TradeRejectReasonV16::BarrierTouch) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && guards.no_adverse_lag && !guards.no_barrier_touch,
+            Err(TradeRejectReasonV16::MarginFail) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && guards.no_adverse_lag && guards.no_barrier_touch && !guards.margin_ok,
+            Err(TradeRejectReasonV16::LockedLaneFail) => guards.request_valid && guards.size_nonzero && guards.price_in_range && guards.fee_bps_in_cap && guards.accounts_current && guards.no_loss_stale_block && guards.no_adverse_lag && guards.no_barrier_touch && guards.margin_ok && !guards.locked_lane_ok,
+        }
+    }))]
+
+    // PROOF-ONLY FIDELITY MODEL (not production-dispatched): consumed by
+    // contract_check_kernel_trade_admit under cfg(kani).
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub(crate) fn kernel_trade_admit(guards: TradeGuardSummaryV16) -> Result<(), TradeRejectReasonV16> {
+        if !guards.request_valid {
+            Err(TradeRejectReasonV16::InvalidRequest)
+        } else if !guards.size_nonzero {
+            Err(TradeRejectReasonV16::ZeroSize)
+        } else if !guards.price_in_range {
+            Err(TradeRejectReasonV16::PriceOutOfRange)
+        } else if !guards.fee_bps_in_cap {
+            Err(TradeRejectReasonV16::FeeBpsOverCap)
+        } else if !guards.accounts_current {
+            Err(TradeRejectReasonV16::AccountsStale)
+        } else if !guards.no_loss_stale_block {
+            Err(TradeRejectReasonV16::LossStaleBlocked)
+        } else if !guards.no_adverse_lag {
+            Err(TradeRejectReasonV16::AdverseLag)
+        } else if !guards.no_barrier_touch {
+            Err(TradeRejectReasonV16::BarrierTouch)
+        } else if !guards.margin_ok {
+            Err(TradeRejectReasonV16::MarginFail)
+        } else if !guards.locked_lane_ok {
+            Err(TradeRejectReasonV16::LockedLaneFail)
+        } else {
+            Ok(())
+        }
+    }
+
+    /// NB1 ADMISSION THEOREM (roadmap Phase 2): an economically-valid trade is
+    /// ADMITTED, and every rejection names a FALSE economic precondition. Composes
+    /// the economic-validity predicate (over production inputs) with the proven
+    /// guard chain: admit IFF economically valid. So no economically-valid user
+    /// trade can be blocked by an internal guard mismatch, and every internal
+    /// rejection maps to a concrete user-controllable false precondition (the
+    /// no-DoS NB1 property at the guard-composition boundary). PROOF-ONLY model;
+    /// the production trade body's route to this guard stack is the documented
+    /// route-fidelity layer (build_trade_request_guard_summary + the leaf kernels).
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &Result<(), TradeRejectReasonV16>| {
+        // admit IFF economically valid; every Err means NOT economically valid.
+        r.is_ok() == evt.is_economically_valid()
+            && (r.is_err() == !evt.is_economically_valid())
+    }))]
+    #[cfg_attr(not(kani), allow(dead_code))]
+    pub(crate) fn kernel_economically_valid_trade_admits(
+        evt: EconomicallyValidTradeV16,
+    ) -> Result<(), TradeRejectReasonV16> {
+        Self::kernel_trade_admit(evt.to_guards())
+    }
+
+    /// PRODUCTION FIDELITY (roadmap 3C step 2, NB1 preflight leaves): the three
+    /// TradeGuardSummary preflight flags — no_barrier_touch, no_loss_stale_block,
+    /// no_adverse_lag — and the production trade_preflight_risk_gate are the SAME
+    /// decision: an economically-valid trade clears preflight IFF it touches no
+    /// pending-domain barrier and is not a risk increase under a loss-stale or
+    /// lagged asset. The contract proves the flag-conjunction EQUALS the real
+    /// gate's accept decision, so those summary flags faithfully represent the
+    /// production preflight (no hidden preflight reject outside them). Pure.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|result: &bool| {
+        *result
+            == trade_preflight_risk_gate(
+                risk_increasing,
+                asset_loss_stale,
+                target_effective_lag,
+                touches_pending_domain_barrier,
+            )
+            .is_ok()
+    }))]
+    #[cfg_attr(not(kani), allow(dead_code))] // PROOF-ONLY FIDELITY MODEL (cfg(kani) harness only)
+    pub(crate) fn kernel_trade_preflight_admits(
+        risk_increasing: bool,
+        asset_loss_stale: bool,
+        target_effective_lag: bool,
+        touches_pending_domain_barrier: bool,
+    ) -> bool {
+        // no_barrier_touch && no_loss_stale_block && no_adverse_lag
+        !touches_pending_domain_barrier
+            && !(risk_increasing && asset_loss_stale)
+            && !(risk_increasing && target_effective_lag)
+    }
+
+    /// PRODUCTION FIDELITY BUILDER (roadmap 3C step 3, A7 close-rank): map the
+    /// real resolved-close per-component signals to the compact rank summary that
+    /// kernel_resolved_close_progress classifies. Each rank flag is EXACTLY its
+    /// production predicate — b-stale bit, negative PnL, a live leg (non-empty
+    /// active bitmap), residual capital, an open receipt, and the explicit
+    /// recovery predicate — so the close-rank summary faithfully represents the
+    /// real account/market state (no hidden pending component outside it). Pure.
+    #[cfg_attr(all(kani, feature = "contracts"), kani::ensures(|r: &ResolvedCloseRankV16| {
+        r.b_stale == b_stale
+            && r.negative_pnl == (pnl < 0)
+            && r.active_leg == !active_bitmap_is_empty(active_bitmap)
+            && r.capital == (capital > 0)
+            && r.receipt_claim == receipt_present
+            && r.recovery_required == recovery_required
+    }))]
+    #[cfg_attr(not(kani), allow(dead_code))] // PROOF-ONLY FIDELITY MODEL (cfg(kani) harness only)
+    pub(crate) fn build_resolved_close_rank(
+        b_stale: bool,
+        pnl: i128,
+        active_bitmap: V16ActiveBitmap,
+        capital: u128,
+        receipt_present: bool,
+        recovery_required: bool,
+    ) -> ResolvedCloseRankV16 {
+        ResolvedCloseRankV16 {
+            b_stale,
+            negative_pnl: pnl < 0,
+            active_leg: !active_bitmap_is_empty(active_bitmap),
+            capital: capital > 0,
+            receipt_claim: receipt_present,
+            recovery_required,
+        }
+    }
+}

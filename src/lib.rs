@@ -65,7 +65,7 @@ pub use v16::{
     PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
     PermissionlessRecoveryReasonV16, PortfolioAccountV16Account, PortfolioLegV16,
     PortfolioLegV16Account, PortfolioSourceDomainV16Account, PortfolioV16View, PortfolioV16ViewMut,
-    ProgressContinuationV16, ProvenanceHeaderV16, ProvenanceHeaderV16Account, RebalanceOutcomeV16,
+    ProvenanceHeaderV16, ProvenanceHeaderV16Account, RebalanceOutcomeV16,
     RebalanceRequestV16,
     ResolvedCloseOutcomeV16, ResolvedPayoutLedgerV16, ResolvedPayoutLedgerV16Account,
     ResolvedPayoutReceiptV16, ResolvedPayoutReceiptV16Account, SideModeV16, SideV16,

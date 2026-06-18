@@ -46,7 +46,13 @@ def summary_fields(lines):
 
 
 def main():
+    # Proof-only summary structs may live in the cfg(kani) module v16_kani_api.rs
+    # (moved to minimise the production audit surface); scan it too so their fields
+    # stay consult-checked.
+    KANI_API = "src/v16_kani_api.rs"
     text = Path(SRC).read_text()
+    if Path(KANI_API).exists():
+        text += "\n" + Path(KANI_API).read_text()
     lines = text.splitlines()
     summaries = summary_fields(lines)
 

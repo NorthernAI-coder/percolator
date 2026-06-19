@@ -26,7 +26,9 @@ pub const V16_ACTIVE_BITMAP_WORDS: usize = (V16_MAX_PORTFOLIO_ASSETS_N + 63) / 6
 pub type V16ActiveBitmap = [u64; V16_ACTIVE_BITMAP_WORDS];
 pub const V16_EMPTY_ACTIVE_BITMAP: V16ActiveBitmap = [0; V16_ACTIVE_BITMAP_WORDS];
 pub const V16_BACKING_BUCKETS_PER_DOMAIN: usize = 1;
-pub const V16_LAYOUT_DISCRIMINATOR: u16 = 16;
+// Bump whenever the on-chain account/header Pod layout changes (see the
+// PortfolioAccountV16Account size assertion). 17: added funding flow counters.
+pub const V16_LAYOUT_DISCRIMINATOR: u16 = 17;
 pub const V16_ACCOUNT_VERSION: u16 = 1;
 pub const BACKING_FEE_RATE_DEN_E9: u128 = 1_000_000_000;
 pub const MAX_BACKING_FEE_RATE_E9_PER_SLOT: u64 = 1_000_000_000;
@@ -14731,6 +14733,11 @@ pub struct PortfolioAccountV16Account {
     pub close_progress: CloseProgressLedgerV16Account,
     pub resolved_payout_receipt: ResolvedPayoutReceiptV16Account,
 }
+
+// Compile-time layout guard: any change to the PortfolioAccountV16Account Pod
+// layout fails the build here. When it does, bump V16_LAYOUT_DISCRIMINATOR and
+// update this expected size deliberately (no deployed markets => no migration).
+const _: () = assert!(core::mem::size_of::<PortfolioAccountV16Account>() == 9291);
 
 impl Default for PortfolioAccountV16Account {
     fn default() -> Self {

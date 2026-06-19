@@ -97,7 +97,7 @@ production v16 methods:
 ```bash
 cargo install --locked kani-verifier
 cargo kani setup
-scripts/run_kani_full_audit.sh
+cargo kani --tests --features fuzz,contracts -Z function-contracts
 ```
 
 The latest checked timing sweep is in:
@@ -123,27 +123,26 @@ decomposition, not a soundness gap.
 
 - **No-LoF.** `GlobalValidState` (`validate_shape` + per-touched-account
   `validate_with_market`) holds at every committed `Ok` exit of all 55 public
-  `*_not_atomic` entrypoints (`scripts/boundary_audit.py`, 55/55). Each entrypoint
-  maps to a stronger per-class proof source (`scripts/lof_transition_class_roster.py`),
-  and `scripts/no_lof_strength_roster.py` enforces **zero value-bearing FLOOR-only**
-  entrypoints (51 per-op THEOREM, 5 non-value-bearing FLOOR). Wide arithmetic is
-  abstracted to opaque spec values in Kani and discharged by Tier-A/Tier-B
-  differential fuzz (`scripts/arithmetic_axiom_manifest.md`).
-- **No-DoS.** `scripts/actionable_class_coverage.py` covers the 7 ActionableState
-  classes. **NB1** is PROVEN-AT-KERNEL (`kernel_economically_valid_trade_admits`:
+  `*_not_atomic` entrypoints, and every value-bearing entrypoint has a per-op
+  frame/value/kernel/closure theorem (no value-bearing operation rests on the
+  validator floor alone). Wide arithmetic is abstracted to opaque spec values in
+  Kani and discharged by Tier-A/Tier-B differential fuzz against an independent
+  reference implementation (the `cargo test --features fuzz` conformance suite).
+- **No-DoS.** Each of the 7 ActionableState classes has a named machine-checked
+  witness. **NB1** is PROVEN-AT-KERNEL (`kernel_economically_valid_trade_admits`:
   admit IFF economically valid). **NB2** is PROVEN-AT-KERNEL (the selector is
-  proven total; `scripts/nb2_continuation_matrix.py` pins each continuation to a
-  dispatch arm + rank/terminal artifact + the static scan bound). The
-  order-insensitive public auto-crank is engine-selected: `first_actionable_slot`
-  (bounded asset self-selection) and `select_auto_crank_plan` (totality + priority
-  + engine-selected asset) are proven; the liquidation fee is config-derived; a
-  step with no matching observation returns a clean `NonProgress` without mutation.
+  proven total; each continuation has a dispatch arm + a rank/terminal artifact +
+  the static scan bound). The order-insensitive public auto-crank is
+  engine-selected: `first_actionable_slot` (bounded asset self-selection) and
+  `select_auto_crank_plan` (totality + priority + engine-selected asset) are
+  proven; the liquidation fee is config-derived; a step with no matching
+  observation returns a clean `NonProgress` without mutation.
 
-Assumptions (the trusted base, also in `scripts/engine_contracts.json`): SVM
-rollback on `Err`; scheduler fairness (SCHED); the named arithmetic axiom
-manifest; and wrapper routing/auth/oracle/CU obligations (the engine does not
-certify the wrapper). The full-monolith-route rank/admission and max-shape CU are
-the PROVEN-AT-KERNEL-vs-full-route boundary, not soundness gaps.
+Assumptions (the trusted base): SVM rollback on `Err`; scheduler fairness (SCHED);
+the named arithmetic axiom manifest; and wrapper routing/auth/oracle/CU
+obligations (the engine does not certify the wrapper). The full-monolith-route
+rank/admission and max-shape CU are the PROVEN-AT-KERNEL-vs-full-route boundary,
+not soundness gaps.
 
 ### Permissionless crank: one public route
 
@@ -166,20 +165,6 @@ Wrapper call: decode the instruction → authenticate clock/observations → bui
 `result.selected` (`AutoCrankPlanV16`). See the doc comment on
 `permissionless_auto_crank_not_atomic`.
 
-### Certification gates
-
-`python3 scripts/final_ci_gate.py [--with-conformance]` runs the engine
-certification suite and fails on any gap (boundary audit, no-LoF entrypoint +
-strength rosters, transition-class roster, route-fidelity roster, guard
-mutation-sensitivity, actionable-class coverage, liveness roster with NB1/NB2 not
-PARTIAL, NB2 continuation matrix, dead-kernel check, arithmetic-axiom manifest,
-identity-independence + symbolic-assert audits, engine contract manifest).
-`scripts/cover_vacuity_gate.py <kani-log-dirs>` is an explicit condition run over
-captured per-harness Kani logs in CI (it fails any harness whose `kani::cover!`
-witness is unsatisfiable). The engine exports `scripts/engine_contracts.json` for
-wrapper proofs to import.
-
-
 ## Verify
 
 The verification is all `cargo`:
@@ -190,18 +175,13 @@ cargo test                  # unit + spec behavior tests
 cargo test --features fuzz  # + reference-model differential conformance + property fuzz
                             #   (this is the discharge for the wide-arithmetic axiom)
 
-# Formal proofs (Kani). Per-harness; the full sweep is slow:
-cargo kani --tests --features fuzz,contracts -Z function-contracts --harness <name>
-scripts/run_kani_full_audit.sh   # all harnesses, with timeouts + captured logs
+# Formal proofs (Kani):
+cargo kani --tests --features fuzz,contracts -Z function-contracts                 # all harnesses (slow)
+cargo kani --tests --features fuzz,contracts -Z function-contracts --harness NAME  # one harness
 ```
 
-The `scripts/*.py` are **not** verification — they are static **certification
-gates** (run in CI) that read the source and fail if proof/test *coverage* drifts:
-every public entrypoint stays classified and validator-floored, every summary
-field stays tied to a production predicate, no kernel is orphaned, every arithmetic
-stub has a discharge, and (`cover_vacuity_gate.py`, over captured Kani logs) no
-`kani::cover!` is dead. Run them with `python3 scripts/final_ci_gate.py`; they
-gate drift, they do not prove the engine — `cargo test` and `cargo kani` do.
+Run harnesses one at a time (`--harness`) if the full sweep is flaky; kill any
+stray `cbmc` between runs.
 
 ## Scope
 

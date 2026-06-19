@@ -180,16 +180,28 @@ witness is unsatisfiable). The engine exports `scripts/engine_contracts.json` fo
 wrapper proofs to import.
 
 
-## Tests
+## Verify
+
+The verification is all `cargo`:
 
 ```bash
-cargo test                                   # default unit + spec suite
-cargo test --features fuzz                   # + reference/differential conformance + fuzz
-python3 scripts/final_ci_gate.py --with-conformance   # engine certification gate suite
+# Behavior + differential conformance (fast):
+cargo test                  # unit + spec behavior tests
+cargo test --features fuzz  # + reference-model differential conformance + property fuzz
+                            #   (this is the discharge for the wide-arithmetic axiom)
+
+# Formal proofs (Kani). Per-harness; the full sweep is slow:
+cargo kani --tests --features fuzz,contracts -Z function-contracts --harness <name>
+scripts/run_kani_full_audit.sh   # all harnesses, with timeouts + captured logs
 ```
 
-The Kani proof sweep (`scripts/run_kani_full_audit.sh`) is separate and slower;
-the cover-vacuity gate runs over its captured per-harness logs.
+The `scripts/*.py` are **not** verification — they are static **certification
+gates** (run in CI) that read the source and fail if proof/test *coverage* drifts:
+every public entrypoint stays classified and validator-floored, every summary
+field stays tied to a production predicate, no kernel is orphaned, every arithmetic
+stub has a discharge, and (`cover_vacuity_gate.py`, over captured Kani logs) no
+`kani::cover!` is dead. Run them with `python3 scripts/final_ci_gate.py`; they
+gate drift, they do not prove the engine — `cargo test` and `cargo kani` do.
 
 ## Scope
 

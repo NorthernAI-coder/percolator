@@ -8684,6 +8684,60 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         Ok(())
     }
 
+    fn add_account_u128_counter(counter: &mut V16PodU128, atoms: u128) -> V16Result<()> {
+        if atoms == 0 {
+            return Ok(());
+        }
+        *counter = V16PodU128::new(
+            counter
+                .get()
+                .checked_add(atoms)
+                .ok_or(V16Error::CounterOverflow)?,
+        );
+        Ok(())
+    }
+
+    fn record_account_funding_flow(
+        account: &mut PortfolioV16ViewMut<'_>,
+        side: SideV16,
+        f_delta: i128,
+    ) -> V16Result<()> {
+        if f_delta < 0 {
+            let atoms = f_delta.unsigned_abs();
+            match side {
+                SideV16::Long => {
+                    Self::add_account_u128_counter(
+                        &mut account.header.funding_long_paid_atoms_total,
+                        atoms,
+                    )?;
+                }
+                SideV16::Short => {
+                    Self::add_account_u128_counter(
+                        &mut account.header.funding_short_paid_atoms_total,
+                        atoms,
+                    )?;
+                }
+            }
+        } else if f_delta > 0 {
+            let atoms = f_delta as u128;
+            match side {
+                SideV16::Long => {
+                    Self::add_account_u128_counter(
+                        &mut account.header.funding_long_received_atoms_total,
+                        atoms,
+                    )?;
+                }
+                SideV16::Short => {
+                    Self::add_account_u128_counter(
+                        &mut account.header.funding_short_received_atoms_total,
+                        atoms,
+                    )?;
+                }
+            }
+        }
+        Ok(())
+    }
+
     fn transfer_account_residual_reward_credit(
         trader: &mut PortfolioV16ViewMut<'_>,
         lp: &mut PortfolioV16ViewMut<'_>,
@@ -9313,10 +9367,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
     }
 
     #[inline(always)]
-    fn leg_kf_delta_for_settlement_from_asset(
+    fn leg_kf_delta_components_for_settlement_from_asset(
         asset: AssetStateV16,
         leg: PortfolioLegV16,
-    ) -> V16Result<(i128, i128, i128)> {
+    ) -> V16Result<(i128, i128, i128, i128, i128)> {
         let (k_now, f_now) = Self::kf_target_for_leg_from_asset(asset, leg)?;
         let den = leg
             .a_basis
@@ -9354,6 +9408,17 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             .checked_add(f_delta)
             .ok_or(V16Error::ArithmeticOverflow)?;
         validate_non_min_i128(net)?;
+        Ok((k_now, f_now, k_delta, f_delta, net))
+    }
+
+    #[cfg(kani)]
+    #[inline(always)]
+    fn leg_kf_delta_for_settlement_from_asset(
+        asset: AssetStateV16,
+        leg: PortfolioLegV16,
+    ) -> V16Result<(i128, i128, i128)> {
+        let (k_now, f_now, _k_delta, _f_delta, net) =
+            Self::leg_kf_delta_components_for_settlement_from_asset(asset, leg)?;
         Ok((k_now, f_now, net))
     }
 
@@ -9401,7 +9466,8 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         {
             return Err(V16Error::InvalidLeg);
         }
-        let (k_now, f_now, net) = Self::leg_kf_delta_for_settlement_from_asset(asset, leg)?;
+        let (k_now, f_now, _k_delta, f_delta, net) =
+            Self::leg_kf_delta_components_for_settlement_from_asset(asset, leg)?;
         if net != 0 {
             if net > 0 {
                 let source_domain =
@@ -9420,6 +9486,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 )?;
             }
         }
+        Self::record_account_funding_flow(account, leg.side, f_delta)?;
         leg.k_snap = k_now;
         leg.f_snap = f_now;
         account.header.legs[leg_slot] = PortfolioLegV16Account::from_runtime(&leg);
@@ -14130,6 +14197,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             positive_pnl_forfeited = net as u128;
         }
 
+        Self::record_account_funding_flow(account, leg.side, f_delta)?;
         leg.k_snap = k_now;
         leg.f_snap = f_now;
         account.header.legs[leg_slot] = PortfolioLegV16Account::from_runtime(&leg);
@@ -14645,6 +14713,10 @@ pub struct PortfolioAccountV16Account {
     pub residual_crystallized_loss_atoms_total: V16PodU128,
     pub residual_spent_principal_atoms_total: V16PodU128,
     pub residual_received_atoms_total: V16PodU128,
+    pub funding_long_paid_atoms_total: V16PodU128,
+    pub funding_long_received_atoms_total: V16PodU128,
+    pub funding_short_paid_atoms_total: V16PodU128,
+    pub funding_short_received_atoms_total: V16PodU128,
     pub fee_credits: V16PodI128,
     pub cancel_deposit_escrow: V16PodU128,
     pub last_fee_slot: V16PodU64,
@@ -14677,6 +14749,10 @@ impl PortfolioAccountV16Account {
         self.residual_crystallized_loss_atoms_total = V16PodU128::new(0);
         self.residual_spent_principal_atoms_total = V16PodU128::new(0);
         self.residual_received_atoms_total = V16PodU128::new(0);
+        self.funding_long_paid_atoms_total = V16PodU128::new(0);
+        self.funding_long_received_atoms_total = V16PodU128::new(0);
+        self.funding_short_paid_atoms_total = V16PodU128::new(0);
+        self.funding_short_received_atoms_total = V16PodU128::new(0);
         self.fee_credits = V16PodI128::new(0);
         self.cancel_deposit_escrow = V16PodU128::new(0);
         self.last_fee_slot = V16PodU64::new(0);

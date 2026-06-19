@@ -15644,6 +15644,9 @@ pub struct PortfolioAccountV16Account {
 // Compile-time layout guard: any change to the PortfolioAccountV16Account Pod
 // layout fails the build here. When it does, bump V16_LAYOUT_DISCRIMINATOR and
 // update this expected size deliberately (no deployed markets => no migration).
+// Gated to non-kani: under `cfg(kani)` PORTFOLIO_SOURCE_DOMAIN_CAP is reduced for
+// proof tractability, so the production on-chain layout is the non-kani one.
+#[cfg(not(kani))]
 const _: () = assert!(core::mem::size_of::<PortfolioAccountV16Account>() == 9291);
 
 impl Default for PortfolioAccountV16Account {

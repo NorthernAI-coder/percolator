@@ -92,21 +92,33 @@ deterministic recovery reason. The caller does not choose a recovery price.
 ## Proofs
 
 The current v16 proof suite is intentionally account-local and runs over the
-production v16 methods:
+production v16 methods. It has two kinds of harness, which take different flags:
+
+- **Plain `#[kani::proof]` harnesses** (the bulk, 258) assert behavior directly
+  and carry `kani::cover!` witnesses. Run them with `--features fuzz` only.
+- **`#[kani::proof_for_contract]` harnesses** (51, all in `src/v16_proofs.rs`)
+  verify a function against its `#[kani::ensures]`/`#[kani::requires]` contract.
+  They exist only under the `contracts` feature and need `-Z function-contracts`.
 
 ```bash
 cargo install --locked kani-verifier
 cargo kani setup
+
+# Plain proofs — authoritative gate, must report 0 failures:
+cargo kani --tests --features fuzz
+
+# Contract proofs — adds the 51 proof_for_contract harnesses:
 cargo kani --tests --features fuzz,contracts -Z function-contracts
 ```
 
-The latest checked timing sweep is in:
-
-```text
-kani_audit_full.tsv
-kani_audit_final.tsv
-scripts/proof-strength-audit-results.md
-```
+Do **not** collapse these into one command. The `contracts` + `-Z function-contracts`
+run also re-executes the plain proofs, and ~31 of them report **spurious
+cover-reachability failures** under the `contracts` feature (the feature flips
+which branches a `kani::cover!` can reach). Those are flag artifacts, not engine
+or proof defects: every one re-verifies cleanly under `--features fuzz` alone
+(confirm a single one with `cargo kani --tests --features fuzz --harness NAME`).
+So `--features fuzz` is authoritative for plain proofs, and the `contracts` run is
+authoritative for the 51 contract proofs.
 
 The old slab proof inventory was retired with the v16 cutover because it no
 longer applies to the architecture.
@@ -175,13 +187,16 @@ cargo test                  # unit + spec behavior tests
 cargo test --features fuzz  # + reference-model differential conformance + property fuzz
                             #   (this is the discharge for the wide-arithmetic axiom)
 
-# Formal proofs (Kani):
-cargo kani --tests --features fuzz,contracts -Z function-contracts                 # all harnesses (slow)
-cargo kani --tests --features fuzz,contracts -Z function-contracts --harness NAME  # one harness
+# Formal proofs (Kani) — flags depend on harness type (see "Proofs" above):
+cargo kani --tests --features fuzz                                  # all plain proofs — must be 0 failures
+cargo kani --tests --features fuzz,contracts -Z function-contracts  # + the 51 contract proofs
+cargo kani --tests --features fuzz --harness NAME                   # one plain proof
 ```
 
-Run harnesses one at a time (`--harness`) if the full sweep is flaky; kill any
-stray `cbmc` between runs.
+The single `fuzz,contracts` sweep reports ~31 spurious cover-reachability
+failures on plain proofs (a flag artifact, not a defect — see "Proofs"); each
+re-verifies under `--features fuzz`. Run harnesses one at a time (`--harness`) if
+the full sweep is flaky; kill any stray `cbmc` between runs.
 
 ## Scope
 

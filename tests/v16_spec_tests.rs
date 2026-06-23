@@ -2705,6 +2705,82 @@ fn v16_auto_crank_drives_stale_underwater_account_to_derisked_fixed_point() {
     account.validate_with_market(&market.as_view()).unwrap();
 }
 
+#[test]
+fn v16_auto_crank_liquidates_current_account_without_observation() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    let mut account_header = account_fixture(1, 14);
+    header.current_slot = V16PodU64::new(10);
+    header.slot_last = V16PodU64::new(10);
+    header.vault = V16PodU128::new(50);
+    header.insurance = V16PodU128::new(50);
+    header.negative_pnl_account_count = V16PodU64::new(1);
+
+    let mut asset = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset.slot_last = 10;
+    asset.oi_eff_long_q = 2 * POS_SCALE;
+    asset.oi_eff_short_q = 2 * POS_SCALE;
+    asset.loss_weight_sum_long = 2 * POS_SCALE;
+    asset.loss_weight_sum_short = 2 * POS_SCALE;
+    asset.stored_pos_count_long = 2;
+    asset.stored_pos_count_short = 2;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset);
+    header.resolved_payout_blocker_count = V16PodU64::new(4);
+
+    account_header.pnl = V16PodI128::new(-5);
+    account_header.legs[0] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
+        active: true,
+        asset_index: 0,
+        market_id: asset.market_id,
+        side: SideV16::Long,
+        basis_pos_q: POS_SCALE as i128,
+        a_basis: ADL_ONE,
+        k_snap: asset.k_long,
+        f_snap: asset.f_long_num,
+        epoch_snap: asset.epoch_long,
+        loss_weight: POS_SCALE,
+        b_snap: asset.b_long_num,
+        b_rem: 0,
+        b_epoch_snap: asset.epoch_long,
+        b_stale: false,
+        stale: false,
+    });
+    account_header.active_bitmap[0] = V16PodU64::new(1);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    market
+        .full_account_refresh_not_atomic(&mut account)
+        .expect("setup must produce a current liquidation cert");
+    let summary = market.build_actionable_summary(&account.as_view()).unwrap();
+    assert!(
+        summary.liquidatable && !summary.stale && !summary.b_stale,
+        "setup must be current and liquidatable: {summary:?}"
+    );
+
+    let work = AutoCrankWorkV16 {
+        now_slot: 10,
+        observations: &[],
+        liquidation_max_close_q: POS_SCALE,
+        resolved_close_fee_rate_per_slot: 0,
+    };
+    let result = market
+        .permissionless_auto_crank_not_atomic(&mut account, work)
+        .expect("current liquidation must not require a fresh observation");
+
+    assert_eq!(result.selected, AutoCrankPlanV16::Liquidate { asset_index: 0 });
+    assert!(matches!(
+        result.outcome,
+        AutoCrankOutcomeV16::Progressed(PermissionlessProgressOutcomeV16::AccountCurrent)
+    ));
+    assert_eq!(
+        account.header.active_bitmap[0].get(),
+        0,
+        "liquidation must close the selected position"
+    );
+    market.validate_shape().unwrap();
+    account.validate_with_market(&market.as_view()).unwrap();
+}
+
 // ROADMAP 3C step 4 — terminal no-DoS route via the self-classifying crank: a
 // Live account whose outstanding bankruptcy close ledger has EXPIRED (current
 // slot past max_close_slot) is classified expired_close, and the auto-crank
@@ -2819,7 +2895,7 @@ fn v16_auto_crank_classifies_payout_ready_resolved_winner_without_snapshot() {
 
 // ROADMAP 3C step 4 — b-stale dispatch arm: an account with a b-stale active leg
 // is classified b_stale (priority over the stale-cert refresh), and the auto-crank
-// dispatches the B-chunk settle that clears it (real B-rank progress).
+// dispatches the B-chunk settle without requiring oracle observations.
 #[test]
 fn v16_auto_crank_settles_b_stale_leg() {
     let (mut header, mut markets) = market_fixture(1, 100);
@@ -2863,14 +2939,9 @@ fn v16_auto_crank_settles_b_stale_leg() {
     let summary = market.build_actionable_summary(&account.as_view()).unwrap();
     assert!(summary.b_stale, "b-stale leg must classify b_stale: {summary:?}");
 
-    let obs = [AutoCrankObservationV16 {
-        asset_index: 0,
-        effective_price: 100,
-        funding_rate_e9: 0,
-    }];
     let work = AutoCrankWorkV16 {
         now_slot: 10,
-        observations: &obs,
+        observations: &[],
         liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };

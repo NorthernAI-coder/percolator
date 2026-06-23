@@ -11325,6 +11325,19 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 .find(|o| o.asset_index == i)
                 .ok_or(V16Error::NonProgress)
         };
+        let obs_or_current_asset = |me: &Self, i: usize| -> V16Result<AutoCrankObservationV16> {
+            match work.observations.iter().copied().find(|o| o.asset_index == i) {
+                Some(obs) => Ok(obs),
+                None => {
+                    let asset = me.asset_state(i)?;
+                    Ok(AutoCrankObservationV16 {
+                        asset_index: i,
+                        effective_price: asset.effective_price,
+                        funding_rate_e9: 0,
+                    })
+                }
+            }
+        };
         let crank_with =
             |me: &mut Self,
              account: &mut PortfolioV16ViewMut<'_>,
@@ -11369,7 +11382,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 )?)
             }
             AutoCrankPlanV16::SettleBChunk { asset_index } => {
-                let obs = obs_for(asset_index)?;
+                let obs = obs_or_current_asset(self, asset_index)?;
                 AutoCrankOutcomeV16::Progressed(crank_with(
                     self,
                     account,
@@ -11379,7 +11392,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
                 )?)
             }
             AutoCrankPlanV16::Liquidate { asset_index } => {
-                let obs = obs_for(asset_index)?;
+                let obs = obs_or_current_asset(self, asset_index)?;
                 // CONFIG fee policy — never a caller hint (engine.md).
                 let fee_bps = self.header.config.try_to_runtime_shape()?.liquidation_fee_bps;
                 AutoCrankOutcomeV16::Progressed(crank_with(

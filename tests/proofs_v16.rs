@@ -13757,21 +13757,21 @@ fn proof_v16_validator_sound_account_reserves() {
             <= h.residual_crystallized_loss_atoms_total.get());                            // U19b
 }
 
-// REALIZABILITY (no-DoS auto-crank dispatch seam): RefreshAccount is the UNIQUE
-// plan that hard-requires a caller-supplied observation; every other plan is
-// dispatchable from committed state. Pinning this truth table means a future arm
-// that gates a non-Refresh plan on an observation (the bug class that stalled
-// b-stale accounts and blocked committed-state liquidation) contradicts a machine-
-// checked theorem. Exhaustive over the six AutoCrankPlanV16 variants; the spec
-// matrix ties the predicate to the real dispatch for each reachable class.
+// REALIZABILITY (no-DoS auto-crank dispatch seam): only the no-active-asset
+// RefreshAccount fallback hard-requires a caller-supplied observation; active-
+// asset refresh and every other plan are dispatchable from committed state.
+// Pinning this truth table means a future arm that gates committed-state progress
+// on an observation contradicts a machine-checked theorem. Exhaustive over the
+// six AutoCrankPlanV16 variants; the spec matrix ties the predicate to the real
+// dispatch for each reachable class.
 #[kani::proof]
 fn proof_v16_auto_crank_refresh_is_unique_observation_requiring_plan() {
     use percolator::v16::auto_crank_plan_requires_caller_observation as needs_obs;
     use percolator::v16::AutoCrankPlanV16;
     let i: usize = kani::any();
-    // Both RefreshAccount forms (engine-selected asset, first-observation fallback)
-    // require an observation.
-    assert!(needs_obs(&AutoCrankPlanV16::RefreshAccount { asset_index: Some(i) }));
+    // Active-asset refresh can use the committed asset state; only the fallback
+    // with no selected active asset requires a caller observation.
+    assert!(!needs_obs(&AutoCrankPlanV16::RefreshAccount { asset_index: Some(i) }));
     assert!(needs_obs(&AutoCrankPlanV16::RefreshAccount { asset_index: None }));
     // No other plan does — committed on-chain state suffices.
     assert!(!needs_obs(&AutoCrankPlanV16::SettleBChunk { asset_index: i }));

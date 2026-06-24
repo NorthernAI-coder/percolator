@@ -3000,14 +3000,14 @@ fn v16_auto_crank_missing_observation_is_clean_nonprogress_no_mutation() {
 // INDEPENDENCE: for a plan that `auto_crank_plan_requires_caller_observation`
 // reports as NOT requiring one, the single public crank must return the SAME
 // outcome whether or not an observation is supplied (the observation is redundant
-// — the plan is realizable from committed state). For the one class that DOES
-// require one (RefreshAccount, which must accrue a new price), the empty-
-// observation call cleanly stalls (NonProgress) while supplying the observation
-// progresses. This both guards liveness AND ties the pure predicate to the REAL
-// dispatch per class, so the predicate cannot drift from behaviour. Note: a
-// committed-state plan may still return a genuine economic terminal (e.g.
-// RecoveryRequired) — that is fine, because it returns the SAME terminal with or
-// without the observation; the bug was an outcome that DIFFERED on the observation.
+// — the plan is realizable from committed state). For the one form that DOES
+// require one (RefreshAccount with no active asset), the empty-observation call
+// cleanly stalls (NonProgress) while supplying the observation progresses. This
+// both guards liveness AND ties the pure predicate to the REAL dispatch per class,
+// so the predicate cannot drift from behaviour. Note: a committed-state plan may
+// still return a genuine economic terminal (e.g. RecoveryRequired) — that is fine,
+// because it returns the SAME terminal with or without the observation; the bug
+// was an outcome that DIFFERED on the observation.
 fn assert_observation_independent(
     label: &str,
     build: impl Fn() -> (
@@ -3088,9 +3088,10 @@ fn assert_observation_independent(
 
 #[test]
 fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
-    // --- A1 stale: RefreshAccount must accrue a NEW price -> observation MATTERS.
+    // --- A1 stale with no active asset: fallback refresh has no committed asset
+    // to use, so it still needs a caller observation.
     assert_observation_independent(
-        "stale",
+        "stale_empty_account",
         || {
             let (mut header, mut markets) = market_fixture(1, 100);
             let mut account_header = account_fixture(1, 200);
@@ -3106,6 +3107,36 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         0,
         AutoCrankPlanV16::RefreshAccount { asset_index: None },
         true,
+    );
+
+    // --- A1 stale with an active asset: refresh is realizable from committed
+    // state. This is the no-DoS case for stale multi-asset accounts whose first
+    // active asset does not have a fresh oracle observation available.
+    assert_observation_independent(
+        "stale_active_asset",
+        || {
+            let (mut header, mut markets) = market_fixture(1, 100);
+            let mut account_header = account_fixture(1, 209);
+            let mut counterparty_header = account_fixture(1, 210);
+            let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+            let mut account = PortfolioV16ViewMut::new(&mut account_header);
+            let mut counterparty = PortfolioV16ViewMut::new(&mut counterparty_header);
+            market.deposit_not_atomic(&mut account, 1_000).unwrap();
+            market.deposit_not_atomic(&mut counterparty, 1_000).unwrap();
+            open_one_lot_pair(&mut market, &mut account, &mut counterparty);
+            account.header.health_cert.valid = 0;
+            drop(market);
+            drop(account);
+            drop(counterparty);
+            (header, markets, account_header)
+        },
+        0,
+        5,
+        0,
+        AutoCrankPlanV16::RefreshAccount {
+            asset_index: Some(0),
+        },
+        false,
     );
 
     // --- A2 b_stale: SettleBChunk ignores price -> observation REDUNDANT.

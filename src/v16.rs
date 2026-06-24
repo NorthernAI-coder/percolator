@@ -164,6 +164,36 @@ pub fn v16_domain_pair_for_asset_index(asset_index: usize) -> V16Result<(usize, 
     Ok((long_domain, short_domain))
 }
 
+/// REALIZABILITY — the no-DoS auto-crank dispatch-seam invariant.
+///
+/// `RefreshAccount` is the UNIQUE [`AutoCrankPlanV16`] whose dispatch hard-requires
+/// a caller-supplied oracle observation: it must accrue a NEW price, which is not
+/// derivable from committed state, so with no observation it justifiably returns
+/// `NonProgress`. EVERY other plan is dispatchable from committed on-chain state
+/// alone — `SettleBChunk` ignores price, `Liquidate` reads the current health
+/// cert, `DeclareRecovery`/`CloseResolved`/`NoAction` take no price — so a keeper
+/// holding no fresh observation can still drive the account forward (no liveness
+/// stall). A wrapper may call this to decide whether it must source an oracle
+/// observation before cranking.
+///
+/// The exhaustive match forces a conscious classification if a plan variant is
+/// added. `proof_v16_auto_crank_refresh_is_unique_observation_requiring_plan` pins
+/// this truth table, and the spec matrix
+/// `v16_auto_crank_progress_realizable_without_observation_for_every_class` ties
+/// it to the REAL dispatch for every reachable ActionableState class — so the
+/// predicate cannot silently drift from behaviour. This is the seam that hid the
+/// b-stale / committed-state-liquidation stall before the observation fallback.
+pub fn auto_crank_plan_requires_caller_observation(plan: &AutoCrankPlanV16) -> bool {
+    match plan {
+        AutoCrankPlanV16::RefreshAccount { .. } => true,
+        AutoCrankPlanV16::SettleBChunk { .. }
+        | AutoCrankPlanV16::Liquidate { .. }
+        | AutoCrankPlanV16::DeclareRecovery { .. }
+        | AutoCrankPlanV16::CloseResolved
+        | AutoCrankPlanV16::NoAction => false,
+    }
+}
+
 #[cfg_attr(all(kani, any(feature = "contracts", feature = "closure")), derive(kani::Arbitrary))]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum V16Error {

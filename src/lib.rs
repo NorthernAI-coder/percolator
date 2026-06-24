@@ -51,6 +51,7 @@ pub use v16::*;
 #[cfg(not(kani))]
 pub use v16::{
     active_bitmap_count_ones, active_bitmap_empty, active_bitmap_get, active_bitmap_is_empty,
+    auto_crank_plan_requires_caller_observation,
     backing_domain_fee_split_for_lien_delta_num, v16_domain_count_for_market_slots,
     v16_domain_pair_for_asset_index, AccrueAssetOutcomeV16, ActionableSummaryV16, AssetLifecycleV16,
     AssetStateV16, AutoCrankObservationV16, AutoCrankOutcomeV16, AutoCrankPlanV16,

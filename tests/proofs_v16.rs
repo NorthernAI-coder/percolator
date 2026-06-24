@@ -13756,3 +13756,31 @@ fn proof_v16_validator_sound_account_reserves() {
     assert!(h.residual_spent_principal_atoms_total.get()
             <= h.residual_crystallized_loss_atoms_total.get());                            // U19b
 }
+
+// REALIZABILITY (no-DoS auto-crank dispatch seam): RefreshAccount is the UNIQUE
+// plan that hard-requires a caller-supplied observation; every other plan is
+// dispatchable from committed state. Pinning this truth table means a future arm
+// that gates a non-Refresh plan on an observation (the bug class that stalled
+// b-stale accounts and blocked committed-state liquidation) contradicts a machine-
+// checked theorem. Exhaustive over the six AutoCrankPlanV16 variants; the spec
+// matrix ties the predicate to the real dispatch for each reachable class.
+#[kani::proof]
+fn proof_v16_auto_crank_refresh_is_unique_observation_requiring_plan() {
+    use percolator::v16::auto_crank_plan_requires_caller_observation as needs_obs;
+    use percolator::v16::AutoCrankPlanV16;
+    let i: usize = kani::any();
+    // Both RefreshAccount forms (engine-selected asset, first-observation fallback)
+    // require an observation.
+    assert!(needs_obs(&AutoCrankPlanV16::RefreshAccount { asset_index: Some(i) }));
+    assert!(needs_obs(&AutoCrankPlanV16::RefreshAccount { asset_index: None }));
+    // No other plan does — committed on-chain state suffices.
+    assert!(!needs_obs(&AutoCrankPlanV16::SettleBChunk { asset_index: i }));
+    assert!(!needs_obs(&AutoCrankPlanV16::Liquidate { asset_index: i }));
+    assert!(!needs_obs(&AutoCrankPlanV16::NoAction));
+    assert!(!needs_obs(&AutoCrankPlanV16::CloseResolved));
+    // The predicate matches DeclareRecovery { .. } regardless of reason, so a
+    // concrete variant exercises the arm (the reason enum isn't Arbitrary here).
+    assert!(!needs_obs(&AutoCrankPlanV16::DeclareRecovery {
+        reason: PermissionlessRecoveryReasonV16::ActiveBankruptCloseCannotProgress,
+    }));
+}

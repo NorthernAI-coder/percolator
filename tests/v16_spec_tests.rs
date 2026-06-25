@@ -828,6 +828,47 @@ fn v16_single_trade_matches_batch_of_one_state() {
 }
 
 #[test]
+fn v16_subatom_trade_charges_fee_on_ceil_fee_notional() {
+    let (mut header, mut markets) = market_fixture(1, 100);
+    header.config.max_trading_fee_bps = V16PodU64::new(1);
+    let mut long_header = account_fixture(1, 213);
+    let mut short_header = account_fixture(1, 214);
+    let sub_atom_size = POS_SCALE / 100 - 1;
+    let request = TradeRequestV16 {
+        asset_index: 0,
+        size_q: signed_q(sub_atom_size),
+        exec_price: 100,
+        fee_bps: 1,
+    };
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut long = PortfolioV16ViewMut::new(&mut long_header);
+    let mut short = PortfolioV16ViewMut::new(&mut short_header);
+    market.deposit_not_atomic(&mut long, 1_000).unwrap();
+    market.deposit_not_atomic(&mut short, 1_000).unwrap();
+
+    let outcome = market
+        .execute_trade_with_fee_loss_stale_scoped_not_atomic(&mut long, &mut short, request)
+        .unwrap();
+
+    assert_eq!(outcome.notional, 0);
+    assert_eq!(outcome.fee_a, 1);
+    assert_eq!(outcome.fee_b, 1);
+    assert_eq!(market.header.insurance.get(), 2);
+    assert_eq!(
+        market.markets[0].engine.asset.oi_eff_long_q.get(),
+        sub_atom_size
+    );
+    assert_eq!(
+        market.markets[0].engine.asset.oi_eff_short_q.get(),
+        sub_atom_size
+    );
+    market.validate_shape().unwrap();
+    long.validate_with_market(&market.as_view()).unwrap();
+    short.validate_with_market(&market.as_view()).unwrap();
+}
+
+#[test]
 fn v16_batch_trade_checks_initial_margin_on_final_portfolio() {
     let (mut header, mut markets) = market_fixture(2, 100);
     let mut taker_header = account_fixture(2, 211);

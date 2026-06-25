@@ -13418,7 +13418,8 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.require_asset_active_for_risk_increase(request.asset_index)?;
         }
         let notional = trade_notional_floor(abs_size_q, request.exec_price)?;
-        let fee = checked_fee_bps(notional, request.fee_bps)?;
+        let fee_notional = trade_fee_notional_ceil(abs_size_q, request.exec_price)?;
+        let fee = checked_fee_bps(fee_notional, request.fee_bps)?;
         let fee_a = self.charge_account_fee_current_not_atomic(long_account, fee)?;
         let fee_b = self.charge_account_fee_current_not_atomic(short_account, fee)?;
         self.apply_current_position_delta_with_lookup(
@@ -15855,6 +15856,13 @@ fn trade_notional_floor(size_q: u128, exec_price: u64) -> V16Result<u128> {
         U256::from_u128(POS_SCALE),
     );
     q.try_into_u128().ok_or(V16Error::ArithmeticOverflow)
+}
+
+fn trade_fee_notional_ceil(size_q: u128, exec_price: u64) -> V16Result<u128> {
+    if size_q == 0 || exec_price == 0 {
+        return Ok(0);
+    }
+    risk_notional_ceil(size_q, exec_price)
 }
 
 fn checked_fee_bps(notional: u128, fee_bps: u64) -> V16Result<u128> {

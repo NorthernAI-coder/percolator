@@ -840,6 +840,20 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         self.settle_negative_pnl_from_principal_core_not_atomic(account)
     }
 
+        pub fn kani_resolved_bankruptcy_attribution(
+        &self,
+        account: &PortfolioV16View<'_>,
+    ) -> V16Result<Option<(usize, SideV16)>> {
+        self.resolved_bankruptcy_attribution(account)
+    }
+
+        pub fn kani_settle_resolved_bankruptcy_negative_pnl(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+    ) -> V16Result<()> {
+        self.settle_resolved_bankruptcy_negative_pnl(account)
+    }
+
         pub fn kani_resolved_receipt_claimable_against_ledger(
         receipt: ResolvedPayoutReceiptV16,
         ledger: ResolvedPayoutLedgerV16,

@@ -79,6 +79,27 @@ fn one_market_view_fixture() -> (
     (header, markets, account_header)
 }
 
+fn two_market_view_fixture() -> (
+    MarketGroupV16HeaderAccount,
+    [Market<u64>; 2],
+    PortfolioAccountV16Account,
+) {
+    let (market_id, _, _) = ids();
+    let cfg = V16Config::public_user_fund_with_market_slots(2, 2, 0, 10);
+    let mut header = MarketGroupV16HeaderAccount::new_dynamic(market_id, cfg, 2, 0).unwrap();
+    let mut markets = [
+        Market::new(0u64, EngineAssetSlotV16Account::default()),
+        Market::new(0u64, EngineAssetSlotV16Account::default()),
+    ];
+    {
+        let mut view = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+        view.activate_empty_market_not_atomic(0, 100, 1).unwrap();
+        view.activate_empty_market_not_atomic(1, 100, 2).unwrap();
+    }
+    let account_header = empty_account_fixture(market_id, 2);
+    (header, markets, account_header)
+}
+
 fn one_market_only_fixture() -> (MarketGroupV16HeaderAccount, [Market<u64>; 1]) {
     let (market_id, _, _) = ids();
     let cfg = V16Config::public_user_fund_with_market_slots(1, 1, 0, 10);
@@ -7755,6 +7776,110 @@ fn proof_v16_public_resolved_close_flat_account_pays_only_capital_and_vault() {
     assert_eq!(account.header.reserved_pnl.get(), 0);
     assert_eq!(market.validate_shape(), Ok(()));
     assert_eq!(account.validate_with_market(&market.as_view()), Ok(()));
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_resolved_two_active_legs_are_unattributed_for_bankruptcy() {
+    let (mut header, mut markets, mut account_header) = two_market_view_fixture();
+    header.mode = 1; // Resolved
+    header.current_slot = V16PodU64::new(2);
+    header.resolved_slot = V16PodU64::new(2);
+    header.slot_last = V16PodU64::new(2);
+
+    let mut bitmap = account_header.active_bitmap.map(V16PodU64::get);
+    active_bitmap_set(&mut bitmap, 0).unwrap();
+    active_bitmap_set(&mut bitmap, 1).unwrap();
+    account_header.active_bitmap = bitmap.map(V16PodU64::new);
+
+    let mut asset0 = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset0.oi_eff_long_q = POS_SCALE;
+    asset0.stored_pos_count_long = 1;
+    asset0.loss_weight_sum_long = POS_SCALE;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset0);
+    account_header.legs[0] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
+        active: true,
+        asset_index: 0,
+        market_id: asset0.market_id,
+        side: SideV16::Long,
+        basis_pos_q: POS_SCALE as i128,
+        a_basis: ADL_ONE,
+        k_snap: asset0.k_long,
+        f_snap: asset0.f_long_num,
+        epoch_snap: asset0.epoch_long,
+        loss_weight: POS_SCALE,
+        b_snap: asset0.b_long_num,
+        b_rem: 0,
+        b_epoch_snap: asset0.epoch_long,
+        b_stale: false,
+        stale: false,
+    });
+
+    let mut asset1 = markets[1].engine.asset.try_to_runtime().unwrap();
+    asset1.oi_eff_short_q = POS_SCALE;
+    asset1.stored_pos_count_short = 1;
+    asset1.loss_weight_sum_short = POS_SCALE;
+    markets[1].engine.asset = AssetStateV16Account::from_runtime(&asset1);
+    account_header.legs[1] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
+        active: true,
+        asset_index: 1,
+        market_id: asset1.market_id,
+        side: SideV16::Short,
+        basis_pos_q: -(POS_SCALE as i128),
+        a_basis: ADL_ONE,
+        k_snap: asset1.k_short,
+        f_snap: asset1.f_short_num,
+        epoch_snap: asset1.epoch_short,
+        loss_weight: POS_SCALE,
+        b_snap: asset1.b_short_num,
+        b_rem: 0,
+        b_epoch_snap: asset1.epoch_short,
+        b_stale: false,
+        stale: false,
+    });
+
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let account = PortfolioV16ViewMut::new(&mut account_header);
+    let attribution = market
+        .kani_resolved_bankruptcy_attribution(&account.as_view())
+        .unwrap();
+
+    kani::cover!(true, "resolved bankruptcy attribution sees two active legs");
+    assert_eq!(attribution, None);
+}
+
+#[kani::proof]
+#[kani::unwind(40)]
+#[kani::solver(cadical)]
+fn proof_v16_resolved_unattributed_bad_debt_clears_without_recovery() {
+    let loss_raw: u8 = kani::any();
+    kani::assume((1..=8).contains(&loss_raw));
+    let loss = loss_raw as i128;
+    let (mut header, mut markets, mut account_header) = one_market_view_fixture();
+    header.mode = 1; // Resolved
+    header.current_slot = V16PodU64::new(2);
+    header.resolved_slot = V16PodU64::new(2);
+    header.slot_last = V16PodU64::new(2);
+    header.negative_pnl_account_count = V16PodU64::new(1);
+    account_header.pnl = V16PodI128::new(-loss);
+    account_header.last_fee_slot = V16PodU64::new(2);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    let result = market.kani_settle_resolved_bankruptcy_negative_pnl(&mut account);
+
+    kani::cover!(
+        loss > 3,
+        "resolved close covers nontrivial unattributed terminal bad debt"
+    );
+    assert_ne!(result, Err(V16Error::RecoveryRequired));
+    assert_eq!(result, Ok(()));
+    assert_eq!(account.header.pnl.get(), 0);
+    assert!(active_bitmap_is_empty(
+        account.header.active_bitmap.map(V16PodU64::get)
+    ));
+    assert_eq!(market.header.negative_pnl_account_count.get(), 0);
 }
 
 #[kani::proof]

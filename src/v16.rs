@@ -11241,11 +11241,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         // close (expired_close -> DeclareRecovery, reason
         // ActiveBankruptCloseCannotProgress); every other recovery reason is
         // declared REACTIVELY inside the dispatched crank op when it detects
-        // non-progress (BIndexHeadroomExhausted, etc.). A Resolved-mode
-        // unattributed-insolvent account is a TERMINAL RecoveryRequired state with
-        // no permissionless crank (close_resolved returns Err(RecoveryRequired)),
-        // so it is NOT proactively classified here — recovery_eligible stays in
-        // the summary type for the proven selector but is driven by expired_close.
+        // non-progress (BIndexHeadroomExhausted, etc.). Resolved bad-debt
+        // wind-down is handled by CloseResolved itself, not by the recovery
+        // selector flag, so recovery_eligible stays in the summary type for the
+        // proven selector but is driven by expired_close.
         let recovery_eligible = false;
         // resolved_winner routes to close_resolved, which LAZILY captures the
         // payout snapshot itself (initialize_resolved_payout_ledger_if_needed is
@@ -12362,6 +12361,50 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if self.b_target_for_leg(asset_index, leg)? != leg.b_snap {
             return Err(V16Error::Stale);
         }
+        let asset = self.asset_state(asset_index)?;
+        let asset = V16Core::kernel_clear_leg(leg, asset)?;
+        account.header.legs[leg_slot] =
+            PortfolioLegV16Account::from_runtime(&PortfolioLegV16::EMPTY);
+        let mut bitmap = account.header.active_bitmap.map(V16PodU64::get);
+        active_bitmap_clear(&mut bitmap, leg_slot)?;
+        account.header.active_bitmap = bitmap.map(V16PodU64::new);
+        account.header.health_cert.valid = 0;
+        self.set_asset_state(asset_index, asset)?;
+        Ok(())
+    }
+
+    fn clear_resolved_close_leg(
+        &mut self,
+        account: &mut PortfolioV16ViewMut<'_>,
+        asset_index: usize,
+    ) -> V16Result<()> {
+        if decode_market_mode(self.header.mode)? != MarketModeV16::Resolved {
+            return Err(V16Error::LockActive);
+        }
+        let leg_slot = Self::require_active_leg_slot_for_asset(&account.as_view(), asset_index)?;
+        let mut leg = account.header.legs[leg_slot].try_to_runtime()?;
+        if !leg.active || leg.b_stale || leg.stale {
+            return Err(V16Error::InvalidLeg);
+        }
+        if account
+            .header
+            .close_progress
+            .try_to_runtime()?
+            .has_pending_residual()
+        {
+            return Err(V16Error::LockActive);
+        }
+        if self.has_pending_domain_loss_barrier(asset_index, leg.side)? {
+            return Err(V16Error::LockActive);
+        }
+        let (k_target, f_target) = self.kf_target_for_leg(asset_index, leg)?;
+        if k_target != leg.k_snap || f_target != leg.f_snap {
+            return Err(V16Error::Stale);
+        }
+        if self.b_target_for_leg(asset_index, leg)? != leg.b_snap {
+            return Err(V16Error::Stale);
+        }
+        leg.b_rem = 0;
         let asset = self.asset_state(asset_index)?;
         let asset = V16Core::kernel_clear_leg(leg, asset)?;
         account.header.legs[leg_slot] =
@@ -13711,19 +13754,10 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         if account.header.pnl.get() >= 0 {
             return Ok(());
         }
-        Err(V16Error::RecoveryRequired)
-    }
-
-    fn resolved_unattributed_insolvent_negative_pnl_requires_recovery(
-        &self,
-        account: &PortfolioV16View<'_>,
-    ) -> V16Result<bool> {
-        Ok(
-            decode_market_mode(self.header.mode)? == MarketModeV16::Resolved
-                && account.header.pnl.get() < 0
-                && account.header.pnl.get().unsigned_abs() > account.header.capital.get()
-                && self.resolved_bankruptcy_attribution(account)?.is_none(),
-        )
+        self.header.bankruptcy_hlock_active = 1;
+        self.set_account_pnl(account, 0)?;
+        account.header.health_cert.valid = 0;
+        Ok(())
     }
 
     fn settle_resolved_bankruptcy_negative_pnl(
@@ -14736,21 +14770,11 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             self.validate_shape()?;
             return Ok(ResolvedCloseOutcomeV16::ProgressOnly);
         }
-        if self
-            .resolved_unattributed_insolvent_negative_pnl_requires_recovery(&account.as_view())?
-        {
-            return Err(V16Error::RecoveryRequired);
-        }
         self.sync_account_fee_to_slot_not_atomic(
             account,
             self.header.resolved_slot.get(),
             fee_rate_per_slot,
         )?;
-        if self
-            .resolved_unattributed_insolvent_negative_pnl_requires_recovery(&account.as_view())?
-        {
-            return Err(V16Error::RecoveryRequired);
-        }
         self.settle_negative_pnl_from_principal_not_atomic(account)?;
         if account.header.pnl.get() < 0 {
             self.settle_resolved_bankruptcy_negative_pnl(account)?;
@@ -14875,7 +14899,7 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
         while slot < V16_MAX_PORTFOLIO_ASSETS_N {
             let leg = account.header.legs[slot].try_to_runtime()?;
             if leg.active {
-                self.clear_leg(account, leg.asset_index as usize)?;
+                self.clear_resolved_close_leg(account, leg.asset_index as usize)?;
             }
             slot += 1;
         }

@@ -4,7 +4,7 @@
 //! the `contracts` or `closure` feature, and is included as a private child
 //! module of `v16` so the harnesses can reach the engine's private items.
 //! Keeping it out of v16.rs minimises the production audit surface there.
-//! See scripts/contracts_runner.sh and scripts/spec-coverage.md.
+//! See scripts/contracts_runner.sh for the function-contract runner.
 
 #![allow(unused_imports)]
 
@@ -1947,7 +1947,7 @@ fn liveness_b_stale_leg_has_advancing_chunk() {
 // (20k cases + rounding/denominator edges). A Kani self-consistency proof is NOT
 // kept here: even bounded-width it must symex CBMC's u128 div/mul circuits,
 // which are structurally 128-bit and do not collapse under operand bounds, so it
-// times out with no added assurance over the fuzz. (See no-steal-theorem.md.)
+// times out with no added assurance over the fuzz.
 // The VALUE composition over a real body (weight_sum += ceil(abs*S/a)) is the
 // LOGICAL composition of: (1) kernel_attach_leg's contract weight_sum +=
 // loss_weight for ANY weight; (2) the fuzz-discharged axiom loss_weight ==

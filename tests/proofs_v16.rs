@@ -20,30 +20,27 @@ use percolator::v16::{
     CloseProgressLedgerV16Account, EngineAssetSlotV16Account, HLockLaneV16, HealthCertV16,
     HealthCertV16Account, InsuranceCreditReservationV16, InsuranceCreditReservationV16Account,
     Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
-    PermissionlessCrankActionV16,
-    PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
+    PermissionlessCrankActionV16, PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
     PermissionlessRecoveryReasonV16, PortfolioAccountV16Account, PortfolioLegV16,
     PortfolioLegV16Account, PortfolioSourceDomainV16Account, PortfolioV16View, PortfolioV16ViewMut,
     ProvenanceHeaderV16, ProvenanceHeaderV16Account, ResolvedCloseOutcomeV16,
     ResolvedPayoutLedgerV16, ResolvedPayoutLedgerV16Account, ResolvedPayoutReceiptV16,
     ResolvedPayoutReceiptV16Account, SideModeV16, SideV16, SourceCreditStateV16,
     SourceCreditStateV16Account, StockReconciliationProofV16, TokenValueClassV16,
-    TradeRequestV16,
-    TokenValueFlowProofV16, V16Config, V16ConfigAccount, V16Error,
+    TokenValueFlowProofV16, TradeRequestV16, V16Config, V16ConfigAccount, V16Error,
     V16OptionalRecoveryReasonAccount, V16PodI128, V16PodU128, V16PodU32, V16PodU64,
     BACKING_FEE_RATE_DEN_E9, MAX_BACKING_FEE_RATE_E9_PER_SLOT, MAX_BACKING_FEE_UTIL_BPS,
     PORTFOLIO_SOURCE_DOMAIN_CAP, V16_EMPTY_ACTIVE_BITMAP, V16_MAX_PORTFOLIO_ASSETS_N,
+};
+use percolator::v16::{
+    kani_eq_engine_asset_slot_v16_account, kani_eq_market_group_v16_header_account,
+    kani_eq_portfolio_account_v16_account,
 };
 use percolator::{
     ADL_ONE, BOUND_SCALE, CREDIT_RATE_SCALE, MAX_ACCOUNT_NOTIONAL, MAX_MARGIN_BPS,
     MAX_ORACLE_PRICE, MAX_POSITION_ABS_Q, MAX_TRADE_SIZE_Q, MAX_VAULT_TVL, POS_SCALE,
     SOCIAL_LOSS_DEN, V16_ACTIVE_BITMAP_WORDS,
 };
-use percolator::v16::{
-    kani_eq_engine_asset_slot_v16_account, kani_eq_market_group_v16_header_account,
-    kani_eq_portfolio_account_v16_account,
-};
-
 
 fn ids() -> ([u8; 32], [u8; 32], [u8; 32]) {
     ([1; 32], [2; 32], [3; 32])
@@ -7803,10 +7800,7 @@ fn proof_v16_two_resolved_receipts_are_order_independent_when_snapshot_funded() 
         vault >= ca + cb && ca > 0 && cb > 0,
         "funded vault: both receipts payable in full"
     );
-    kani::cover!(
-        a_claim != b_claim,
-        "asymmetric claim sizes"
-    );
+    kani::cover!(a_claim != b_claim, "asymmetric claim sizes");
 
     // (a) TOTAL extraction is order-independent under scarcity AND never exceeds
     //     the pool — the draining composition equals min(ca+cb, vault) either way.
@@ -9911,8 +9905,14 @@ fn proof_v16_insurance_lien_consume_spends_only_its_domain_budget() {
     assert_eq!(reservation.insurance_credit_reserved_num, 0);
     assert_eq!(source.valid_liened_insurance_num, 0);
     assert_eq!(source.insurance_credit_reserved_num, 0);
-    assert_eq!(market.markets[0].engine.insurance_domain_spent_long.get(), atoms_long);
-    assert_eq!(market.markets[0].engine.insurance_domain_budget_long.get(), atoms_long);
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_spent_long.get(),
+        atoms_long
+    );
+    assert_eq!(
+        market.markets[0].engine.insurance_domain_budget_long.get(),
+        atoms_long
+    );
 
     // ... and the sibling Short domain (domain 1) is UNTOUCHED -- the named
     // isolation property: consuming one domain spends ONLY its own budget.
@@ -9944,7 +9944,6 @@ fn proof_v16_insurance_lien_consume_spends_only_its_domain_budget() {
     assert_eq!(market.header.vault.get(), vault_before);
     assert_eq!(market.header.c_tot.get(), c_tot_before);
 }
-
 
 #[kani::proof]
 #[kani::unwind(16)]
@@ -12238,8 +12237,14 @@ fn proof_v16_finalized_zero_residual_close_is_inert_for_dematerialization() {
 
     kani::cover!(deregister, "terminal close can deregister empty account");
     kani::cover!(!deregister, "terminal close can register empty account");
-    kani::cover!(progress_kind == 0, "terminal close includes support progress");
-    kani::cover!(progress_kind == 3, "terminal close includes explicit-loss progress");
+    kani::cover!(
+        progress_kind == 0,
+        "terminal close includes support progress"
+    );
+    kani::cover!(
+        progress_kind == 3,
+        "terminal close includes explicit-loss progress"
+    );
     assert_eq!(market.validate_shape(), Ok(()));
 }
 
@@ -12272,7 +12277,10 @@ fn proof_v16_finalized_zero_residual_close_is_inert_for_flat_withdraw() {
 
     market.withdraw_not_atomic(&mut account, withdraw).unwrap();
 
-    kani::cover!(progress_kind == 1, "terminal close includes insurance progress");
+    kani::cover!(
+        progress_kind == 1,
+        "terminal close includes insurance progress"
+    );
     assert_eq!(account.header.capital.get(), capital - withdraw);
     assert_eq!(market.header.c_tot.get(), capital - withdraw);
     assert_eq!(market.header.vault.get(), capital - withdraw);
@@ -12315,7 +12323,10 @@ fn proof_v16_finalized_zero_residual_close_is_inert_for_next_begin() {
         .unwrap();
 
     let next = account.header.close_progress.try_to_runtime().unwrap();
-    kani::cover!(progress_kind == 2, "terminal close includes booked-loss progress");
+    kani::cover!(
+        progress_kind == 2,
+        "terminal close includes booked-loss progress"
+    );
     kani::cover!(prior_id > 1, "terminal close carries nontrivial prior id");
     assert!(next.active && !next.finalized && !next.canceled);
     assert_eq!(next.close_id, prior_id + 1);
@@ -13031,11 +13042,24 @@ fn proof_v16_public_backing_provider_earnings_withdraw_is_earnings_scoped_and_po
     market
         .withdraw_backing_provider_earnings_not_atomic(0, withdraw)
         .unwrap();
-    let bucket = market.markets[0].engine.backing_long.try_to_runtime().unwrap();
+    let bucket = market.markets[0]
+        .engine
+        .backing_long
+        .try_to_runtime()
+        .unwrap();
 
-    kani::cover!(withdraw < earnings, "earnings withdraw covers partial extraction");
-    kani::cover!(withdraw == earnings, "earnings withdraw covers full extraction");
-    kani::cover!(surplus > 0, "earnings withdraw covers junior surplus present");
+    kani::cover!(
+        withdraw < earnings,
+        "earnings withdraw covers partial extraction"
+    );
+    kani::cover!(
+        withdraw == earnings,
+        "earnings withdraw covers full extraction"
+    );
+    kani::cover!(
+        surplus > 0,
+        "earnings withdraw covers junior surplus present"
+    );
     // vault and earnings fall in lockstep; nothing else moves.
     assert_eq!(market.header.vault.get(), earnings + surplus - withdraw);
     assert_eq!(bucket.utilization_fee_earnings, earnings - withdraw);
@@ -13100,7 +13124,10 @@ fn proof_v16_cure_and_cancel_close_rejects_without_active_close() {
 
     let result = market.cure_and_cancel_close_not_atomic(&mut account, deposit);
 
-    kani::cover!(deposit > 0, "cure preflight covers nonzero optional deposit");
+    kani::cover!(
+        deposit > 0,
+        "cure preflight covers nonzero optional deposit"
+    );
     kani::cover!(deposit == 0, "cure preflight covers zero deposit");
     assert_eq!(result, Err(V16Error::LockActive));
     // Rejected before mutation: no value or account state moved.
@@ -13162,8 +13189,6 @@ fn proof_v16_cure_and_cancel_close_rejects_without_active_close() {
 // (trade_preflight_risk_gate, checked_trade_fee, position-delta and OI
 // proofs).
 
-
-
 // ============ P2: TWO-OP INTERACTION WITNESSES ============
 // Sequence invariants that single-op proofs cannot see. Each op is
 // individually proven cheap; the witness asserts the INTERACTION property.
@@ -13201,7 +13226,10 @@ fn proof_v16_seq_deposit_withdraw_round_trip_is_exact() {
     let residual_mid = market.kani_residual();
     market.withdraw_not_atomic(&mut account, amount).unwrap();
 
-    kani::cover!(amount > 0 && surplus > 0, "round trip covers junior surplus present");
+    kani::cover!(
+        amount > 0 && surplus > 0,
+        "round trip covers junior surplus present"
+    );
     assert_eq!(market.header.vault.get(), vault_before);
     assert_eq!(market.header.c_tot.get(), start_capital);
     assert_eq!(market.header.insurance.get(), insurance);
@@ -13275,7 +13303,12 @@ fn proof_v16_seq_double_crank_is_monotone_and_value_flat() {
     let residual_before = market.kani_residual();
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
 
-    let effective_price = market.markets[0].engine.asset.try_to_runtime().unwrap().effective_price;
+    let effective_price = market.markets[0]
+        .engine
+        .asset
+        .try_to_runtime()
+        .unwrap()
+        .effective_price;
     for now_slot in [s1, s2] {
         market
             .kani_permissionless_crank(
@@ -13370,8 +13403,7 @@ fn proof_v16_close_begin_rejects_occupied_domain_before_mutation() {
     let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
     let mut account = PortfolioV16ViewMut::new(&mut account_header);
 
-    let result =
-        market.kani_begin_close_progress_ledger(&mut account, 0, SideV16::Long, gross);
+    let result = market.kani_begin_close_progress_ledger(&mut account, 0, SideV16::Long, gross);
 
     kani::cover!(true, "occupied-domain begin rejection reached");
     assert_eq!(result, Err(V16Error::LockActive));
@@ -13379,7 +13411,10 @@ fn proof_v16_close_begin_rejects_occupied_domain_before_mutation() {
     let ledger = account.header.close_progress.try_to_runtime().unwrap();
     assert!(!ledger.active);
     assert_eq!(
-        market.markets[0].engine.pending_domain_loss_barrier_long.get(),
+        market.markets[0]
+            .engine
+            .pending_domain_loss_barrier_long
+            .get(),
         1
     );
 }
@@ -13430,7 +13465,10 @@ fn proof_v16_close_begin_takes_barrier_and_stamps_immutable_identity() {
     assert_eq!(ledger.max_close_slot, current_slot + max_life);
     // the domain barrier is now held exclusively
     assert_eq!(
-        market.markets[0].engine.pending_domain_loss_barrier_long.get(),
+        market.markets[0]
+            .engine
+            .pending_domain_loss_barrier_long
+            .get(),
         1
     );
 }
@@ -13578,7 +13616,10 @@ fn proof_v16_frame_deposit_touches_only_declared_state() {
     eh.vault = V16PodU128::new(cap + amt);
     eh.c_tot = V16PodU128::new(cap + amt);
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
-    assert!(kani_eq_engine_asset_slot_v16_account(&s0, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &s0,
+        &markets[0].engine
+    ));
     let mut ea = a0;
     ea.capital = V16PodU128::new(cap + amt);
     assert!(kani_eq_portfolio_account_v16_account(&ea, &account_header));
@@ -13613,7 +13654,10 @@ fn proof_v16_frame_withdraw_touches_only_declared_state() {
     eh.vault = V16PodU128::new(cap - amt);
     eh.c_tot = V16PodU128::new(cap - amt);
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
-    assert!(kani_eq_engine_asset_slot_v16_account(&s0, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &s0,
+        &markets[0].engine
+    ));
     let mut ea = a0;
     ea.capital = V16PodU128::new(cap - amt);
     assert!(kani_eq_portfolio_account_v16_account(&ea, &account_header));
@@ -13648,7 +13692,10 @@ fn proof_v16_frame_overwithdraw_err_leaves_state_unchanged() {
     kani::cover!(true, "overwithdraw frame witness reached");
     assert!(result.is_err());
     assert!(kani_eq_market_group_v16_header_account(&h0, &header));
-    assert!(kani_eq_engine_asset_slot_v16_account(&s0, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &s0,
+        &markets[0].engine
+    ));
     assert!(kani_eq_portfolio_account_v16_account(&a0, &account_header));
 }
 
@@ -13677,9 +13724,11 @@ fn proof_v16_frame_domain_insurance_deposit_touches_only_declared_state() {
         V16PodU128::new(h0.insurance_domain_budget_remaining_total.get() + amt);
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
     let mut es = s0;
-    es.insurance_domain_budget_long =
-        V16PodU128::new(s0.insurance_domain_budget_long.get() + amt);
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    es.insurance_domain_budget_long = V16PodU128::new(s0.insurance_domain_budget_long.get() + amt);
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // domain-insurance withdraw frame: the exact inverse set, plus nothing else.
@@ -13712,7 +13761,10 @@ fn proof_v16_frame_domain_insurance_withdraw_touches_only_declared_state() {
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
     let mut es = s0;
     es.insurance_domain_budget_long = V16PodU128::new(fund - amt);
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // provider-earnings withdraw frame: exactly {vault,
@@ -13758,7 +13810,10 @@ fn proof_v16_frame_earnings_withdraw_touches_only_declared_state() {
         status: BackingBucketStatusV16::Expired,
         ..BackingBucketV16::EMPTY
     });
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // resolve_market frame: exactly {mode, resolved_slot, current_slot,
@@ -13784,7 +13839,10 @@ fn proof_v16_frame_resolve_market_touches_only_declared_state() {
     eh.current_slot = V16PodU64::new(resolved_slot);
     eh.loss_stale_active = 0;
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
-    assert!(kani_eq_engine_asset_slot_v16_account(&s0, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &s0,
+        &markets[0].engine
+    ));
 }
 
 // mark_asset_drain_only frame: exactly {asset_set_epoch, risk_epoch} on the
@@ -13809,7 +13867,10 @@ fn proof_v16_frame_mark_drain_only_touches_only_declared_state() {
     let mut asset = s0.asset.try_to_runtime().unwrap();
     asset.lifecycle = AssetLifecycleV16::DrainOnly;
     es.asset = AssetStateV16Account::from_runtime(&asset);
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // budget-credit frame: exactly {insurance_domain_budget_remaining_total} on
@@ -13829,7 +13890,9 @@ fn proof_v16_frame_budget_credit_touches_only_declared_state() {
     let s0 = markets[0].engine;
     {
         let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
-        market.credit_domain_insurance_budget_not_atomic(0, amt).unwrap();
+        market
+            .credit_domain_insurance_budget_not_atomic(0, amt)
+            .unwrap();
     }
     kani::cover!(true, "budget-credit frame reached");
     let mut eh = h0;
@@ -13837,9 +13900,11 @@ fn proof_v16_frame_budget_credit_touches_only_declared_state() {
         V16PodU128::new(h0.insurance_domain_budget_remaining_total.get() + amt);
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
     let mut es = s0;
-    es.insurance_domain_budget_long =
-        V16PodU128::new(s0.insurance_domain_budget_long.get() + amt);
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    es.insurance_domain_budget_long = V16PodU128::new(s0.insurance_domain_budget_long.get() + amt);
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // backing-deposit frame: exactly {vault, source_fresh_backing_total_num} on
@@ -13884,7 +13949,10 @@ fn proof_v16_frame_backing_deposit_touches_only_declared_state() {
     src.credit_epoch += 1;
     src.credit_rate_num = CREDIT_RATE_SCALE;
     es.source_credit_long = SourceCreditStateV16Account::from_runtime(&src);
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // backing-withdraw frame: the exact inverse set.
@@ -13948,7 +14016,10 @@ fn proof_v16_frame_backing_withdraw_touches_only_declared_state() {
         credit_epoch: 1,
         ..SourceCreditStateV16::EMPTY
     });
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // fee-charge frame: exactly {insurance, c_tot} on the header and {capital}
@@ -13983,7 +14054,10 @@ fn proof_v16_frame_fee_charge_touches_only_declared_state() {
     eh.insurance = V16PodU128::new(fee);
     eh.c_tot = V16PodU128::new(cap - fee);
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
-    assert!(kani_eq_engine_asset_slot_v16_account(&s0, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &s0,
+        &markets[0].engine
+    ));
     let mut ea = a0;
     ea.capital = V16PodU128::new(cap - fee);
     assert!(kani_eq_portfolio_account_v16_account(&ea, &account_header));
@@ -14003,7 +14077,9 @@ fn proof_v16_frame_oracle_target_update_touches_only_declared_state() {
     let s0 = markets[0].engine;
     {
         let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
-        market.set_asset_raw_oracle_target_not_atomic(0, target).unwrap();
+        market
+            .set_asset_raw_oracle_target_not_atomic(0, target)
+            .unwrap();
     }
     kani::cover!(true, "oracle target frame reached");
     assert!(kani_eq_market_group_v16_header_account(&h0, &header));
@@ -14011,7 +14087,10 @@ fn proof_v16_frame_oracle_target_update_touches_only_declared_state() {
     let mut asset = s0.asset.try_to_runtime().unwrap();
     asset.raw_oracle_target_price = target;
     es.asset = AssetStateV16Account::from_runtime(&asset);
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // insurance->account credit frame: exactly {insurance, c_tot} on the header
@@ -14045,7 +14124,10 @@ fn proof_v16_frame_insurance_account_credit_touches_only_declared_state() {
     eh.insurance = V16PodU128::new(ins - amt);
     eh.c_tot = V16PodU128::new(amt);
     assert!(kani_eq_market_group_v16_header_account(&eh, &header));
-    assert!(kani_eq_engine_asset_slot_v16_account(&s0, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &s0,
+        &markets[0].engine
+    ));
     let mut ea = a0;
     ea.capital = V16PodU128::new(amt);
     assert!(kani_eq_portfolio_account_v16_account(&ea, &account_header));
@@ -14067,7 +14149,9 @@ fn proof_v16_frame_side_reset_touches_only_declared_state() {
     let s0 = markets[0].engine;
     {
         let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
-        market.finalize_side_reset_not_atomic(0, SideV16::Long).unwrap();
+        market
+            .finalize_side_reset_not_atomic(0, SideV16::Long)
+            .unwrap();
     }
     kani::cover!(true, "side reset frame reached");
     let mut eh = h0;
@@ -14077,7 +14161,10 @@ fn proof_v16_frame_side_reset_touches_only_declared_state() {
     let mut asset = s0.asset.try_to_runtime().unwrap();
     asset.mode_long = SideModeV16::Normal;
     es.asset = AssetStateV16Account::from_runtime(&asset);
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
 }
 
 // same-slot crank frame: a refresh may touch ONLY the five clock/observation
@@ -14090,7 +14177,12 @@ fn proof_v16_frame_side_reset_touches_only_declared_state() {
 fn proof_v16_frame_crank_touches_only_clock_and_cert_state() {
     let (mut header, mut markets, mut account_header) = one_market_view_fixture();
     account_header.last_fee_slot = V16PodU64::new(1);
-    let effective_price = markets[0].engine.asset.try_to_runtime().unwrap().effective_price;
+    let effective_price = markets[0]
+        .engine
+        .asset
+        .try_to_runtime()
+        .unwrap()
+        .effective_price;
     let current = header.current_slot.get();
     let h0 = header;
     let s0 = markets[0].engine;
@@ -14131,7 +14223,10 @@ fn proof_v16_frame_crank_touches_only_clock_and_cert_state() {
     a_expect.raw_oracle_target_price = a_after.raw_oracle_target_price;
     es.asset = AssetStateV16Account::from_runtime(&a_expect);
     let _ = &mut a_after;
-    assert!(kani_eq_engine_asset_slot_v16_account(&es, &markets[0].engine));
+    assert!(kani_eq_engine_asset_slot_v16_account(
+        &es,
+        &markets[0].engine
+    ));
     // the refresh recertifies the hint account: health_cert and the staleness
     // flags are the only account-side volatiles; value, legs, domains,
     // escrow, ledgers all frozen.
@@ -14213,8 +14308,8 @@ fn proof_v16_validator_sound_scalar_invariants() {
     );
 
     let h = &market.header;
-    assert!(h.c_tot.get() <= h.vault.get());            // U2
-    assert!(h.insurance.get() <= h.vault.get());        // U2
+    assert!(h.c_tot.get() <= h.vault.get()); // U2
+    assert!(h.insurance.get() <= h.vault.get()); // U2
     assert!(h.slot_last.get() <= h.current_slot.get()); // U9
 }
 
@@ -14245,8 +14340,8 @@ fn proof_v16_validator_sound_pnl_aggregates() {
     );
 
     let h = &market.header;
-    assert!(h.pnl_matured_pos_tot.get() <= h.pnl_pos_tot.get());   // U6
-    assert!(h.pnl_pos_bound_tot.get() >= h.pnl_pos_tot.get());     // U7
+    assert!(h.pnl_matured_pos_tot.get() <= h.pnl_pos_tot.get()); // U6
+    assert!(h.pnl_pos_bound_tot.get() >= h.pnl_pos_tot.get()); // U7
 }
 
 // ROADMAP Phase 1 (Pillar F soundness, U1/U10): validate_shape's Ok-exit implies
@@ -14278,7 +14373,7 @@ fn proof_v16_validator_sound_bound_and_config() {
 
     let h = &market.header;
     assert!(h.vault.get() <= MAX_VAULT_TVL); // U1
-    assert!(h.next_market_id.get() != 0);    // U10
+    assert!(h.next_market_id.get() != 0); // U10
 }
 
 // ROADMAP Phase 1 (Pillar F soundness, U19): validate_with_market's Ok-exit
@@ -14312,10 +14407,16 @@ fn proof_v16_validator_sound_account_reserves() {
     );
 
     let h = &account.header;
-    let pos_pnl = if h.pnl.get() > 0 { h.pnl.get() as u128 } else { 0 };
-    assert!(h.reserved_pnl.get() <= pos_pnl);                                              // U19a
-    assert!(h.residual_spent_principal_atoms_total.get()
-            <= h.residual_crystallized_loss_atoms_total.get());                            // U19b
+    let pos_pnl = if h.pnl.get() > 0 {
+        h.pnl.get() as u128
+    } else {
+        0
+    };
+    assert!(h.reserved_pnl.get() <= pos_pnl); // U19a
+    assert!(
+        h.residual_spent_principal_atoms_total.get()
+            <= h.residual_crystallized_loss_atoms_total.get()
+    ); // U19b
 }
 
 // REALIZABILITY (no-DoS auto-crank dispatch seam): only the no-active-asset
@@ -14332,10 +14433,16 @@ fn proof_v16_auto_crank_refresh_is_unique_observation_requiring_plan() {
     let i: usize = kani::any();
     // Active-asset refresh can use the committed asset state; only the fallback
     // with no selected active asset requires a caller observation.
-    assert!(!needs_obs(&AutoCrankPlanV16::RefreshAccount { asset_index: Some(i) }));
-    assert!(needs_obs(&AutoCrankPlanV16::RefreshAccount { asset_index: None }));
+    assert!(!needs_obs(&AutoCrankPlanV16::RefreshAccount {
+        asset_index: Some(i)
+    }));
+    assert!(needs_obs(&AutoCrankPlanV16::RefreshAccount {
+        asset_index: None
+    }));
     // No other plan does — committed on-chain state suffices.
-    assert!(!needs_obs(&AutoCrankPlanV16::SettleBChunk { asset_index: i }));
+    assert!(!needs_obs(&AutoCrankPlanV16::SettleBChunk {
+        asset_index: i
+    }));
     assert!(!needs_obs(&AutoCrankPlanV16::Liquidate { asset_index: i }));
     assert!(!needs_obs(&AutoCrankPlanV16::NoAction));
     assert!(!needs_obs(&AutoCrankPlanV16::CloseResolved));
@@ -14370,8 +14477,7 @@ fn proof_v16_nonzero_trade_charges_positive_fee_per_side() {
         (size_q.saturating_mul(exec_price as u128)) < percolator::POS_SCALE,
         "sub-atom notional (the floored-to-zero regime) is reachable"
     );
-    let fee =
-        percolator::v16::kani_trade_fee_atoms_per_side(size_q, exec_price, fee_bps).unwrap();
+    let fee = percolator::v16::kani_trade_fee_atoms_per_side(size_q, exec_price, fee_bps).unwrap();
     assert!(
         fee >= 1,
         "nonzero fill at nonzero price with nonzero fee must charge >= 1 atom per side (no free OI)"

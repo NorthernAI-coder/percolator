@@ -2843,6 +2843,86 @@ fn proof_v16_open_source_claim_exposure_blocks_convert() {
     assert!(blocked);
 }
 
+// Public-path favorable-action freshness: conversion preflight accepts exactly
+// the current/unlocked branch and rejects stale certificates or h-lock lanes
+// before value mutation. This links the cert-currentness/h-lock kernels to the
+// production entrypoint preflight instead of proving only the private leaf
+// predicates.
+#[kani::proof]
+#[kani::unwind(48)]
+#[kani::solver(cadical)]
+fn proof_v16_public_convert_preflight_requires_current_unlocked_account() {
+    let blocker: u8 = kani::any();
+    kani::assume(blocker <= 5);
+
+    let claim = 3u128;
+    let (mut header, mut markets, mut account_header) = one_market_view_fixture();
+
+    header.vault = V16PodU128::new(claim);
+    header.c_tot = V16PodU128::new(claim);
+    if blocker == 4 {
+        header.threshold_stress_active = 1;
+    }
+
+    account_header.capital = V16PodU128::new(claim);
+    account_header.pnl = V16PodI128::new(claim as i128);
+    if blocker == 3 {
+        account_header.stale_state = 1;
+    }
+    account_header.health_cert = HealthCertV16Account::from_runtime(&HealthCertV16 {
+        certified_equity: claim as i128,
+        certified_initial_req: 0,
+        certified_maintenance_req: 0,
+        certified_liq_deficit: 0,
+        certified_worst_case_loss: 0,
+        cert_oracle_epoch: header.oracle_epoch.get() + if blocker == 1 { 1 } else { 0 },
+        cert_funding_epoch: header.funding_epoch.get(),
+        cert_risk_epoch: header.risk_epoch.get(),
+        cert_asset_set_epoch: header.asset_set_epoch.get(),
+        active_bitmap_at_cert: if blocker == 2 {
+            [1u64; V16_ACTIVE_BITMAP_WORDS]
+        } else {
+            V16_EMPTY_ACTIVE_BITMAP
+        },
+        valid: blocker != 0,
+    });
+
+    let vault_before = header.vault;
+    let c_tot_before = header.c_tot;
+    let account_capital_before = account_header.capital;
+    let account_pnl_before = account_header.pnl;
+    let market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let account = PortfolioV16View::new(&account_header);
+
+    let result = market.kani_preflight_convert_released_pnl_to_capital(&account);
+
+    kani::cover!(
+        blocker <= 2 && claim > 1 && result == Err(V16Error::Stale),
+        "stale health certificate blocks favorable conversion before mutation"
+    );
+    kani::cover!(
+        (blocker == 3 || blocker == 4) && claim > 1 && result == Err(V16Error::LockActive),
+        "h-lock lane blocks favorable conversion before mutation"
+    );
+    kani::cover!(
+        blocker == 5 && claim > 1 && result == Ok(()),
+        "current unlocked account passes favorable conversion preflight"
+    );
+
+    let expected = if blocker <= 2 {
+        Err(V16Error::Stale)
+    } else if blocker <= 4 {
+        Err(V16Error::LockActive)
+    } else {
+        Ok(())
+    };
+    assert_eq!(result, expected);
+    assert_eq!(market.header.vault, vault_before);
+    assert_eq!(market.header.c_tot, c_tot_before);
+    assert_eq!(account.header.capital, account_capital_before);
+    assert_eq!(account.header.pnl, account_pnl_before);
+}
+
 #[kani::proof]
 #[kani::unwind(24)]
 #[kani::solver(cadical)]

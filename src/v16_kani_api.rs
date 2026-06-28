@@ -698,6 +698,13 @@ impl<'a, T> MarketGroupV16ViewMut<'a, T> {
             && self.account_has_active_source_claim_exposure(account)?)
     }
 
+        pub fn kani_preflight_convert_released_pnl_to_capital(
+        &self,
+        account: &PortfolioV16View<'_>,
+    ) -> V16Result<()> {
+        self.preflight_convert_released_pnl_to_capital(account)
+    }
+
         pub fn kani_position_change_touches_pending_domain_loss_barrier(
         &self,
         asset_index: usize,

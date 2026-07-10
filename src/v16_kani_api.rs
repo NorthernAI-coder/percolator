@@ -65,6 +65,76 @@ pub fn kani_liquidation_close_would_leave_uncovered_loss_with_open_risk(
     )
 }
 
+pub fn kani_liquidation_projected_health_deficit_from_parts(
+    certified_equity: i128,
+    certified_maintenance_req: u128,
+    old_leg_maintenance: u128,
+    new_leg_maintenance: u128,
+    charged_fee: u128,
+) -> V16Result<u128> {
+    liquidation_projected_health_deficit_from_parts(
+        certified_equity,
+        certified_maintenance_req,
+        old_leg_maintenance,
+        new_leg_maintenance,
+        charged_fee,
+    )
+}
+
+pub fn kani_liquidation_projected_healthy_after_close(
+    config: V16Config,
+    cert: HealthCertV16,
+    capital: u128,
+    pnl: i128,
+    leg: PortfolioLegV16,
+    effective_price: u64,
+    raw_target_price: u64,
+    fee_bps: u64,
+    close_q: u128,
+) -> V16Result<bool> {
+    liquidation_projected_healthy_after_close(
+        config,
+        cert,
+        capital,
+        pnl,
+        leg,
+        effective_price,
+        raw_target_price,
+        fee_bps,
+        close_q,
+    )
+}
+
+pub fn kani_liquidation_engine_close_request_q(
+    config: V16Config,
+    cert: HealthCertV16,
+    capital: u128,
+    pnl: i128,
+    leg: PortfolioLegV16,
+    effective_price: u64,
+    raw_target_price: u64,
+    fee_bps: u64,
+) -> V16Result<u128> {
+    liquidation_engine_close_request_q(
+        config,
+        cert,
+        capital,
+        pnl,
+        leg,
+        effective_price,
+        raw_target_price,
+        fee_bps,
+    )
+}
+
+pub fn kani_liquidation_partial_search_hi(
+    config: V16Config,
+    old_abs_q: u128,
+    effective_price: u64,
+) -> V16Result<u128> {
+    liquidation_partial_search_hi(config, old_abs_q, effective_price)
+}
+
 pub fn kani_add_open_interest_for_new_position(
     asset: &mut AssetStateV16,
     side: SideV16,
@@ -213,6 +283,36 @@ pub fn kani_trade_notional_floor(size_q: u128, exec_price: u64) -> V16Result<u12
 
 pub fn kani_checked_fee_bps(notional: u128, fee_bps: u64) -> V16Result<u128> {
     checked_fee_bps(notional, fee_bps)
+}
+
+pub fn kani_liquidation_fee_for_close(
+    fee_notional: u128,
+    fee_bps: u64,
+    min_liquidation_abs: u128,
+    liquidation_fee_cap: u128,
+    closes_full_position: bool,
+) -> V16Result<u128> {
+    liquidation_fee_for_close(
+        fee_notional,
+        fee_bps,
+        min_liquidation_abs,
+        liquidation_fee_cap,
+        closes_full_position,
+    )
+}
+
+pub fn kani_liquidation_fee_from_raw_fee(
+    raw_fee: u128,
+    min_liquidation_abs: u128,
+    liquidation_fee_cap: u128,
+    closes_full_position: bool,
+) -> V16Result<u128> {
+    liquidation_fee_from_raw_fee(
+        raw_fee,
+        min_liquidation_abs,
+        liquidation_fee_cap,
+        closes_full_position,
+    )
 }
 
 pub fn kani_adjust_u128(current: u128, old: u128, new: u128) -> V16Result<u128> {

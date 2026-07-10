@@ -1782,14 +1782,7 @@ fn v16_public_liquidation_on_unfunded_domain_cannot_drain_shared_insurance() {
     let vault_before = market.header.vault.get();
 
     let out = market
-        .liquidate_account_not_atomic(
-            &mut account,
-            LiquidationRequestV16 {
-                asset_index: 0,
-                close_q: POS_SCALE,
-                fee_bps: 0,
-            },
-        )
+        .liquidate_account_not_atomic(&mut account, LiquidationRequestV16 { asset_index: 0 })
         .expect("liquidation should progress by booking residual, not draining other domains");
 
     assert_eq!(out.insurance_used, 0);
@@ -1800,6 +1793,158 @@ fn v16_public_liquidation_on_unfunded_domain_cannot_drain_shared_insurance() {
         0
     );
     assert!(out.residual_booked > 0);
+    market.validate_shape().unwrap();
+    account.validate_with_market(&market.as_view()).unwrap();
+}
+
+#[test]
+fn v16_liquidation_engine_selects_full_close_and_allows_dust_min_fee() {
+    const PRICE: u64 = 1_000_000;
+    const POSITION_Q: u128 = 100;
+    const ACCOUNT_CAPITAL: u128 = 50;
+    const MIN_LIQ_FEE: u128 = 10;
+    const LIQ_FEE_BPS: u64 = 100;
+
+    let (mut header, mut markets) = market_fixture(1, PRICE);
+    header.config.liquidation_fee_bps = V16PodU64::new(LIQ_FEE_BPS);
+    header.config.min_liquidation_abs = V16PodU128::new(MIN_LIQ_FEE);
+    header.config.liquidation_fee_cap = V16PodU128::new(1_000);
+    header.vault = V16PodU128::new(ACCOUNT_CAPITAL * 2);
+    header.c_tot = V16PodU128::new(ACCOUNT_CAPITAL * 2);
+
+    let mut asset = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset.oi_eff_long_q = POSITION_Q * 2;
+    asset.oi_eff_short_q = POSITION_Q * 2;
+    asset.loss_weight_sum_long = POSITION_Q * 2;
+    asset.loss_weight_sum_short = POSITION_Q * 2;
+    asset.stored_pos_count_long = 2;
+    asset.stored_pos_count_short = 2;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset);
+    header.resolved_payout_blocker_count = V16PodU64::new(4);
+
+    let make_liquidatable = |seed: u8| {
+        let mut account = account_fixture(1, seed);
+        account.capital = V16PodU128::new(ACCOUNT_CAPITAL);
+        account.legs[0] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
+            active: true,
+            asset_index: 0,
+            market_id: asset.market_id,
+            side: SideV16::Long,
+            basis_pos_q: i128::try_from(POSITION_Q).unwrap(),
+            a_basis: ADL_ONE,
+            k_snap: asset.k_long,
+            f_snap: asset.f_long_num,
+            epoch_snap: asset.epoch_long,
+            loss_weight: POSITION_Q,
+            b_snap: asset.b_long_num,
+            b_rem: 0,
+            b_epoch_snap: asset.epoch_long,
+            b_stale: false,
+            stale: false,
+        });
+        account.active_bitmap[0] = V16PodU64::new(1);
+        account
+    };
+
+    let mut full_header = make_liquidatable(13);
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut full_account = PortfolioV16ViewMut::new(&mut full_header);
+    let full = market
+        .liquidate_account_not_atomic(&mut full_account, LiquidationRequestV16 { asset_index: 0 })
+        .unwrap();
+
+    assert_eq!(full.closed_q, POSITION_Q);
+    assert_eq!(full.fee_charged, MIN_LIQ_FEE);
+    assert_eq!(
+        full_account.header.capital.get(),
+        ACCOUNT_CAPITAL - MIN_LIQ_FEE
+    );
+    assert_eq!(full_account.header.active_bitmap[0].get(), 0);
+    assert_eq!(market.header.insurance.get(), MIN_LIQ_FEE);
+    market.validate_shape().unwrap();
+    full_account
+        .validate_with_market(&market.as_view())
+        .unwrap();
+}
+
+#[test]
+fn v16_liquidation_engine_selects_healthy_partial_before_margin_floor() {
+    const PRICE: u64 = POS_SCALE as u64;
+    const POSITION_Q: u128 = 10_000;
+    const ACCOUNT_CAPITAL: u128 = 980;
+    const EXPECTED_CLOSE_Q: u128 = 981;
+    const EXPECTED_FEE: u128 = 79;
+
+    let (mut header, mut markets) = market_fixture(1, PRICE);
+    header.config.maintenance_margin_bps = V16PodU64::new(1_000);
+    header.config.initial_margin_bps = V16PodU64::new(1_000);
+    header.config.min_nonzero_mm_req = V16PodU128::new(800);
+    header.config.min_nonzero_im_req = V16PodU128::new(801);
+    header.config.liquidation_fee_bps = V16PodU64::new(800);
+    header.config.min_liquidation_abs = V16PodU128::new(0);
+    header.config.liquidation_fee_cap = V16PodU128::new(1_000);
+    header.config.max_price_move_bps_per_slot = V16PodU64::new(1);
+    header
+        .config
+        .try_to_runtime_shape()
+        .unwrap()
+        .validate_public_user_fund()
+        .unwrap();
+    header.vault = V16PodU128::new(ACCOUNT_CAPITAL * 2);
+    header.c_tot = V16PodU128::new(ACCOUNT_CAPITAL * 2);
+
+    let mut asset = markets[0].engine.asset.try_to_runtime().unwrap();
+    asset.effective_price = PRICE;
+    asset.raw_oracle_target_price = PRICE;
+    asset.oi_eff_long_q = POSITION_Q * 2;
+    asset.oi_eff_short_q = POSITION_Q * 2;
+    asset.loss_weight_sum_long = POSITION_Q * 2;
+    asset.loss_weight_sum_short = POSITION_Q * 2;
+    asset.stored_pos_count_long = 2;
+    asset.stored_pos_count_short = 2;
+    markets[0].engine.asset = AssetStateV16Account::from_runtime(&asset);
+    header.resolved_payout_blocker_count = V16PodU64::new(4);
+
+    let mut account_header = account_fixture(1, 14);
+    account_header.capital = V16PodU128::new(ACCOUNT_CAPITAL);
+    account_header.legs[0] = PortfolioLegV16Account::from_runtime(&PortfolioLegV16 {
+        active: true,
+        asset_index: 0,
+        market_id: asset.market_id,
+        side: SideV16::Long,
+        basis_pos_q: i128::try_from(POSITION_Q).unwrap(),
+        a_basis: ADL_ONE,
+        k_snap: asset.k_long,
+        f_snap: asset.f_long_num,
+        epoch_snap: asset.epoch_long,
+        loss_weight: POSITION_Q,
+        b_snap: asset.b_long_num,
+        b_rem: 0,
+        b_epoch_snap: asset.epoch_long,
+        b_stale: false,
+        stale: false,
+    });
+    account_header.active_bitmap[0] = V16PodU64::new(1);
+
+    let mut market = MarketGroupV16ViewMut::new(&mut header, &mut markets);
+    let mut account = PortfolioV16ViewMut::new(&mut account_header);
+    let out = market
+        .liquidate_account_not_atomic(&mut account, LiquidationRequestV16 { asset_index: 0 })
+        .unwrap();
+
+    assert_eq!(out.closed_q, EXPECTED_CLOSE_Q);
+    assert_eq!(out.fee_charged, EXPECTED_FEE);
+    assert_eq!(account.header.capital.get(), ACCOUNT_CAPITAL - EXPECTED_FEE);
+    assert_eq!(account.header.active_bitmap[0].get(), 1);
+    let leg = account.header.legs[0].try_to_runtime().unwrap();
+    assert_eq!(
+        leg.basis_pos_q,
+        i128::try_from(POSITION_Q - EXPECTED_CLOSE_Q).unwrap()
+    );
+    let cert = account.header.health_cert.try_to_runtime().unwrap();
+    assert_eq!(cert.certified_liq_deficit, 0);
+    assert_eq!(cert.certified_equity, 901);
+    assert_eq!(cert.certified_maintenance_req, 901);
     market.validate_shape().unwrap();
     account.validate_with_market(&market.as_view()).unwrap();
 }
@@ -1867,11 +2012,7 @@ fn v16_permissionless_liquidation_progresses_when_unrelated_asset_is_loss_stale(
                 effective_price: 100,
                 funding_rate_e9: 0,
                 action: percolator::PermissionlessCrankActionV16::Liquidate(
-                    LiquidationRequestV16 {
-                        asset_index: 0,
-                        close_q: POS_SCALE,
-                        fee_bps: 0,
-                    },
+                    LiquidationRequestV16 { asset_index: 0 },
                 ),
             },
         )
@@ -2514,7 +2655,6 @@ fn v16_auto_crank_classifies_fresh_account_stale_then_refreshes_to_clean() {
     let work = AutoCrankWorkV16 {
         now_slot: 5,
         observations: &obs,
-        liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };
 
@@ -2615,7 +2755,6 @@ fn v16_auto_crank_drives_stale_underwater_account_to_derisked_fixed_point() {
     let work = AutoCrankWorkV16 {
         now_slot: 10,
         observations: &obs,
-        liquidation_max_close_q: POS_SCALE,
         resolved_close_fee_rate_per_slot: 0,
     };
 
@@ -2726,7 +2865,6 @@ fn v16_auto_crank_liquidates_current_account_without_observation() {
     let work = AutoCrankWorkV16 {
         now_slot: 10,
         observations: &[],
-        liquidation_max_close_q: POS_SCALE,
         resolved_close_fee_rate_per_slot: 0,
     };
     let result = market
@@ -2801,7 +2939,6 @@ fn v16_auto_crank_declares_recovery_for_expired_live_close() {
     let work = AutoCrankWorkV16 {
         now_slot: 10,
         observations: &[],
-        liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };
     let vault_before = market.header.vault;
@@ -2915,7 +3052,6 @@ fn v16_auto_crank_settles_b_stale_leg() {
     let work = AutoCrankWorkV16 {
         now_slot: 10,
         observations: &[],
-        liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };
     let r = market
@@ -2960,7 +3096,6 @@ fn v16_auto_crank_missing_observation_is_clean_nonprogress_no_mutation() {
     let work = AutoCrankWorkV16 {
         now_slot: 5,
         observations: &[],
-        liquidation_max_close_q: 0,
         resolved_close_fee_rate_per_slot: 0,
     };
     let r = market.permissionless_auto_crank_not_atomic(&mut account, work);
@@ -2992,7 +3127,6 @@ fn assert_observation_independent(
     ),
     obs_asset_index: usize,
     now_slot: u64,
-    liquidation_max_close_q: u128,
     expected_plan: AutoCrankPlanV16,
     expected_requires_obs: bool,
 ) {
@@ -3012,7 +3146,6 @@ fn assert_observation_independent(
             AutoCrankWorkV16 {
                 now_slot,
                 observations,
-                liquidation_max_close_q,
                 resolved_close_fee_rate_per_slot: 0,
             },
         )
@@ -3082,7 +3215,6 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         },
         0,
         5,
-        0,
         AutoCrankPlanV16::RefreshAccount { asset_index: None },
         true,
     );
@@ -3110,7 +3242,6 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         },
         0,
         5,
-        0,
         AutoCrankPlanV16::RefreshAccount {
             asset_index: Some(0),
         },
@@ -3156,7 +3287,6 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         },
         0,
         10,
-        0,
         AutoCrankPlanV16::SettleBChunk { asset_index: 0 },
         false,
     );
@@ -3212,7 +3342,6 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         },
         0,
         10,
-        POS_SCALE,
         AutoCrankPlanV16::Liquidate { asset_index: 0 },
         false,
     );
@@ -3222,7 +3351,7 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         "expired_close",
         || {
             use percolator::{CloseProgressLedgerV16, CloseProgressLedgerV16Account};
-            let (mut header, mut markets) = market_fixture(1, 100);
+            let (mut header, markets) = market_fixture(1, 100);
             let mut account_header = account_fixture(1, 203);
             header.current_slot = V16PodU64::new(10);
             let market_id = markets[0].engine.asset.try_to_runtime().unwrap().market_id;
@@ -3251,7 +3380,6 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         },
         0,
         10,
-        0,
         AutoCrankPlanV16::DeclareRecovery {
             reason: PermissionlessRecoveryReasonV16::ActiveBankruptCloseCannotProgress,
         },
@@ -3276,7 +3404,6 @@ fn v16_auto_crank_progress_realizable_without_observation_for_every_class() {
         },
         0,
         10,
-        0,
         AutoCrankPlanV16::CloseResolved,
         false,
     );

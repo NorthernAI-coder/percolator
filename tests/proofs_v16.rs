@@ -11,15 +11,18 @@ use percolator::v16::{
     kani_expected_source_credit_rate_num_for_state, kani_health_cert_after_capital_debit,
     kani_health_requirements_from_base_and_target_lag,
     kani_liquidation_close_would_leave_uncovered_loss_with_open_risk,
-    kani_loss_stale_trade_scope_allowed, kani_pending_domain_loss_barrier_blocks_position_change,
-    kani_position_delta_increases_risk, kani_prepare_asset_recovery_transition,
-    kani_source_credit_state_realizable_support_for_face, kani_target_effective_lag_adverse_delta,
-    kani_trade_preflight_risk_gate, kani_validate_positive_pnl_source_attribution,
-    AssetLifecycleV16, AssetStateV16, AssetStateV16Account, BackingBucketStatusV16,
-    BackingBucketV16, BackingBucketV16Account, BatchTradeOutcomeV16, CloseProgressLedgerV16,
-    CloseProgressLedgerV16Account, EngineAssetSlotV16Account, HLockLaneV16, HealthCertV16,
-    HealthCertV16Account, InsuranceCreditReservationV16, InsuranceCreditReservationV16Account,
-    Market, MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
+    kani_liquidation_engine_close_request_q, kani_liquidation_fee_from_raw_fee,
+    kani_liquidation_partial_search_hi, kani_liquidation_projected_health_deficit_from_parts,
+    kani_liquidation_projected_healthy_after_close, kani_loss_stale_trade_scope_allowed,
+    kani_pending_domain_loss_barrier_blocks_position_change, kani_position_delta_increases_risk,
+    kani_prepare_asset_recovery_transition, kani_source_credit_state_realizable_support_for_face,
+    kani_target_effective_lag_adverse_delta, kani_trade_preflight_risk_gate,
+    kani_validate_positive_pnl_source_attribution, AssetLifecycleV16, AssetStateV16,
+    AssetStateV16Account, BackingBucketStatusV16, BackingBucketV16, BackingBucketV16Account,
+    BatchTradeOutcomeV16, CloseProgressLedgerV16, CloseProgressLedgerV16Account,
+    EngineAssetSlotV16Account, HLockLaneV16, HealthCertV16, HealthCertV16Account,
+    InsuranceCreditReservationV16, InsuranceCreditReservationV16Account, Market,
+    MarketGroupV16HeaderAccount, MarketGroupV16View, MarketGroupV16ViewMut,
     PermissionlessCrankActionV16, PermissionlessCrankRequestV16, PermissionlessProgressOutcomeV16,
     PermissionlessRecoveryReasonV16, PortfolioAccountV16Account, PortfolioLegV16,
     PortfolioLegV16Account, PortfolioSourceDomainV16Account, PortfolioV16View, PortfolioV16ViewMut,
@@ -3849,6 +3852,189 @@ fn proof_v16_pending_domain_loss_barrier_allows_only_same_side_reductions() {
 #[kani::proof]
 #[kani::unwind(8)]
 #[kani::solver(cadical)]
+fn proof_v16_liquidation_projection_identifies_minimum_no_fee_close() {
+    let abs_q_raw: u16 = kani::any();
+    let equity_raw: u16 = kani::any();
+
+    kani::assume(abs_q_raw >= 2);
+    kani::assume(equity_raw >= 1 && equity_raw < abs_q_raw);
+    let abs_q = abs_q_raw as u128;
+    let equity = equity_raw as u128;
+
+    let selected_new_maintenance = equity;
+    let one_less_new_maintenance = equity + 1;
+    let selected_deficit = kani_liquidation_projected_health_deficit_from_parts(
+        equity as i128,
+        abs_q,
+        abs_q,
+        selected_new_maintenance,
+        0,
+    )
+    .unwrap();
+    let one_less_deficit = kani_liquidation_projected_health_deficit_from_parts(
+        equity as i128,
+        abs_q,
+        abs_q,
+        one_less_new_maintenance,
+        0,
+    )
+    .unwrap();
+
+    kani::cover!(
+        abs_q > equity + 8,
+        "minimum no-fee liquidation projection covers nontrivial partial close"
+    );
+    assert_eq!(selected_deficit, 0);
+    assert_eq!(one_less_deficit, 1);
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_liquidation_projection_includes_fee_equity_debit() {
+    let abs_q_raw: u16 = kani::any();
+    let equity_raw: u16 = kani::any();
+    let fee_raw: u16 = kani::any();
+
+    kani::assume(abs_q_raw >= 3);
+    kani::assume(equity_raw >= 2 && equity_raw < abs_q_raw);
+    kani::assume(fee_raw > 0 && fee_raw < equity_raw);
+    let abs_q = abs_q_raw as u128;
+    let equity = equity_raw as u128;
+    let fee = fee_raw as u128;
+    let selected_new_maintenance = equity - fee;
+    let one_less_new_maintenance = selected_new_maintenance + 1;
+
+    let selected_deficit = kani_liquidation_projected_health_deficit_from_parts(
+        equity as i128,
+        abs_q,
+        abs_q,
+        selected_new_maintenance,
+        fee,
+    )
+    .unwrap();
+    let one_less_deficit = kani_liquidation_projected_health_deficit_from_parts(
+        equity as i128,
+        abs_q,
+        abs_q,
+        one_less_new_maintenance,
+        fee,
+    )
+    .unwrap();
+
+    kani::cover!(
+        abs_q > equity + 8 && fee > 1,
+        "minimum liquidation projection covers nontrivial fee debit"
+    );
+    assert_eq!(selected_deficit, 0);
+    assert_eq!(one_less_deficit, 1);
+}
+
+#[kani::proof]
+#[kani::unwind(10)]
+#[kani::solver(cadical)]
+fn proof_v16_liquidation_selector_is_healthy_locally_minimal_or_full_close() {
+    let equity_raw: u8 = kani::any();
+    let position_q = 1_000u128;
+    let maintenance = (position_q / 10).max(80);
+    let equity = equity_raw as u128;
+    kani::assume(equity > 0 && equity < maintenance);
+
+    let mut config = V16Config::public_user_fund(1, 0, 1);
+    config.maintenance_margin_bps = 1_000;
+    config.initial_margin_bps = 1_000;
+    config.min_nonzero_mm_req = 80;
+    config.min_nonzero_im_req = 81;
+    config.liquidation_fee_bps = 800;
+    config.liquidation_fee_cap = 1_000;
+    config.max_price_move_bps_per_slot = 1;
+    let cert = HealthCertV16 {
+        certified_equity: equity as i128,
+        certified_maintenance_req: maintenance,
+        certified_liq_deficit: maintenance - equity,
+        valid: true,
+        ..HealthCertV16::default()
+    };
+    let leg = PortfolioLegV16 {
+        active: true,
+        side: SideV16::Long,
+        basis_pos_q: position_q as i128,
+        ..PortfolioLegV16::EMPTY
+    };
+    let price = POS_SCALE as u64;
+
+    let selected = kani_liquidation_engine_close_request_q(
+        config,
+        cert,
+        equity,
+        0,
+        leg,
+        price,
+        price,
+        config.liquidation_fee_bps,
+    )
+    .unwrap();
+    let partial_hi = kani_liquidation_partial_search_hi(config, position_q, price).unwrap();
+
+    kani::cover!(
+        selected < position_q && selected > 8,
+        "selector covers a nontrivial health-restoring partial liquidation"
+    );
+    kani::cover!(
+        selected == position_q && partial_hi > 0,
+        "selector covers full close when no pre-floor partial restores health"
+    );
+    assert!((1..=position_q).contains(&selected));
+    if selected < position_q {
+        assert!(selected <= partial_hi);
+        assert!(kani_liquidation_projected_healthy_after_close(
+            config,
+            cert,
+            equity,
+            0,
+            leg,
+            price,
+            price,
+            config.liquidation_fee_bps,
+            selected,
+        )
+        .unwrap());
+        if selected > 1 {
+            assert!(!kani_liquidation_projected_healthy_after_close(
+                config,
+                cert,
+                equity,
+                0,
+                leg,
+                price,
+                price,
+                config.liquidation_fee_bps,
+                selected - 1,
+            )
+            .unwrap());
+        }
+    } else {
+        assert!(
+            partial_hi == 0
+                || !kani_liquidation_projected_healthy_after_close(
+                    config,
+                    cert,
+                    equity,
+                    0,
+                    leg,
+                    price,
+                    price,
+                    config.liquidation_fee_bps,
+                    partial_hi,
+                )
+                .unwrap()
+        );
+    }
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
 fn proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk() {
     let loss_abs: u128 = kani::any();
     let capital: u128 = kani::any();
@@ -3921,6 +4107,79 @@ fn proof_v16_liquidation_cannot_leave_uncovered_loss_with_other_open_risk() {
         uncovered && close_q < leg_abs_q
     );
     assert!(!covered_loss_with_other_risk);
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_liquidation_fee_rejects_subminimum_partial_chunks() {
+    let raw_fee_raw: u16 = kani::any();
+    let min_liquidation_abs_raw: u16 = kani::any();
+    let cap_extra: u16 = kani::any();
+
+    kani::assume(min_liquidation_abs_raw > 0);
+    let raw_fee = raw_fee_raw as u128;
+    let min_liquidation_abs = min_liquidation_abs_raw as u128;
+    let liquidation_fee_cap = min_liquidation_abs + cap_extra as u128;
+    kani::assume(raw_fee < min_liquidation_abs);
+
+    let result =
+        kani_liquidation_fee_from_raw_fee(raw_fee, min_liquidation_abs, liquidation_fee_cap, false);
+
+    kani::cover!(
+        raw_fee > 0 && cap_extra > 0,
+        "subminimum partial liquidation proof covers positive proportional fee and nontrivial cap"
+    );
+    assert_eq!(result, Err(V16Error::NonProgress));
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_liquidation_fee_allows_subminimum_full_close() {
+    let raw_fee_raw: u16 = kani::any();
+    let min_liquidation_abs_raw: u16 = kani::any();
+    let cap_extra: u16 = kani::any();
+
+    kani::assume(min_liquidation_abs_raw > 0);
+    let raw_fee = raw_fee_raw as u128;
+    let min_liquidation_abs = min_liquidation_abs_raw as u128;
+    let liquidation_fee_cap = min_liquidation_abs + cap_extra as u128;
+    kani::assume(raw_fee < min_liquidation_abs);
+
+    let fee =
+        kani_liquidation_fee_from_raw_fee(raw_fee, min_liquidation_abs, liquidation_fee_cap, true)
+            .unwrap();
+
+    kani::cover!(
+        raw_fee > 0 && cap_extra > 0,
+        "subminimum full liquidation proof covers dust close with nontrivial fee cap"
+    );
+    assert_eq!(fee, min_liquidation_abs);
+}
+
+#[kani::proof]
+#[kani::unwind(8)]
+#[kani::solver(cadical)]
+fn proof_v16_liquidation_partial_fee_acceptance_implies_no_min_floor_extraction() {
+    let raw_fee_raw: u16 = kani::any();
+    let min_liquidation_abs_raw: u16 = kani::any();
+    let cap_extra: u16 = kani::any();
+
+    let raw_fee = raw_fee_raw as u128;
+    let min_liquidation_abs = min_liquidation_abs_raw as u128;
+    let liquidation_fee_cap = min_liquidation_abs + cap_extra as u128;
+    let result =
+        kani_liquidation_fee_from_raw_fee(raw_fee, min_liquidation_abs, liquidation_fee_cap, false);
+
+    kani::cover!(
+        min_liquidation_abs > 0 && raw_fee >= min_liquidation_abs && cap_extra > 0,
+        "accepted partial liquidation proof covers nonzero minimum fee with proportional fee above floor"
+    );
+    if let Ok(fee) = result {
+        assert!(min_liquidation_abs == 0 || raw_fee >= min_liquidation_abs);
+        assert_eq!(fee, raw_fee.min(liquidation_fee_cap));
+    }
 }
 
 #[kani::proof]
